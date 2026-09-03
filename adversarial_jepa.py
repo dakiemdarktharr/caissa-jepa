@@ -24,6 +24,25 @@ STATE_SIZE = 12 * 64 + 1 + 4 + 8
 ACTION_SIZE = 64 + 64 + 5
 PIECE_ORDER = "PNBRQKpnbrqk"
 
+MODEL_VARIANTS = {
+    "h1": {
+        "enabled_horizons": (1,),
+        "response_conditioned": True,
+    },
+    "h1-h2": {
+        "enabled_horizons": (1, 2),
+        "response_conditioned": True,
+    },
+    "full": {
+        "enabled_horizons": (1, 2, 4),
+        "response_conditioned": True,
+    },
+    "no-response": {
+        "enabled_horizons": (1, 2, 4),
+        "response_conditioned": False,
+    },
+}
+
 
 def dataset_manifest_fingerprint(dataset_dir: Path) -> str:
     manifest = dataset_dir / "dataset_manifest.json"
@@ -141,6 +160,7 @@ class AdversarialJEPA:
         model_path: Union[Path, str],
         latent_size: int = 96,
         create_if_missing: bool = True,
+        variant: str = "full",
     ) -> None:
         self.model_path = Path(model_path)
         self.model_path.parent.mkdir(parents=True, exist_ok=True)
@@ -151,6 +171,11 @@ class AdversarialJEPA:
         self.adam_v: dict[str, np.ndarray] = {}
         self.dataset_fingerprint = ""
         self.seed = 20260903
+        if variant not in MODEL_VARIANTS:
+            raise ValueError(f"Unknown A-JEPA model variant: {variant}")
+        self.variant = variant
+        self.enabled_horizons = MODEL_VARIANTS[variant]["enabled_horizons"]
+        self.response_conditioned = MODEL_VARIANTS[variant]["response_conditioned"]
         if self.model_path.exists():
             self.load()
         elif create_if_missing:
@@ -184,6 +209,19 @@ class AdversarialJEPA:
             self.adam_step = int(data["adam_step"][0])
             self.dataset_fingerprint = str(data["dataset_fingerprint"][0])
             self.seed = int(data["seed"][0])
+            stored_variant = "full"
+            if "model_variant" in data:
+                stored_variant = str(data["model_variant"][0])
+            if stored_variant not in MODEL_VARIANTS:
+                raise ValueError(f"Unknown checkpoint variant: {stored_variant}")
+            if stored_variant != self.variant:
+                raise ValueError(
+                    f"Checkpoint variant mismatch: requested={self.variant}, "
+                    f"checkpoint={stored_variant}"
+                )
+            self.variant = stored_variant
+            self.enabled_horizons = MODEL_VARIANTS[stored_variant]["enabled_horizons"]
+            self.response_conditioned = MODEL_VARIANTS[stored_variant]["response_conditioned"]
             for name in self.trainable_names:
                 m_key, v_key = "adam_m_" + name, "adam_v_" + name
                 if m_key in data and v_key in data:
@@ -199,6 +237,7 @@ class AdversarialJEPA:
             "adam_step": np.array([self.adam_step], dtype=np.int64),
             "dataset_fingerprint": np.array([self.dataset_fingerprint]),
             "seed": np.array([self.seed], dtype=np.int64),
+            "model_variant": np.array([self.variant]),
             "target_w": self.target_w,
             "target_b": self.target_b,
         }
@@ -244,10 +283,21 @@ class AdversarialJEPA:
         own_actions = np.stack([encode_action(item["own_action"]) for item in samples])
         negative_actions = np.stack([encode_action(item["negative_action"]) for item in samples])
         outcomes = np.array([item["outcome"] for item in samples], dtype=np.float32)[:, None]
-        opponent_mask = np.array([item["future2"] is not None and item["opponent_action"] is not None for item in samples], dtype=np.float32)[:, None]
+        opponent_mask = np.array([
+            item["future2"] is not None
+            and (not self.response_conditioned or item["opponent_action"] is not None)
+            for item in samples
+        ], dtype=np.float32)[:, None]
         horizon4_mask = np.array([
-            item["future4"] is not None and item["opponent_action"] is not None
-            and item["next_our_action"] is not None and item["second_opponent_action"] is not None
+            item["future4"] is not None
+            and (
+                not self.response_conditioned
+                or (
+                    item["opponent_action"] is not None
+                    and item["next_our_action"] is not None
+                    and item["second_opponent_action"] is not None
+                )
+            )
             for item in samples
         ], dtype=np.float32)[:, None]
         opponent_actions = np.stack([encode_action(item["opponent_action"]) if item["opponent_action"] else np.zeros(ACTION_SIZE, dtype=np.float32) for item in samples])
@@ -262,12 +312,22 @@ class AdversarialJEPA:
             2: self.encode(future2_states, target=True),
             4: self.encode(future4_states, target=True),
         }
+        neutral_action = np.zeros(ACTION_SIZE, dtype=np.float32)
         action_sets = {
             1: [own_actions],
-            2: [own_actions, opponent_actions],
-            4: [own_actions, opponent_actions, next_our_actions, second_opponent_actions],
+            2: [own_actions, opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0)],
+            4: [
+                own_actions,
+                opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+                next_our_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+                second_opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+            ],
         }
-        masks = {1: np.ones((batch_size, 1), dtype=np.float32), 2: opponent_mask, 4: horizon4_mask}
+        masks = {
+            1: np.ones((batch_size, 1), dtype=np.float32),
+            2: opponent_mask if 2 in self.enabled_horizons else np.zeros((batch_size, 1), dtype=np.float32),
+            4: horizon4_mask if 4 in self.enabled_horizons else np.zeros((batch_size, 1), dtype=np.float32),
+        }
         weights = {1: 1.0, 2: 0.75, 4: 0.50}
         gradients: dict[str, np.ndarray] = {}
         latent_gradient = np.zeros_like(latent)
@@ -328,7 +388,7 @@ class AdversarialJEPA:
         self.target_b = 0.995 * self.target_b + 0.005 * self.encoder_b
         self.trained_steps += 1
         return {
-            "loss": losses[1] + losses[2] + losses[4] + value_loss + ranking_loss + variance_loss,
+            "loss": sum(weights[horizon] * losses[horizon] for horizon in (1, 2, 4)) + value_loss + ranking_loss + variance_loss,
             "h1_loss": losses[1], "h2_loss": losses[2], "h4_loss": losses[4],
             "value_loss": value_loss, "ranking_loss": ranking_loss,
             "variance_loss": variance_loss,
@@ -349,10 +409,21 @@ class AdversarialJEPA:
         own_actions = np.stack([encode_action(item["own_action"]) for item in samples])
         negative_actions = np.stack([encode_action(item["negative_action"]) for item in samples])
         outcomes = np.array([item["outcome"] for item in samples], dtype=np.float32)[:, None]
-        opponent_mask = np.array([item["future2"] is not None and item["opponent_action"] is not None for item in samples], dtype=np.float32)[:, None]
+        opponent_mask = np.array([
+            item["future2"] is not None
+            and (not self.response_conditioned or item["opponent_action"] is not None)
+            for item in samples
+        ], dtype=np.float32)[:, None]
         horizon4_mask = np.array([
-            item["future4"] is not None and item["opponent_action"] is not None
-            and item["next_our_action"] is not None and item["second_opponent_action"] is not None
+            item["future4"] is not None
+            and (
+                not self.response_conditioned
+                or (
+                    item["opponent_action"] is not None
+                    and item["next_our_action"] is not None
+                    and item["second_opponent_action"] is not None
+                )
+            )
             for item in samples
         ], dtype=np.float32)[:, None]
         opponent_actions = np.stack([encode_action(item["opponent_action"]) if item["opponent_action"] else np.zeros(ACTION_SIZE, dtype=np.float32) for item in samples])
@@ -366,12 +437,22 @@ class AdversarialJEPA:
             2: self.encode(future2_states, target=True),
             4: self.encode(future4_states, target=True),
         }
+        neutral_action = np.zeros(ACTION_SIZE, dtype=np.float32)
         action_sets = {
             1: [own_actions],
-            2: [own_actions, opponent_actions],
-            4: [own_actions, opponent_actions, next_our_actions, second_opponent_actions],
+            2: [own_actions, opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0)],
+            4: [
+                own_actions,
+                opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+                next_our_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+                second_opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+            ],
         }
-        masks = {1: np.ones((batch_size, 1), dtype=np.float32), 2: opponent_mask, 4: horizon4_mask}
+        masks = {
+            1: np.ones((batch_size, 1), dtype=np.float32),
+            2: opponent_mask if 2 in self.enabled_horizons else np.zeros((batch_size, 1), dtype=np.float32),
+            4: horizon4_mask if 4 in self.enabled_horizons else np.zeros((batch_size, 1), dtype=np.float32),
+        }
         losses = {}
         for horizon in (1, 2, 4):
             prediction = self._predict(latent, action_sets[horizon], horizon)

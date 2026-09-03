@@ -74,6 +74,27 @@ The trainer refuses to resume against a dataset with a different manifest hash
 unless `--allow-dataset-change` is given explicitly. Its `.training.json`
 report is part of the experiment artifact.
 
+## Model matrix and arena normalization
+
+The GUI can train independent checkpoints for A-JEPA H1-only, A-JEPA H1+H2,
+full A-JEPA H1+H2+H4, no-response A-JEPA, and Direct Policy/Value. Each run
+has its own checkpoint and heartbeat report; the monitor keeps a separate
+timeline per model.
+
+The MODEL VS MODEL arena uses one shared GM opening-book policy for every
+agent. The book is followed while the existing opening predicate is true; only
+after that transition does the selected agent search. The two selected agents
+are assigned White/Black with a recorded random seed, and the board is
+read-only so user clicks cannot change the game. The arena records the model
+assignment, move source, seed, result and reason in its live event stream and
+appends completed results to `chess_data/arena_results.jsonl`.
+When the immutable `chess_data/caissa_jepa.npz` exists, the legacy v6 model is
+also exposed as a non-trainable arena reference.
+
+This is an evaluation harness, not evidence by itself. Final paper results
+must still use locked openings, color-swapped paired games, equal time/node
+budgets, multiple seeds, confidence intervals and a held-out confirmation set.
+
 ## Required benchmark sequence
 
 1. Validate v6 alpha-beta, uniform MCTS, value-only MCTS and direct

@@ -83,6 +83,7 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     # Preserve the programmatic API used by early v7 scripts, which did not
     # yet have an explicit architecture argument.
     architecture = getattr(arguments, "architecture", "adversarial-jepa")
+    model_variant = getattr(arguments, "model_variant", "full")
     resume = bool(getattr(arguments, "resume", False))
     progress_interval = float(getattr(arguments, "progress_interval", 10.0))
     allow_dataset_change = bool(getattr(arguments, "allow_dataset_change", False))
@@ -93,7 +94,11 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         raise FileNotFoundError(f"Không thể resume: chưa có checkpoint {model_path}")
     fingerprint = dataset_manifest_fingerprint(dataset_dir)
     if architecture == "adversarial-jepa":
-        model = AdversarialJEPA(model_path, latent_size=arguments.latent_size)
+        model = AdversarialJEPA(
+            model_path,
+            latent_size=arguments.latent_size,
+            variant=model_variant,
+        )
     else:
         model = DirectPolicyValueBaseline(
             model_path,
@@ -119,6 +124,7 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         "dataset_fingerprint": fingerprint,
         "seed": arguments.seed,
         "architecture": architecture,
+        "model_variant": model_variant,
         "batch_size": arguments.batch_size,
         "learning_rate": arguments.learning_rate,
         "validation_percent": arguments.validation_percent,
@@ -232,6 +238,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--architecture",
         choices=("adversarial-jepa", "policy-value"),
         default="adversarial-jepa",
+    )
+    parser.add_argument(
+        "--model-variant",
+        choices=("h1", "h1-h2", "full", "no-response", "direct"),
+        default="full",
     )
     parser.add_argument("--seed", type=int, default=20260903)
     parser.add_argument("--validation-percent", type=int, default=10)

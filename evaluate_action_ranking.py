@@ -13,14 +13,18 @@ from main import vitriengine
 from policy_value_baseline import DirectPolicyValueBaseline
 
 
-def load_model(path: Path, architecture: str):
+def load_model(path: Path, architecture: str, model_variant: str = "full"):
     if architecture == "adversarial-jepa":
-        return AdversarialJEPA(path, create_if_missing=False)
+        return AdversarialJEPA(
+            path,
+            create_if_missing=False,
+            variant=model_variant,
+        )
     return DirectPolicyValueBaseline(path, create_if_missing=False)
 
 
-def evaluate(dataset: Path, model_path: Path, architecture: str, split: str, validation_percent: int, maximum_positions: int) -> dict:
-    model = load_model(model_path, architecture)
+def evaluate(dataset: Path, model_path: Path, architecture: str, split: str, validation_percent: int, maximum_positions: int, model_variant: str = "full") -> dict:
+    model = load_model(model_path, architecture, model_variant)
     started = time.perf_counter()
     total = top1 = top5 = 0
     nll = 0.0
@@ -54,6 +58,7 @@ def evaluate(dataset: Path, model_path: Path, architecture: str, split: str, val
     elapsed = max(1e-9, time.perf_counter() - started)
     return {
         "architecture": architecture,
+        "model_variant": model_variant,
         "checkpoint": str(model_path),
         "split": split,
         "positions": total,
@@ -71,6 +76,11 @@ def main() -> int:
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--architecture", choices=("adversarial-jepa", "policy-value"), required=True)
+    parser.add_argument(
+        "--model-variant",
+        choices=("h1", "h1-h2", "full", "no-response", "direct"),
+        default="full",
+    )
     parser.add_argument("--split", choices=("train", "validation"), default="validation")
     parser.add_argument("--validation-percent", type=int, default=10)
     parser.add_argument("--max-positions", type=int, default=1000)
@@ -78,6 +88,7 @@ def main() -> int:
     result = evaluate(
         Path(arguments.dataset), Path(arguments.model), arguments.architecture,
         arguments.split, arguments.validation_percent, arguments.max_positions,
+        arguments.model_variant,
     )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0

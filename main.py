@@ -29,16 +29,28 @@ from PySide6.QtCore import (
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
+    QComboBox,
     QApplication,
     QFileDialog,
     QInputDialog,
+    QLabel,
+    QHBoxLayout,
     QMainWindow,
     QMessageBox,
+    QMenu,
+    QPushButton,
+    QVBoxLayout,
     QWidget,
 )
 
+from model_registry import arena_model_specs, spec_by_id, training_model_specs
+
 
 APP_BUILD = "CAISSA-JEPA-v7"
+
+
+ARENA_MAX_PLIES = 240
+ARENA_MOVE_TIME_SECONDS = 0.35
 
 
 class het_thoi_gian_search(Exception):
@@ -1558,6 +1570,31 @@ def key_thanh_text(position_key):
         ensure_ascii=False,
         separators=(",", ":"),
     )
+
+
+def choose_standard_opening_move(database, snapshot, ply, random_generator):
+    """Choose the same GM opening-book move for every arena agent."""
+    if pgnparser().la_opening(snapshot, ply) == False:
+        return None
+
+    engine = vitriengine(snapshot, 0.02)
+    position_key = key_thanh_text(engine.tao_key_position())
+    legal_moves = set(engine.lay_tat_ca_nuoc_di_hop_le(engine.turn))
+    rows = database.lay_book_moves(position_key, snapshot["turn"])
+    valid_rows = []
+    weights = []
+
+    for row in rows:
+        move = text_thanh_move(row["move_text"], snapshot["turn"])
+        if move not in legal_moves:
+            continue
+        valid_rows.append(move)
+        weights.append(max(0.01, float(row.get("weight", 0.01)) ** 0.75))
+
+    if not valid_rows:
+        return None
+
+    return random_generator.choices(valid_rows, weights=weights, k=1)[0]
 
 
 def snapshot_thanh_json(snapshot):
@@ -3141,6 +3178,10 @@ class trainworker(QObject):
         batch_size=64,
         latent_size=96,
         allow_dataset_change=False,
+        architecture="adversarial-jepa",
+        model_variant="full",
+        model_id="a-jepa-v7",
+        model_label="A-JEPA v7",
     ):
         super().__init__()
         self.database_path = database_path
@@ -3151,6 +3192,10 @@ class trainworker(QObject):
         self.batch_size = int(batch_size)
         self.latent_size = int(latent_size)
         self.allow_dataset_change = bool(allow_dataset_change)
+        self.architecture = str(architecture)
+        self.model_variant = str(model_variant)
+        self.model_id = str(model_id)
+        self.model_label = str(model_label)
         self.last_report = {}
 
     def _gui_progress(self, report):
@@ -3173,6 +3218,10 @@ class trainworker(QObject):
         if "loss" not in latest_metrics and isinstance(latest_metrics.get("train"), dict):
             latest_metrics = latest_metrics["train"]
         payload = {
+            "model_id": self.model_id,
+            "model_label": self.model_label,
+            "architecture": self.architecture,
+            "model_variant": self.model_variant,
             "epoch": current_epoch,
             "epochs": starting_epoch + requested_epochs,
             "phase": phase,
@@ -3214,7 +3263,12 @@ class trainworker(QObject):
                 batch_size=self.batch_size,
                 learning_rate=5e-4,
                 latent_size=self.latent_size,
-                architecture="adversarial-jepa",
+                architecture=self.architecture,
+                model_variant=(
+                    self.model_variant
+                    if self.architecture == "adversarial-jepa"
+                    else "direct"
+                ),
                 seed=20260903,
                 validation_percent=10,
                 max_train_batches=0,
@@ -3228,6 +3282,10 @@ class trainworker(QObject):
             if report_path.exists():
                 self.last_report = json.loads(report_path.read_text(encoding="utf-8"))
             self.ket_qua.emit({
+                "model_id": self.model_id,
+                "model_label": self.model_label,
+                "architecture": self.architecture,
+                "model_variant": self.model_variant,
                 "cancelled": False,
                 "trained_steps": self.last_report.get("trained_steps", 0),
                 "metrics": self.last_report.get("latest_metrics", {}),
@@ -3235,6 +3293,10 @@ class trainworker(QObject):
             })
         except traincancelled:
             self.ket_qua.emit({
+                "model_id": self.model_id,
+                "model_label": self.model_label,
+                "architecture": self.architecture,
+                "model_variant": self.model_variant,
                 "cancelled": True,
                 "trained_steps": self.last_report.get("trained_steps", 0),
                 "metrics": self.last_report.get("latest_metrics", {}),
@@ -3242,6 +3304,10 @@ class trainworker(QObject):
             })
         except Exception as error:
             self.ket_qua.emit({
+                "model_id": self.model_id,
+                "model_label": self.model_label,
+                "architecture": self.architecture,
+                "model_variant": self.model_variant,
                 "error": str(error),
                 "trained_steps": self.last_report.get("trained_steps", 0),
                 "model_path": str(self.model_path),
@@ -4034,10 +4100,265 @@ class engineworker(QObject):
             self.hoan_tat.emit()
 
 
+class modelmatchworker(QObject):
+    """Run a read-only, opening-book-normalized model-v-model game."""
+
+    tien_do = Signal(object)
+    ket_qua = Signal(object)
+    hoan_tat = Signal()
+
+    def __init__(
+        self,
+        project_dir,
+        database_path,
+        first_model_id,
+        second_model_id,
+        stop_event,
+        move_time=ARENA_MOVE_TIME_SECONDS,
+        max_plies=ARENA_MAX_PLIES,
+    ):
+        super().__init__()
+        self.project_dir = Path(project_dir)
+        self.database_path = Path(database_path)
+        self.first_model_id = str(first_model_id)
+        self.second_model_id = str(second_model_id)
+        self.stop_event = stop_event
+        self.move_time = max(0.05, float(move_time))
+        self.max_plies = max(2, int(max_plies))
+        self.database = None
+        self.models = {}
+        self.match_seed = int(time.time_ns() & 0x7FFFFFFF)
+        self.white_model_id = None
+        self.black_model_id = None
+        self.last_progress = {}
+
+    def _snapshot(self, engine):
+        return {
+            "board": engine.board.copy(),
+            "turn": engine.turn,
+            "castling_rights": engine.castling_rights.copy(),
+            "en_passant_target": engine.en_passant_target,
+            "halfmove_clock": engine.halfmove_clock,
+            "position_counts": engine.position_counts.copy(),
+        }
+
+    def _load_model(self, model_id):
+        spec = spec_by_id(self.project_dir, model_id)
+        if spec is None:
+            raise RuntimeError("Unknown arena model: " + str(model_id))
+        if spec["architecture"] == "alpha-beta":
+            return None
+        if spec["path"] is None or not spec["path"].exists():
+            raise RuntimeError(f"Checkpoint is missing: {spec['label']}")
+
+        if spec["architecture"] == "adversarial-jepa":
+            from adversarial_jepa import AdversarialJEPA
+            return AdversarialJEPA(
+                spec["path"],
+                create_if_missing=False,
+                variant=spec["variant"],
+            )
+
+        if spec["architecture"] == "legacy-jepa":
+            return caissajepa(spec["path"], create_if_missing=False)
+
+        from policy_value_baseline import DirectPolicyValueBaseline
+        return DirectPolicyValueBaseline(
+            spec["path"],
+            create_if_missing=False,
+        )
+
+    def _choose_move(self, model_id, snapshot, legal_moves):
+        spec = spec_by_id(self.project_dir, model_id)
+        if spec is None:
+            return None, "UNKNOWN"
+
+        if spec["architecture"] == "alpha-beta":
+            engine = vitriengine(snapshot, self.move_time, self.stop_event)
+            result = engine.tim_nuoc_di_tot_nhat()
+            return result.get("move"), "ALPHA_BETA"
+
+        model = self.models[model_id]
+        search = caissamcts(
+            snapshot,
+            model,
+            self.move_time,
+            self.stop_event,
+        )
+        result = search.tim_nuoc_di()
+        return result.get("move"), spec["label"]
+
+    def _finish_reason(self, engine, legal_moves):
+        if engine.is_draw_search():
+            return "1/2-1/2", "DRAW_RULE"
+        if legal_moves:
+            return None, None
+        if engine.is_king_in_check(engine.turn):
+            winner = "black" if engine.turn == "white" else "white"
+            return ("1-0" if winner == "white" else "0-1"), "CHECKMATE"
+        return "1/2-1/2", "STALEMATE"
+
+    def _save_result(self, result):
+        result_path = self.project_dir / "chess_data" / "arena_results.jsonl"
+        result_path.parent.mkdir(parents=True, exist_ok=True)
+        with result_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
+
+    @Slot()
+    def chay(self):
+        try:
+            self.database = chessdatabase(self.database_path)
+            first_spec = spec_by_id(self.project_dir, self.first_model_id)
+            second_spec = spec_by_id(self.project_dir, self.second_model_id)
+            if first_spec is None or second_spec is None:
+                raise RuntimeError("Both selected models must be registered")
+
+            random_generator = random.Random(self.match_seed)
+            if random_generator.randrange(2) == 0:
+                self.white_model_id = self.first_model_id
+                self.black_model_id = self.second_model_id
+            else:
+                self.white_model_id = self.second_model_id
+                self.black_model_id = self.first_model_id
+
+            self.models = {
+                self.first_model_id: self._load_model(self.first_model_id),
+                self.second_model_id: self._load_model(self.second_model_id),
+            }
+
+            initial_snapshot = {
+                "board": [
+                    "r", "n", "b", "q", "k", "b", "n", "r",
+                    "p", "p", "p", "p", "p", "p", "p", "p",
+                    ".", ".", ".", ".", ".", ".", ".", ".",
+                    ".", ".", ".", ".", ".", ".", ".", ".",
+                    ".", ".", ".", ".", ".", ".", ".", ".",
+                    ".", ".", ".", ".", ".", ".", ".", ".",
+                    "P", "P", "P", "P", "P", "P", "P", "P",
+                    "R", "N", "B", "Q", "K", "B", "N", "R",
+                ],
+                "turn": "white",
+                "castling_rights": {
+                    "white_kingside": True,
+                    "white_queenside": True,
+                    "black_kingside": True,
+                    "black_queenside": True,
+                },
+                "en_passant_target": None,
+                "halfmove_clock": 0,
+                "position_counts": {},
+            }
+            engine = vitriengine(initial_snapshot, 0.02, self.stop_event)
+            self.tien_do.emit({
+                "event": "MATCH_STARTED",
+                "first_model_id": self.first_model_id,
+                "second_model_id": self.second_model_id,
+                "white_model_id": self.white_model_id,
+                "black_model_id": self.black_model_id,
+                "match_seed": self.match_seed,
+                "opening_policy": "GM opening book until midgame transition",
+            })
+
+            moves = []
+            result_token = None
+            reason = None
+            for ply in range(self.max_plies):
+                if self.stop_event.is_set():
+                    result_token, reason = "*", "CANCELLED"
+                    break
+
+                legal_moves = engine.lay_tat_ca_nuoc_di_hop_le(engine.turn)
+                result_token, reason = self._finish_reason(engine, legal_moves)
+                if result_token is not None:
+                    break
+
+                snapshot = self._snapshot(engine)
+                current_model_id = (
+                    self.white_model_id
+                    if engine.turn == "white"
+                    else self.black_model_id
+                )
+                move = choose_standard_opening_move(
+                    self.database,
+                    snapshot,
+                    ply,
+                    random_generator,
+                )
+                source = "GM_OPENING_BOOK"
+                if move is None:
+                    move, source = self._choose_move(
+                        current_model_id,
+                        snapshot,
+                        legal_moves,
+                    )
+
+                if move not in legal_moves:
+                    move = legal_moves[0]
+                    source = "LEGAL_FALLBACK"
+
+                move_text = move_thanh_text(move)
+                engine.thuc_hien_nuoc_di(move)
+                moves.append(move_text)
+                progress = {
+                    "event": "MATCH_MOVE",
+                    "ply": ply + 1,
+                    "move": move,
+                    "move_text": move_text,
+                    "source": source,
+                    "model_id": current_model_id,
+                    "white_model_id": self.white_model_id,
+                    "black_model_id": self.black_model_id,
+                    "board": engine.board.copy(),
+                    "turn": engine.turn,
+                    "castling_rights": engine.castling_rights.copy(),
+                    "en_passant_target": engine.en_passant_target,
+                    "halfmove_clock": engine.halfmove_clock,
+                    "result": None,
+                    "reason": None,
+                }
+                self.last_progress = progress.copy()
+                self.tien_do.emit(progress)
+
+            if result_token is None:
+                result_token, reason = "1/2-1/2", "MAX_PLIES"
+
+            result = {
+                "event": "MATCH_RESULT",
+                "result": result_token,
+                "reason": reason,
+                "moves": moves,
+                "plies": len(moves),
+                "first_model_id": self.first_model_id,
+                "second_model_id": self.second_model_id,
+                "white_model_id": self.white_model_id,
+                "black_model_id": self.black_model_id,
+                "match_seed": self.match_seed,
+                "cancelled": self.stop_event.is_set(),
+            }
+            self._save_result(result)
+            self.ket_qua.emit(result)
+        except Exception as error:
+            result = {
+                "event": "MATCH_RESULT",
+                "result": "*",
+                "reason": "ERROR",
+                "error": str(error),
+                "cancelled": self.stop_event.is_set(),
+            }
+            try:
+                self._save_result(result)
+            except Exception:
+                pass
+            self.ket_qua.emit(result)
+        finally:
+            self.hoan_tat.emit()
+
+
 class boardwidget(QWidget):
     monitor_train = Signal(object)
     monitor_engine = Signal(object)
     monitor_state = Signal(object)
+    monitor_mode_requested = Signal(str)
 
     def __init__(self, project_dir=None):
         super().__init__()
@@ -4107,6 +4428,15 @@ class boardwidget(QWidget):
         self.train_stop_event = None
         self.train_dang_chay = False
         self.train_status = ""
+        self.training_model_specs = training_model_specs(self.project_dir)
+        self.training_selection = {
+            spec["id"]: not spec["path"].exists()
+            for spec in self.training_model_specs
+        }
+        self.train_threads = {}
+        self.train_workers = {}
+        self.train_stop_events = {}
+        self.train_runs = {}
 
         self.learning_thread = None
         self.learning_worker = None
@@ -4128,6 +4458,8 @@ class boardwidget(QWidget):
         self.history_button_rect = QRectF()
         self.import_button_rect = QRectF()
         self.train_button_rect = QRectF()
+        self.train_dropdown_rect = QRectF()
+        self.model_match_button_rect = QRectF()
 
         self.clock_timer = QTimer(self)
         self.clock_timer.setInterval(50)
@@ -4791,17 +5123,65 @@ class boardwidget(QWidget):
         self.import_dang_chay = False
         self.update()
 
+    def mo_menu_chon_model_train(self):
+        menu = QMenu(self)
+        menu.setTitle("Training models")
+
+        for spec in self.training_model_specs:
+            ready_text = "READY / RESUME" if spec["path"].exists() else "NEW"
+            action = menu.addAction(f"{spec['label']}   [{ready_text}]")
+            action.setCheckable(True)
+            action.setChecked(bool(self.training_selection.get(spec["id"], False)))
+            action.toggled.connect(
+                lambda checked, model_id=spec["id"]: self.training_selection.__setitem__(
+                    model_id, checked
+                )
+            )
+
+        menu.addSeparator()
+        info = menu.addAction("Checked models start together")
+        info.setEnabled(False)
+        menu.exec(self.mapToGlobal(self.train_dropdown_rect.bottomLeft().toPoint()))
+
+    def cac_model_fingerprint_changed(self, spec, dataset_path):
+        if np is None or not spec["path"].exists():
+            return False
+
+        try:
+            from adversarial_jepa import dataset_manifest_fingerprint
+
+            current_fingerprint = dataset_manifest_fingerprint(dataset_path)
+            with np.load(spec["path"], allow_pickle=False) as data:
+                checkpoint_fingerprint = str(data["dataset_fingerprint"][0])
+            return bool(
+                checkpoint_fingerprint
+                and checkpoint_fingerprint != current_fingerprint
+            )
+        except Exception as error:
+            raise RuntimeError(
+                f"Unable to read {spec['label']} checkpoint: {error}"
+            )
+
     def bat_dau_train_model(self):
         if self.train_dang_chay:
-            if self.train_stop_event is not None:
-                self.train_stop_event.set()
-
-            self.train_status = "Stopping after the current batch..."
+            for stop_event in self.train_stop_events.values():
+                stop_event.set()
+            self.train_status = "Stopping all models after their current batch..."
             self.update()
             return
 
         if np is None:
             self.train_status = "NumPy is required for training"
+            self.update()
+            return
+
+        selected_specs = [
+            spec
+            for spec in self.training_model_specs
+            if self.training_selection.get(spec["id"], False)
+        ]
+        if not selected_specs:
+            self.train_status = "Choose at least one model from the TRAIN MODEL dropdown"
             self.update()
             return
 
@@ -4836,7 +5216,7 @@ class boardwidget(QWidget):
         epochs, accepted = QInputDialog.getInt(
             self,
             "CAISSA-JEPA v7",
-            "Additional training epochs:",
+            "Additional training epochs for each selected model:",
             5,
             1,
             10000,
@@ -4845,68 +5225,96 @@ class boardwidget(QWidget):
             return
 
         allow_dataset_change = False
-        if self.adversarial_model_path.exists():
-            try:
-                from adversarial_jepa import dataset_manifest_fingerprint
+        try:
+            changed_specs = [
+                spec
+                for spec in selected_specs
+                if self.cac_model_fingerprint_changed(spec, dataset_path)
+            ]
+        except RuntimeError as error:
+            self.train_status = str(error)
+            self.update()
+            return
 
-                current_fingerprint = dataset_manifest_fingerprint(dataset_path)
-                with np.load(self.adversarial_model_path, allow_pickle=False) as data:
-                    checkpoint_fingerprint = str(data["dataset_fingerprint"][0])
-                if checkpoint_fingerprint and checkpoint_fingerprint != current_fingerprint:
-                    answer = QMessageBox.question(
-                        self,
-                        "Dataset Changed",
-                        "The dataset fingerprint differs from the checkpoint. Continue incremental training?",
-                        QMessageBox.Yes | QMessageBox.No,
-                        QMessageBox.No,
-                    )
-                    if answer != QMessageBox.Yes:
-                        self.train_status = "Cancelled: dataset fingerprint mismatch"
-                        self.update()
-                        return
-                    allow_dataset_change = True
-            except Exception as error:
-                self.train_status = "Unable to read checkpoint: " + str(error)
+        if changed_specs:
+            names = ", ".join(spec["label"] for spec in changed_specs)
+            answer = QMessageBox.question(
+                self,
+                "Dataset Changed",
+                "The dataset fingerprint differs for:\n"
+                + names
+                + "\n\nContinue incremental training for these models?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if answer != QMessageBox.Yes:
+                self.train_status = "Cancelled: dataset fingerprint mismatch"
                 self.update()
                 return
+            allow_dataset_change = True
 
-        stop_event = threading.Event()
-        thread = QThread(self)
-        worker = trainworker(
-            str(self.database.database_path),
-            str(self.adversarial_model_path),
-            stop_event,
-            str(dataset_path),
-            epochs,
-            batch_size=64,
-            latent_size=96,
-            allow_dataset_change=allow_dataset_change,
-        )
-        worker.moveToThread(thread)
-        thread.started.connect(worker.chay)
-        worker.tien_do.connect(self.nhan_tien_do_train)
-        worker.ket_qua.connect(self.nhan_ket_qua_train)
-        worker.hoan_tat.connect(thread.quit)
-        worker.hoan_tat.connect(worker.deleteLater)
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(
-            lambda thread_da_xong=thread: self.ket_thuc_train_thread(
-                thread_da_xong
+        for spec in selected_specs:
+            if spec["id"] in self.train_threads:
+                continue
+
+            stop_event = threading.Event()
+            thread = QThread(self)
+            worker = trainworker(
+                str(self.database.database_path),
+                str(spec["path"]),
+                stop_event,
+                str(dataset_path),
+                epochs,
+                batch_size=64,
+                latent_size=96,
+                allow_dataset_change=allow_dataset_change,
+                architecture=spec["architecture"],
+                model_variant=spec["variant"],
+                model_id=spec["id"],
+                model_label=spec["label"],
             )
-        )
+            worker.moveToThread(thread)
+            thread.started.connect(worker.chay)
+            worker.tien_do.connect(self.nhan_tien_do_train)
+            worker.ket_qua.connect(self.nhan_ket_qua_train)
+            worker.hoan_tat.connect(thread.quit)
+            worker.hoan_tat.connect(worker.deleteLater)
+            thread.finished.connect(thread.deleteLater)
+            thread.finished.connect(
+                lambda thread_da_xong=thread, model_id=spec["id"]: self.ket_thuc_train_thread(
+                    thread_da_xong, model_id
+                )
+            )
 
-        self.train_thread = thread
-        self.train_worker = worker
-        self.train_stop_event = stop_event
-        self.train_dang_chay = True
+            self.train_threads[spec["id"]] = thread
+            self.train_workers[spec["id"]] = worker
+            self.train_stop_events[spec["id"]] = stop_event
+            self.train_runs[spec["id"]] = {
+                "model_id": spec["id"],
+                "model_label": spec["label"],
+                "architecture": spec["architecture"],
+                "model_variant": spec["variant"],
+                "status": "STARTING",
+                "path": str(spec["path"]),
+            }
+            thread.start()
+
+        self.train_thread = next(iter(self.train_threads.values()), None)
+        self.train_worker = next(iter(self.train_workers.values()), None)
+        self.train_stop_event = next(iter(self.train_stop_events.values()), None)
+        self.train_dang_chay = bool(self.train_threads)
         self.train_status = (
-            f"Initializing A-JEPA v7: {epochs} epochs | {sample_count} positions..."
+            f"Starting {len(selected_specs)} model(s) | "
+            f"{epochs} epochs each | {sample_count} positions..."
         )
         self.update()
-        thread.start()
 
     @Slot(object)
     def nhan_tien_do_train(self, progress):
+        model_id = progress.get("model_id", "a-jepa-v7")
+        run = self.train_runs.setdefault(model_id, {})
+        run.update(progress.copy())
+        run["status"] = "RUNNING"
         self.monitor_train.emit(progress.copy())
         metrics = progress.get("metrics") or {}
         if "loss" not in metrics and isinstance(metrics.get("train"), dict):
@@ -4919,40 +5327,66 @@ class boardwidget(QWidget):
             loss_text = f"{loss:.4f}"
 
         self.train_status = (
-            f"V7 {progress.get('phase', 'train')} | "
+            f"{len(self.train_threads)} model(s) | "
+            f"{progress.get('model_label', model_id)} | "
+            f"{progress.get('phase', 'train')} | "
             f"Epoch {progress.get('epoch', '--')}/{progress.get('epochs', '--')} | "
-            f"batch {progress.get('processed', '--')} | "
             f"{progress.get('progress_percent', 0.0):.1f}% | loss {loss_text}"
         )
         self.update()
 
     @Slot(object)
     def nhan_ket_qua_train(self, result):
+        model_id = result.get("model_id", "a-jepa-v7")
+        run = self.train_runs.setdefault(model_id, {})
+        run.update(result.copy())
+        run["status"] = (
+            "FAILED" if "error" in result
+            else "STOPPED" if result.get("cancelled")
+            else "COMPLETE"
+        )
         monitor_result = result.copy()
         monitor_result["event"] = "TRAIN_RESULT"
         self.monitor_train.emit(monitor_result)
 
         if "error" in result:
-            self.train_status = "Training error: " + result["error"]
+            self.train_status = (
+                f"{result.get('model_label', model_id)} error: "
+                + result["error"]
+            )
         elif result.get("cancelled"):
             self.train_status = (
-                f"Training stopped | steps {result['trained_steps']}"
+                f"{result.get('model_label', model_id)} stopped | "
+                f"steps {result['trained_steps']}"
             )
         else:
             self.train_status = (
-                f"Training complete | steps {result['trained_steps']}"
+                f"{result.get('model_label', model_id)} complete | "
+                f"steps {result['trained_steps']}"
             )
 
         self.update()
 
-    def ket_thuc_train_thread(self, thread_da_xong):
-        if self.train_thread is not thread_da_xong:
+    def ket_thuc_train_thread(self, thread_da_xong, model_id=None):
+        if model_id is None:
+            model_id = next(
+                (key for key, value in self.train_threads.items() if value is thread_da_xong),
+                None,
+            )
+        if model_id is None or self.train_threads.get(model_id) is not thread_da_xong:
             return
 
-        self.train_thread = None
-        self.train_worker = None
-        self.train_stop_event = None
-        self.train_dang_chay = False
+        self.train_threads.pop(model_id, None)
+        self.train_workers.pop(model_id, None)
+        self.train_stop_events.pop(model_id, None)
+        if model_id in self.train_runs:
+            self.train_runs[model_id]["thread_finished"] = True
+        self.train_thread = next(iter(self.train_threads.values()), None)
+        self.train_worker = next(iter(self.train_workers.values()), None)
+        self.train_stop_event = next(iter(self.train_stop_events.values()), None)
+        self.train_dang_chay = bool(self.train_threads)
+        if not self.train_dang_chay:
+            self.train_status = "All selected model runs finished"
         self.update()
 
     def bat_dau_hoc_sau_van_thua(self):
@@ -6206,7 +6640,7 @@ class boardwidget(QWidget):
         panel_width = min(145, max(90, self.width() - panel_x - 12))
         button_height = max(34, int(square_size * 0.48))
         gap = 10
-        total_height = button_height * 3 + gap * 2
+        total_height = button_height * 4 + gap * 3
         panel_y = starty + (board_size - total_height) / 2
 
         self.history_button_rect = QRectF(
@@ -6227,6 +6661,18 @@ class boardwidget(QWidget):
             panel_width,
             button_height,
         )
+        self.model_match_button_rect = QRectF(
+            panel_x,
+            panel_y + (button_height + gap) * 3,
+            panel_width,
+            button_height,
+        )
+        self.train_dropdown_rect = QRectF(
+            self.train_button_rect.right() - min(30.0, panel_width * 0.22),
+            self.train_button_rect.y(),
+            min(30.0, panel_width * 0.22),
+            self.train_button_rect.height(),
+        )
 
         button_data = (
             (self.history_button_rect, "HISTORY"),
@@ -6236,8 +6682,9 @@ class boardwidget(QWidget):
             ),
             (
                 self.train_button_rect,
-                "STOP TRAINING" if self.train_dang_chay else "TRAIN MODEL",
+                "STOP ALL TRAINING" if self.train_dang_chay else "TRAIN MODEL",
             ),
+            (self.model_match_button_rect, "MODEL VS MODEL"),
         )
 
         for rect, text_value in button_data:
@@ -6256,6 +6703,13 @@ class boardwidget(QWidget):
                 )
             )
             painter.drawText(rect, Qt.AlignCenter, text_value)
+
+        painter.setPen(QColor("#35271D"))
+        painter.setBrush(Qt.NoBrush)
+        arrow_x = self.train_dropdown_rect.center().x()
+        arrow_y = self.train_dropdown_rect.center().y()
+        painter.drawLine(int(arrow_x - 5), int(arrow_y - 2), int(arrow_x), int(arrow_y + 3))
+        painter.drawLine(int(arrow_x), int(arrow_y + 3), int(arrow_x + 5), int(arrow_y - 2))
 
         status_parts = [
             item
@@ -7277,7 +7731,14 @@ class boardwidget(QWidget):
             return
 
         if self.train_button_rect.contains(event.position()):
-            self.bat_dau_train_model()
+            if self.train_dropdown_rect.contains(event.position()):
+                self.mo_menu_chon_model_train()
+            else:
+                self.bat_dau_train_model()
+            return
+
+        if self.model_match_button_rect.contains(event.position()):
+            self.monitor_mode_requested.emit("model-v-model")
             return
 
         if self.dang_chon_mau:
@@ -7363,6 +7824,9 @@ class boardwidget(QWidget):
             self.setCursor(Qt.PointingHandCursor)
             return
         if self.train_button_rect.contains(event.position()):
+            self.setCursor(Qt.PointingHandCursor)
+            return
+        if self.model_match_button_rect.contains(event.position()):
             self.setCursor(Qt.PointingHandCursor)
             return
 
@@ -7456,14 +7920,14 @@ class boardwidget(QWidget):
                     event.ignore()
                     return
 
-        if self.train_stop_event is not None:
-            self.train_stop_event.set()
+        for stop_event in self.train_stop_events.values():
+            stop_event.set()
 
-        if self.train_thread is not None:
-            if self.train_thread.isRunning():
-                self.train_thread.quit()
+        for thread in list(self.train_threads.values()):
+            if thread.isRunning():
+                thread.quit()
 
-                if self.train_thread.wait(3000) == False:
+                if thread.wait(3000) == False:
                     event.ignore()
                     return
 
@@ -7509,6 +7973,9 @@ class monitorwidget(QWidget):
         self.estimated_finish_timestamp = None
         self.latest_train = {}
         self.latest_metrics = {}
+        self.training_runs = {}
+        self.selected_training_model_id = None
+        self.training_row_rects = []
         self.latest_engine = {"stage": "IDLE"}
         self.last_engine_final = {}
         self.last_mcts_progress = {}
@@ -7547,6 +8014,7 @@ class monitorwidget(QWidget):
             self.sample_count = 0
 
         self.nap_thong_tin_checkpoint()
+        self.nap_training_reports()
         self.them_log("MONITOR ONLINE")
 
         self.board_widget.monitor_train.connect(self.nhan_train)
@@ -7576,6 +8044,46 @@ class monitorwidget(QWidget):
         except Exception as error:
             self.them_log("CHECKPOINT READ ERROR: " + str(error))
 
+    def nap_training_reports(self):
+        """Load existing per-model reports so the monitor survives restarts."""
+        for spec in training_model_specs(self.board_widget.project_dir):
+            report_path = spec["path"].with_suffix(".training.json")
+            if not report_path.exists():
+                continue
+            try:
+                report = json.loads(report_path.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            epochs = report.get("epochs") or []
+            latest = epochs[-1] if epochs else {}
+            metrics = latest.get("train", {}) if isinstance(latest, dict) else {}
+            self.training_runs[spec["id"]] = {
+                "model_id": spec["id"],
+                "model_label": spec["label"],
+                "architecture": spec["architecture"],
+                "model_variant": spec["variant"],
+                "status": report.get("status", "IDLE"),
+                "trained_steps": report.get("trained_steps", 0),
+                "progress_percent": 100.0 if report.get("status") == "COMPLETE" else 0.0,
+                "latest_metrics": metrics,
+                "report": report,
+                "history": [],
+            }
+
+    def activate_training_run(self, model_id):
+        run = self.training_runs.get(model_id)
+        if run is None:
+            return
+        self.selected_training_model_id = model_id
+        self.latest_train = run.get("latest", run).copy()
+        self.latest_metrics = run.get("latest_metrics", {}).copy()
+        self.train_history = list(run.get("history", []))
+        self.recent_metric_history = list(run.get("recent_history", []))
+        self.loss_ema = run.get("loss_ema")
+        self.history_start_wall_time = run.get("history_start_wall_time")
+        self.latest_heatmap = None
+        self.heatmap_info = {}
+
     def them_log(self, text_value):
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.log_lines.append(f"[{timestamp}] {text_value}")
@@ -7583,37 +8091,66 @@ class monitorwidget(QWidget):
 
     @Slot(object)
     def nhan_train(self, progress):
+        model_id = progress.get("model_id", "a-jepa-v7")
+        run = self.training_runs.setdefault(model_id, {
+            "model_id": model_id,
+            "model_label": progress.get("model_label", model_id),
+            "history": [],
+            "recent_history": [],
+        })
+
         if progress.get("event") == "TRAIN_RESULT":
-            self.training_active = False
-            self.eta_seconds = None
-            self.estimated_finish_timestamp = None
-            self.checkpoint_steps = int(
-                progress.get("trained_steps", self.checkpoint_steps)
+            run.update(progress.copy())
+            run["latest"] = progress.copy()
+            run["status"] = (
+                "FAILED" if "error" in progress
+                else "STOPPED" if progress.get("cancelled")
+                else "COMPLETE"
             )
+            run["trained_steps"] = int(progress.get("trained_steps", 0))
+            self.training_active = any(
+                item.get("status") in ("STARTING", "RUNNING")
+                for item in self.training_runs.values()
+            )
+            if self.selected_training_model_id is None:
+                self.selected_training_model_id = model_id
+            if self.selected_training_model_id == model_id:
+                self.activate_training_run(model_id)
+                self.eta_seconds = None
+                self.estimated_finish_timestamp = None
+                self.checkpoint_steps = int(
+                    progress.get("trained_steps", self.checkpoint_steps)
+                )
 
             if "error" in progress:
-                self.them_log("TRAIN ERROR: " + progress["error"])
+                self.them_log(
+                    f"{progress.get('model_label', model_id)} ERROR: "
+                    + progress["error"]
+                )
             elif progress.get("cancelled"):
                 self.them_log(
-                    f"TRAIN STOPPED @ STEP {self.checkpoint_steps}"
+                    f"{progress.get('model_label', model_id)} STOPPED @ "
+                    f"STEP {progress.get('trained_steps', 0)}"
                 )
             else:
                 self.them_log(
-                    f"TRAIN COMPLETE @ STEP {self.checkpoint_steps}"
+                    f"{progress.get('model_label', model_id)} COMPLETE @ "
+                    f"STEP {progress.get('trained_steps', 0)}"
                 )
 
             self.nap_thong_tin_checkpoint()
             self.update()
             return
 
+        run["latest"] = progress.copy()
+        run.update(progress.copy())
+        run["status"] = "RUNNING"
         incoming_overall = int(progress.get("overall_processed", 0))
         incoming_total = int(progress.get("overall_total", 0))
-        previous_overall = int(
-            self.latest_train.get("overall_processed", 0)
-        )
-        previous_total = int(self.latest_train.get("overall_total", 0))
+        previous_overall = int(run.get("previous_overall", 0))
+        previous_total = int(run.get("previous_total", 0))
 
-        if self.train_history and (
+        if run.get("history") and (
             incoming_overall < previous_overall
             or (
                 previous_total > 0
@@ -7621,19 +8158,19 @@ class monitorwidget(QWidget):
                 and incoming_total != previous_total
             )
         ):
-            self.train_history = []
-            self.recent_metric_history = []
-            self.loss_ema = None
-            self.history_start_wall_time = None
-            self.latest_heatmap = None
-            self.heatmap_info = {}
-            self.heatmap_last_compute = 0.0
-            self.heatmap_last_prune = 0.0
-            self.them_log("NEW TRAINING TIMELINE")
+            run["history"] = []
+            run["recent_history"] = []
+            run["loss_ema"] = None
+            run["history_start_wall_time"] = None
+            self.them_log("NEW TRAINING TIMELINE: " + run.get("model_label", model_id))
+
+        run["previous_overall"] = incoming_overall
+        run["previous_total"] = incoming_total
 
         self.latest_train = progress.copy()
         metrics = progress.get("metrics") or {}
         self.latest_metrics = metrics.copy()
+        run["latest_metrics"] = metrics.copy()
         self.training_active = True
         self.eta_seconds = progress.get("eta_seconds")
         self.estimated_finish_timestamp = progress.get(
@@ -7648,19 +8185,19 @@ class monitorwidget(QWidget):
             loss_value = float(loss_value)
             wall_time = float(progress.get("wall_time", time.time()))
 
-            if self.history_start_wall_time is None:
-                self.history_start_wall_time = wall_time
+            if run.get("history_start_wall_time") is None:
+                run["history_start_wall_time"] = wall_time
 
-            if self.loss_ema is None:
-                self.loss_ema = loss_value
+            if run.get("loss_ema") is None:
+                run["loss_ema"] = loss_value
             else:
-                self.loss_ema = 0.05 * loss_value + 0.95 * self.loss_ema
+                run["loss_ema"] = 0.05 * loss_value + 0.95 * run["loss_ema"]
 
             history_item = {
                 "step": self.checkpoint_steps,
                 "wall_time": wall_time,
                 "loss": loss_value,
-                "loss_ema": self.loss_ema,
+                "loss_ema": run["loss_ema"],
                 "valid_samples": int(
                     progress.get("valid_samples", 0)
                 ),
@@ -7683,30 +8220,35 @@ class monitorwidget(QWidget):
                 value = metrics.get(key)
                 history_item[key] = None if value is None else float(value)
 
-            self.train_history.append(history_item)
+            run.setdefault("history", []).append(history_item)
 
-            if len(self.train_history) > self.max_history_storage:
-                newest_item = self.train_history[-1]
-                self.train_history = self.train_history[::2]
+            if len(run["history"]) > self.max_history_storage:
+                newest_item = run["history"][-1]
+                run["history"] = run["history"][::2]
 
-                if self.train_history[-1] is not newest_item:
-                    self.train_history.append(newest_item)
+                if run["history"][-1] is not newest_item:
+                    run["history"].append(newest_item)
 
-            self.recent_metric_history.append(history_item)
+            run.setdefault("recent_history", []).append(history_item)
             cutoff = wall_time - self.heatmap_window_seconds
 
             if (
-                len(self.recent_metric_history) % 128 == 0
-                or wall_time - self.heatmap_last_prune >= 10.0
+                len(run["recent_history"]) % 128 == 0
+                or wall_time - run.get("heatmap_last_prune", 0.0) >= 10.0
             ):
-                self.recent_metric_history = [
+                run["recent_history"] = [
                     item
-                    for item in self.recent_metric_history
+                    for item in run["recent_history"]
                     if item["wall_time"] >= cutoff
                 ]
-                self.heatmap_last_prune = wall_time
+                run["heatmap_last_prune"] = wall_time
 
-            self.cap_nhat_heatmap_dai_han(wall_time)
+        if self.selected_training_model_id is None:
+            self.selected_training_model_id = model_id
+        if self.selected_training_model_id == model_id:
+            self.activate_training_run(model_id)
+            self.cap_nhat_heatmap_dai_han(float(progress.get("wall_time", time.time())))
+        self.checkpoint_steps = int(progress.get("trained_steps", self.checkpoint_steps))
 
         self.update()
 
@@ -8334,103 +8876,57 @@ class monitorwidget(QWidget):
         )
 
     def ve_danh_sach_chi_so(self, painter, rect):
-        self.ve_panel(painter, rect, "TRAIN TELEMETRY")
-        progress = self.latest_train
-        metrics = self.latest_metrics
-        epoch_text = "--"
+        self.ve_panel(painter, rect, "TRAINING MODELS // CLICK A ROW FOR DETAILS")
+        content = rect.adjusted(10, 34, -10, -10)
+        self.training_row_rects = []
 
-        if progress:
-            epoch_text = (
-                f"{progress.get('epoch', '--')}/"
-                f"{progress.get('epochs', '--')}"
-            )
+        if not self.training_runs:
+            painter.setPen(self.text_muted)
+            painter.setFont(QFont("Consolas", 9))
+            painter.drawText(content, Qt.AlignCenter, "NO MODEL RUNS YET")
+            return
 
-        processed_text = "--"
-        overall_text = "--"
-
-        if progress:
-            processed_text = (
-                f"{progress.get('processed', '--')}/"
-                f"{progress.get('total', '--')}"
-            )
-            overall_processed = progress.get("overall_processed")
-            overall_total = progress.get("overall_total")
-            progress_percent = progress.get("progress_percent")
-
-            if progress_percent is None and overall_total:
-                progress_percent = (
-                    100.0 * float(overall_processed) / float(overall_total)
-                )
-
-            overall_text = (
-                f"{self.dinh_dang_so(progress_percent, 1)}%  "
-                f"({self.dinh_dang_so(overall_processed)}/"
-                f"{self.dinh_dang_so(overall_total)})"
-            )
-
-        rows = (
-            ("CHECKPOINT STEP", self.checkpoint_steps),
-            ("EPOCH", epoch_text),
-            ("OVERALL PROGRESS", overall_text),
-            ("CURRENT EPOCH ROWS", processed_text),
-            ("VALID / SKIPPED", (
-                f"{progress.get('valid_samples', '--')} / "
-                f"{progress.get('skipped_samples', '--')}"
-            )),
-            ("ROWS / SECOND (EMA)", progress.get("rows_per_second")),
-            ("RAW / EMA LOSS", (
-                f"{self.dinh_dang_so(metrics.get('loss'))} / "
-                f"{self.dinh_dang_so(self.loss_ema)}"
-            )),
-            ("LATENT H1 / H2 / H4", (
-                f"{self.dinh_dang_so(metrics.get('latent_loss_h1'))} / "
-                f"{self.dinh_dang_so(metrics.get('latent_loss_h2'))} / "
-                f"{self.dinh_dang_so(metrics.get('latent_loss_h4'))}"
-            )),
-            ("RANK ACCURACY", (
-                None
-                if metrics.get("ranking_accuracy") is None
-                else f"{100 * metrics['ranking_accuracy']:.1f}%"
-            )),
-            ("COSINE GAP", metrics.get("cosine_gap")),
-            ("LATENT STD MEAN", metrics.get("latent_std_mean")),
-            ("EFFECTIVE RANK", metrics.get("effective_rank")),
-            ("GRADIENT NORM", metrics.get("gradient_norm")),
+        header_height = 22.0
+        painter.setFont(QFont("Consolas", 8, QFont.Bold))
+        painter.setPen(self.neon_green)
+        painter.drawText(
+            QRectF(content.x(), content.y(), content.width(), header_height),
+            Qt.AlignLeft | Qt.AlignVCenter,
+            "MODEL                         STATUS      EPOCH       PROGRESS     LOSS       RANK     STEP",
         )
 
-        content = rect.adjusted(12, 36, -12, -8)
-        row_height = max(14.0, content.height() / len(rows))
-        font_size = max(7, min(10, int(row_height * 0.56)))
-        painter.setFont(QFont("Consolas", font_size))
+        rows = list(self.training_runs.values())
+        row_height = max(22.0, (content.height() - header_height) / max(1, len(rows)))
+        painter.setFont(QFont("Consolas", max(7, min(9, int(row_height * 0.42)))))
 
-        for index, (label, value) in enumerate(rows):
-            y = content.y() + index * row_height
-            label_rect = QRectF(
-                content.x(),
-                y,
-                content.width() * 0.58,
-                row_height,
-            )
-            value_rect = QRectF(
-                content.x() + content.width() * 0.58,
-                y,
-                content.width() * 0.42,
-                row_height,
-            )
-            painter.setPen(self.text_muted)
-            painter.drawText(label_rect, Qt.AlignLeft | Qt.AlignVCenter, label)
-            painter.setPen(self.text_primary)
+        for index, run in enumerate(rows):
+            y = content.y() + header_height + index * row_height
+            row_rect = QRectF(content.x(), y, content.width(), row_height)
+            self.training_row_rects.append((row_rect, run.get("model_id")))
+            selected = run.get("model_id") == self.selected_training_model_id
+            if selected:
+                painter.fillRect(row_rect, QColor("#12351B"))
 
-            if isinstance(value, str):
-                value_text = value
-            else:
-                value_text = self.dinh_dang_so(value)
-
-            painter.drawText(
-                value_rect,
-                Qt.AlignRight | Qt.AlignVCenter,
-                value_text,
+            status = str(run.get("status", "IDLE"))[:10]
+            progress = run.get("progress_percent")
+            if progress is None:
+                progress = run.get("latest", {}).get("progress_percent", 0.0)
+            metrics = run.get("latest_metrics") or run.get("latest", {}).get("metrics") or {}
+            rank = metrics.get("ranking_accuracy")
+            rank_text = "--" if rank is None else f"{100 * float(rank):5.1f}%"
+            loss = metrics.get("loss")
+            step = run.get("trained_steps", run.get("latest", {}).get("trained_steps", 0))
+            epoch = run.get("latest", {}).get("epoch", "--")
+            epochs = run.get("latest", {}).get("epochs", "--")
+            line = (
+                f"{str(run.get('model_label', run.get('model_id', '--'))):<30.30} "
+                f"{status:<10} {str(epoch) + '/' + str(epochs):<10} "
+                f"{self.dinh_dang_so(progress, 1):>7}%  "
+                f"{self.dinh_dang_so(loss, 4):>8}  {rank_text:>7}  "
+                f"{self.dinh_dang_so(step):>8}"
             )
+            painter.setPen(self.neon_cyan if selected else self.text_primary)
+            painter.drawText(row_rect, Qt.AlignLeft | Qt.AlignVCenter, line)
 
     def ve_engine(self, painter, rect):
         self.ve_panel(painter, rect, "ENGINE SEARCH // LIVE")
@@ -8596,22 +9092,14 @@ class monitorwidget(QWidget):
             "PROGRESS  " + progress_text,
         )
 
-        model_path = self.board_widget.model_path
-        if self.board_widget.adversarial_model_path.exists():
-            model_path = self.board_widget.adversarial_model_path
-        model_size = 0
-
-        try:
-            if model_path.exists():
-                model_size = model_path.stat().st_size
-        except OSError:
-            model_size = 0
-
+        active_count = sum(
+            run.get("status") in ("STARTING", "RUNNING")
+            for run in self.training_runs.values()
+        )
         status = (
-            f"MODEL v{self.checkpoint_version or '--'}  |  "
-            f"STEP {self.checkpoint_steps}\n"
+            f"RUNS {len(self.training_runs)}  |  ACTIVE {active_count}\n"
             f"SAMPLES {self.sample_count}  |  "
-            f"CHECKPOINT {model_size / 1024:.1f} KiB"
+            f"SELECTED {self.selected_training_model_id or '--'}"
         )
         painter.setFont(QFont("Consolas", 9))
         painter.setPen(self.text_primary)
@@ -8734,6 +9222,14 @@ class monitorwidget(QWidget):
         self.ve_engine(painter, engine_rect)
         self.ve_log_footer(painter, log_rect)
 
+    def mousePressEvent(self, event):
+        for row_rect, model_id in self.training_row_rects:
+            if row_rect.contains(event.position()):
+                self.activate_training_run(model_id)
+                self.update()
+                return
+        super().mousePressEvent(event)
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_F11:
             window = self.window()
@@ -8753,13 +9249,317 @@ class monitorwidget(QWidget):
         super().keyPressEvent(event)
 
 
+class modelmatchwidget(QWidget):
+    """Read-only arena screen: every move is produced by one of two agents."""
+
+    back_requested = Signal()
+
+    def __init__(self, board_widget):
+        super().__init__()
+        self.board_widget = board_widget
+        self.project_dir = board_widget.project_dir
+        self.setMinimumSize(1100, 700)
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.match_thread = None
+        self.match_worker = None
+        self.match_stop_event = None
+        self.match_running = False
+        self.match_result = None
+        self.match_seed = None
+        self.white_model_id = None
+        self.black_model_id = None
+        self.current_model_id = None
+        self.current_source = "--"
+        self.current_move = "--"
+        self.current_ply = 0
+        self.current_turn = "white"
+        self.board = [
+            "r", "n", "b", "q", "k", "b", "n", "r",
+            "p", "p", "p", "p", "p", "p", "p", "p",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            "P", "P", "P", "P", "P", "P", "P", "P",
+            "R", "N", "B", "Q", "K", "B", "N", "R",
+        ]
+
+        self.model_specs = arena_model_specs(self.project_dir)
+        self.specs_by_id = {spec["id"]: spec for spec in self.model_specs}
+
+        self.white_combo = QComboBox(self)
+        self.black_combo = QComboBox(self)
+        for spec in self.model_specs:
+            self.white_combo.addItem(spec["label"], spec["id"])
+            self.black_combo.addItem(spec["label"], spec["id"])
+        if len(self.model_specs) > 1:
+            self.black_combo.setCurrentIndex(1)
+
+        self.start_button = QPushButton("START MATCH", self)
+        self.stop_button = QPushButton("STOP MATCH", self)
+        self.back_button = QPushButton("BACK TO MONITOR", self)
+        self.status_label = QLabel("Select two ready agents and start a read-only match.", self)
+        self.status_label.setWordWrap(True)
+
+        for combo in (self.white_combo, self.black_combo):
+            combo.setMinimumWidth(230)
+        self.stop_button.setEnabled(False)
+        self.start_button.clicked.connect(self.start_match)
+        self.stop_button.clicked.connect(self.stop_match)
+        self.back_button.clicked.connect(self.back_to_monitor)
+
+        control_row = QHBoxLayout()
+        control_row.addWidget(QLabel("AGENT A", self))
+        control_row.addWidget(self.white_combo)
+        control_row.addWidget(QLabel("AGENT B", self))
+        control_row.addWidget(self.black_combo)
+        control_row.addWidget(self.start_button)
+        control_row.addWidget(self.stop_button)
+        control_row.addWidget(self.back_button)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(16, 12, 16, 8)
+        layout.setSpacing(6)
+        layout.addLayout(control_row)
+        layout.addWidget(self.status_label)
+        self.setStyleSheet(
+            "QWidget { background: #000000; color: #B7FFAE; }"
+            "QComboBox, QPushButton { background: #07150B; color: #B7FFAE; "
+            "border: 1px solid #39FF14; padding: 6px; }"
+            "QComboBox QAbstractItemView { background: #07150B; color: #B7FFAE; }"
+        )
+
+        if len(self.model_specs) < 2:
+            self.start_button.setEnabled(False)
+            self.status_label.setText(
+                "At least two ready agents are required. Train another model first."
+            )
+
+    def model_label(self, model_id):
+        return self.specs_by_id.get(model_id, {}).get("label", model_id or "--")
+
+    def start_match(self):
+        if self.match_running:
+            return
+        first_model_id = self.white_combo.currentData()
+        second_model_id = self.black_combo.currentData()
+        if not first_model_id or not second_model_id or first_model_id == second_model_id:
+            self.status_label.setText("Choose two different agents.")
+            return
+
+        stop_event = threading.Event()
+        thread = QThread(self)
+        worker = modelmatchworker(
+            self.project_dir,
+            self.board_widget.database.database_path,
+            first_model_id,
+            second_model_id,
+            stop_event,
+        )
+        worker.moveToThread(thread)
+        thread.started.connect(worker.chay)
+        worker.tien_do.connect(self.receive_match_progress)
+        worker.ket_qua.connect(self.receive_match_result)
+        worker.hoan_tat.connect(thread.quit)
+        worker.hoan_tat.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self.match_finished)
+        self.match_thread = thread
+        self.match_worker = worker
+        self.match_stop_event = stop_event
+        self.match_running = True
+        self.match_result = None
+        self.board = self.board[:]
+        self.current_ply = 0
+        self.current_move = "--"
+        self.current_source = "--"
+        self.start_button.setEnabled(False)
+        self.stop_button.setEnabled(True)
+        self.white_combo.setEnabled(False)
+        self.black_combo.setEnabled(False)
+        self.status_label.setText("Starting match and randomizing colors...")
+        self.update()
+        thread.start()
+
+    def stop_match(self):
+        if self.match_stop_event is not None:
+            self.match_stop_event.set()
+        self.status_label.setText("Stopping match after the current move...")
+
+    @Slot(object)
+    def receive_match_progress(self, progress):
+        event = progress.get("event")
+        if event == "MATCH_STARTED":
+            self.match_seed = progress.get("match_seed")
+            self.white_model_id = progress.get("white_model_id")
+            self.black_model_id = progress.get("black_model_id")
+            self.status_label.setText(
+                "Match running | colors randomized | "
+                "GM opening book until midgame transition"
+            )
+            self.update()
+            return
+
+        if event != "MATCH_MOVE":
+            return
+        self.board = list(progress.get("board", self.board))
+        self.current_ply = int(progress.get("ply", self.current_ply))
+        self.current_turn = progress.get("turn", self.current_turn)
+        self.current_move = move_thanh_text(tuple(progress["move"]))
+        self.current_source = progress.get("source", "--")
+        self.current_model_id = progress.get("model_id")
+        self.update()
+
+    @Slot(object)
+    def receive_match_result(self, result):
+        self.match_result = result.copy()
+        if result.get("error"):
+            self.status_label.setText("Match error: " + result["error"])
+        else:
+            self.status_label.setText(
+                f"Match finished: {result.get('result', '*')} | "
+                f"{result.get('reason', '--')} | {result.get('plies', 0)} plies"
+            )
+        self.update()
+
+    def match_finished(self):
+        self.match_thread = None
+        self.match_worker = None
+        self.match_stop_event = None
+        self.match_running = False
+        self.start_button.setEnabled(len(self.model_specs) >= 2)
+        self.stop_button.setEnabled(False)
+        self.white_combo.setEnabled(True)
+        self.black_combo.setEnabled(True)
+        self.update()
+
+    def back_to_monitor(self):
+        self.stop_match()
+        self.back_requested.emit()
+
+    def closeEvent(self, event):
+        self.stop_match()
+        if self.match_thread is not None and self.match_thread.isRunning():
+            self.match_thread.quit()
+            if not self.match_thread.wait(3000):
+                event.ignore()
+                return
+        event.accept()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.fillRect(self.rect(), QColor("#000000"))
+        painter.setPen(QPen(QColor("#39FF14"), 2))
+        painter.drawRect(QRectF(14, 78, self.width() - 28, self.height() - 92))
+        painter.setFont(QFont("Consolas", 15, QFont.Bold))
+        painter.setPen(QColor("#39FF14"))
+        painter.drawText(QRectF(28, 82, self.width() - 56, 30), Qt.AlignLeft, "CAISSA-JEPA // MODEL VS MODEL ARENA")
+
+        board_top = 122
+        board_left = 32
+        board_size = min(self.height() - 158, int(self.width() * 0.57))
+        board_size = max(320, (board_size // 8) * 8)
+        square = board_size / 8.0
+        board_rect = QRectF(board_left, board_top, board_size, board_size)
+
+        for row in range(8):
+            for col in range(8):
+                color = QColor("#B58863") if (row + col) % 2 else QColor("#F0D9B5")
+                painter.fillRect(
+                    QRectF(board_left + col * square, board_top + row * square, square + 0.5, square + 0.5),
+                    color,
+                )
+                piece = self.board[row * 8 + col]
+                if piece == ".":
+                    continue
+                renderer = self.board_widget.piece_renderers.get(piece)
+                target = QRectF(
+                    board_left + col * square + square * 0.08,
+                    board_top + row * square + square * 0.08,
+                    square * 0.84,
+                    square * 0.84,
+                )
+                if renderer is not None and renderer.isValid():
+                    renderer.render(painter, target.toRect())
+                else:
+                    painter.setFont(QFont("Arial", max(20, int(square * 0.62))))
+                    painter.setPen(QColor("#111111") if piece.isupper() else QColor("#F8F8F8"))
+                    painter.drawText(target, Qt.AlignCenter, self.board_widget.piece_symbols.get(piece, piece))
+
+        painter.setPen(QPen(QColor("#39FF14"), 2))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(board_rect)
+        painter.setFont(QFont("Consolas", 9))
+        painter.setPen(QColor("#63A86C"))
+        for index, letter in enumerate("abcdefgh"):
+            painter.drawText(QRectF(board_left + index * square, board_top + board_size + 4, square, 16), Qt.AlignCenter, letter)
+        for index in range(8):
+            painter.drawText(QRectF(board_left - 24, board_top + index * square + square * 0.35, 20, 16), Qt.AlignRight, str(8 - index))
+
+        side_left = board_left + board_size + 36
+        side_width = max(280, self.width() - side_left - 30)
+        side_rect = QRectF(side_left, board_top, side_width, board_size)
+        painter.setPen(QPen(QColor("#117A2B"), 2))
+        painter.drawRect(side_rect)
+        painter.setFont(QFont("Consolas", 10, QFont.Bold))
+        painter.setPen(QColor("#39FF14"))
+        painter.drawText(QRectF(side_left + 14, board_top + 14, side_width - 28, 24), Qt.AlignLeft, "READ-ONLY ENGINE MATCH")
+        painter.setFont(QFont("Consolas", 11))
+        y = board_top + 58
+        rows = (
+            ("WHITE", self.model_label(self.white_model_id)),
+            ("BLACK", self.model_label(self.black_model_id)),
+            ("TURN", str(self.current_turn).upper()),
+            ("PLY", self.current_ply),
+            ("LAST MOVE", self.current_move),
+            ("MOVE SOURCE", self.current_source),
+            ("SEED", self.match_seed or "--"),
+        )
+        for label, value in rows:
+            painter.setPen(QColor("#63A86C"))
+            painter.drawText(QRectF(side_left + 14, y, side_width * 0.35, 22), Qt.AlignLeft, label)
+            painter.setPen(QColor("#B7FFAE"))
+            painter.drawText(QRectF(side_left + side_width * 0.35, y, side_width * 0.60, 22), Qt.AlignRight, str(value))
+            y += 30
+
+        if self.current_model_id:
+            painter.setPen(QColor("#00E5FF"))
+            painter.drawText(QRectF(side_left + 14, y + 12, side_width - 28, 40), Qt.AlignLeft | Qt.TextWordWrap, "ACTIVE: " + self.model_label(self.current_model_id))
+        painter.setPen(QColor("#FFB000"))
+        painter.drawText(QRectF(side_left + 14, side_rect.bottom() - 60, side_width - 28, 42), Qt.AlignLeft | Qt.TextWordWrap, "Opening book is shared by both agents. Model search starts after the opening transition.")
+
+
 class monitor_window(QMainWindow):
     def __init__(self, board_widget):
         super().__init__()
         self.setWindowTitle(APP_BUILD + " Debug Monitor")
         self.resize(1500, 900)
+        self.board_widget = board_widget
         self.monitor_widget = monitorwidget(board_widget)
+        self.modelmatch_widget = None
         self.setCentralWidget(self.monitor_widget)
+
+    @Slot(str)
+    def set_mode(self, mode):
+        if mode == "model-v-model":
+            if self.modelmatch_widget is None:
+                self.modelmatch_widget = modelmatchwidget(self.board_widget)
+                self.modelmatch_widget.back_requested.connect(
+                    lambda: self.set_mode("monitor")
+                )
+            self.setWindowTitle(APP_BUILD + " Model vs Model Arena")
+            self.setCentralWidget(self.modelmatch_widget)
+            self.modelmatch_widget.show()
+            self.modelmatch_widget.raise_()
+            self.modelmatch_widget.activateWindow()
+            return
+
+        self.setWindowTitle(APP_BUILD + " Debug Monitor")
+        self.setCentralWidget(self.monitor_widget)
+        self.monitor_widget.show()
+        self.monitor_widget.raise_()
+        self.monitor_widget.activateWindow()
 
 
 class main_window(QMainWindow):
@@ -8775,6 +9575,7 @@ class main_window(QMainWindow):
 
     def gan_monitor_window(self, window):
         self.monitor_window = window
+        self.board_widget.monitor_mode_requested.connect(window.set_mode)
 
     def closeEvent(self, event):
         if self.board_widget.close() == False:

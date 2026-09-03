@@ -15,6 +15,8 @@ param(
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "policy-value")]
     [string]$Architecture = "adversarial-jepa",
+    [ValidateSet("h1", "h1-h2", "full", "no-response", "direct")]
+    [string]$ModelVariant = "full",
     [switch]$ForegroundCrawl,
     [switch]$AllowPartialDataset,
     [switch]$AllowDatasetChange
@@ -71,10 +73,11 @@ function Show-TrainingStatus {
 }
 
 function Invoke-Tests {
-    Invoke-V7Python @("-m", "py_compile", "main.py", "fen_dataset_tool.py", "adversarial_jepa.py", "policy_value_baseline.py", "train_caissa_v7.py", "evaluate_action_ranking.py", "test_core.py", "test_v7.py", "test_gui_v7.py")
+    Invoke-V7Python @("-m", "py_compile", "main.py", "model_registry.py", "fen_dataset_tool.py", "adversarial_jepa.py", "policy_value_baseline.py", "train_caissa_v7.py", "evaluate_action_ranking.py", "test_core.py", "test_v7.py", "test_gui_v7.py", "test_model_arena.py")
     Invoke-V7Python @("test_core.py")
     Invoke-V7Python @("test_v7.py")
     Invoke-V7Python @("test_gui_v7.py")
+    Invoke-V7Python @("test_model_arena.py")
     Write-Host "V7 TESTS PASSED" -ForegroundColor Green
 }
 
@@ -133,6 +136,7 @@ function Invoke-Train {
     $arguments = @(
         "train_caissa_v7.py",
         "--architecture", $Architecture,
+        "--model-variant", $ModelVariant,
         "--dataset", "fen_dataset",
         "--model", $model,
         "--epochs", "$Epochs",
@@ -170,6 +174,7 @@ function Invoke-ContinueTrain {
         "train_caissa_v7.py",
         "--resume",
         "--architecture", $Architecture,
+        "--model-variant", $ModelVariant,
         "--dataset", "fen_dataset",
         "--model", $Model,
         "--epochs", "$Epochs",
@@ -195,6 +200,7 @@ function Invoke-Evaluate {
         "--dataset", "fen_dataset",
         "--model", $model,
         "--architecture", $Architecture,
+        "--model-variant", $ModelVariant,
         "--split", "validation",
         "--validation-percent", "$ValidationPercent",
         "--max-positions", "1000"

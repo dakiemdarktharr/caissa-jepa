@@ -3,6 +3,8 @@ param(
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "policy-value")]
     [string]$Architecture = "adversarial-jepa",
+    [ValidateSet("h1", "h1-h2", "full", "no-response", "direct")]
+    [string]$ModelVariant = "full",
     [int]$BatchSize = 64,
     [int]$LatentSize = 96,
     [int]$ValidationPercent = 10,
@@ -28,6 +30,7 @@ $arguments = @(
     "-Epochs", "$AdditionalEpochs",
     "-Model", $Model,
     "-Architecture", $Architecture,
+    "-ModelVariant", $ModelVariant,
     "-BatchSize", "$BatchSize",
     "-LatentSize", "$LatentSize",
     "-ValidationPercent", "$ValidationPercent",

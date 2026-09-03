@@ -126,6 +126,16 @@ checkpoint.
 .\continue_caissa_training.ps1 -AdditionalEpochs 5 -AllowDatasetChange
 ```
 
+The GUI TRAIN MODEL dropdown can start independent runs for A-JEPA H1-only,
+A-JEPA H1+H2, full H1+H2+H4, no-response A-JEPA, and Direct Policy/Value.
+Each model has its own checkpoint and `.training.json` report, while the
+training monitor keeps a separate progress timeline for every selected run.
+The MODEL VS MODEL screen is read-only: both agents use the same GM opening
+book, colors are randomized per match, and model search begins only after the
+shared opening transition. If the immutable v6 checkpoint
+`chess_data/caissa_jepa.npz` exists, it is available as a non-trainable arena
+reference as well.
+
 Crawler chỉ dùng public archive với HTTP Range resume, retry/backoff và
 checksum/manifest. Nó tôn trọng rate limit, chính sách nguồn và không có cơ chế
 vượt chặn. Chỉ publish dữ liệu hay derived dataset sau khi review license của
