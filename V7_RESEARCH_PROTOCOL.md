@@ -59,6 +59,17 @@ python train_caissa_v7.py --dataset fen_dataset --model chess_data\caissa_a_jepa
 python train_caissa_v7.py --architecture policy-value --dataset fen_dataset --model chess_data\policy_value_baseline.npz --epochs 5
 ```
 
+Để tiếp tục một checkpoint đã train dở, dùng `--resume` hoặc runner Windows:
+
+```powershell
+.\continue_caissa_training.ps1 -AdditionalEpochs 5
+.\watch_caissa_training.ps1 -Follow -IntervalSeconds 10
+```
+
+Trainer lưu heartbeat nguyên tử vào file `.training.json` sau mỗi khoảng thời
+gian cấu hình bằng `--progress-interval`. Checkpoint chỉ được thay thế nguyên
+tử sau mỗi epoch và giữ cả optimizer state cùng EMA target state.
+
 The trainer refuses to resume against a dataset with a different manifest hash
 unless `--allow-dataset-change` is given explicitly. Its `.training.json`
 report is part of the experiment artifact.

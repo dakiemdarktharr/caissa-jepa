@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("tests", "crawl", "status", "train", "evaluate", "all")]
+    [ValidateSet("tests", "crawl", "status", "train-status", "train", "continue-train", "evaluate", "all")]
     [string]$Mode = "status",
     [string]$Python = "D:\chess_robot_app\.venv\Scripts\python.exe",
     [double]$TargetGB = 4.0,
@@ -11,6 +11,8 @@ param(
     [int]$LatentSize = 96,
     [int]$ValidationPercent = 10,
     [int]$Seed = 20260903,
+    [double]$ProgressInterval = 10.0,
+    [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "policy-value")]
     [string]$Architecture = "adversarial-jepa",
     [switch]$ForegroundCrawl,
@@ -41,6 +43,30 @@ function Get-DatasetManifest {
         return $null
     }
     return Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+}
+
+function Get-TrainingReport {
+    $reportPath = [System.IO.Path]::ChangeExtension((Join-Path $Root $Model), ".training.json")
+    if (-not (Test-Path -LiteralPath $reportPath)) {
+        throw "Training report not found: $reportPath"
+    }
+    for ($attempt = 0; $attempt -lt 8; $attempt++) {
+        try {
+            return Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json
+        } catch {
+            if ($attempt -eq 7) { throw }
+            Start-Sleep -Milliseconds ([int](50 * [math]::Pow(2, $attempt)))
+        }
+    }
+}
+
+function Show-TrainingStatus {
+    $report = Get-TrainingReport
+    $report | Select-Object status, architecture, model, dataset, completed_epochs, current_epoch, phase, current_batch, trained_steps, updated_at, finished_at, error | Format-List
+    if ($null -ne $report.latest_metrics) {
+        Write-Host "Latest metrics:"
+        $report.latest_metrics | ConvertTo-Json -Depth 8
+    }
 }
 
 function Invoke-Tests {
@@ -103,7 +129,6 @@ function Assert-DatasetReady {
 
 function Invoke-Train {
     Assert-DatasetReady
-    $model = "chess_data\caissa_a_jepa_v7.npz"
     $arguments = @(
         "train_caissa_v7.py",
         "--architecture", $Architecture,
@@ -113,7 +138,8 @@ function Invoke-Train {
         "--batch-size", "$BatchSize",
         "--latent-size", "$LatentSize",
         "--validation-percent", "$ValidationPercent",
-        "--seed", "$Seed"
+        "--seed", "$Seed",
+        "--progress-interval", "$ProgressInterval"
     )
     if ($AllowPartialDataset) {
         $arguments += "--allow-dataset-change"
@@ -122,9 +148,44 @@ function Invoke-Train {
     Write-Host "Checkpoint: $(Join-Path $Root $model)" -ForegroundColor Green
 }
 
+function Get-TrainingProcess {
+    return Get-CimInstance Win32_Process | Where-Object {
+        $_.Name -match "python" -and
+        $_.CommandLine -match "train_caissa_v7.py" -and
+        $_.CommandLine -match [regex]::Escape($Root)
+    }
+}
+
+function Invoke-ContinueTrain {
+    if (-not (Test-Path -LiteralPath (Join-Path $Root $Model))) {
+        throw "Checkpoint not found: $(Join-Path $Root $Model)"
+    }
+    $existing = Get-TrainingProcess
+    if ($existing) {
+        throw "Training is already running: $($existing.ProcessId -join ', '). Use -Mode train-status to inspect it."
+    }
+    Assert-DatasetReady
+    $arguments = @(
+        "train_caissa_v7.py",
+        "--resume",
+        "--architecture", $Architecture,
+        "--dataset", "fen_dataset",
+        "--model", $Model,
+        "--epochs", "$Epochs",
+        "--batch-size", "$BatchSize",
+        "--latent-size", "$LatentSize",
+        "--validation-percent", "$ValidationPercent",
+        "--seed", "$Seed",
+        "--progress-interval", "$ProgressInterval"
+    )
+    if ($AllowPartialDataset) {
+        $arguments += "--allow-dataset-change"
+    }
+    Invoke-V7Python $arguments
+}
+
 function Invoke-Evaluate {
     Assert-DatasetReady
-    $model = "chess_data\caissa_a_jepa_v7.npz"
     if (-not (Test-Path -LiteralPath (Join-Path $Root $model))) {
         throw "Checkpoint not found. Run -Mode train first."
     }
@@ -143,7 +204,9 @@ switch ($Mode) {
     "tests"   { Invoke-Tests }
     "crawl"   { Start-Crawl }
     "status"  { Invoke-V7Python @("fen_dataset_tool.py", "status", "--output", "fen_dataset") }
+    "train-status" { Show-TrainingStatus }
     "train"   { Invoke-Train }
+    "continue-train" { Invoke-ContinueTrain }
     "evaluate" { Invoke-Evaluate }
     "all" {
         Invoke-Tests

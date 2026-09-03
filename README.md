@@ -108,6 +108,18 @@ python test_core.py
 python test_v7.py
 ```
 
+Trên Windows, dùng runner PowerShell để xem tiến độ và resume checkpoint:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\run_caissa_jepa_v7.ps1 -Mode train-status
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\continue_caissa_training.ps1 -AdditionalEpochs 5
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\watch_caissa_training.ps1 -Follow
+```
+
+`continue_caissa_training.ps1` giữ lại optimizer/EMA trong checkpoint và nối tiếp
+epoch; `watch_caissa_training.ps1 -Follow` đọc heartbeat trong file
+`.training.json`. Không chạy hai lệnh train cùng lúc trên cùng checkpoint.
+
 Crawler chỉ dùng public archive với HTTP Range resume, retry/backoff và
 checksum/manifest. Nó tôn trọng rate limit, chính sách nguồn và không có cơ chế
 vượt chặn. Chỉ publish dữ liệu hay derived dataset sau khi review license của

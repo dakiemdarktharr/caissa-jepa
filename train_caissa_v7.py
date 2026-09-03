@@ -6,8 +6,10 @@ import argparse
 import json
 import math
 import os
+import time
 from collections import defaultdict
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 
@@ -49,21 +51,46 @@ def batches(dataset_dir: Path, split: str, batch_size: int, seed: int, validatio
         yield pending
 
 
-def atomic_json(path: Path, payload: dict) -> None:
+def read_json_with_retry(path: Path, attempts: int = 8) -> dict:
+    for attempt in range(attempts):
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (PermissionError, json.JSONDecodeError):
+            if attempt + 1 == attempts:
+                raise
+            time.sleep(min(0.05 * (2**attempt), 1.0))
+    raise AssertionError("unreachable")
+
+
+def atomic_json(path: Path, payload: dict, replace_attempts: int = 8) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     with temporary.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2, sort_keys=True)
         handle.flush()
         os.fsync(handle.fileno())
-    temporary.replace(path)
+    for attempt in range(replace_attempts):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt + 1 == replace_attempts:
+                raise
+            time.sleep(min(0.05 * (2**attempt), 1.0))
 
 
 def train(arguments: argparse.Namespace) -> int:
     # Preserve the programmatic API used by early v7 scripts, which did not
     # yet have an explicit architecture argument.
     architecture = getattr(arguments, "architecture", "adversarial-jepa")
+    resume = bool(getattr(arguments, "resume", False))
+    progress_interval = float(getattr(arguments, "progress_interval", 10.0))
+    allow_dataset_change = bool(getattr(arguments, "allow_dataset_change", False))
     dataset_dir = Path(arguments.dataset)
     model_path = Path(arguments.model)
+    checkpoint_exists = model_path.exists()
+    if resume and not checkpoint_exists:
+        raise FileNotFoundError(f"Không thể resume: chưa có checkpoint {model_path}")
     fingerprint = dataset_manifest_fingerprint(dataset_dir)
     if architecture == "adversarial-jepa":
         model = AdversarialJEPA(model_path, latent_size=arguments.latent_size)
@@ -72,14 +99,19 @@ def train(arguments: argparse.Namespace) -> int:
             model_path,
             latent_size=arguments.latent_size,
         )
-    if model.dataset_fingerprint and model.dataset_fingerprint != fingerprint and not arguments.allow_dataset_change:
+    if model.dataset_fingerprint and model.dataset_fingerprint != fingerprint and not allow_dataset_change:
         raise RuntimeError(
             "Dataset fingerprint khác checkpoint. Dùng checkpoint mới hoặc "
             "--allow-dataset-change sau khi đã ghi nhận lý do thí nghiệm."
         )
     model.dataset_fingerprint = fingerprint
     report_path = model_path.with_suffix(".training.json")
-    report = {
+    if resume and report_path.exists():
+        report = read_json_with_retry(report_path)
+    else:
+        report = {"epochs": []}
+    completed_epochs = int(report.get("completed_epochs", len(report.get("epochs", []))))
+    report.update({
         "model": str(model_path),
         "dataset": str(dataset_dir),
         "dataset_fingerprint": fingerprint,
@@ -88,29 +120,84 @@ def train(arguments: argparse.Namespace) -> int:
         "batch_size": arguments.batch_size,
         "learning_rate": arguments.learning_rate,
         "validation_percent": arguments.validation_percent,
-        "epochs": [],
-    }
-    for epoch in range(1, arguments.epochs + 1):
-        train_values = []
-        for index, batch in enumerate(batches(dataset_dir, "train", arguments.batch_size, arguments.seed + epoch, arguments.validation_percent), 1):
-            train_values.append(model.train_batch(batch, arguments.learning_rate))
-            if arguments.max_train_batches and index >= arguments.max_train_batches:
-                break
-        validation_values = []
-        for index, batch in enumerate(batches(dataset_dir, "validation", arguments.batch_size, arguments.seed, arguments.validation_percent), 1):
-            validation_values.append(model.evaluate_batch(batch))
-            if arguments.max_validation_batches and index >= arguments.max_validation_batches:
-                break
-        model.save()
-        epoch_report = {
-            "epoch": epoch,
+        "requested_epochs": arguments.epochs,
+        "resume": resume,
+        "status": "RUNNING",
+        "started_at": report.get("started_at", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())),
+        "completed_epochs": completed_epochs,
+        "trained_steps": model.trained_steps,
+    })
+    atomic_json(report_path, report)
+    last_progress_write = 0.0
+
+    def save_progress(epoch: int, phase: str, batch_index: int, latest: Optional[dict] = None) -> None:
+        nonlocal last_progress_write
+        now = time.monotonic()
+        if batch_index != 1 and now - last_progress_write < progress_interval:
+            return
+        report.update({
+            "status": "RUNNING",
+            "current_epoch": epoch,
+            "phase": phase,
+            "current_batch": batch_index,
             "trained_steps": model.trained_steps,
-            "train": mean_metrics(train_values),
-            "validation": mean_metrics(validation_values),
-        }
-        report["epochs"].append(epoch_report)
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        })
+        if latest is not None:
+            report["latest_metrics"] = latest
         atomic_json(report_path, report)
-        print(json.dumps(epoch_report, ensure_ascii=False, sort_keys=True))
+        last_progress_write = now
+
+    try:
+        for epoch_offset in range(arguments.epochs):
+            epoch = completed_epochs + epoch_offset + 1
+            train_values = []
+            for index, batch in enumerate(batches(dataset_dir, "train", arguments.batch_size, arguments.seed + epoch, arguments.validation_percent), 1):
+                train_values.append(model.train_batch(batch, arguments.learning_rate))
+                save_progress(epoch, "train", index, train_values[-1])
+                if arguments.max_train_batches and index >= arguments.max_train_batches:
+                    break
+            validation_values = []
+            for index, batch in enumerate(batches(dataset_dir, "validation", arguments.batch_size, arguments.seed, arguments.validation_percent), 1):
+                validation_values.append(model.evaluate_batch(batch))
+                save_progress(epoch, "validation", index, validation_values[-1])
+                if arguments.max_validation_batches and index >= arguments.max_validation_batches:
+                    break
+            model.save()
+            epoch_report = {
+                "epoch": epoch,
+                "trained_steps": model.trained_steps,
+                "train": mean_metrics(train_values),
+                "validation": mean_metrics(validation_values),
+            }
+            report["epochs"].append(epoch_report)
+            report.update({
+                "completed_epochs": epoch,
+                "trained_steps": model.trained_steps,
+                "phase": "epoch_complete",
+                "current_epoch": epoch,
+                "current_batch": 0,
+                "latest_metrics": epoch_report,
+                "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            })
+            atomic_json(report_path, report)
+            print(json.dumps(epoch_report, ensure_ascii=False, sort_keys=True))
+        report.update({
+            "status": "COMPLETE",
+            "phase": "complete",
+            "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "trained_steps": model.trained_steps,
+        })
+        atomic_json(report_path, report)
+    except BaseException as error:
+        report.update({
+            "status": "INTERRUPTED" if isinstance(error, KeyboardInterrupt) else "FAILED",
+            "error": repr(error),
+            "trained_steps": model.trained_steps,
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        })
+        atomic_json(report_path, report)
+        raise
     return 0
 
 
@@ -132,6 +219,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-train-batches", type=int, default=0)
     parser.add_argument("--max-validation-batches", type=int, default=0)
     parser.add_argument("--allow-dataset-change", action="store_true")
+    parser.add_argument("--resume", action="store_true", help="Tiếp tục từ checkpoint và training report hiện có")
+    parser.add_argument("--progress-interval", type=float, default=10.0, help="Số giây tối thiểu giữa hai lần ghi heartbeat")
     return parser
 
 
@@ -139,7 +228,7 @@ def main() -> int:
     if hasattr(__import__("sys").stdout, "reconfigure"):
         __import__("sys").stdout.reconfigure(encoding="utf-8", errors="replace")
     arguments = build_parser().parse_args()
-    if arguments.epochs <= 0 or arguments.batch_size <= 0:
+    if arguments.epochs <= 0 or arguments.batch_size <= 0 or arguments.progress_interval <= 0:
         raise ValueError("epochs và batch-size phải lớn hơn 0")
     if not 0 < arguments.validation_percent < 100:
         raise ValueError("validation-percent phải nằm trong khoảng 1..99")

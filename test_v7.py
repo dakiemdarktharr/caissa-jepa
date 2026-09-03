@@ -242,6 +242,20 @@ class V7DataPipelineTests(unittest.TestCase):
             report = json.loads(model_path.with_suffix(".training.json").read_text(encoding="utf-8"))
             self.assertEqual(len(report["epochs"]), 1)
             self.assertGreaterEqual(report["epochs"][0]["trained_steps"], 1)
+            first_steps = report["trained_steps"]
+            self.assertEqual(report["status"], "COMPLETE")
+            resumed = train(Namespace(
+                dataset=str(dataset), model=str(model_path), epochs=1,
+                batch_size=2, learning_rate=0.001, latent_size=16,
+                seed=9, validation_percent=1, max_train_batches=2,
+                max_validation_batches=2, allow_dataset_change=False,
+                resume=True, progress_interval=0.001,
+            ))
+            self.assertEqual(resumed, 0)
+            resumed_report = json.loads(model_path.with_suffix(".training.json").read_text(encoding="utf-8"))
+            self.assertEqual(resumed_report["completed_epochs"], 2)
+            self.assertEqual(len(resumed_report["epochs"]), 2)
+            self.assertGreater(resumed_report["trained_steps"], first_steps)
 
 
 if __name__ == "__main__":
