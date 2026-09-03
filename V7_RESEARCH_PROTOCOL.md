@@ -91,6 +91,14 @@ appends completed results to `chess_data/arena_results.jsonl`.
 When the immutable `chess_data/caissa_jepa.npz` exists, the legacy v6 model is
 also exposed as a non-trainable arena reference.
 
+`START SERIES` repeats the selected matchup until the user presses
+`STOP SERIES`. Before each match, the application atomically writes
+`chess_data/arena_checkpoint.json`; after an interruption,
+`CONTINUE LAST MATCHUP` replays the last saved pair and seed before continuing
+the series. The JSONL history is append-only and is the source for win/draw
+statistics; interrupted/error records are retained but are not counted as
+completed games.
+
 This is an evaluation harness, not evidence by itself. Final paper results
 must still use locked openings, color-swapped paired games, equal time/node
 budgets, multiple seeds, confidence intervals and a held-out confirmation set.

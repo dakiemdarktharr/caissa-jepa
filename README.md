@@ -132,9 +132,13 @@ Each model has its own checkpoint and `.training.json` report, while the
 training monitor keeps a separate progress timeline for every selected run.
 The MODEL VS MODEL screen is read-only: both agents use the same GM opening
 book, colors are randomized per match, and model search begins only after the
-shared opening transition. If the immutable v6 checkpoint
+shared opening transition. `START SERIES` keeps launching new games until
+`STOP SERIES`; `CONTINUE LAST MATCHUP` reads the atomic arena checkpoint and
+replays the last saved pair (and seed). If the immutable v6 checkpoint
 `chess_data/caissa_jepa.npz` exists, it is available as a non-trainable arena
-reference as well.
+reference as well. The complete result history remains in
+`chess_data/arena_results.jsonl`, while `chess_data/arena_checkpoint.json`
+stores the restart point.
 
 Crawler chỉ dùng public archive với HTTP Range resume, retry/backoff và
 checksum/manifest. Nó tôn trọng rate limit, chính sách nguồn và không có cơ chế

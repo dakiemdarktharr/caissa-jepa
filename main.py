@@ -7,6 +7,7 @@ import sqlite3
 import sys
 import threading
 import time
+import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -4116,6 +4117,9 @@ class modelmatchworker(QObject):
         stop_event,
         move_time=ARENA_MOVE_TIME_SECONDS,
         max_plies=ARENA_MAX_PLIES,
+        series_id=None,
+        match_number=1,
+        forced_match_seed=None,
     ):
         super().__init__()
         self.project_dir = Path(project_dir)
@@ -4125,9 +4129,16 @@ class modelmatchworker(QObject):
         self.stop_event = stop_event
         self.move_time = max(0.05, float(move_time))
         self.max_plies = max(2, int(max_plies))
+        self.series_id = str(series_id or uuid.uuid4().hex)
+        self.match_number = max(1, int(match_number))
         self.database = None
         self.models = {}
-        self.match_seed = int(time.time_ns() & 0x7FFFFFFF)
+        self.match_seed = int(
+            forced_match_seed
+            if forced_match_seed is not None
+            else time.time_ns() & 0x7FFFFFFF
+        )
+        self.started_at = datetime.now().isoformat()
         self.white_model_id = None
         self.black_model_id = None
         self.last_progress = {}
@@ -4251,6 +4262,8 @@ class modelmatchworker(QObject):
             engine = vitriengine(initial_snapshot, 0.02, self.stop_event)
             self.tien_do.emit({
                 "event": "MATCH_STARTED",
+                "series_id": self.series_id,
+                "match_number": self.match_number,
                 "first_model_id": self.first_model_id,
                 "second_model_id": self.second_model_id,
                 "white_model_id": self.white_model_id,
@@ -4301,6 +4314,8 @@ class modelmatchworker(QObject):
                 moves.append(move_text)
                 progress = {
                     "event": "MATCH_MOVE",
+                    "series_id": self.series_id,
+                    "match_number": self.match_number,
                     "ply": ply + 1,
                     "move": move,
                     "move_text": move_text,
@@ -4324,6 +4339,8 @@ class modelmatchworker(QObject):
 
             result = {
                 "event": "MATCH_RESULT",
+                "series_id": self.series_id,
+                "match_number": self.match_number,
                 "result": result_token,
                 "reason": reason,
                 "moves": moves,
@@ -4334,16 +4351,30 @@ class modelmatchworker(QObject):
                 "black_model_id": self.black_model_id,
                 "match_seed": self.match_seed,
                 "cancelled": self.stop_event.is_set(),
+                "first_model_label": first_spec["label"],
+                "second_model_label": second_spec["label"],
+                "move_time_seconds": self.move_time,
+                "max_plies": self.max_plies,
+                "opening_policy": "GM opening book until midgame transition",
+                "started_at": self.started_at,
+                "finished_at": datetime.now().isoformat(),
             }
             self._save_result(result)
             self.ket_qua.emit(result)
         except Exception as error:
             result = {
                 "event": "MATCH_RESULT",
+                "series_id": self.series_id,
+                "match_number": self.match_number,
                 "result": "*",
                 "reason": "ERROR",
                 "error": str(error),
                 "cancelled": self.stop_event.is_set(),
+                "first_model_id": self.first_model_id,
+                "second_model_id": self.second_model_id,
+                "match_seed": self.match_seed,
+                "started_at": self.started_at,
+                "finished_at": datetime.now().isoformat(),
             }
             try:
                 self._save_result(result)
@@ -9264,6 +9295,13 @@ class modelmatchwidget(QWidget):
         self.match_worker = None
         self.match_stop_event = None
         self.match_running = False
+        self.series_running = False
+        self.series_stop_requested = False
+        self.series_id = None
+        self.series_pair = None
+        self.series_matches_started = 0
+        self.current_match_number = 0
+        self.resume_match_seed = None
         self.match_result = None
         self.match_seed = None
         self.white_model_id = None
@@ -9286,6 +9324,14 @@ class modelmatchwidget(QWidget):
 
         self.model_specs = arena_model_specs(self.project_dir)
         self.specs_by_id = {spec["id"]: spec for spec in self.model_specs}
+        self.arena_checkpoint_path = (
+            self.project_dir / "chess_data" / "arena_checkpoint.json"
+        )
+        self.arena_history_path = (
+            self.project_dir / "chess_data" / "arena_results.jsonl"
+        )
+        self.arena_history = []
+        self.arena_checkpoint = {}
 
         self.white_combo = QComboBox(self)
         self.black_combo = QComboBox(self)
@@ -9295,17 +9341,21 @@ class modelmatchwidget(QWidget):
         if len(self.model_specs) > 1:
             self.black_combo.setCurrentIndex(1)
 
-        self.start_button = QPushButton("START MATCH", self)
-        self.stop_button = QPushButton("STOP MATCH", self)
+        self.start_button = QPushButton("START SERIES", self)
+        self.continue_button = QPushButton("CONTINUE LAST MATCHUP", self)
+        self.stop_button = QPushButton("STOP SERIES", self)
         self.back_button = QPushButton("BACK TO MONITOR", self)
         self.status_label = QLabel("Select two ready agents and start a read-only match.", self)
         self.status_label.setWordWrap(True)
+        self.stats_label = QLabel("HISTORY: 0 matches", self)
+        self.stats_label.setWordWrap(True)
 
         for combo in (self.white_combo, self.black_combo):
             combo.setMinimumWidth(230)
         self.stop_button.setEnabled(False)
-        self.start_button.clicked.connect(self.start_match)
-        self.stop_button.clicked.connect(self.stop_match)
+        self.start_button.clicked.connect(self.start_series)
+        self.continue_button.clicked.connect(self.continue_last_matchup)
+        self.stop_button.clicked.connect(self.stop_series)
         self.back_button.clicked.connect(self.back_to_monitor)
 
         control_row = QHBoxLayout()
@@ -9314,6 +9364,7 @@ class modelmatchwidget(QWidget):
         control_row.addWidget(QLabel("AGENT B", self))
         control_row.addWidget(self.black_combo)
         control_row.addWidget(self.start_button)
+        control_row.addWidget(self.continue_button)
         control_row.addWidget(self.stop_button)
         control_row.addWidget(self.back_button)
 
@@ -9322,6 +9373,7 @@ class modelmatchwidget(QWidget):
         layout.setSpacing(6)
         layout.addLayout(control_row)
         layout.addWidget(self.status_label)
+        layout.addWidget(self.stats_label)
         self.setStyleSheet(
             "QWidget { background: #000000; color: #B7FFAE; }"
             "QComboBox, QPushButton { background: #07150B; color: #B7FFAE; "
@@ -9329,8 +9381,9 @@ class modelmatchwidget(QWidget):
             "QComboBox QAbstractItemView { background: #07150B; color: #B7FFAE; }"
         )
 
+        self.load_arena_state()
+        self.update_series_controls()
         if len(self.model_specs) < 2:
-            self.start_button.setEnabled(False)
             self.status_label.setText(
                 "At least two ready agents are required. Train another model first."
             )
@@ -9338,14 +9391,215 @@ class modelmatchwidget(QWidget):
     def model_label(self, model_id):
         return self.specs_by_id.get(model_id, {}).get("label", model_id or "--")
 
-    def start_match(self):
-        if self.match_running:
+    def load_arena_state(self):
+        if self.arena_history_path.exists():
+            try:
+                lines = self.arena_history_path.read_text(
+                    encoding="utf-8"
+                ).splitlines()
+                for line in lines:
+                    if not line.strip():
+                        continue
+                    try:
+                        item = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if isinstance(item, dict):
+                        self.arena_history.append(item)
+            except OSError:
+                pass
+
+        if self.arena_checkpoint_path.exists():
+            try:
+                data = json.loads(
+                    self.arena_checkpoint_path.read_text(encoding="utf-8")
+                )
+                if isinstance(data, dict):
+                    self.arena_checkpoint = data
+            except (OSError, json.JSONDecodeError):
+                self.arena_checkpoint = {}
+
+        if not self.arena_checkpoint and self.arena_history:
+            last_result = self.arena_history[-1]
+            self.arena_checkpoint = {
+                "version": 1,
+                "status": "COMPLETED",
+                "first_model_id": last_result.get("first_model_id"),
+                "second_model_id": last_result.get("second_model_id"),
+                "match_seed": last_result.get("match_seed"),
+                "matches_started": last_result.get("match_number", 0),
+                "matches_completed": 1,
+                "last_result": last_result,
+            }
+
+        self.refresh_history_statistics()
+
+    def last_matchup_available(self):
+        first_id = self.arena_checkpoint.get("first_model_id")
+        second_id = self.arena_checkpoint.get("second_model_id")
+        return bool(
+            first_id
+            and second_id
+            and first_id != second_id
+            and first_id in self.specs_by_id
+            and second_id in self.specs_by_id
+        )
+
+    def refresh_history_statistics(self):
+        total = len(self.arena_history)
+        completed = sum(
+            1
+            for item in self.arena_history
+            if item.get("result") in ("1-0", "0-1", "1/2-1/2")
+            and not item.get("cancelled")
+            and not item.get("error")
+        )
+        first_id = self.white_combo.currentData()
+        second_id = self.black_combo.currentData()
+        wins = {first_id: 0, second_id: 0}
+        draws = 0
+        if first_id and second_id and first_id != second_id:
+            selected_ids = {first_id, second_id}
+            for item in self.arena_history:
+                if {
+                    item.get("first_model_id"),
+                    item.get("second_model_id"),
+                } != selected_ids:
+                    continue
+                if item.get("result") == "1/2-1/2":
+                    draws += 1
+                    continue
+                winner_id = (
+                    item.get("white_model_id")
+                    if item.get("result") == "1-0"
+                    else item.get("black_model_id")
+                    if item.get("result") == "0-1"
+                    else None
+                )
+                if winner_id in wins:
+                    wins[winner_id] += 1
+
+        if first_id and second_id and first_id != second_id:
+            matchup_text = (
+                f" | SELECTED: {self.model_label(first_id)} "
+                f"{wins[first_id]}W-{wins[second_id]}W-{draws}D "
+                f"{self.model_label(second_id)}"
+            )
+        else:
+            matchup_text = ""
+        self.stats_label.setText(
+            f"HISTORY: {total} records | COMPLETED: {completed}"
+            + matchup_text
+        )
+        self.continue_button.setEnabled(self.last_matchup_available())
+
+    def update_series_controls(self):
+        running = self.series_running or self.match_running
+        ready = len(self.model_specs) >= 2
+        self.start_button.setEnabled(ready and not running)
+        self.continue_button.setEnabled(
+            ready and not running and self.last_matchup_available()
+        )
+        self.stop_button.setEnabled(running)
+        self.white_combo.setEnabled(not running)
+        self.black_combo.setEnabled(not running)
+
+    def write_arena_checkpoint(self, data):
+        payload = dict(data)
+        payload["version"] = 1
+        payload["updated_at"] = datetime.now().isoformat()
+        self.arena_checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary_path = self.arena_checkpoint_path.with_suffix(".tmp")
+        temporary_path.write_text(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2),
+            encoding="utf-8",
+        )
+        temporary_path.replace(self.arena_checkpoint_path)
+        self.arena_checkpoint = payload
+
+    def start_series(self):
+        if self.series_running or self.match_running:
             return
         first_model_id = self.white_combo.currentData()
         second_model_id = self.black_combo.currentData()
         if not first_model_id or not second_model_id or first_model_id == second_model_id:
             self.status_label.setText("Choose two different agents.")
             return
+
+        self.series_id = uuid.uuid4().hex
+        self.series_pair = (first_model_id, second_model_id)
+        self.series_matches_started = 0
+        self.series_stop_requested = False
+        self.resume_match_seed = None
+        self.series_running = True
+        self.status_label.setText(
+            "Series running continuously. Colors are randomized for every match."
+        )
+        self.start_next_series_match()
+
+    def continue_last_matchup(self):
+        if self.series_running or self.match_running:
+            return
+        if not self.last_matchup_available():
+            self.status_label.setText("No resumable matchup checkpoint is available.")
+            return
+
+        first_model_id = self.arena_checkpoint["first_model_id"]
+        second_model_id = self.arena_checkpoint["second_model_id"]
+        self.white_combo.setCurrentIndex(
+            self.white_combo.findData(first_model_id)
+        )
+        self.black_combo.setCurrentIndex(
+            self.black_combo.findData(second_model_id)
+        )
+        self.series_id = self.arena_checkpoint.get("series_id") or uuid.uuid4().hex
+        self.series_pair = (first_model_id, second_model_id)
+        self.series_matches_started = int(
+            self.arena_checkpoint.get(
+                "matches_started",
+                self.arena_checkpoint.get("match_number", 0),
+            )
+        )
+        self.series_stop_requested = False
+        self.resume_match_seed = self.arena_checkpoint.get("match_seed")
+        self.series_running = True
+        self.status_label.setText(
+            "Resuming: the last saved matchup will be played again."
+        )
+        self.start_next_series_match()
+
+    def start_next_series_match(self):
+        if (
+            not self.series_running
+            or self.series_stop_requested
+            or self.match_running
+        ):
+            self.update_series_controls()
+            return
+        if self.series_pair is None:
+            self.series_running = False
+            self.status_label.setText("No matchup selected.")
+            self.update_series_controls()
+            return
+
+        first_model_id, second_model_id = self.series_pair
+        self.series_matches_started += 1
+        self.current_match_number = self.series_matches_started
+        forced_seed = self.resume_match_seed
+        self.resume_match_seed = None
+        self.write_arena_checkpoint({
+            "status": "RUNNING",
+            "series_id": self.series_id,
+            "first_model_id": first_model_id,
+            "second_model_id": second_model_id,
+            "match_number": self.current_match_number,
+            "matches_started": self.series_matches_started,
+            "matches_completed": int(
+                self.arena_checkpoint.get("matches_completed", 0)
+            ),
+            "match_seed": forced_seed,
+            "last_result": self.arena_checkpoint.get("last_result"),
+        })
 
         stop_event = threading.Event()
         thread = QThread(self)
@@ -9355,6 +9609,9 @@ class modelmatchwidget(QWidget):
             first_model_id,
             second_model_id,
             stop_event,
+            series_id=self.series_id,
+            match_number=self.current_match_number,
+            forced_match_seed=forced_seed,
         )
         worker.moveToThread(thread)
         thread.started.connect(worker.chay)
@@ -9369,22 +9626,47 @@ class modelmatchwidget(QWidget):
         self.match_stop_event = stop_event
         self.match_running = True
         self.match_result = None
-        self.board = self.board[:]
+        self.board = [
+            "r", "n", "b", "q", "k", "b", "n", "r",
+            "p", "p", "p", "p", "p", "p", "p", "p",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            ".", ".", ".", ".", ".", ".", ".", ".",
+            "P", "P", "P", "P", "P", "P", "P", "P",
+            "R", "N", "B", "Q", "K", "B", "N", "R",
+        ]
         self.current_ply = 0
         self.current_move = "--"
         self.current_source = "--"
-        self.start_button.setEnabled(False)
-        self.stop_button.setEnabled(True)
-        self.white_combo.setEnabled(False)
-        self.black_combo.setEnabled(False)
-        self.status_label.setText("Starting match and randomizing colors...")
+        self.status_label.setText(
+            f"Starting match #{self.current_match_number} and randomizing colors..."
+        )
+        self.update_series_controls()
+        self.refresh_history_statistics()
         self.update()
         thread.start()
 
-    def stop_match(self):
+    def start_match(self):
+        """Backward-compatible alias: Model vs Model now starts a series."""
+        self.start_series()
+
+    def stop_series(self):
+        self.series_stop_requested = True
+        self.series_running = False
         if self.match_stop_event is not None:
             self.match_stop_event.set()
-        self.status_label.setText("Stopping match after the current move...")
+            self.status_label.setText(
+                "Stopping series after the current match reaches a safe checkpoint..."
+            )
+        else:
+            self.status_label.setText(
+                "Series stopped. Continue Last Matchup is available."
+            )
+        self.update_series_controls()
+
+    def stop_match(self):
+        self.stop_series()
 
     @Slot(object)
     def receive_match_progress(self, progress):
@@ -9393,6 +9675,19 @@ class modelmatchwidget(QWidget):
             self.match_seed = progress.get("match_seed")
             self.white_model_id = progress.get("white_model_id")
             self.black_model_id = progress.get("black_model_id")
+            self.write_arena_checkpoint({
+                **self.arena_checkpoint,
+                "status": "RUNNING",
+                "series_id": progress.get("series_id", self.series_id),
+                "match_number": progress.get(
+                    "match_number", self.current_match_number
+                ),
+                "first_model_id": progress.get("first_model_id"),
+                "second_model_id": progress.get("second_model_id"),
+                "match_seed": progress.get("match_seed"),
+                "white_model_id": progress.get("white_model_id"),
+                "black_model_id": progress.get("black_model_id"),
+            })
             self.status_label.setText(
                 "Match running | colors randomized | "
                 "GM opening book until midgame transition"
@@ -9413,6 +9708,40 @@ class modelmatchwidget(QWidget):
     @Slot(object)
     def receive_match_result(self, result):
         self.match_result = result.copy()
+        completed = int(self.arena_checkpoint.get("matches_completed", 0))
+        if (
+            result.get("result") in ("1-0", "0-1", "1/2-1/2")
+            and not result.get("cancelled")
+            and not result.get("error")
+        ):
+            completed += 1
+        self.arena_history.append(result.copy())
+        self.write_arena_checkpoint({
+            **self.arena_checkpoint,
+            "status": (
+                "STOPPED" if result.get("cancelled")
+                else "ERROR" if result.get("error")
+                else "COMPLETED"
+            ),
+            "series_id": result.get("series_id", self.series_id),
+            "match_number": result.get(
+                "match_number", self.current_match_number
+            ),
+            "first_model_id": result.get(
+                "first_model_id",
+                self.series_pair[0] if self.series_pair else None,
+            ),
+            "second_model_id": result.get(
+                "second_model_id",
+                self.series_pair[1] if self.series_pair else None,
+            ),
+            "match_seed": result.get("match_seed", self.match_seed),
+            "white_model_id": result.get("white_model_id", self.white_model_id),
+            "black_model_id": result.get("black_model_id", self.black_model_id),
+            "matches_completed": completed,
+            "last_result": result.copy(),
+        })
+        self.refresh_history_statistics()
         if result.get("error"):
             self.status_label.setText("Match error: " + result["error"])
         else:
@@ -9427,18 +9756,31 @@ class modelmatchwidget(QWidget):
         self.match_worker = None
         self.match_stop_event = None
         self.match_running = False
-        self.start_button.setEnabled(len(self.model_specs) >= 2)
-        self.stop_button.setEnabled(False)
-        self.white_combo.setEnabled(True)
-        self.black_combo.setEnabled(True)
+        if (
+            self.series_running
+            and not self.series_stop_requested
+            and self.match_result is not None
+            and not self.match_result.get("cancelled")
+            and not self.match_result.get("error")
+        ):
+            QTimer.singleShot(0, self.start_next_series_match)
+        elif self.match_result is not None and (
+            self.match_result.get("cancelled")
+            or self.match_result.get("error")
+        ):
+            self.series_running = False
+            self.status_label.setText(
+                "Series paused. Continue Last Matchup will replay the saved matchup."
+            )
+        self.update_series_controls()
         self.update()
 
     def back_to_monitor(self):
-        self.stop_match()
+        self.stop_series()
         self.back_requested.emit()
 
     def closeEvent(self, event):
-        self.stop_match()
+        self.stop_series()
         if self.match_thread is not None and self.match_thread.isRunning():
             self.match_thread.quit()
             if not self.match_thread.wait(3000):
@@ -9504,7 +9846,7 @@ class modelmatchwidget(QWidget):
         painter.drawRect(side_rect)
         painter.setFont(QFont("Consolas", 10, QFont.Bold))
         painter.setPen(QColor("#39FF14"))
-        painter.drawText(QRectF(side_left + 14, board_top + 14, side_width - 28, 24), Qt.AlignLeft, "READ-ONLY ENGINE MATCH")
+        painter.drawText(QRectF(side_left + 14, board_top + 14, side_width - 28, 24), Qt.AlignLeft, "READ-ONLY ENGINE SERIES")
         painter.setFont(QFont("Consolas", 11))
         y = board_top + 58
         rows = (
@@ -9515,6 +9857,7 @@ class modelmatchwidget(QWidget):
             ("LAST MOVE", self.current_move),
             ("MOVE SOURCE", self.current_source),
             ("SEED", self.match_seed or "--"),
+            ("MATCH #", self.current_match_number or "--"),
         )
         for label, value in rows:
             painter.setPen(QColor("#63A86C"))

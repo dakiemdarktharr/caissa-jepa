@@ -1,14 +1,19 @@
 """Tests for multi-model training metadata and the read-only arena worker."""
 
 import json
+import os
 import tempfile
 import threading
 import unittest
 from pathlib import Path
 
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+from PySide6.QtWidgets import QApplication
+
 from adversarial_jepa import AdversarialJEPA
 from fen_dataset_tool import FenDatasetBuilder
-from main import modelmatchworker
+from main import boardwidget, modelmatchwidget, modelmatchworker
 from model_registry import arena_model_specs, training_model_specs
 
 
@@ -24,6 +29,10 @@ GM_PGN = '''[Event "Arena sample"]
 
 
 class ModelArenaTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.application = QApplication.instance() or QApplication([])
+
     def build_dataset(self, root):
         source = root / "games.pgn"
         source.write_text(GM_PGN, encoding="utf-8")
@@ -94,6 +103,61 @@ class ModelArenaTests(unittest.TestCase):
             self.assertTrue(results_path.exists())
             stored = json.loads(results_path.read_text(encoding="utf-8").splitlines()[-1])
             self.assertEqual(stored["match_seed"], started["match_seed"])
+
+    def test_series_checkpoint_restores_last_matchup_and_history(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            checkpoint = root / "chess_data/caissa_a_jepa_h1.npz"
+            model = AdversarialJEPA(checkpoint, latent_size=8, variant="h1")
+            model.save()
+
+            history_path = root / "chess_data/arena_results.jsonl"
+            history_path.parent.mkdir(parents=True, exist_ok=True)
+            history_path.write_text(
+                json.dumps({
+                    "result": "1-0",
+                    "first_model_id": "alpha-beta",
+                    "second_model_id": "a-jepa-h1",
+                    "white_model_id": "alpha-beta",
+                    "black_model_id": "a-jepa-h1",
+                    "match_seed": 7,
+                    "match_number": 4,
+                })
+                + "\n",
+                encoding="utf-8",
+            )
+            checkpoint_path = root / "chess_data/arena_checkpoint.json"
+            checkpoint_path.write_text(
+                json.dumps({
+                    "version": 1,
+                    "status": "STOPPED",
+                    "series_id": "series-1",
+                    "first_model_id": "alpha-beta",
+                    "second_model_id": "a-jepa-h1",
+                    "match_number": 4,
+                    "matches_started": 4,
+                    "matches_completed": 3,
+                    "match_seed": 7,
+                }),
+                encoding="utf-8",
+            )
+
+            board = boardwidget(project_dir=root)
+            widget = modelmatchwidget(board)
+            self.assertTrue(widget.last_matchup_available())
+            self.assertTrue(widget.continue_button.isEnabled())
+            self.assertIn("HISTORY: 1", widget.stats_label.text())
+
+            widget.start_next_series_match = lambda: None
+            widget.continue_last_matchup()
+            self.assertTrue(widget.series_running)
+            self.assertEqual(widget.series_pair, ("alpha-beta", "a-jepa-h1"))
+            self.assertEqual(widget.resume_match_seed, 7)
+            self.assertEqual(widget.series_matches_started, 4)
+
+            widget.close()
+            board.clock_timer.stop()
+            board.close()
 
 
 if __name__ == "__main__":
