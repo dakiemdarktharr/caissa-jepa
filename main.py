@@ -2175,13 +2175,13 @@ class pgnparser:
         parts = fen_text.strip().split()
 
         if len(parts) < 4:
-            raise ValueError("FEN thiếu trường")
+            raise ValueError("FEN is missing fields")
 
         board = []
         ranks = parts[0].split("/")
 
         if len(ranks) != 8:
-            raise ValueError("FEN không đủ 8 hàng")
+            raise ValueError("FEN must contain 8 ranks")
 
         for rank_text in ranks:
             for character in rank_text:
@@ -2190,10 +2190,10 @@ class pgnparser:
                 elif character in "PNBRQKpnbrqk":
                     board.append(character)
                 else:
-                    raise ValueError("FEN có ký tự quân không hợp lệ")
+                    raise ValueError("FEN contains an invalid piece character")
 
         if len(board) != 64:
-            raise ValueError("FEN không đủ 64 ô")
+            raise ValueError("FEN must contain 64 squares")
 
         turn = "white" if parts[1] == "w" else "black"
         castling_text = parts[2]
@@ -2465,7 +2465,7 @@ class pgnparser:
                 matches.append((move, generated_san))
 
         if len(matches) != 1:
-            raise ValueError(f"Không xác định được nước: {token}")
+            raise ValueError(f"Unable to identify move: {token}")
 
         return matches[0]
 
@@ -2564,7 +2564,7 @@ class caissajepa:
 
     def __init__(self, model_path, create_if_missing=True):
         if np is None:
-            raise RuntimeError("Cần cài NumPy để dùng CAISSA-JEPA")
+            raise RuntimeError("NumPy is required to use CAISSA-JEPA")
 
         self.model_path = Path(model_path)
         self.model_path.parent.mkdir(parents=True, exist_ok=True)
@@ -3194,14 +3194,14 @@ class trainworker(QObject):
     def chay(self):
         try:
             if np is None:
-                raise RuntimeError("Chưa cài NumPy")
+                raise RuntimeError("NumPy is not installed")
             manifest_path = self.dataset_path / "dataset_manifest.json"
             if not manifest_path.exists():
-                raise RuntimeError("Chưa có FEN dataset; hãy chạy crawler trước")
+                raise RuntimeError("FEN dataset is missing; run the crawler first")
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             if manifest.get("status") not in ("TARGET_REACHED", "COMPLETE"):
                 raise RuntimeError(
-                    "Dataset chưa hoàn tất: " + str(manifest.get("status", "UNKNOWN"))
+                    "Dataset is not complete: " + str(manifest.get("status", "UNKNOWN"))
                 )
 
             from argparse import Namespace
@@ -4340,9 +4340,9 @@ class boardwidget(QWidget):
             self.clock_dang_chay = False
 
             if color_het_gio == "white":
-                self.ket_thuc_game("Đen thắng - Trắng hết giờ")
+                self.ket_thuc_game("Black wins - White ran out of time")
             else:
-                self.ket_thuc_game("Trắng thắng - Đen hết giờ")
+                self.ket_thuc_game("White wins - Black ran out of time")
 
     def cong_increment_clock(self, color):
         new_time = self.lay_clock_time(color) + self.clock_increment_ms
@@ -4356,7 +4356,7 @@ class boardwidget(QWidget):
 
     def cap_nhat_tieu_de(self):
         if self.dang_chon_mau:
-            self.window().setWindowTitle("chess - chọn màu")
+            self.window().setWindowTitle("Chess - Select Color")
             return
 
         if self.game_over:
@@ -4364,20 +4364,20 @@ class boardwidget(QWidget):
             return
 
         if self.turn == "white":
-            turn_text = "trắng"
+            turn_text = "White"
         else:
-            turn_text = "đen"
+            turn_text = "Black"
 
         if self.engine_dang_tim:
             self.window().setWindowTitle(
-                f"chess - {turn_text} - engine đang suy nghĩ"
+                f"Chess - {turn_text} - Engine thinking"
             )
             return
 
         if self.is_king_in_check(self.turn):
-            self.window().setWindowTitle(f"chess - {turn_text} - chiếu")
+            self.window().setWindowTitle(f"Chess - {turn_text} - Check")
         else:
-            self.window().setWindowTitle(f"chess - {turn_text}")
+            self.window().setWindowTitle(f"Chess - {turn_text}")
 
     def chon_mau_nguoi_choi(self, color):
         self.player_color = color
@@ -4680,7 +4680,7 @@ class boardwidget(QWidget):
         self.engine_dang_tim = False
 
         if "error" in result:
-            print(f"Lỗi engine: {result['error']}")
+            print(f"Engine error: {result['error']}")
             self.cap_nhat_tieu_de()
             return
 
@@ -4721,9 +4721,9 @@ class boardwidget(QWidget):
 
         file_paths, _ = QFileDialog.getOpenFileNames(
             self,
-            "Chọn file PGN/TXT có ván GM",
+            "Select PGN/TXT files containing GM games",
             "",
-            "PGN và TXT (*.pgn *.txt);;Tất cả file (*)",
+            "PGN and TXT (*.pgn *.txt);;All files (*)",
         )
 
         if len(file_paths) == 0:
@@ -4753,27 +4753,27 @@ class boardwidget(QWidget):
         self.import_worker = worker
         self.import_stop_event = stop_event
         self.import_dang_chay = True
-        self.import_status = "Đang đọc dữ liệu GM..."
+        self.import_status = "Reading GM data..."
         self.update()
         thread.start()
 
     @Slot(object)
     def nhan_tien_do_import(self, stats):
         self.import_status = (
-            f"Đọc {stats['games_seen']} | "
-            f"nhập {stats['imported']}"
+            f"Read {stats['games_seen']} | "
+            f"Imported {stats['imported']}"
         )
         self.update()
 
     @Slot(object)
     def nhan_ket_qua_import(self, stats):
         if "error" in stats:
-            self.import_status = "Import lỗi: " + stats["error"]
+            self.import_status = "Import error: " + stats["error"]
         else:
             self.import_status = (
-                f"Xong: +{stats['imported']} | "
-                f"trùng {stats['duplicates']} | "
-                f"bỏ {stats['skipped']} | lỗi {stats['errors']}"
+                f"Complete: +{stats['imported']} | "
+                f"duplicates {stats['duplicates']} | "
+                f"skipped {stats['skipped']} | errors {stats['errors']}"
             )
 
         monitor_stats = stats.copy()
@@ -4796,32 +4796,32 @@ class boardwidget(QWidget):
             if self.train_stop_event is not None:
                 self.train_stop_event.set()
 
-            self.train_status = "Đang dừng sau batch hiện tại..."
+            self.train_status = "Stopping after the current batch..."
             self.update()
             return
 
         if np is None:
-            self.train_status = "Cần cài NumPy để train"
+            self.train_status = "NumPy is required for training"
             self.update()
             return
 
         dataset_path = self.project_dir / "fen_dataset"
         manifest_path = dataset_path / "dataset_manifest.json"
         if not manifest_path.exists():
-            self.train_status = "Chưa có FEN dataset; hãy chạy crawler"
+            self.train_status = "FEN dataset is missing; run the crawler"
             self.update()
             return
 
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         except Exception as error:
-            self.train_status = "Không đọc được dataset: " + str(error)
+            self.train_status = "Unable to read dataset: " + str(error)
             self.update()
             return
 
         if manifest.get("status") not in ("TARGET_REACHED", "COMPLETE"):
             self.train_status = (
-                "Dataset chưa hoàn tất: "
+                "Dataset is not complete: "
                 + str(manifest.get("status", "UNKNOWN"))
             )
             self.update()
@@ -4829,14 +4829,14 @@ class boardwidget(QWidget):
 
         sample_count = int(manifest.get("positions", 0))
         if sample_count == 0:
-            self.train_status = "Dataset chưa có vị trí FEN hợp lệ"
+            self.train_status = "Dataset has no valid FEN positions"
             self.update()
             return
 
         epochs, accepted = QInputDialog.getInt(
             self,
             "CAISSA-JEPA v7",
-            "Số epoch train thêm:",
+            "Additional training epochs:",
             5,
             1,
             10000,
@@ -4855,18 +4855,18 @@ class boardwidget(QWidget):
                 if checkpoint_fingerprint and checkpoint_fingerprint != current_fingerprint:
                     answer = QMessageBox.question(
                         self,
-                        "Dataset đã thay đổi",
-                        "Dataset khác fingerprint của checkpoint. Tiếp tục train incremental?",
+                        "Dataset Changed",
+                        "The dataset fingerprint differs from the checkpoint. Continue incremental training?",
                         QMessageBox.Yes | QMessageBox.No,
                         QMessageBox.No,
                     )
                     if answer != QMessageBox.Yes:
-                        self.train_status = "Đã hủy: fingerprint dataset không khớp"
+                        self.train_status = "Cancelled: dataset fingerprint mismatch"
                         self.update()
                         return
                     allow_dataset_change = True
             except Exception as error:
-                self.train_status = "Không đọc được checkpoint: " + str(error)
+                self.train_status = "Unable to read checkpoint: " + str(error)
                 self.update()
                 return
 
@@ -4900,7 +4900,7 @@ class boardwidget(QWidget):
         self.train_stop_event = stop_event
         self.train_dang_chay = True
         self.train_status = (
-            f"Khởi tạo A-JEPA v7: {epochs} epoch | {sample_count} vị trí..."
+            f"Initializing A-JEPA v7: {epochs} epochs | {sample_count} positions..."
         )
         self.update()
         thread.start()
@@ -4933,14 +4933,14 @@ class boardwidget(QWidget):
         self.monitor_train.emit(monitor_result)
 
         if "error" in result:
-            self.train_status = "Train lỗi: " + result["error"]
+            self.train_status = "Training error: " + result["error"]
         elif result.get("cancelled"):
             self.train_status = (
-                f"Đã dừng | steps {result['trained_steps']}"
+                f"Training stopped | steps {result['trained_steps']}"
             )
         else:
             self.train_status = (
-                f"Train xong | steps {result['trained_steps']}"
+                f"Training complete | steps {result['trained_steps']}"
             )
 
         self.update()
@@ -4985,18 +4985,18 @@ class boardwidget(QWidget):
         self.learning_thread = thread
         self.learning_worker = worker
         self.learning_stop_event = stop_event
-        self.learning_status = "Đang phân tích ván thua (tối đa 20 giây)..."
+        self.learning_status = "Analyzing the lost game (up to 20 seconds)..."
         self.update()
         thread.start()
 
     @Slot(object)
     def nhan_ket_qua_learning(self, result):
         if "error" in result:
-            self.learning_status = "Học sau ván lỗi: " + result["error"]
+            self.learning_status = "Post-game learning error: " + result["error"]
         else:
             self.learning_status = (
-                f"Đã phân tích {result['candidates']} sai lầm, "
-                f"lưu {result['learned']} chỉnh sửa"
+                f"Analyzed {result['candidates']} mistakes, "
+                f"saved {result['learned']} corrections"
             )
 
         self.update()
@@ -5579,25 +5579,25 @@ class boardwidget(QWidget):
         ]
 
     def chon_quan_phong_cap(self, color):
-        choices = ["Hậu", "Xe", "Tượng", "Mã"]
+        choices = ["Queen", "Rook", "Bishop", "Knight"]
 
         selected_text, ok = QInputDialog.getItem(
             self,
-            "Phong cấp",
-            "Chọn quân để phong cấp:",
+            "Promotion",
+            "Choose a promotion piece:",
             choices,
             0,
             False,
         )
 
         if ok == False:
-            selected_text = "Hậu"
+            selected_text = "Queen"
 
         white_piece_map = {
-            "Hậu": "Q",
-            "Xe": "R",
-            "Tượng": "B",
-            "Mã": "N",
+            "Queen": "Q",
+            "Rook": "R",
+            "Bishop": "B",
+            "Knight": "N",
         }
 
         selected_piece = white_piece_map[selected_text]
@@ -5774,10 +5774,10 @@ class boardwidget(QWidget):
         if self.player_color is None or self.engine_color is None:
             return
 
-        if result_text.startswith("Trắng thắng"):
+        if result_text.startswith("White wins"):
             winner_color = "white"
             result_token = "1-0"
-        elif result_text.startswith("Đen thắng"):
+        elif result_text.startswith("Black wins"):
             winner_color = "black"
             result_token = "0-1"
         else:
@@ -5897,7 +5897,7 @@ class boardwidget(QWidget):
             self.current_game_id = game_id
             self.game_da_luu = True
         except Exception as error:
-            print(f"Lỗi lưu ván: {error}")
+            print(f"Game save error: {error}")
 
     def ket_thuc_game(self, result_text):
         self.dung_search_engine()
@@ -5914,10 +5914,10 @@ class boardwidget(QWidget):
         self.luu_game_hien_tai(result_text)
 
         engine_lost = (
-            (self.engine_color == "white" and result_text.startswith("Đen thắng"))
+            (self.engine_color == "white" and result_text.startswith("Black wins"))
             or (
                 self.engine_color == "black"
-                and result_text.startswith("Trắng thắng")
+                and result_text.startswith("White wins")
             )
         )
 
@@ -5937,20 +5937,20 @@ class boardwidget(QWidget):
                 winner = self.mau_doi_thu(current_color)
 
                 if winner == "white":
-                    self.ket_thuc_game("Trắng thắng")
+                    self.ket_thuc_game("White wins")
                 else:
-                    self.ket_thuc_game("Đen thắng")
+                    self.ket_thuc_game("Black wins")
             else:
-                self.ket_thuc_game("Hòa stalemate")
+                self.ket_thuc_game("Draw - stalemate")
 
             return
 
         if self.is_thieu_quan():
-            self.ket_thuc_game("Hòa thiếu quân")
+            self.ket_thuc_game("Draw - insufficient material")
             return
 
         if self.is_lap_lai_3_lan():
-            self.ket_thuc_game("Hòa lặp lại 3 lần")
+            self.ket_thuc_game("Draw - threefold repetition")
             return
 
         self.cap_nhat_tieu_de()
@@ -6089,11 +6089,11 @@ class boardwidget(QWidget):
         if color == "white":
             background = QColor("#F4EEE4")
             text_color = QColor("#25211E")
-            color_text = "TRẮNG"
+            color_text = "WHITE"
         else:
             background = QColor("#25211E")
             text_color = QColor("#F4EEE4")
-            color_text = "ĐEN"
+            color_text = "BLACK"
 
         painter.fillRect(rect, background)
 
@@ -6191,7 +6191,7 @@ class boardwidget(QWidget):
             painter,
             self.clock_bottom_rect,
             self.player_color,
-            "BẠN",
+            "PLAYER",
         )
 
     def ve_control_panel(
@@ -6229,14 +6229,14 @@ class boardwidget(QWidget):
         )
 
         button_data = (
-            (self.history_button_rect, "LỊCH SỬ"),
+            (self.history_button_rect, "HISTORY"),
             (
                 self.import_button_rect,
                 "IMPORT..." if self.import_dang_chay else "IMPORT PGN",
             ),
             (
                 self.train_button_rect,
-                "DỪNG TRAIN" if self.train_dang_chay else "TRAIN MODEL",
+                "STOP TRAINING" if self.train_dang_chay else "TRAIN MODEL",
             ),
         )
 
@@ -6304,6 +6304,22 @@ class boardwidget(QWidget):
 
         return self.doi_clock_thanh_text(time_ms)
 
+    def format_history_reason(self, reason):
+        text = str(reason or "")
+        replacements = (
+            ("Trắng thắng", "White wins"),
+            ("Đen thắng", "Black wins"),
+            ("Hòa stalemate", "Draw - stalemate"),
+            ("Hòa thiếu quân", "Draw - insufficient material"),
+            ("Hòa lặp lại 3 lần", "Draw - threefold repetition"),
+            ("Trắng hết giờ", "White ran out of time"),
+            ("Đen hết giờ", "Black ran out of time"),
+            ("nước", "moves"),
+        )
+        for source, target in replacements:
+            text = text.replace(source, target)
+        return text
+
     def ve_history_list(
         self,
         painter,
@@ -6330,7 +6346,7 @@ class boardwidget(QWidget):
             painter.drawText(
                 empty_rect,
                 Qt.AlignCenter,
-                "CHƯA CÓ VÁN ĐÃ CHƠI",
+                "NO PLAYED GAMES",
             )
 
         for index, row in enumerate(self.history_rows):
@@ -6362,10 +6378,11 @@ class boardwidget(QWidget):
             painter.setFont(QFont("Arial", 10, QFont.Bold))
 
             created_text = row["created_at"].replace("T", " ")[:16]
-            player_text = "Trắng" if row["player_color"] == "white" else "Đen"
+            player_text = "White" if row["player_color"] == "white" else "Black"
             info_text = (
-                f"{created_text}  |  Bạn: {player_text}\n"
-                f"{row['reason']}  |  {row['move_count']} nước  |  "
+                f"{created_text}  |  Player: {player_text}\n"
+                f"{self.format_history_reason(row['reason'])}  |  "
+                f"{row['move_count']} moves  |  "
                 f"{self.format_history_time(row['white_time_ms'])} / "
                 f"{self.format_history_time(row['black_time_ms'])}"
             )
@@ -6374,7 +6391,7 @@ class boardwidget(QWidget):
                 Qt.AlignVCenter | Qt.AlignLeft | Qt.TextWordWrap,
                 info_text,
             )
-            painter.drawText(delete_rect, Qt.AlignCenter, "XÓA")
+            painter.drawText(delete_rect, Qt.AlignCenter, "DELETE")
 
         total_games = self.database.dem_history()
         total_pages = max(1, math.ceil(total_games / 5))
@@ -6395,8 +6412,8 @@ class boardwidget(QWidget):
         )
 
         for rect, text_value in (
-            (self.history_prev_rect, "TRƯỚC"),
-            (self.history_next_rect, "SAU"),
+            (self.history_prev_rect, "PREVIOUS"),
+            (self.history_next_rect, "NEXT"),
         ):
             painter.fillRect(rect, QColor("#D9BE97"))
             painter.setPen(QColor("#3A2A20"))
@@ -6455,7 +6472,7 @@ class boardwidget(QWidget):
                 uci_text = str(move_item)
                 evaluation = evals[index] if index < len(evals) else 0.0
 
-            learned_text = " • học" if index + 1 in contribution_moves else ""
+            learned_text = " • learned" if index + 1 in contribution_moves else ""
             lines.append(
                 f"{index + 1:>3}. {san_text} ({uci_text})  "
                 f"eval {float(evaluation):+.2f}{learned_text}"
@@ -6480,7 +6497,8 @@ class boardwidget(QWidget):
             Qt.AlignTop | Qt.TextWordWrap,
             (
                 f"{detail['created_at'].replace('T', ' ')[:19]} | "
-                f"{detail['reason']} | {detail['move_count']} nước\n"
+                f"{self.format_history_reason(detail['reason'])} | "
+                f"{detail['move_count']} moves\n"
                 f"Correction: {len(detail.get('corrections', []))} | "
                 f"Contribution: {len(detail.get('contributions', []))}"
             ),
@@ -6515,9 +6533,9 @@ class boardwidget(QWidget):
         )
 
         for rect, text_value in (
-            (self.history_back_rect, "QUAY LẠI"),
-            (self.history_prev_rect, "TRƯỚC"),
-            (self.history_next_rect, "SAU"),
+            (self.history_back_rect, "BACK"),
+            (self.history_prev_rect, "PREVIOUS"),
+            (self.history_next_rect, "NEXT"),
         ):
             painter.fillRect(rect, QColor("#D9BE97"))
             painter.setPen(QColor("#3A2A20"))
@@ -6575,7 +6593,7 @@ class boardwidget(QWidget):
             panel_width * 0.84,
             panel_height * 0.08,
         )
-        title_text = "CHI TIẾT VÁN" if self.history_detail else "LỊCH SỬ"
+        title_text = "GAME DETAILS" if self.history_detail else "HISTORY"
         painter.drawText(title_rect, Qt.AlignCenter, title_text)
         self.history_close_rect = QRectF(
             panel_x + panel_width * 0.91,
@@ -6860,7 +6878,7 @@ class boardwidget(QWidget):
         painter.drawText(
             title_rect,
             Qt.AlignCenter,
-            "CHỌN MÀU",
+            "SELECT COLOR",
         )
 
         button_width = panel_size * 0.68
@@ -6910,14 +6928,14 @@ class boardwidget(QWidget):
         painter.drawText(
             self.white_button_rect,
             Qt.AlignCenter,
-            "TRẮNG",
+            "WHITE",
         )
 
         painter.setPen(QColor(244, 238, 228))
         painter.drawText(
             self.black_button_rect,
             Qt.AlignCenter,
-            "ĐEN",
+            "BLACK",
         )
 
     def paintEvent(self, event):
@@ -7176,7 +7194,7 @@ class boardwidget(QWidget):
             painter.drawText(
                 title_rect,
                 Qt.AlignCenter,
-                "VÁN ĐẤU KẾT THÚC",
+                "GAME OVER",
             )
 
             painter.setFont(
@@ -8748,7 +8766,7 @@ class main_window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("chess - trắng | " + APP_BUILD)
+        self.setWindowTitle("Chess - Select Color | " + APP_BUILD)
         self.resize(900, 750)
         self.monitor_window = None
 
