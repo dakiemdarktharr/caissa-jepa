@@ -256,6 +256,28 @@ class V7DataPipelineTests(unittest.TestCase):
             self.assertEqual(resumed_report["completed_epochs"], 2)
             self.assertEqual(len(resumed_report["epochs"]), 2)
             self.assertGreater(resumed_report["trained_steps"], first_steps)
+            manifest_path = dataset / "dataset_manifest.json"
+            changed_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            changed_manifest["incremental_training_test"] = True
+            manifest_path.write_text(json.dumps(changed_manifest), encoding="utf-8")
+            with self.assertRaises(RuntimeError):
+                train(Namespace(
+                    dataset=str(dataset), model=str(model_path), epochs=1,
+                    batch_size=2, learning_rate=0.001, latent_size=16,
+                    seed=9, validation_percent=1, max_train_batches=1,
+                    max_validation_batches=1, allow_dataset_change=False,
+                    resume=True, progress_interval=0.001,
+                ))
+            incremental = train(Namespace(
+                dataset=str(dataset), model=str(model_path), epochs=1,
+                batch_size=2, learning_rate=0.001, latent_size=16,
+                seed=9, validation_percent=1, max_train_batches=1,
+                max_validation_batches=1, allow_dataset_change=True,
+                resume=True, progress_interval=0.001,
+            ))
+            self.assertEqual(incremental, 0)
+            incremental_report = json.loads(model_path.with_suffix(".training.json").read_text(encoding="utf-8"))
+            self.assertEqual(incremental_report["completed_epochs"], 3)
 
 
 if __name__ == "__main__":

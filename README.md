@@ -118,7 +118,13 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\watch_caissa_training.
 
 `continue_caissa_training.ps1` giữ lại optimizer/EMA trong checkpoint và nối tiếp
 epoch; `watch_caissa_training.ps1 -Follow` đọc heartbeat trong file
-`.training.json`. Không chạy hai lệnh train cùng lúc trên cùng checkpoint.
+`.training.json`. Nếu dataset đã thay đổi sau khi checkpoint được tạo, cần xác
+nhận rõ bằng `-AllowDatasetChange`; không chạy hai lệnh train cùng lúc trên cùng
+checkpoint.
+
+```powershell
+.\continue_caissa_training.ps1 -AdditionalEpochs 5 -AllowDatasetChange
+```
 
 Crawler chỉ dùng public archive với HTTP Range resume, retry/backoff và
 checksum/manifest. Nó tôn trọng rate limit, chính sách nguồn và không có cơ chế

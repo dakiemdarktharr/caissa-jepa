@@ -16,7 +16,8 @@ param(
     [ValidateSet("adversarial-jepa", "policy-value")]
     [string]$Architecture = "adversarial-jepa",
     [switch]$ForegroundCrawl,
-    [switch]$AllowPartialDataset
+    [switch]$AllowPartialDataset,
+    [switch]$AllowDatasetChange
 )
 
 $ErrorActionPreference = "Stop"
@@ -141,7 +142,7 @@ function Invoke-Train {
         "--seed", "$Seed",
         "--progress-interval", "$ProgressInterval"
     )
-    if ($AllowPartialDataset) {
+    if ($AllowPartialDataset -or $AllowDatasetChange) {
         $arguments += "--allow-dataset-change"
     }
     Invoke-V7Python $arguments
@@ -178,7 +179,7 @@ function Invoke-ContinueTrain {
         "--seed", "$Seed",
         "--progress-interval", "$ProgressInterval"
     )
-    if ($AllowPartialDataset) {
+    if ($AllowPartialDataset -or $AllowDatasetChange) {
         $arguments += "--allow-dataset-change"
     }
     Invoke-V7Python $arguments

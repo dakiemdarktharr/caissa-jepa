@@ -101,8 +101,10 @@ def train(arguments: argparse.Namespace) -> int:
         )
     if model.dataset_fingerprint and model.dataset_fingerprint != fingerprint and not allow_dataset_change:
         raise RuntimeError(
-            "Dataset fingerprint khác checkpoint. Dùng checkpoint mới hoặc "
-            "--allow-dataset-change sau khi đã ghi nhận lý do thí nghiệm."
+            "Dataset fingerprint khác checkpoint: "
+            f"checkpoint={model.dataset_fingerprint}, current={fingerprint}. "
+            "Dùng checkpoint mới hoặc --allow-dataset-change sau khi đã ghi "
+            "nhận lý do thí nghiệm."
         )
     model.dataset_fingerprint = fingerprint
     report_path = model_path.with_suffix(".training.json")

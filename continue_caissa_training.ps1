@@ -8,7 +8,8 @@ param(
     [int]$ValidationPercent = 10,
     [int]$Seed = 20260903,
     [double]$ProgressInterval = 10.0,
-    [switch]$AllowPartialDataset
+    [switch]$AllowPartialDataset,
+    [switch]$AllowDatasetChange
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,6 +36,9 @@ $arguments = @(
 )
 if ($AllowPartialDataset) {
     $arguments += "-AllowPartialDataset"
+}
+if ($AllowDatasetChange) {
+    $arguments += "-AllowDatasetChange"
 }
 
 & powershell.exe @arguments
