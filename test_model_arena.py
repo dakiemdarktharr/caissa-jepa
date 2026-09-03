@@ -5,16 +5,27 @@ import os
 import tempfile
 import threading
 import unittest
+from argparse import Namespace
 from pathlib import Path
+
+import numpy as np
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtWidgets import QApplication
 
-from adversarial_jepa import AdversarialJEPA
-from fen_dataset_tool import FenDatasetBuilder
+from adversarial_jepa import (
+    AdversarialJEPA,
+    iter_dataset_games,
+    sample_from_dataset_position,
+)
+from fen_dataset_tool import (
+    FenDatasetBuilder,
+)
+from lejepa import LeJEPA
 from main import boardwidget, modelmatchwidget, modelmatchworker
 from model_registry import arena_model_specs, training_model_specs
+from train_caissa_v7 import train
 
 
 GM_PGN = '''[Event "Arena sample"]
@@ -51,10 +62,11 @@ class ModelArenaTests(unittest.TestCase):
     def test_registry_exposes_independent_training_checkpoints(self):
         with tempfile.TemporaryDirectory() as temporary:
             specs = training_model_specs(Path(temporary))
-            self.assertGreaterEqual(len(specs), 5)
+            self.assertGreaterEqual(len(specs), 6)
             self.assertEqual(len({str(spec["path"]) for spec in specs}), len(specs))
             self.assertTrue(any(spec["variant"] == "h1" for spec in specs))
             self.assertTrue(any(spec["architecture"] == "policy-value" for spec in specs))
+            self.assertTrue(any(spec["architecture"] == "lejepa" for spec in specs))
             self.assertEqual(arena_model_specs(Path(temporary))[0]["id"], "alpha-beta")
 
     def test_model_variants_have_different_active_horizons(self):
@@ -69,6 +81,59 @@ class ModelArenaTests(unittest.TestCase):
             full.save()
             restored = AdversarialJEPA(root / "full.npz", latent_size=8, variant="full", create_if_missing=False)
             self.assertEqual(restored.variant, "full")
+
+    def test_lejepa_sigreg_trains_without_ema_and_round_trips(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            dataset = self.build_dataset(root)
+            game = next(iter_dataset_games(dataset))
+            sample = sample_from_dataset_position(
+                game["positions"][0], np.random.default_rng(17)
+            )
+            self.assertIsNotNone(sample)
+            model_path = root / "chess_data/lejepa_sigreg.npz"
+            model = LeJEPA(model_path, latent_size=8)
+            metrics = model.train_batch([sample], learning_rate=0.001)
+            self.assertTrue(np.isfinite(metrics["loss"]))
+            self.assertTrue(np.isfinite(metrics["sigreg_loss"]))
+            self.assertFalse(hasattr(model, "target_w"))
+            model.save()
+            restored = LeJEPA(
+                model_path,
+                latent_size=8,
+                create_if_missing=False,
+            )
+            self.assertEqual(restored.trained_steps, 1)
+            self.assertEqual(restored.variant, "sigreg")
+
+            trainer_path = root / "chess_data/trainer_lejepa.npz"
+            self.assertEqual(
+                train(Namespace(
+                    dataset=str(dataset),
+                    model=str(trainer_path),
+                    epochs=1,
+                    batch_size=2,
+                    learning_rate=0.001,
+                    latent_size=8,
+                    architecture="lejepa",
+                    model_variant="sigreg",
+                    seed=17,
+                    validation_percent=10,
+                    max_train_batches=1,
+                    max_validation_batches=1,
+                    allow_dataset_change=False,
+                    resume=False,
+                    progress_interval=0.001,
+                )),
+                0,
+            )
+            report = json.loads(
+                trainer_path.with_suffix(".training.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(report["architecture"], "lejepa")
+            self.assertEqual(report["model_variant"], "sigreg")
 
     def test_read_only_arena_randomizes_colors_and_emits_legal_moves(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -110,6 +175,13 @@ class ModelArenaTests(unittest.TestCase):
             checkpoint = root / "chess_data/caissa_a_jepa_h1.npz"
             model = AdversarialJEPA(checkpoint, latent_size=8, variant="h1")
             model.save()
+            second_checkpoint = root / "chess_data/caissa_a_jepa_h1_h2.npz"
+            second_model = AdversarialJEPA(
+                second_checkpoint,
+                latent_size=8,
+                variant="h1-h2",
+            )
+            second_model.save()
 
             history_path = root / "chess_data/arena_results.jsonl"
             history_path.parent.mkdir(parents=True, exist_ok=True)
@@ -144,11 +216,25 @@ class ModelArenaTests(unittest.TestCase):
 
             board = boardwidget(project_dir=root)
             widget = modelmatchwidget(board)
+            schedule = widget.build_round_robin_schedule(1)
+            self.assertEqual(len(schedule), 3)
+            self.assertEqual(
+                {frozenset(pair) for pair in schedule},
+                {
+                    frozenset(("alpha-beta", "a-jepa-h1")),
+                    frozenset(("alpha-beta", "a-jepa-h1-h2")),
+                    frozenset(("a-jepa-h1", "a-jepa-h1-h2")),
+                },
+            )
             self.assertTrue(widget.last_matchup_available())
             self.assertTrue(widget.continue_button.isEnabled())
             self.assertIn("HISTORY: 1", widget.stats_label.text())
 
-            widget.start_next_series_match = lambda: None
+            def capture_replay_pair():
+                widget.series_pair = widget.series_replay_pair
+                widget.series_replay_pair = None
+
+            widget.start_next_series_match = capture_replay_pair
             widget.continue_last_matchup()
             self.assertTrue(widget.series_running)
             self.assertEqual(widget.series_pair, ("alpha-beta", "a-jepa-h1"))

@@ -1,5 +1,6 @@
 import hashlib
 import json
+import itertools
 import math
 import random
 import re
@@ -3267,7 +3268,7 @@ class trainworker(QObject):
                 architecture=self.architecture,
                 model_variant=(
                     self.model_variant
-                    if self.architecture == "adversarial-jepa"
+                    if self.architecture in ("adversarial-jepa", "lejepa")
                     else "direct"
                 ),
                 seed=20260903,
@@ -4165,6 +4166,14 @@ class modelmatchworker(QObject):
         if spec["architecture"] == "adversarial-jepa":
             from adversarial_jepa import AdversarialJEPA
             return AdversarialJEPA(
+                spec["path"],
+                create_if_missing=False,
+                variant=spec["variant"],
+            )
+
+        if spec["architecture"] == "lejepa":
+            from lejepa import LeJEPA
+            return LeJEPA(
                 spec["path"],
                 create_if_missing=False,
                 variant=spec["variant"],
@@ -9299,6 +9308,10 @@ class modelmatchwidget(QWidget):
         self.series_stop_requested = False
         self.series_id = None
         self.series_pair = None
+        self.series_schedule = []
+        self.series_round = 0
+        self.series_pair_index = 0
+        self.series_replay_pair = None
         self.series_matches_started = 0
         self.current_match_number = 0
         self.resume_match_seed = None
@@ -9345,10 +9358,15 @@ class modelmatchwidget(QWidget):
         self.continue_button = QPushButton("CONTINUE LAST MATCHUP", self)
         self.stop_button = QPushButton("STOP SERIES", self)
         self.back_button = QPushButton("BACK TO MONITOR", self)
-        self.status_label = QLabel("Select two ready agents and start a read-only match.", self)
+        self.status_label = QLabel(
+            "The series automatically schedules every ready model against every other model.",
+            self,
+        )
         self.status_label.setWordWrap(True)
         self.stats_label = QLabel("HISTORY: 0 matches", self)
         self.stats_label.setWordWrap(True)
+        self.roster_label = QLabel("ROSTER: ALL READY MODELS", self)
+        self.roster_label.setWordWrap(True)
 
         for combo in (self.white_combo, self.black_combo):
             combo.setMinimumWidth(230)
@@ -9357,11 +9375,17 @@ class modelmatchwidget(QWidget):
         self.continue_button.clicked.connect(self.continue_last_matchup)
         self.stop_button.clicked.connect(self.stop_series)
         self.back_button.clicked.connect(self.back_to_monitor)
+        self.white_combo.currentIndexChanged.connect(
+            lambda _index: self.refresh_history_statistics()
+        )
+        self.black_combo.currentIndexChanged.connect(
+            lambda _index: self.refresh_history_statistics()
+        )
 
         control_row = QHBoxLayout()
-        control_row.addWidget(QLabel("AGENT A", self))
+        control_row.addWidget(QLabel("CURRENT PAIR A", self))
         control_row.addWidget(self.white_combo)
-        control_row.addWidget(QLabel("AGENT B", self))
+        control_row.addWidget(QLabel("CURRENT PAIR B", self))
         control_row.addWidget(self.black_combo)
         control_row.addWidget(self.start_button)
         control_row.addWidget(self.continue_button)
@@ -9372,6 +9396,7 @@ class modelmatchwidget(QWidget):
         layout.setContentsMargins(16, 12, 16, 8)
         layout.setSpacing(6)
         layout.addLayout(control_row)
+        layout.addWidget(self.roster_label)
         layout.addWidget(self.status_label)
         layout.addWidget(self.stats_label)
         self.setStyleSheet(
@@ -9390,6 +9415,37 @@ class modelmatchwidget(QWidget):
 
     def model_label(self, model_id):
         return self.specs_by_id.get(model_id, {}).get("label", model_id or "--")
+
+    def reload_arena_roster(self):
+        previous_first = self.white_combo.currentData()
+        previous_second = self.black_combo.currentData()
+        self.model_specs = arena_model_specs(self.project_dir)
+        self.specs_by_id = {spec["id"]: spec for spec in self.model_specs}
+        self.white_combo.blockSignals(True)
+        self.black_combo.blockSignals(True)
+        self.white_combo.clear()
+        self.black_combo.clear()
+        for spec in self.model_specs:
+            self.white_combo.addItem(spec["label"], spec["id"])
+            self.black_combo.addItem(spec["label"], spec["id"])
+        first_index = self.white_combo.findData(previous_first)
+        second_index = self.black_combo.findData(previous_second)
+        self.white_combo.setCurrentIndex(max(0, first_index))
+        if second_index < 0:
+            second_index = 1 if len(self.model_specs) > 1 else 0
+        self.black_combo.setCurrentIndex(second_index)
+        self.white_combo.blockSignals(False)
+        self.black_combo.blockSignals(False)
+        roster = ", ".join(spec["label"] for spec in self.model_specs)
+        self.roster_label.setText(
+            f"ROSTER: ALL READY MODELS ({len(self.model_specs)}) | {roster}"
+        )
+
+    def build_round_robin_schedule(self, round_number):
+        model_ids = [spec["id"] for spec in self.model_specs]
+        schedule = list(itertools.combinations(model_ids, 2))
+        random.Random(20260903 + int(round_number)).shuffle(schedule)
+        return schedule
 
     def load_arena_state(self):
         if self.arena_history_path.exists():
@@ -9432,6 +9488,7 @@ class modelmatchwidget(QWidget):
                 "last_result": last_result,
             }
 
+        self.reload_arena_roster()
         self.refresh_history_statistics()
 
     def last_matchup_available(self):
@@ -9453,6 +9510,34 @@ class modelmatchwidget(QWidget):
             if item.get("result") in ("1-0", "0-1", "1/2-1/2")
             and not item.get("cancelled")
             and not item.get("error")
+        )
+        scoreboard = {
+            spec["id"]: {"wins": 0, "losses": 0, "draws": 0}
+            for spec in self.model_specs
+        }
+        for item in self.arena_history:
+            if item.get("result") not in ("1-0", "0-1", "1/2-1/2"):
+                continue
+            white_id = item.get("white_model_id")
+            black_id = item.get("black_model_id")
+            if white_id not in scoreboard or black_id not in scoreboard:
+                continue
+            if item.get("result") == "1/2-1/2":
+                scoreboard[white_id]["draws"] += 1
+                scoreboard[black_id]["draws"] += 1
+                continue
+            winner_id = (
+                white_id if item.get("result") == "1-0" else black_id
+            )
+            loser_id = black_id if winner_id == white_id else white_id
+            scoreboard[winner_id]["wins"] += 1
+            scoreboard[loser_id]["losses"] += 1
+        scoreboard_text = " | ".join(
+            f"{self.model_label(spec['id'])}: "
+            f"{scoreboard[spec['id']]['wins']}W/"
+            f"{scoreboard[spec['id']]['losses']}L/"
+            f"{scoreboard[spec['id']]['draws']}D"
+            for spec in self.model_specs
         )
         first_id = self.white_combo.currentData()
         second_id = self.black_combo.currentData()
@@ -9489,6 +9574,7 @@ class modelmatchwidget(QWidget):
             matchup_text = ""
         self.stats_label.setText(
             f"HISTORY: {total} records | COMPLETED: {completed}"
+            f" | SCOREBOARD: {scoreboard_text}"
             + matchup_text
         )
         self.continue_button.setEnabled(self.last_matchup_available())
@@ -9520,14 +9606,19 @@ class modelmatchwidget(QWidget):
     def start_series(self):
         if self.series_running or self.match_running:
             return
-        first_model_id = self.white_combo.currentData()
-        second_model_id = self.black_combo.currentData()
-        if not first_model_id or not second_model_id or first_model_id == second_model_id:
-            self.status_label.setText("Choose two different agents.")
+        self.reload_arena_roster()
+        if len(self.model_specs) < 2:
+            self.status_label.setText(
+                "At least two ready agents are required for a round-robin series."
+            )
             return
 
         self.series_id = uuid.uuid4().hex
-        self.series_pair = (first_model_id, second_model_id)
+        self.series_round = 1
+        self.series_schedule = self.build_round_robin_schedule(self.series_round)
+        self.series_pair_index = 0
+        self.series_replay_pair = None
+        self.series_pair = None
         self.series_matches_started = 0
         self.series_stop_requested = False
         self.resume_match_seed = None
@@ -9553,7 +9644,26 @@ class modelmatchwidget(QWidget):
             self.black_combo.findData(second_model_id)
         )
         self.series_id = self.arena_checkpoint.get("series_id") or uuid.uuid4().hex
-        self.series_pair = (first_model_id, second_model_id)
+        self.reload_arena_roster()
+        self.series_round = max(
+            1,
+            int(self.arena_checkpoint.get("round_number", 1)),
+        )
+        self.series_schedule = self.build_round_robin_schedule(self.series_round)
+        self.series_pair = None
+        self.series_replay_pair = (first_model_id, second_model_id)
+        checkpoint_pair_index = int(
+            self.arena_checkpoint.get("pair_index", 0)
+        )
+        if self.series_replay_pair in self.series_schedule:
+            self.series_pair_index = self.series_schedule.index(
+                self.series_replay_pair
+            )
+        else:
+            self.series_pair_index = max(
+                0,
+                min(checkpoint_pair_index, len(self.series_schedule) - 1),
+            )
         self.series_matches_started = int(
             self.arena_checkpoint.get(
                 "matches_started",
@@ -9576,13 +9686,38 @@ class modelmatchwidget(QWidget):
         ):
             self.update_series_controls()
             return
-        if self.series_pair is None:
+        if not self.series_schedule:
             self.series_running = False
-            self.status_label.setText("No matchup selected.")
+            self.status_label.setText(
+                "Round-robin schedule is empty; at least two agents are required."
+            )
             self.update_series_controls()
             return
 
-        first_model_id, second_model_id = self.series_pair
+        if self.series_pair_index >= len(self.series_schedule):
+            self.series_round += 1
+            self.series_schedule = self.build_round_robin_schedule(
+                self.series_round
+            )
+            self.series_pair_index = 0
+            self.status_label.setText(
+                f"Round {self.series_round}: every ready model will face every other model."
+            )
+
+        if self.series_replay_pair is not None:
+            first_model_id, second_model_id = self.series_replay_pair
+            self.series_replay_pair = None
+        else:
+            first_model_id, second_model_id = self.series_schedule[
+                self.series_pair_index
+            ]
+        self.series_pair = (first_model_id, second_model_id)
+        self.white_combo.setCurrentIndex(
+            self.white_combo.findData(first_model_id)
+        )
+        self.black_combo.setCurrentIndex(
+            self.black_combo.findData(second_model_id)
+        )
         self.series_matches_started += 1
         self.current_match_number = self.series_matches_started
         forced_seed = self.resume_match_seed
@@ -9592,6 +9727,9 @@ class modelmatchwidget(QWidget):
             "series_id": self.series_id,
             "first_model_id": first_model_id,
             "second_model_id": second_model_id,
+            "round_number": self.series_round,
+            "pair_index": self.series_pair_index,
+            "pair_count": len(self.series_schedule),
             "match_number": self.current_match_number,
             "matches_started": self.series_matches_started,
             "matches_completed": int(
@@ -9763,6 +9901,7 @@ class modelmatchwidget(QWidget):
             and not self.match_result.get("cancelled")
             and not self.match_result.get("error")
         ):
+            self.series_pair_index += 1
             QTimer.singleShot(0, self.start_next_series_match)
         elif self.match_result is not None and (
             self.match_result.get("cancelled")

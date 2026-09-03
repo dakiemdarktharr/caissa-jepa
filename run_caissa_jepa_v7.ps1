@@ -13,9 +13,9 @@ param(
     [int]$Seed = 20260903,
     [double]$ProgressInterval = 10.0,
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
-    [ValidateSet("adversarial-jepa", "policy-value")]
+    [ValidateSet("adversarial-jepa", "lejepa", "policy-value")]
     [string]$Architecture = "adversarial-jepa",
-    [ValidateSet("h1", "h1-h2", "full", "no-response", "direct")]
+    [ValidateSet("h1", "h1-h2", "full", "no-response", "sigreg", "direct")]
     [string]$ModelVariant = "full",
     [switch]$ForegroundCrawl,
     [switch]$AllowPartialDataset,
@@ -73,7 +73,7 @@ function Show-TrainingStatus {
 }
 
 function Invoke-Tests {
-    Invoke-V7Python @("-m", "py_compile", "main.py", "model_registry.py", "fen_dataset_tool.py", "adversarial_jepa.py", "policy_value_baseline.py", "train_caissa_v7.py", "evaluate_action_ranking.py", "test_core.py", "test_v7.py", "test_gui_v7.py", "test_model_arena.py")
+    Invoke-V7Python @("-m", "py_compile", "main.py", "model_registry.py", "fen_dataset_tool.py", "adversarial_jepa.py", "lejepa.py", "policy_value_baseline.py", "train_caissa_v7.py", "evaluate_action_ranking.py", "test_core.py", "test_v7.py", "test_gui_v7.py", "test_model_arena.py")
     Invoke-V7Python @("test_core.py")
     Invoke-V7Python @("test_v7.py")
     Invoke-V7Python @("test_gui_v7.py")

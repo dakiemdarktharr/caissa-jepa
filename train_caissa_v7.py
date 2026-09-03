@@ -21,6 +21,7 @@ from adversarial_jepa import (
     stable_split,
 )
 from policy_value_baseline import DirectPolicyValueBaseline
+from lejepa import LeJEPA
 
 
 def mean_metrics(values: list[dict]) -> dict:
@@ -84,6 +85,8 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     # yet have an explicit architecture argument.
     architecture = getattr(arguments, "architecture", "adversarial-jepa")
     model_variant = getattr(arguments, "model_variant", "full")
+    if architecture == "lejepa" and model_variant == "full":
+        model_variant = "sigreg"
     resume = bool(getattr(arguments, "resume", False))
     progress_interval = float(getattr(arguments, "progress_interval", 10.0))
     allow_dataset_change = bool(getattr(arguments, "allow_dataset_change", False))
@@ -95,6 +98,12 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     fingerprint = dataset_manifest_fingerprint(dataset_dir)
     if architecture == "adversarial-jepa":
         model = AdversarialJEPA(
+            model_path,
+            latent_size=arguments.latent_size,
+            variant=model_variant,
+        )
+    elif architecture == "lejepa":
+        model = LeJEPA(
             model_path,
             latent_size=arguments.latent_size,
             variant=model_variant,
@@ -236,12 +245,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--latent-size", type=int, default=96)
     parser.add_argument(
         "--architecture",
-        choices=("adversarial-jepa", "policy-value"),
+        choices=("adversarial-jepa", "lejepa", "policy-value"),
         default="adversarial-jepa",
     )
     parser.add_argument(
         "--model-variant",
-        choices=("h1", "h1-h2", "full", "no-response", "direct"),
+        choices=("h1", "h1-h2", "full", "no-response", "sigreg", "direct"),
         default="full",
     )
     parser.add_argument("--seed", type=int, default=20260903)

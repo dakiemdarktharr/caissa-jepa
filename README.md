@@ -127,7 +127,11 @@ checkpoint.
 ```
 
 The GUI TRAIN MODEL dropdown can start independent runs for A-JEPA H1-only,
-A-JEPA H1+H2, full H1+H2+H4, no-response A-JEPA, and Direct Policy/Value.
+A-JEPA H1+H2, full H1+H2+H4, no-response A-JEPA, LeJEPA with SIGReg and no
+EMA teacher, and Direct Policy/Value. Alpha-Beta is a non-trained classical
+engine reference. The LeJEPA entry is the chess-specific NumPy adaptation of
+the predictive objective plus sketched isotropic-Gaussian regularization; it
+is not a claim that the original vision implementation was copied unchanged.
 Each model has its own checkpoint and `.training.json` report, while the
 training monitor keeps a separate progress timeline for every selected run.
 The MODEL VS MODEL screen is read-only: both agents use the same GM opening

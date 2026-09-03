@@ -77,9 +77,17 @@ report is part of the experiment artifact.
 ## Model matrix and arena normalization
 
 The GUI can train independent checkpoints for A-JEPA H1-only, A-JEPA H1+H2,
-full A-JEPA H1+H2+H4, no-response A-JEPA, and Direct Policy/Value. Each run
-has its own checkpoint and heartbeat report; the monitor keeps a separate
-timeline per model.
+full A-JEPA H1+H2+H4, no-response A-JEPA, chess-adapted LeJEPA with SIGReg,
+and Direct Policy/Value. Alpha-Beta is retained as a non-trained classical
+engine reference. Each trainable run has its own checkpoint and heartbeat
+report; the monitor keeps a separate timeline per model.
+
+The LeJEPA entry follows the core objective described by Balestriero and
+LeCun: a JEPA prediction loss combined with Sketched Isotropic Gaussian
+Regularization (SIGReg), without an EMA/teacher encoder. In this repository,
+the state/action encoder and predictor are intentionally adapted to symbolic
+chess and implemented in NumPy; this must be reported as an adaptation in the
+paper, not as an unchanged reproduction of the original vision code.
 
 The MODEL VS MODEL arena uses one shared GM opening-book policy for every
 agent. The book is followed while the existing opening predicate is true; only
@@ -91,7 +99,9 @@ appends completed results to `chess_data/arena_results.jsonl`.
 When the immutable `chess_data/caissa_jepa.npz` exists, the legacy v6 model is
 also exposed as a non-trainable arena reference.
 
-`START SERIES` repeats the selected matchup until the user presses
+`START SERIES` creates a round-robin schedule from every ready model in the
+arena roster. Each unordered pair appears once per round; after all pairs have
+played, the next round begins and continues until the user presses
 `STOP SERIES`. Before each match, the application atomically writes
 `chess_data/arena_checkpoint.json`; after an interruption,
 `CONTINUE LAST MATCHUP` replays the last saved pair and seed before continuing

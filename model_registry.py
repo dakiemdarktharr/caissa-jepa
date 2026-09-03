@@ -45,6 +45,14 @@ TRAINING_MODEL_DEFINITIONS = (
         "trainable": True,
     },
     {
+        "id": "lejepa-sigreg",
+        "label": "LeJEPA (SIGReg, no EMA)",
+        "architecture": "lejepa",
+        "variant": "sigreg",
+        "filename": "lejepa_sigreg.npz",
+        "trainable": True,
+    },
+    {
         "id": "policy-value-v1",
         "label": "Direct Policy / Value v1",
         "architecture": "policy-value",

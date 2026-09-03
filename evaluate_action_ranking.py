@@ -11,11 +11,20 @@ from pathlib import Path
 from adversarial_jepa import AdversarialJEPA, iter_dataset_games, move_from_uci, snapshot_from_fen, stable_split
 from main import vitriengine
 from policy_value_baseline import DirectPolicyValueBaseline
+from lejepa import LeJEPA
 
 
 def load_model(path: Path, architecture: str, model_variant: str = "full"):
+    if architecture == "lejepa" and model_variant == "full":
+        model_variant = "sigreg"
     if architecture == "adversarial-jepa":
         return AdversarialJEPA(
+            path,
+            create_if_missing=False,
+            variant=model_variant,
+        )
+    if architecture == "lejepa":
+        return LeJEPA(
             path,
             create_if_missing=False,
             variant=model_variant,
@@ -24,6 +33,8 @@ def load_model(path: Path, architecture: str, model_variant: str = "full"):
 
 
 def evaluate(dataset: Path, model_path: Path, architecture: str, split: str, validation_percent: int, maximum_positions: int, model_variant: str = "full") -> dict:
+    if architecture == "lejepa" and model_variant == "full":
+        model_variant = "sigreg"
     model = load_model(model_path, architecture, model_variant)
     started = time.perf_counter()
     total = top1 = top5 = 0
@@ -75,10 +86,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--model", required=True)
-    parser.add_argument("--architecture", choices=("adversarial-jepa", "policy-value"), required=True)
+    parser.add_argument("--architecture", choices=("adversarial-jepa", "lejepa", "policy-value"), required=True)
     parser.add_argument(
         "--model-variant",
-        choices=("h1", "h1-h2", "full", "no-response", "direct"),
+        choices=("h1", "h1-h2", "full", "no-response", "sigreg", "direct"),
         default="full",
     )
     parser.add_argument("--split", choices=("train", "validation"), default="validation")
