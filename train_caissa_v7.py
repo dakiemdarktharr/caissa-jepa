@@ -9,7 +9,7 @@ import os
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 import numpy as np
 
@@ -79,7 +79,7 @@ def atomic_json(path: Path, payload: dict, replace_attempts: int = 8) -> None:
             time.sleep(min(0.05 * (2**attempt), 1.0))
 
 
-def train(arguments: argparse.Namespace) -> int:
+def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[dict], None]] = None) -> int:
     # Preserve the programmatic API used by early v7 scripts, which did not
     # yet have an explicit architecture argument.
     architecture = getattr(arguments, "architecture", "adversarial-jepa")
@@ -126,6 +126,11 @@ def train(arguments: argparse.Namespace) -> int:
         "resume": resume,
         "status": "RUNNING",
         "started_at": report.get("started_at", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())),
+        "starting_epoch": completed_epochs,
+        "target_epoch": completed_epochs + arguments.epochs,
+        "current_epoch": completed_epochs + 1,
+        "current_batch": 0,
+        "phase": "starting",
         "completed_epochs": completed_epochs,
         "trained_steps": model.trained_steps,
     })
@@ -149,8 +154,12 @@ def train(arguments: argparse.Namespace) -> int:
             report["latest_metrics"] = latest
         atomic_json(report_path, report)
         last_progress_write = now
+        if progress_callback is not None:
+            progress_callback(report.copy())
 
     try:
+        if progress_callback is not None:
+            progress_callback(report.copy())
         for epoch_offset in range(arguments.epochs):
             epoch = completed_epochs + epoch_offset + 1
             train_values = []
@@ -183,6 +192,8 @@ def train(arguments: argparse.Namespace) -> int:
                 "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             })
             atomic_json(report_path, report)
+            if progress_callback is not None:
+                progress_callback(report.copy())
             print(json.dumps(epoch_report, ensure_ascii=False, sort_keys=True))
         report.update({
             "status": "COMPLETE",
@@ -191,7 +202,13 @@ def train(arguments: argparse.Namespace) -> int:
             "trained_steps": model.trained_steps,
         })
         atomic_json(report_path, report)
+        if progress_callback is not None:
+            progress_callback(report.copy())
     except BaseException as error:
+        try:
+            model.save()
+        except Exception:
+            pass
         report.update({
             "status": "INTERRUPTED" if isinstance(error, KeyboardInterrupt) else "FAILED",
             "error": repr(error),

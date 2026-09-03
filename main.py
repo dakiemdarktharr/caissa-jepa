@@ -33,6 +33,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QInputDialog,
     QMainWindow,
+    QMessageBox,
     QWidget,
 )
 
@@ -3119,271 +3120,133 @@ class caissajepa:
         }
 
 
+class traincancelled(KeyboardInterrupt):
+    pass
+
+
 class trainworker(QObject):
+    """Run the v7 FEN trainer inside the GUI-owned QThread."""
+
     tien_do = Signal(object)
     ket_qua = Signal(object)
     hoan_tat = Signal()
 
-    def __init__(self, database_path, model_path, stop_event):
+    def __init__(
+        self,
+        database_path,
+        model_path,
+        stop_event,
+        dataset_path,
+        epochs,
+        batch_size=64,
+        latent_size=96,
+        allow_dataset_change=False,
+    ):
         super().__init__()
         self.database_path = database_path
-        self.model_path = model_path
+        self.model_path = Path(model_path)
         self.stop_event = stop_event
-        self.batch_size = 32
-        self.epochs = 5
+        self.dataset_path = Path(dataset_path)
+        self.epochs = int(epochs)
+        self.batch_size = int(batch_size)
+        self.latent_size = int(latent_size)
+        self.allow_dataset_change = bool(allow_dataset_change)
+        self.last_report = {}
 
-    def tao_training_sample(self, row, random_generator):
-        position = json_thanh_snapshot(row["position_json"])
-        next_position = json_thanh_snapshot(row["next_position_json"])
-
-        if row["future2_json"]:
-            future2 = json_thanh_snapshot(row["future2_json"])
+    def _gui_progress(self, report):
+        if self.stop_event.is_set():
+            raise traincancelled()
+        self.last_report = report.copy()
+        starting_epoch = int(report.get("starting_epoch", 0))
+        requested_epochs = max(1, int(report.get("requested_epochs", self.epochs)))
+        current_epoch = int(report.get("current_epoch", starting_epoch + 1))
+        phase = report.get("phase", "starting")
+        if phase == "complete":
+            completed_units = requested_epochs
         else:
-            future2 = next_position
-
-        if row["future4_json"]:
-            future4 = json_thanh_snapshot(row["future4_json"])
-        else:
-            future4 = future2
-
-        move = text_thanh_move(row["move_text"], position["turn"])
-        engine = vitriengine(position, 0.02)
-        legal_moves = engine.lay_tat_ca_nuoc_di_hop_le(engine.turn)
-
-        if move not in legal_moves:
-            return None
-
-        negative_moves = [item for item in legal_moves if item != move]
-
-        if len(negative_moves) > 0:
-            negative_move = random_generator.choice(negative_moves)
-            engine.thuc_hien_nuoc_di(negative_move)
-            negative = {
-                "board": engine.board.copy(),
-                "turn": engine.turn,
-                "castling_rights": engine.castling_rights.copy(),
-                "en_passant_target": engine.en_passant_target,
-                "halfmove_clock": engine.halfmove_clock,
-                "position_counts": {},
-            }
-        else:
-            negative = next_position
-
-        return {
-            "position": position,
-            "move": move,
-            "next_position": next_position,
-            "future2": future2,
-            "future4": future4,
-            "negative": negative,
-            "target": float(row["target"]),
+            epoch_index = max(0, current_epoch - starting_epoch - 1)
+            phase_fraction = {"starting": 0.0, "train": 0.45, "validation": 0.85}.get(phase, 0.5)
+            completed_units = min(requested_epochs, epoch_index + phase_fraction)
+        overall_total = requested_epochs * 1000
+        overall_processed = int(round(overall_total * completed_units / requested_epochs))
+        latest_metrics = report.get("latest_metrics", {})
+        if "loss" not in latest_metrics and isinstance(latest_metrics.get("train"), dict):
+            latest_metrics = latest_metrics["train"]
+        payload = {
+            "epoch": current_epoch,
+            "epochs": starting_epoch + requested_epochs,
+            "phase": phase,
+            "processed": report.get("current_batch", 0),
+            "total": report.get("current_batch", 0),
+            "overall_processed": overall_processed,
+            "overall_total": overall_total,
+            "progress_percent": 100.0 * completed_units / requested_epochs,
+            "trained_steps": report.get("trained_steps", 0),
+            "valid_samples": 0,
+            "skipped_samples": 0,
+            "rows_per_second": None,
+            "metrics": latest_metrics,
+            "wall_time": time.time(),
         }
+        self.tien_do.emit(payload)
 
     @Slot()
     def chay(self):
-        read_connection = None
-
         try:
             if np is None:
                 raise RuntimeError("Chưa cài NumPy")
-
-            database = chessdatabase(self.database_path)
-            total_samples, dataset_max_id = (
-                database.thong_ke_model_samples()
-            )
-
-            if total_samples == 0:
-                raise RuntimeError("Chưa có dữ liệu để train")
-
-            read_connection = sqlite3.connect(
-                self.database_path,
-                timeout=30,
-            )
-            read_connection.row_factory = sqlite3.Row
-            read_connection.execute("PRAGMA query_only = ON")
-            read_connection.execute("PRAGMA cache_size = -131072")
-            read_connection.execute("PRAGMA mmap_size = 268435456")
-
-            model = caissajepa(self.model_path, True)
-            random_generator = random.Random(20260805 + model.trained_steps)
-            last_metrics = None
-            processed = 0
-            train_started_perf = time.perf_counter()
-            speed_ema = None
-
-            dataset_changed = (
-                model.resume_total_samples not in (0, total_samples)
-                or (
-                    model.resume_dataset_max_id > 0
-                    and model.resume_dataset_max_id != dataset_max_id
+            manifest_path = self.dataset_path / "dataset_manifest.json"
+            if not manifest_path.exists():
+                raise RuntimeError("Chưa có FEN dataset; hãy chạy crawler trước")
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if manifest.get("status") not in ("TARGET_REACHED", "COMPLETE"):
+                raise RuntimeError(
+                    "Dataset chưa hoàn tất: " + str(manifest.get("status", "UNKNOWN"))
                 )
+
+            from argparse import Namespace
+            from train_caissa_v7 import train as train_v7
+
+            arguments = Namespace(
+                dataset=str(self.dataset_path),
+                model=str(self.model_path),
+                epochs=self.epochs,
+                batch_size=self.batch_size,
+                learning_rate=5e-4,
+                latent_size=self.latent_size,
+                architecture="adversarial-jepa",
+                seed=20260903,
+                validation_percent=10,
+                max_train_batches=0,
+                max_validation_batches=0,
+                allow_dataset_change=self.allow_dataset_change,
+                resume=self.model_path.exists(),
+                progress_interval=0.5,
             )
-
-            if dataset_changed:
-                model.resume_epoch = 0
-                model.resume_offset = 0
-                model.resume_last_sample_id = 0
-
-            if model.resume_epoch >= self.epochs:
-                model.resume_epoch = 0
-                model.resume_offset = 0
-                model.resume_last_sample_id = 0
-
-            model.resume_total_samples = total_samples
-            model.resume_dataset_max_id = dataset_max_id
-
-            start_epoch = model.resume_epoch
-            start_offset = model.resume_offset
-            start_last_id = model.resume_last_sample_id
-
-            if start_offset > 0 and start_last_id <= 0:
-                start_last_id = database.lay_id_model_truoc_offset(
-                    read_connection,
-                    start_offset,
-                )
-                model.resume_last_sample_id = start_last_id
-
-            for epoch in range(start_epoch, self.epochs):
-                if epoch == start_epoch:
-                    offset = min(start_offset, total_samples)
-                    last_id = start_last_id
-                else:
-                    offset = 0
-                    last_id = 0
-
-                model.resume_epoch = epoch
-                model.resume_offset = offset
-                model.resume_last_sample_id = last_id
-                model.resume_total_samples = total_samples
-                model.resume_dataset_max_id = dataset_max_id
-
-                while offset < total_samples:
-                    if self.stop_event.is_set():
-                        break
-
-                    batch_started = time.perf_counter()
-
-                    rows = database.lay_model_samples_sau_id(
-                        read_connection,
-                        self.batch_size,
-                        last_id,
-                        dataset_max_id,
-                    )
-
-                    if len(rows) == 0:
-                        break
-
-                    samples = []
-
-                    for row in rows:
-                        sample = self.tao_training_sample(
-                            row,
-                            random_generator,
-                        )
-
-                        if sample is not None:
-                            samples.append(sample)
-
-                    if samples:
-                        last_metrics = model.train_batch(samples, 0.001)
-
-                    last_id = int(rows[-1]["id"])
-                    offset += len(rows)
-                    processed += len(rows)
-                    model.resume_epoch = epoch
-                    model.resume_offset = offset
-                    model.resume_last_sample_id = last_id
-                    model.resume_total_samples = total_samples
-                    model.resume_dataset_max_id = dataset_max_id
-                    batch_time = max(
-                        1e-9,
-                        time.perf_counter() - batch_started,
-                    )
-                    rows_per_second = len(rows) / batch_time
-
-                    if speed_ema is None:
-                        speed_ema = rows_per_second
-                    else:
-                        speed_ema = (
-                            0.10 * rows_per_second
-                            + 0.90 * speed_ema
-                        )
-
-                    if samples and model.trained_steps % 250 == 0:
-                        model.save()
-
-                    overall_processed = epoch * total_samples + offset
-                    overall_total = self.epochs * total_samples
-                    remaining_rows = max(
-                        0,
-                        overall_total - overall_processed,
-                    )
-                    eta_seconds = remaining_rows / max(
-                        speed_ema,
-                        1e-9,
-                    )
-                    wall_time = time.time()
-
-                    self.tien_do.emit({
-                        "epoch": epoch + 1,
-                        "epochs": self.epochs,
-                        "processed": offset,
-                        "total": total_samples,
-                        "overall_processed": overall_processed,
-                        "overall_total": overall_total,
-                        "progress_percent": (
-                            100.0 * overall_processed / overall_total
-                        ),
-                        "trained_steps": model.trained_steps,
-                        "batch_rows": len(rows),
-                        "valid_samples": len(samples),
-                        "skipped_samples": len(rows) - len(samples),
-                        "batch_time": batch_time,
-                        "samples_per_second": len(samples) / batch_time,
-                        "rows_per_second": speed_ema,
-                        "eta_seconds": eta_seconds,
-                        "estimated_finish_timestamp": (
-                            wall_time + eta_seconds
-                        ),
-                        "elapsed_seconds": (
-                            time.perf_counter() - train_started_perf
-                        ),
-                        "wall_time": wall_time,
-                        "metrics": last_metrics,
-                    })
-
-                if self.stop_event.is_set():
-                    model.save()
-                    break
-
-                model.resume_epoch = epoch + 1
-                model.resume_offset = 0
-                model.resume_last_sample_id = 0
-                model.save()
-
-            if self.stop_event.is_set() == False:
-                model.resume_epoch = 0
-                model.resume_offset = 0
-                model.resume_last_sample_id = 0
-                model.resume_total_samples = total_samples
-                model.resume_dataset_max_id = dataset_max_id
-                model.save()
-
+            train_v7(arguments, progress_callback=self._gui_progress)
+            report_path = self.model_path.with_suffix(".training.json")
+            if report_path.exists():
+                self.last_report = json.loads(report_path.read_text(encoding="utf-8"))
             self.ket_qua.emit({
-                "cancelled": self.stop_event.is_set(),
-                "processed": processed,
-                "trained_steps": model.trained_steps,
-                "resume_epoch": model.resume_epoch,
-                "resume_offset": model.resume_offset,
-                "metrics": last_metrics,
-                "model_path": str(model.model_path),
+                "cancelled": False,
+                "trained_steps": self.last_report.get("trained_steps", 0),
+                "metrics": self.last_report.get("latest_metrics", {}),
+                "model_path": str(self.model_path),
+            })
+        except traincancelled:
+            self.ket_qua.emit({
+                "cancelled": True,
+                "trained_steps": self.last_report.get("trained_steps", 0),
+                "metrics": self.last_report.get("latest_metrics", {}),
+                "model_path": str(self.model_path),
             })
         except Exception as error:
-            self.ket_qua.emit({"error": str(error)})
+            self.ket_qua.emit({
+                "error": str(error),
+                "trained_steps": self.last_report.get("trained_steps", 0),
+                "model_path": str(self.model_path),
+            })
         finally:
-            if read_connection is not None:
-                read_connection.close()
-
             self.hoan_tat.emit()
 
 
@@ -4942,19 +4805,82 @@ class boardwidget(QWidget):
             self.update()
             return
 
-        sample_count = self.database.dem_model_samples()
-
-        if sample_count == 0:
-            self.train_status = "Chưa có mẫu; hãy import PGN GM"
+        dataset_path = self.project_dir / "fen_dataset"
+        manifest_path = dataset_path / "dataset_manifest.json"
+        if not manifest_path.exists():
+            self.train_status = "Chưa có FEN dataset; hãy chạy crawler"
             self.update()
             return
+
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except Exception as error:
+            self.train_status = "Không đọc được dataset: " + str(error)
+            self.update()
+            return
+
+        if manifest.get("status") not in ("TARGET_REACHED", "COMPLETE"):
+            self.train_status = (
+                "Dataset chưa hoàn tất: "
+                + str(manifest.get("status", "UNKNOWN"))
+            )
+            self.update()
+            return
+
+        sample_count = int(manifest.get("positions", 0))
+        if sample_count == 0:
+            self.train_status = "Dataset chưa có vị trí FEN hợp lệ"
+            self.update()
+            return
+
+        epochs, accepted = QInputDialog.getInt(
+            self,
+            "CAISSA-JEPA v7",
+            "Số epoch train thêm:",
+            5,
+            1,
+            10000,
+        )
+        if not accepted:
+            return
+
+        allow_dataset_change = False
+        if self.adversarial_model_path.exists():
+            try:
+                from adversarial_jepa import dataset_manifest_fingerprint
+
+                current_fingerprint = dataset_manifest_fingerprint(dataset_path)
+                with np.load(self.adversarial_model_path, allow_pickle=False) as data:
+                    checkpoint_fingerprint = str(data["dataset_fingerprint"][0])
+                if checkpoint_fingerprint and checkpoint_fingerprint != current_fingerprint:
+                    answer = QMessageBox.question(
+                        self,
+                        "Dataset đã thay đổi",
+                        "Dataset khác fingerprint của checkpoint. Tiếp tục train incremental?",
+                        QMessageBox.Yes | QMessageBox.No,
+                        QMessageBox.No,
+                    )
+                    if answer != QMessageBox.Yes:
+                        self.train_status = "Đã hủy: fingerprint dataset không khớp"
+                        self.update()
+                        return
+                    allow_dataset_change = True
+            except Exception as error:
+                self.train_status = "Không đọc được checkpoint: " + str(error)
+                self.update()
+                return
 
         stop_event = threading.Event()
         thread = QThread(self)
         worker = trainworker(
             str(self.database.database_path),
-            str(self.model_path),
+            str(self.adversarial_model_path),
             stop_event,
+            str(dataset_path),
+            epochs,
+            batch_size=64,
+            latent_size=96,
+            allow_dataset_change=allow_dataset_change,
         )
         worker.moveToThread(thread)
         thread.started.connect(worker.chay)
@@ -4974,7 +4900,7 @@ class boardwidget(QWidget):
         self.train_stop_event = stop_event
         self.train_dang_chay = True
         self.train_status = (
-            f"Khởi tạo train 5 epoch với {sample_count} mẫu..."
+            f"Khởi tạo A-JEPA v7: {epochs} epoch | {sample_count} vị trí..."
         )
         self.update()
         thread.start()
@@ -4983,6 +4909,8 @@ class boardwidget(QWidget):
     def nhan_tien_do_train(self, progress):
         self.monitor_train.emit(progress.copy())
         metrics = progress.get("metrics") or {}
+        if "loss" not in metrics and isinstance(metrics.get("train"), dict):
+            metrics = metrics["train"]
         loss = metrics.get("loss")
 
         if loss is None:
@@ -4991,9 +4919,10 @@ class boardwidget(QWidget):
             loss_text = f"{loss:.4f}"
 
         self.train_status = (
-            f"Epoch {progress['epoch']}/{progress['epochs']} | "
-            f"{progress['processed']}/{progress['total']} | "
-            f"loss {loss_text}"
+            f"V7 {progress.get('phase', 'train')} | "
+            f"Epoch {progress.get('epoch', '--')}/{progress.get('epochs', '--')} | "
+            f"batch {progress.get('processed', '--')} | "
+            f"{progress.get('progress_percent', 0.0):.1f}% | loss {loss_text}"
         )
         self.update()
 
@@ -7590,7 +7519,12 @@ class monitorwidget(QWidget):
         self.sample_count = 0
 
         try:
-            self.sample_count = self.board_widget.database.dem_model_samples()
+            dataset_manifest = self.board_widget.project_dir / "fen_dataset/dataset_manifest.json"
+            if dataset_manifest.exists():
+                with dataset_manifest.open("r", encoding="utf-8") as handle:
+                    self.sample_count = int(json.load(handle).get("positions", 0))
+            else:
+                self.sample_count = self.board_widget.database.dem_model_samples()
         except Exception:
             self.sample_count = 0
 
@@ -8645,6 +8579,8 @@ class monitorwidget(QWidget):
         )
 
         model_path = self.board_widget.model_path
+        if self.board_widget.adversarial_model_path.exists():
+            model_path = self.board_widget.adversarial_model_path
         model_size = 0
 
         try:
