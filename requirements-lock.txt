@@ -1,0 +1,3 @@
+# Verified on Windows during CAISSA-JEPA v7 validation.
+numpy==2.0.2
+PySide6==6.10.3

@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+.firecrawl/
+
+# Reproducible source stays in Git; large, derived artifacts do not.
+chess_data/
+fen_dataset/
+_external_crawl_smoke/
+downloads/
+fen_dataset_crawl*.log
+*.npz
+*.sqlite
+*.db
