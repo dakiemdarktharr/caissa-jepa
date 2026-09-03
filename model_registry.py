@@ -60,6 +60,14 @@ TRAINING_MODEL_DEFINITIONS = (
         "filename": "policy_value_baseline.npz",
         "trainable": True,
     },
+    {
+        "id": "nnue-style-v1",
+        "label": "NNUE-style + Alpha-Beta v1",
+        "architecture": "nnue",
+        "variant": "nnue",
+        "filename": "nnue_style_baseline.npz",
+        "trainable": True,
+    },
 )
 
 

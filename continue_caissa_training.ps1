@@ -1,9 +1,9 @@
 param(
     [int]$AdditionalEpochs = 5,
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
-    [ValidateSet("adversarial-jepa", "lejepa", "policy-value")]
+    [ValidateSet("adversarial-jepa", "lejepa", "policy-value", "nnue")]
     [string]$Architecture = "adversarial-jepa",
-    [ValidateSet("h1", "h1-h2", "full", "no-response", "sigreg", "direct")]
+    [ValidateSet("h1", "h1-h2", "full", "no-response", "sigreg", "direct", "nnue")]
     [string]$ModelVariant = "full",
     [int]$BatchSize = 64,
     [int]$LatentSize = 96,

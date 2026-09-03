@@ -104,6 +104,8 @@ python fen_dataset_tool.py crawl-twic --output fen_dataset --target-gb 4
 python fen_dataset_tool.py verify --output fen_dataset
 python train_caissa_v7.py --dataset fen_dataset \
   --model chess_data/caissa_a_jepa_v7.npz --epochs 5
+python train_caissa_v7.py --architecture nnue --model-variant nnue \
+  --dataset fen_dataset --model chess_data/nnue_style_baseline.npz --epochs 5
 python test_core.py
 python test_v7.py
 ```
@@ -128,8 +130,11 @@ checkpoint.
 
 The GUI TRAIN MODEL dropdown can start independent runs for A-JEPA H1-only,
 A-JEPA H1+H2, full H1+H2+H4, no-response A-JEPA, LeJEPA with SIGReg and no
-EMA teacher, and Direct Policy/Value. Alpha-Beta is a non-trained classical
-engine reference. The LeJEPA entry is the chess-specific NumPy adaptation of
+EMA teacher, Direct Policy/Value, and an NNUE-style value baseline. Alpha-Beta
+is a non-trained classical engine reference. The NNUE-style entry uses sparse
+side-to-move board features, a small squared-clipped-ReLU network, and the
+existing alpha-beta search; it is intentionally not a Stockfish-compatible
+binary `.nnue` reader. The LeJEPA entry is the chess-specific NumPy adaptation of
 the predictive objective plus sketched isotropic-Gaussian regularization; it
 is not a claim that the original vision implementation was copied unchanged.
 Each model has its own checkpoint and `.training.json` report, while the

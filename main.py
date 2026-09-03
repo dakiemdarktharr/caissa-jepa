@@ -71,6 +71,7 @@ class vitriengine:
         gioi_han_giay=5.0,
         stop_event=None,
         progress_callback=None,
+        evaluation_model=None,
     ):
         self.board = snapshot["board"].copy()
         self.turn = snapshot["turn"]
@@ -82,6 +83,10 @@ class vitriengine:
         self.gioi_han_giay = max(0.02, float(gioi_han_giay))
         self.stop_event = stop_event
         self.progress_callback = progress_callback
+        # Optional learned evaluator used by the NNUE-style arena baseline.
+        # Keeping it injectable preserves the classical engine and all v6/v7
+        # callers unchanged.
+        self.evaluation_model = evaluation_model
         self.thoi_gian_bat_dau = 0.0
         self.thoi_gian_ket_thuc = 0.0
         self.thoi_gian_phat_tien_do = 0.0
@@ -1052,6 +1057,9 @@ class vitriengine:
         return score
 
     def tinh_evaluation(self):
+        if self.evaluation_model is not None:
+            return self.evaluation_model.evaluate_engine_score(self)
+
         non_pawn_material = 0
 
         for piece in self.board:
@@ -3268,7 +3276,11 @@ class trainworker(QObject):
                 architecture=self.architecture,
                 model_variant=(
                     self.model_variant
-                    if self.architecture in ("adversarial-jepa", "lejepa")
+                    if self.architecture in (
+                        "adversarial-jepa",
+                        "lejepa",
+                        "nnue",
+                    )
                     else "direct"
                 ),
                 seed=20260903,
@@ -4182,6 +4194,14 @@ class modelmatchworker(QObject):
         if spec["architecture"] == "legacy-jepa":
             return caissajepa(spec["path"], create_if_missing=False)
 
+        if spec["architecture"] == "nnue":
+            from nnue_baseline import NNUEStyleBaseline
+            return NNUEStyleBaseline(
+                spec["path"],
+                create_if_missing=False,
+                variant=spec["variant"],
+            )
+
         from policy_value_baseline import DirectPolicyValueBaseline
         return DirectPolicyValueBaseline(
             spec["path"],
@@ -4197,6 +4217,17 @@ class modelmatchworker(QObject):
             engine = vitriengine(snapshot, self.move_time, self.stop_event)
             result = engine.tim_nuoc_di_tot_nhat()
             return result.get("move"), "ALPHA_BETA"
+
+        if spec["architecture"] == "nnue":
+            model = self.models[model_id]
+            engine = vitriengine(
+                snapshot,
+                self.move_time,
+                self.stop_event,
+                evaluation_model=model,
+            )
+            result = engine.tim_nuoc_di_tot_nhat()
+            return result.get("move"), "NNUE_ALPHA_BETA"
 
         model = self.models[model_id]
         search = caissamcts(

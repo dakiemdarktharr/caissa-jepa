@@ -23,7 +23,8 @@ from fen_dataset_tool import (
     FenDatasetBuilder,
 )
 from lejepa import LeJEPA
-from main import boardwidget, modelmatchwidget, modelmatchworker
+from nnue_baseline import NNUEStyleBaseline
+from main import boardwidget, modelmatchwidget, modelmatchworker, vitriengine
 from model_registry import arena_model_specs, training_model_specs
 from train_caissa_v7 import train
 
@@ -62,11 +63,12 @@ class ModelArenaTests(unittest.TestCase):
     def test_registry_exposes_independent_training_checkpoints(self):
         with tempfile.TemporaryDirectory() as temporary:
             specs = training_model_specs(Path(temporary))
-            self.assertGreaterEqual(len(specs), 6)
+            self.assertGreaterEqual(len(specs), 7)
             self.assertEqual(len({str(spec["path"]) for spec in specs}), len(specs))
             self.assertTrue(any(spec["variant"] == "h1" for spec in specs))
             self.assertTrue(any(spec["architecture"] == "policy-value" for spec in specs))
             self.assertTrue(any(spec["architecture"] == "lejepa" for spec in specs))
+            self.assertTrue(any(spec["architecture"] == "nnue" for spec in specs))
             self.assertEqual(arena_model_specs(Path(temporary))[0]["id"], "alpha-beta")
 
     def test_model_variants_have_different_active_horizons(self):
@@ -134,6 +136,85 @@ class ModelArenaTests(unittest.TestCase):
             )
             self.assertEqual(report["architecture"], "lejepa")
             self.assertEqual(report["model_variant"], "sigreg")
+
+    def test_nnue_style_trains_round_trips_and_uses_alpha_beta(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            dataset = self.build_dataset(root)
+            game = next(iter_dataset_games(dataset))
+            sample = sample_from_dataset_position(
+                game["positions"][0], np.random.default_rng(23)
+            )
+            self.assertIsNotNone(sample)
+
+            model_path = root / "chess_data/nnue_style_baseline.npz"
+            model = NNUEStyleBaseline(model_path, latent_size=8)
+            metrics = model.train_batch([sample], learning_rate=0.001)
+            self.assertTrue(all(np.isfinite(value) for value in metrics.values()))
+            self.assertGreater(model.hidden_size, 0)
+            model.save()
+
+            restored = NNUEStyleBaseline(
+                model_path,
+                latent_size=8,
+                create_if_missing=False,
+            )
+            self.assertEqual(restored.trained_steps, 1)
+            self.assertEqual(restored.variant, "nnue")
+            state = sample["state"]
+            engine = vitriengine(state, 0.02)
+            legal_moves = engine.lay_tat_ca_nuoc_di_hop_le(engine.turn)
+            self.assertTrue(np.isfinite(restored.danh_gia_snapshot(state)))
+            _, priors, _ = restored.score_legal_moves(state, legal_moves[:4])
+            self.assertAlmostEqual(sum(priors), 1.0, places=5)
+
+            trainer_path = root / "chess_data/trainer_nnue.npz"
+            self.assertEqual(
+                train(Namespace(
+                    dataset=str(dataset),
+                    model=str(trainer_path),
+                    epochs=1,
+                    batch_size=2,
+                    learning_rate=0.001,
+                    latent_size=8,
+                    architecture="nnue",
+                    model_variant="nnue",
+                    seed=23,
+                    validation_percent=10,
+                    max_train_batches=1,
+                    max_validation_batches=1,
+                    allow_dataset_change=False,
+                    resume=False,
+                    progress_interval=0.001,
+                )),
+                0,
+            )
+            report = json.loads(
+                trainer_path.with_suffix(".training.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(report["architecture"], "nnue")
+            self.assertEqual(report["model_variant"], "nnue")
+
+            progress = []
+            results = []
+            worker = modelmatchworker(
+                root,
+                root / "chess_data/chess_engine.db",
+                "nnue-style-v1",
+                "alpha-beta",
+                threading.Event(),
+                move_time=0.05,
+                max_plies=4,
+            )
+            worker.tien_do.connect(progress.append)
+            worker.ket_qua.connect(results.append)
+            worker.chay()
+            moves = [item for item in progress if item["event"] == "MATCH_MOVE"]
+            self.assertEqual(len(moves), 4)
+            self.assertTrue(any(item["source"] == "NNUE_ALPHA_BETA" for item in moves))
+            self.assertEqual(len(results), 1)
 
     def test_read_only_arena_randomizes_colors_and_emits_legal_moves(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -57,6 +57,7 @@ Train with a game-level deterministic split:
 ```powershell
 python train_caissa_v7.py --dataset fen_dataset --model chess_data\caissa_a_jepa_v7.npz --epochs 5
 python train_caissa_v7.py --architecture policy-value --dataset fen_dataset --model chess_data\policy_value_baseline.npz --epochs 5
+python train_caissa_v7.py --architecture nnue --model-variant nnue --dataset fen_dataset --model chess_data\nnue_style_baseline.npz --epochs 5
 ```
 
 Để tiếp tục một checkpoint đã train dở, dùng `--resume` hoặc runner Windows:
@@ -78,8 +79,11 @@ report is part of the experiment artifact.
 
 The GUI can train independent checkpoints for A-JEPA H1-only, A-JEPA H1+H2,
 full A-JEPA H1+H2+H4, no-response A-JEPA, chess-adapted LeJEPA with SIGReg,
-and Direct Policy/Value. Alpha-Beta is retained as a non-trained classical
-engine reference. Each trainable run has its own checkpoint and heartbeat
+and Direct Policy/Value. It also includes an NNUE-style value baseline whose
+checkpoint is consumed by the existing alpha-beta search. Alpha-Beta is
+retained as a non-trained classical engine reference. The NNUE-style model is
+an experiment-compatible NumPy implementation, not a Stockfish-compatible
+`.nnue` binary. Each trainable run has its own checkpoint and heartbeat
 report; the monitor keeps a separate timeline per model.
 
 The LeJEPA entry follows the core objective described by Balestriero and
@@ -115,8 +119,8 @@ budgets, multiple seeds, confidence intervals and a held-out confirmation set.
 
 ## Required benchmark sequence
 
-1. Validate v6 alpha-beta, uniform MCTS, value-only MCTS and direct
-   policy/value under equal time and node budgets.
+1. Validate v6/classical alpha-beta, NNUE-style alpha-beta, uniform MCTS,
+   value-only MCTS and direct policy/value under equal time and node budgets.
 2. Compare H1-only against H1+H2 and H1+H2+H4 with equal parameters/data.
 3. Compare single future against response-conditioned worst-case pooling.
 4. Run multiple seeds; keep validation tuning separate from final test games.
