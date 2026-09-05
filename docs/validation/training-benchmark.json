@@ -1,0 +1,42 @@
+{
+  "build_seconds": 1.9357234,
+  "cache_bytes": 303104,
+  "cached_preparation_speedup": 60.85416757591729,
+  "games": 16,
+  "models": {
+    "h1": {
+      "batch_positions": 64,
+      "median_batch_seconds": 0.007934950000000107
+    },
+    "lejepa": {
+      "batch_positions": 64,
+      "median_batch_seconds": 0.0096589499999995
+    },
+    "multi-horizon": {
+      "batch_positions": 64,
+      "median_batch_seconds": 0.007162700000000299
+    },
+    "nnue-style": {
+      "batch_positions": 64,
+      "median_batch_seconds": 0.0293985499999998
+    },
+    "policy-value": {
+      "batch_positions": 64,
+      "median_batch_seconds": 0.0026252999999991644
+    }
+  },
+  "scope": "microbenchmark; warm cache; NOT full training speedup",
+  "timings_seconds": {
+    "cached": [
+      0.06935650000000049,
+      0.04582520000000123,
+      0.04413339999999977
+    ],
+    "uncached": [
+      2.7886544,
+      3.105888600000001,
+      2.5363013
+    ]
+  },
+  "train_positions": 1459
+}

@@ -63,7 +63,8 @@ class ModelArenaTests(unittest.TestCase):
     def test_registry_exposes_independent_training_checkpoints(self):
         with tempfile.TemporaryDirectory() as temporary:
             specs = training_model_specs(Path(temporary))
-            self.assertGreaterEqual(len(specs), 7)
+            self.assertEqual(len(specs), 5)
+            self.assertEqual(sum(s['architecture'] in ('adversarial-jepa', 'lejepa') for s in specs), 3)
             self.assertEqual(len({str(spec["path"]) for spec in specs}), len(specs))
             self.assertTrue(any(spec["variant"] == "h1" for spec in specs))
             self.assertTrue(any(spec["architecture"] == "policy-value" for spec in specs))
@@ -256,11 +257,11 @@ class ModelArenaTests(unittest.TestCase):
             checkpoint = root / "chess_data/caissa_a_jepa_h1.npz"
             model = AdversarialJEPA(checkpoint, latent_size=8, variant="h1")
             model.save()
-            second_checkpoint = root / "chess_data/caissa_a_jepa_h1_h2.npz"
+            second_checkpoint = root / "chess_data/caissa_a_jepa_v7.npz"
             second_model = AdversarialJEPA(
                 second_checkpoint,
                 latent_size=8,
-                variant="h1-h2",
+                variant="full",
             )
             second_model.save()
 
@@ -298,13 +299,15 @@ class ModelArenaTests(unittest.TestCase):
             board = boardwidget(project_dir=root)
             widget = modelmatchwidget(board)
             schedule = widget.build_round_robin_schedule(1)
-            self.assertEqual(len(schedule), 3)
+            self.assertEqual(len(schedule), 6)
+            for index in range(0, len(schedule), 2):
+                self.assertEqual(schedule[index], schedule[index + 1][::-1])
             self.assertEqual(
                 {frozenset(pair) for pair in schedule},
                 {
                     frozenset(("alpha-beta", "a-jepa-h1")),
-                    frozenset(("alpha-beta", "a-jepa-h1-h2")),
-                    frozenset(("a-jepa-h1", "a-jepa-h1-h2")),
+                    frozenset(("alpha-beta", "a-jepa-v7")),
+                    frozenset(("a-jepa-h1", "a-jepa-v7")),
                 },
             )
             self.assertTrue(widget.last_matchup_available())

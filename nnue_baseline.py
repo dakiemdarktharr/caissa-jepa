@@ -153,6 +153,7 @@ class NNUEStyleBaseline:
             self.hidden_size = int(data["hidden_size"][0])
             self.latent_size = self.hidden_size
             self.trained_steps = int(data["trained_steps"][0])
+            self.seed = int(data["seed"][0]) if "seed" in data else self.seed
             self.adam_step = int(data["adam_step"][0])
             self.dataset_fingerprint = str(data["dataset_fingerprint"][0])
             for name in self.parameter_names:
@@ -171,6 +172,7 @@ class NNUEStyleBaseline:
             "feature_size": np.array([FEATURE_SIZE], dtype=np.int64),
             "hidden_size": np.array([self.hidden_size], dtype=np.int64),
             "trained_steps": np.array([self.trained_steps], dtype=np.int64),
+            "seed": np.array([self.seed], dtype=np.int64),
             "adam_step": np.array([self.adam_step], dtype=np.int64),
             "dataset_fingerprint": np.array([self.dataset_fingerprint]),
             "evaluation_scale": np.array([EVALUATION_SCALE], dtype=np.float32),

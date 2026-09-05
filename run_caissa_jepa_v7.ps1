@@ -15,7 +15,7 @@ param(
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "lejepa", "policy-value", "nnue")]
     [string]$Architecture = "adversarial-jepa",
-    [ValidateSet("h1", "h1-h2", "full", "no-response", "sigreg", "direct", "nnue")]
+    [ValidateSet("h1", "full", "sigreg", "direct", "nnue")]
     [string]$ModelVariant = "full",
     [switch]$ForegroundCrawl,
     [switch]$AllowPartialDataset,
@@ -78,6 +78,7 @@ function Invoke-Tests {
     Invoke-V7Python @("test_v7.py")
     Invoke-V7Python @("test_gui_v7.py")
     Invoke-V7Python @("test_model_arena.py")
+    Invoke-V7Python @("test_research_upgrade.py")
     Write-Host "V7 TESTS PASSED" -ForegroundColor Green
 }
 

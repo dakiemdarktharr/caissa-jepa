@@ -50,6 +50,7 @@ class DirectPolicyValueBaseline:
                 raise ValueError("Không phải checkpoint direct policy/value baseline")
             self.latent_size = int(data["latent_size"][0])
             self.trained_steps = int(data["trained_steps"][0])
+            self.seed = int(data["seed"][0]) if "seed" in data else self.seed
             self.adam_step = int(data["adam_step"][0])
             self.dataset_fingerprint = str(data["dataset_fingerprint"][0])
             for name in self.names:
@@ -64,6 +65,7 @@ class DirectPolicyValueBaseline:
             "model_version": np.array([MODEL_VERSION], dtype=np.int64),
             "latent_size": np.array([self.latent_size], dtype=np.int64),
             "trained_steps": np.array([self.trained_steps], dtype=np.int64),
+            "seed": np.array([self.seed], dtype=np.int64),
             "adam_step": np.array([self.adam_step], dtype=np.int64),
             "dataset_fingerprint": np.array([self.dataset_fingerprint]),
         }
@@ -108,15 +110,17 @@ class DirectPolicyValueBaseline:
         negative_embed = negative_actions @ self.policy_action_w
         scale = math.sqrt(self.latent_size)
         margins = 0.20 - np.sum(latent * positive_embed, axis=1) / scale + np.sum(latent * negative_embed, axis=1) / scale
+        eligible = np.any(positive_actions != negative_actions, axis=1)
+        margins = np.where(eligible, margins, 0.0)
         ranking_loss = float(np.mean(np.maximum(0, margins)))
         variance = np.var(latent, axis=0)
         variance_loss = float(np.mean(np.maximum(0, 0.05 - variance)))
         metrics = {
-            "loss": value_loss + ranking_loss + variance_loss,
+            "loss": value_loss + 0.25 * ranking_loss + 0.05 * variance_loss,
             "value_loss": value_loss,
             "ranking_loss": ranking_loss,
             "variance_loss": variance_loss,
-            "ranking_accuracy": float(np.mean(margins <= 0)),
+            "ranking_accuracy": float(np.sum((margins <= 0) & eligible) / max(1, np.sum(eligible))),
             "latent_std": float(np.mean(np.std(latent, axis=0))),
         }
         if not update:

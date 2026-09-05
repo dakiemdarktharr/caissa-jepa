@@ -131,6 +131,7 @@ class LeJEPA:
                 )
             self.latent_size = int(data["latent_size"][0])
             self.trained_steps = int(data["trained_steps"][0])
+            self.seed = int(data["seed"][0]) if "seed" in data else self.seed
             self.adam_step = int(data["adam_step"][0])
             self.dataset_fingerprint = str(data["dataset_fingerprint"][0])
             self.sigreg_weight = float(
@@ -164,6 +165,7 @@ class LeJEPA:
             "model_variant": np.array([self.variant]),
             "latent_size": np.array([self.latent_size], dtype=np.int64),
             "trained_steps": np.array([self.trained_steps], dtype=np.int64),
+            "seed": np.array([self.seed], dtype=np.int64),
             "adam_step": np.array([self.adam_step], dtype=np.int64),
             "dataset_fingerprint": np.array([self.dataset_fingerprint]),
             "sigreg_weight": np.array([self.sigreg_weight], dtype=np.float32),
@@ -340,10 +342,11 @@ class LeJEPA:
         scale = math.sqrt(self.latent_size)
         positive_score = np.sum(latent * positive_embed, axis=1) / scale
         negative_score = np.sum(latent * negative_embed, axis=1) / scale
-        margins = 0.20 - positive_score + negative_score
+        eligible = np.any(batch["own_actions"] != batch["negative_actions"], axis=1)
+        margins = np.where(eligible, 0.20 - positive_score + negative_score, 0.0)
         ranking_loss = float(np.mean(np.maximum(0.0, margins)))
         sigreg_input = np.concatenate([latent] + [targets[h] for h in HORIZONS], axis=0)
-        sigreg_loss, _ = self._sigreg(sigreg_input)
+        sigreg_loss, sigreg_gradient = self._sigreg(sigreg_input)
         return {
             "latent": latent,
             "targets": targets,
@@ -357,6 +360,7 @@ class LeJEPA:
             "margins": margins,
             "sigreg_input": sigreg_input,
             "sigreg_loss": sigreg_loss,
+            "sigreg_gradient": sigreg_gradient,
         }
 
     def _metrics(self, batch: dict, forward: dict) -> dict:
@@ -366,7 +370,7 @@ class LeJEPA:
         total_loss = (
             sum(HORIZON_WEIGHTS[h] * losses[h] for h in HORIZONS)
             + float(np.mean(forward["value_error"] ** 2))
-            + float(np.mean(np.maximum(0.0, margins)))
+            + 0.25 * float(np.mean(np.maximum(0.0, margins)))
             + self.sigreg_weight * forward["sigreg_loss"]
         )
         covariance = np.cov(latent, rowvar=False) if latent.shape[0] > 1 else np.zeros((self.latent_size, self.latent_size))
@@ -386,7 +390,7 @@ class LeJEPA:
             "value_loss": float(np.mean(forward["value_error"] ** 2)),
             "ranking_loss": float(np.mean(np.maximum(0.0, margins))),
             "sigreg_loss": float(forward["sigreg_loss"]),
-            "ranking_accuracy": float(np.mean(margins <= 0)),
+            "ranking_accuracy": float(np.sum((margins <= 0) & np.any(batch["own_actions"] != batch["negative_actions"], axis=1)) / max(1, np.sum(np.any(batch["own_actions"] != batch["negative_actions"], axis=1)))),
             "h2_coverage": float(np.mean(forward["masks"][2])),
             "h4_coverage": float(np.mean(forward["masks"][4])),
             "latent_std": float(np.mean(np.std(latent, axis=0))),
@@ -397,6 +401,10 @@ class LeJEPA:
     def train_batch(self, samples: list[dict], learning_rate: float = 5e-4) -> dict:
         if not samples:
             raise ValueError("Empty batch")
+        # Refresh random directions per update; seed + step makes resume reproducible.
+        rng = np.random.default_rng(self.seed + self.trained_steps)
+        slices = rng.normal(size=self.sigreg_slices.shape).astype(np.float32)
+        self.sigreg_slices = slices / np.maximum(np.linalg.norm(slices, axis=1, keepdims=True), 1e-8)
         batch = self._prepare_batch(samples)
         forward = self._forward(batch)
         batch_size = batch["batch_size"]
@@ -428,7 +436,7 @@ class LeJEPA:
             latent_gradient += pre_gradient @ getattr(self, weight_name)[: self.latent_size].T
             target_gradients[horizon] -= 2.0 * weighted * error / denominator
 
-        sigreg_gradient = self._sigreg(forward["sigreg_input"])[1]
+        sigreg_gradient = forward["sigreg_gradient"].copy()
         sigreg_gradient *= self.sigreg_weight
         latent_gradient += sigreg_gradient[:batch_size]
         offset = batch_size

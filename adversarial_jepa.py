@@ -130,6 +130,20 @@ def sample_from_dataset_position(position: dict, random_generator: np.random.Gen
         second_opponent_action = move_from_uci(position.get("second_opponent_action_uci"), "black" if state["turn"] == "white" else "white")
         future2 = snapshot_from_fen(position["future2_fen"]) if position.get("future2_fen") else None
         future4 = snapshot_from_fen(position["future4_fen"]) if position.get("future4_fen") else None
+        outcome = float(position["outcome_pov"])
+        if not np.isfinite(outcome) or not -1 <= outcome <= 1:
+            return None
+        # Validate latent targets against exact legal transitions once at cache build.
+        for action, expected in ((own_action, next_state), (opponent_action, future2),
+                                 (next_our_action, None), (second_opponent_action, future4)):
+            if action is None:
+                break
+            if action not in engine.lay_tat_ca_nuoc_di_hop_le(engine.turn):
+                return None
+            engine.thuc_hien_nuoc_di(action)
+            if expected and (engine.board != expected["board"] or engine.turn != expected["turn"]
+                             or engine.castling_rights != expected["castling_rights"]):
+                return None
         return {
             "state": state,
             "next_state": next_state,
@@ -140,7 +154,8 @@ def sample_from_dataset_position(position: dict, random_generator: np.random.Gen
             "next_our_action": next_our_action,
             "second_opponent_action": second_opponent_action,
             "negative_action": negative_action,
-            "outcome": float(position["outcome_pov"]),
+            "legal_alternatives": alternatives,
+            "outcome": outcome,
         }
     except (KeyError, TypeError, ValueError):
         return None
@@ -360,7 +375,8 @@ class AdversarialJEPA:
         scale = math.sqrt(self.latent_size)
         positive_score = np.sum(latent * positive_embed, axis=1) / scale
         negative_score = np.sum(latent * negative_embed, axis=1) / scale
-        margins = 0.20 - positive_score + negative_score
+        eligible = np.any(own_actions != negative_actions, axis=1)
+        margins = np.where(eligible, 0.20 - positive_score + negative_score, 0.0)
         active = (margins > 0).astype(np.float32)[:, None]
         ranking_loss = float(np.mean(np.maximum(0.0, margins)))
         ranking_gradient = active / batch_size
@@ -388,11 +404,11 @@ class AdversarialJEPA:
         self.target_b = 0.995 * self.target_b + 0.005 * self.encoder_b
         self.trained_steps += 1
         return {
-            "loss": sum(weights[horizon] * losses[horizon] for horizon in (1, 2, 4)) + value_loss + ranking_loss + variance_loss,
+            "loss": sum(weights[horizon] * losses[horizon] for horizon in (1, 2, 4)) + value_loss + 0.25 * ranking_loss + 0.05 * variance_loss,
             "h1_loss": losses[1], "h2_loss": losses[2], "h4_loss": losses[4],
             "value_loss": value_loss, "ranking_loss": ranking_loss,
             "variance_loss": variance_loss,
-            "ranking_accuracy": float(np.mean(margins <= 0)),
+            "ranking_accuracy": float(np.sum((margins <= 0) & eligible) / max(1, np.sum(eligible))),
             "h2_coverage": float(np.mean(opponent_mask)),
             "h4_coverage": float(np.mean(horizon4_mask)),
             "latent_std": float(np.mean(np.std(latent, axis=0))),
@@ -462,13 +478,14 @@ class AdversarialJEPA:
         value_loss = float(np.mean((value_prediction - outcomes) ** 2))
         positive_score = np.sum(latent * (own_actions @ self.policy_action_w), axis=1) / math.sqrt(self.latent_size)
         negative_score = np.sum(latent * (negative_actions @ self.policy_action_w), axis=1) / math.sqrt(self.latent_size)
-        margins = 0.20 - positive_score + negative_score
+        eligible = np.any(own_actions != negative_actions, axis=1)
+        margins = np.where(eligible, 0.20 - positive_score + negative_score, 0.0)
         ranking_loss = float(np.mean(np.maximum(0.0, margins)))
         return {
-            "loss": losses[1] + losses[2] + losses[4] + value_loss + ranking_loss,
+            "loss": losses[1] + 0.75 * losses[2] + 0.5 * losses[4] + value_loss + 0.25 * ranking_loss + 0.05 * float(np.mean(np.maximum(0.0, 0.05 - np.var(latent, axis=0)))),
             "h1_loss": losses[1], "h2_loss": losses[2], "h4_loss": losses[4],
             "value_loss": value_loss, "ranking_loss": ranking_loss,
-            "ranking_accuracy": float(np.mean(margins <= 0)),
+            "ranking_accuracy": float(np.sum((margins <= 0) & eligible) / max(1, np.sum(eligible))),
             "h2_coverage": float(np.mean(opponent_mask)),
             "h4_coverage": float(np.mean(horizon4_mask)),
             "latent_std": float(np.mean(np.std(latent, axis=0))),
@@ -502,13 +519,19 @@ class AdversarialJEPA:
                 replies = engine.lay_tat_ca_nuoc_di_hop_le(engine.turn)
                 terminal = 0.0 if engine.is_draw_search() else None
                 if not replies:
-                    terminal = -1.0 if engine.is_king_in_check(engine.turn) else 0.0
+                    terminal = 1.0 if engine.is_king_in_check(engine.turn) else 0.0
                 if terminal is not None:
                     raw_scores.append(terminal)
+                    continue
+                if 2 not in self.enabled_horizons:
+                    predicted = self._predict(root_latent, [encode_action(move)[None, :]], 1)
+                    raw_scores.append(-float(self.value(predicted)[0, 0]))
                     continue
                 if max_opponent_branches is not None:
                     replies = replies[:max(1, max_opponent_branches)]
                 response_batch = np.stack([encode_action(reply) for reply in replies])
+                if not self.response_conditioned:
+                    response_batch.fill(0)
                 own_batch = np.repeat(encode_action(move)[None, :], len(replies), axis=0)
                 latent_batch = np.repeat(root_latent, len(replies), axis=0)
                 predicted = self._predict(latent_batch, [own_batch, response_batch], 2)

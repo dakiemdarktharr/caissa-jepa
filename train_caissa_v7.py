@@ -23,6 +23,7 @@ from adversarial_jepa import (
 from policy_value_baseline import DirectPolicyValueBaseline
 from lejepa import LeJEPA
 from nnue_baseline import NNUEStyleBaseline
+from training_runtime import SampleCache, MetricMean, TrainingETA
 
 
 def mean_metrics(values: list[dict]) -> dict:
@@ -101,6 +102,13 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     if resume and not checkpoint_exists:
         raise FileNotFoundError(f"Không thể resume: chưa có checkpoint {model_path}")
     fingerprint = dataset_manifest_fingerprint(dataset_dir)
+    previous_report_path = model_path.with_suffix(".training.json")
+    if checkpoint_exists and previous_report_path.exists():
+        previous_report = read_json_with_retry(previous_report_path)
+        if previous_report.get("validation_percent", arguments.validation_percent) != arguments.validation_percent:
+            raise ValueError("Resume requires the original validation split; use a new checkpoint")
+        if previous_report.get("seed", arguments.seed) != arguments.seed:
+            raise ValueError("Resume requires the original seed; use a new checkpoint")
     if architecture == "adversarial-jepa":
         model = AdversarialJEPA(
             model_path,
@@ -119,11 +127,19 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             latent_size=arguments.latent_size,
             variant=model_variant,
         )
-    else:
+    elif architecture == "policy-value":
         model = DirectPolicyValueBaseline(
             model_path,
             latent_size=arguments.latent_size,
         )
+    else:
+        raise ValueError(f"Unknown architecture: {architecture}")
+    if not checkpoint_exists:
+        model.seed = arguments.seed
+        model._initialize()
+    else:
+        # Older baseline checkpoints omitted seed; the checked run report is authoritative.
+        model.seed = arguments.seed
     if model.dataset_fingerprint and model.dataset_fingerprint != fingerprint and not allow_dataset_change:
         raise RuntimeError(
             "Dataset fingerprint khác checkpoint: "
@@ -138,6 +154,12 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     else:
         report = {"epochs": []}
     completed_epochs = int(report.get("completed_epochs", len(report.get("epochs", []))))
+    if checkpoint_exists:
+        report.setdefault("continuations", []).append({
+            "from_step": model.trained_steps, "previous_runtime_version": report.get("runtime_version", 1),
+            "runtime_version": 2, "objective_version": 2,
+            "note": "Weighted objectives corrected; old loss curves are not directly comparable. Fresh training is recommended for the paper.",
+        })
     report.update({
         "model": str(model_path),
         "dataset": str(dataset_dir),
@@ -159,6 +181,12 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         "phase": "starting",
         "completed_epochs": completed_epochs,
         "trained_steps": model.trained_steps,
+        "runtime_version": 2,
+        "objective_version": 2,
+        "resume_policy": "restart unfinished epoch from saved weights",
+        "eta_seconds": None,
+        "estimated_finish_timestamp": None,
+        "progress_percent": 0.0,
     })
     atomic_json(report_path, report)
     last_progress_write = 0.0
@@ -175,9 +203,15 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             "current_batch": batch_index,
             "trained_steps": model.trained_steps,
             "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            **eta.fields(),
+            "phase_batches": phase_batches[phase],
+            "rows_per_second": arguments.batch_size / max(1e-9, float(np.mean(eta.times[phase]))),
         })
         if latest is not None:
             report["latest_metrics"] = latest
+            if isinstance(latest.get("loss"), (int, float)):
+                report.setdefault("plot_history", []).append({"step": model.trained_steps, "phase": phase, "loss": latest["loss"]})
+                report["plot_history"] = report["plot_history"][-600:]
         atomic_json(report_path, report)
         last_progress_write = now
         if progress_callback is not None:
@@ -186,26 +220,51 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     try:
         if progress_callback is not None:
             progress_callback(report.copy())
+        def cache_progress(payload):
+            report.update(payload)
+            report["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            atomic_json(report_path, report)
+            if progress_callback:
+                progress_callback(report.copy())
+        cache = SampleCache(dataset_dir, fingerprint, arguments.validation_percent, cache_progress).prepare()
+        phase_batches = {
+            phase: min(math.ceil(cache.counts[phase] / arguments.batch_size), limit)
+            if limit else math.ceil(cache.counts[phase] / arguments.batch_size)
+            for phase, limit in (("train", arguments.max_train_batches), ("validation", arguments.max_validation_batches))
+        }
+        if not phase_batches["train"]:
+            raise ValueError("No valid training samples in this split")
+        eta = TrainingETA(phase_batches, arguments.epochs)
+        report.update({"split_positions": cache.counts, "skipped_samples": cache.skipped,
+                       "cache_path": str(cache.path), **eta.fields()})
         for epoch_offset in range(arguments.epochs):
             epoch = completed_epochs + epoch_offset + 1
-            train_values = []
-            for index, batch in enumerate(batches(dataset_dir, "train", arguments.batch_size, arguments.seed + epoch, arguments.validation_percent), 1):
-                train_values.append(model.train_batch(batch, arguments.learning_rate))
-                save_progress(epoch, "train", index, train_values[-1])
+            train_values = MetricMean()
+            tick = time.monotonic()
+            for index, batch in enumerate(cache.batches("train", arguments.batch_size, arguments.seed + epoch), 1):
+                latest = model.train_batch(batch, arguments.learning_rate)
+                train_values.add(latest, len(batch))
+                eta.observe("train", time.monotonic() - tick)
+                tick = time.monotonic()
+                save_progress(epoch, "train", index, latest)
                 if arguments.max_train_batches and index >= arguments.max_train_batches:
                     break
-            validation_values = []
-            for index, batch in enumerate(batches(dataset_dir, "validation", arguments.batch_size, arguments.seed, arguments.validation_percent), 1):
-                validation_values.append(model.evaluate_batch(batch))
-                save_progress(epoch, "validation", index, validation_values[-1])
+            validation_values = MetricMean()
+            tick = time.monotonic()
+            for index, batch in enumerate(cache.batches("validation", arguments.batch_size, arguments.seed), 1):
+                latest = model.evaluate_batch(batch)
+                validation_values.add(latest, len(batch))
+                eta.observe("validation", time.monotonic() - tick)
+                tick = time.monotonic()
+                save_progress(epoch, "validation", index, latest)
                 if arguments.max_validation_batches and index >= arguments.max_validation_batches:
                     break
             model.save()
             epoch_report = {
                 "epoch": epoch,
                 "trained_steps": model.trained_steps,
-                "train": mean_metrics(train_values),
-                "validation": mean_metrics(validation_values),
+                "train": train_values.result(),
+                "validation": validation_values.result(),
             }
             report["epochs"].append(epoch_report)
             report.update({
@@ -216,6 +275,7 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
                 "current_batch": 0,
                 "latest_metrics": epoch_report,
                 "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                **eta.fields(),
             })
             atomic_json(report_path, report)
             if progress_callback is not None:
@@ -226,6 +286,9 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             "phase": "complete",
             "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "trained_steps": model.trained_steps,
+            "eta_seconds": 0.0,
+            "estimated_finish_timestamp": time.time(),
+            "progress_percent": 100.0,
         })
         atomic_json(report_path, report)
         if progress_callback is not None:
@@ -261,7 +324,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--model-variant",
-        choices=("h1", "h1-h2", "full", "no-response", "sigreg", "direct", "nnue"),
+        choices=("h1", "full", "sigreg", "direct", "nnue"),
         default="full",
     )
     parser.add_argument("--seed", type=int, default=20260903)

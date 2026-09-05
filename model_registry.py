@@ -14,39 +14,23 @@ from typing import Optional
 TRAINING_MODEL_DEFINITIONS = (
     {
         "id": "a-jepa-h1",
-        "label": "A-JEPA H1-only",
+        "label": "JEPA One-Step EMA",
         "architecture": "adversarial-jepa",
         "variant": "h1",
         "filename": "caissa_a_jepa_h1.npz",
         "trainable": True,
     },
     {
-        "id": "a-jepa-h1-h2",
-        "label": "A-JEPA H1+H2",
-        "architecture": "adversarial-jepa",
-        "variant": "h1-h2",
-        "filename": "caissa_a_jepa_h1_h2.npz",
-        "trainable": True,
-    },
-    {
         "id": "a-jepa-v7",
-        "label": "A-JEPA v7 H1+H2+H4 (EMA)",
+        "label": "JEPA Multi-Horizon Response EMA",
         "architecture": "adversarial-jepa",
         "variant": "full",
         "filename": "caissa_a_jepa_v7.npz",
         "trainable": True,
     },
     {
-        "id": "a-jepa-no-response",
-        "label": "A-JEPA H1+H2+H4 (no response branch)",
-        "architecture": "adversarial-jepa",
-        "variant": "no-response",
-        "filename": "caissa_a_jepa_no_response.npz",
-        "trainable": True,
-    },
-    {
         "id": "lejepa-sigreg",
-        "label": "LeJEPA (SIGReg, no EMA)",
+        "label": "LeJEPA SIGReg No-EMA",
         "architecture": "lejepa",
         "variant": "sigreg",
         "filename": "lejepa_sigreg.npz",
@@ -111,9 +95,6 @@ def arena_model_specs(project_dir: Path) -> list[dict]:
         for spec in training_model_specs(project_dir)
         if spec["path"].exists()
     ]
-    legacy = _legacy_jepa_spec(project_dir)
-    if legacy["path"].exists():
-        ready.insert(0, legacy)
     return [_alpha_beta_spec(), *ready]
 
 
@@ -122,7 +103,6 @@ def spec_by_id(project_dir: Path, model_id: str) -> Optional[dict]:
     for spec in [
         *training_model_specs(project_dir),
         _alpha_beta_spec(),
-        _legacy_jepa_spec(project_dir),
     ]:
         if spec["id"] == model_id:
             return spec

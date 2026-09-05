@@ -1,0 +1,22 @@
+# Claim and gap ledger
+
+Research date: 2026-09-05. Scope: chess JEPA roster, non-JEPA references, training throughput, evaluation and publishable evidence. Planning tool discovery returned no update_plan tool, so the coordinator continued with a textual scope and staged implementation. Two bounded research lanes covered engine/evaluation methodology and training/correctness. The coordinator independently read the consequential JEPA, Stockfish, Lc0 and performance sources before synthesis.
+
+| Claim family | Primary evidence / date | Access and confidence | Gap / consequence |
+| --- | --- | --- | --- |
+| Predictive representations | Assran et al., I-JEPA, 2023, https://arxiv.org/abs/2301.08243 | Public abstract; high on method family | Vision evidence is not chess strength |
+| Action-conditioned planning | Assran et al., V-JEPA 2, June 2025, https://arxiv.org/abs/2506.09985 | Public abstract; high on original domain | Robotics results do not validate current chess adaptation |
+| LeJEPA no-EMA formulation | Balestriero and LeCun, November 2025, https://arxiv.org/abs/2511.08544 and https://arxiv.org/html/2511.08544v3 | Abstract/full HTML; high | NumPy bounded-tanh/quadrature differs; do not claim theorem reproduction |
+| SIGReg implementation | Authors' repository, https://github.com/galilai-group/lejepa/blob/main/MINIMAL.md | Research-lane primary code comparison; update date not established | Faithful projection/sampling implementation remains future work |
+| CPU engine reference | Stockfish project, 2026-01-31, https://stockfishchess.org/blog/2026/stockfish-18/ | Official release read; high | Release's +46 Elo is scoped to its own tests |
+| GPU model reference | Lc0 team, page updated November 2025, https://lczero.org/play/networks/bestnets/ | Official recommended list read; high on listed BT4 net | No same-hardware benchmark against Stockfish performed |
+| Searchless comparison | Ruoss et al., 2024, https://arxiv.org/abs/2402.04494 | Research-lane abstract/full-text evidence; moderate for transfer | Rating pools and repetition handling prevent naive numerical comparison |
+| WDL semantics | Lc0 team, April 2020, https://lczero.org/blog/2020/04/wdl-head/ ; Stockfish project https://github.com/official-stockfish/WDL_model | Research-lane primary documentation; high | WDL calibration is engine/domain specific |
+| Paired engine testing | Stockfish/Fishtest project, https://official-stockfish.github.io/docs/fishtest-wiki/Fishtest-Mathematics.html ; Fastchess project https://github.com/Disservin/fastchess/blob/master/man.md | Research-lane method sources; update dates not established | Current endless arena is exploratory, not an implemented SPRT |
+| Calibration | Guo et al., 2017, https://arxiv.org/abs/1706.04599 | Research-lane original paper; high on distinction | No local WDL calibration experiment yet |
+| Leakage | Kapoor and Narayanan, 2022, https://arxiv.org/abs/2207.07048 ; scikit-learn https://scikit-learn.org/stable/modules/cross_validation.html | Research-lane original paper and grouped split docs; high | Existing raw-PGN hashes do not establish position/event disjointness |
+| CPU/GPU optimization | NumPy https://numpy.org/doc/stable/reference/global_state.html ; PyTorch https://docs.pytorch.org/tutorials/recipes/recipes/tuning_guide.html | Official documentation; living docs | CUDA advice is conditional on porting; no GPU speed claim |
+| Local speed evidence | docs/validation/training-benchmark.json, 2026-09-05 | Executed on 16 source games, three prep passes, one BLAS thread | 60.9x is warm preparation only; cannot extrapolate full-run speed or storage |
+| Runtime/UI correctness | test_research_upgrade.py and existing suite | Executed locally; final receipt in VALIDATION.md | Offscreen rendering and UCI stub do not prove real Stockfish/native interactive endurance |
+
+Search/stop record: first-pass JEPA alternatives, current Stockfish/Lc0 references, all-legal evaluation and training bottlenecks were reconciled with repository inspection. Follow-up focused on no-EMA/SIGReg, WDL orientation/calibration, paired testing and implementation mismatches. A mistyped official UCI page returned 404; no claim relies on that page. Discovery stopped after the selection and engineering choices had primary support or explicit transfer limitations. Remaining gaps require experiments or a real engine binary rather than another broad web search. No claim of exhaustive global model ranking is made.

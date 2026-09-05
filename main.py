@@ -1,4 +1,5 @@
 import hashlib
+import os
 import json
 import itertools
 import math
@@ -1058,7 +1059,8 @@ class vitriengine:
 
     def tinh_evaluation(self):
         if self.evaluation_model is not None:
-            return self.evaluation_model.evaluate_engine_score(self)
+            score = self.evaluation_model.evaluate_engine_score(self)
+            return score if self.turn == "white" else -score
 
         non_pawn_material = 0
 
@@ -1122,7 +1124,7 @@ class vitriengine:
             if self.stop_event.is_set():
                 raise het_thoi_gian_search()
 
-        if self.so_node % 128 == 0:
+        if self.so_node % 16 == 0:
             self.phat_tien_do_search()
 
             if time.perf_counter() >= self.thoi_gian_ket_thuc:
@@ -3216,14 +3218,8 @@ class trainworker(QObject):
         requested_epochs = max(1, int(report.get("requested_epochs", self.epochs)))
         current_epoch = int(report.get("current_epoch", starting_epoch + 1))
         phase = report.get("phase", "starting")
-        if phase == "complete":
-            completed_units = requested_epochs
-        else:
-            epoch_index = max(0, current_epoch - starting_epoch - 1)
-            phase_fraction = {"starting": 0.0, "train": 0.45, "validation": 0.85}.get(phase, 0.5)
-            completed_units = min(requested_epochs, epoch_index + phase_fraction)
-        overall_total = requested_epochs * 1000
-        overall_processed = int(round(overall_total * completed_units / requested_epochs))
+        overall_total = int(report.get("overall_total", 0))
+        overall_processed = int(report.get("overall_processed", 0))
         latest_metrics = report.get("latest_metrics", {})
         if "loss" not in latest_metrics and isinstance(latest_metrics.get("train"), dict):
             latest_metrics = latest_metrics["train"]
@@ -3236,14 +3232,19 @@ class trainworker(QObject):
             "epochs": starting_epoch + requested_epochs,
             "phase": phase,
             "processed": report.get("current_batch", 0),
-            "total": report.get("current_batch", 0),
+            "total": report.get("phase_batches", 0),
             "overall_processed": overall_processed,
             "overall_total": overall_total,
-            "progress_percent": 100.0 * completed_units / requested_epochs,
+            "progress_percent": report.get("progress_percent", 0.0),
+            "eta_seconds": report.get("eta_seconds"),
+            "eta_range_seconds": report.get("eta_range_seconds"),
+            "eta_status": report.get("eta_status", "CALIBRATING"),
+            "estimated_finish_timestamp": report.get("estimated_finish_timestamp"),
+            "prepared_positions": report.get("prepared_positions", 0),
             "trained_steps": report.get("trained_steps", 0),
             "valid_samples": 0,
             "skipped_samples": 0,
-            "rows_per_second": None,
+            "rows_per_second": report.get("rows_per_second"),
             "metrics": latest_metrics,
             "wall_time": time.time(),
         }
@@ -4155,6 +4156,9 @@ class modelmatchworker(QObject):
         self.white_model_id = None
         self.black_model_id = None
         self.last_progress = {}
+        self.search_result = {}
+        self.move_records = []
+        self.referee = None
 
     def _snapshot(self, engine):
         return {
@@ -4208,14 +4212,18 @@ class modelmatchworker(QObject):
             create_if_missing=False,
         )
 
+    def _search_progress(self, payload):
+        self.tien_do.emit({"event": "MATCH_SEARCH", "search": payload})
+
     def _choose_move(self, model_id, snapshot, legal_moves):
         spec = spec_by_id(self.project_dir, model_id)
         if spec is None:
             return None, "UNKNOWN"
 
         if spec["architecture"] == "alpha-beta":
-            engine = vitriengine(snapshot, self.move_time, self.stop_event)
+            engine = vitriengine(snapshot, self.move_time, self.stop_event, progress_callback=self._search_progress)
             result = engine.tim_nuoc_di_tot_nhat()
+            self.search_result = result
             return result.get("move"), "ALPHA_BETA"
 
         if spec["architecture"] == "nnue":
@@ -4225,8 +4233,10 @@ class modelmatchworker(QObject):
                 self.move_time,
                 self.stop_event,
                 evaluation_model=model,
+                progress_callback=self._search_progress,
             )
             result = engine.tim_nuoc_di_tot_nhat()
+            self.search_result = result
             return result.get("move"), "NNUE_ALPHA_BETA"
 
         model = self.models[model_id]
@@ -4235,12 +4245,16 @@ class modelmatchworker(QObject):
             model,
             self.move_time,
             self.stop_event,
+            progress_callback=self._search_progress,
         )
         result = search.tim_nuoc_di()
+        self.search_result = result
         return result.get("move"), spec["label"]
 
     def _finish_reason(self, engine, legal_moves):
-        if engine.is_draw_search():
+        if not legal_moves and engine.is_king_in_check(engine.turn):
+            return ("0-1" if engine.turn == "white" else "1-0"), "CHECKMATE"
+        if engine.is_draw_search() or engine.halfmove_clock >= 100:
             return "1/2-1/2", "DRAW_RULE"
         if legal_moves:
             return None, None
@@ -4254,6 +4268,19 @@ class modelmatchworker(QObject):
         result_path.parent.mkdir(parents=True, exist_ok=True)
         with result_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        if result.get("san_moves"):
+            def tag(value):
+                return str(value).replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ")
+            headers = {"Event": "CAISSA paired round-robin", "White": result["white_model_id"],
+                       "Black": result["black_model_id"], "Result": result["result"],
+                       "Termination": result["reason"], "Seed": self.match_seed}
+            notation = " ".join((f"{i // 2 + 1}. " if i % 2 == 0 else "") + move
+                                for i, move in enumerate(result["san_moves"]))
+            with result_path.with_suffix(".pgn").open("a", encoding="utf-8") as handle:
+                handle.write("\n".join(f'[{k} "{tag(v)}"]' for k, v in headers.items())
+                             + "\n\n" + notation + " " + result["result"] + "\n\n")
 
     @Slot()
     def chay(self):
@@ -4277,6 +4304,19 @@ class modelmatchworker(QObject):
                 self.second_model_id: self._load_model(self.second_model_id),
             }
 
+            from arena_research import Referee, file_sha256, cached_sha256
+            self.referee = Referee(self.project_dir)
+            provenance = {}
+            for spec in (first_spec, second_spec):
+                path = spec["path"]
+                model = self.models[spec["id"]]
+                provenance[spec["id"]] = {
+                    "label": spec["label"], "architecture": spec["architecture"],
+                    "checkpoint_sha256": cached_sha256(path) if path else None,
+                    "trained_steps": getattr(model, "trained_steps", None),
+                    "dataset_fingerprint": getattr(model, "dataset_fingerprint", None),
+                    "latent_size": getattr(model, "latent_size", None),
+                }
             initial_snapshot = {
                 "board": [
                     "r", "n", "b", "q", "k", "b", "n", "r",
@@ -4300,8 +4340,11 @@ class modelmatchworker(QObject):
                 "position_counts": {},
             }
             engine = vitriengine(initial_snapshot, 0.02, self.stop_event)
+            engine.position_counts[engine.tao_key_position()] = 1
             self.tien_do.emit({
+                "provenance": provenance,
                 "event": "MATCH_STARTED",
+                "move_time_seconds": self.move_time,
                 "series_id": self.series_id,
                 "match_number": self.match_number,
                 "first_model_id": self.first_model_id,
@@ -4313,6 +4356,8 @@ class modelmatchworker(QObject):
             })
 
             moves = []
+            san_moves = []
+            book_closed = False
             result_token = None
             reason = None
             for ply in range(self.max_plies):
@@ -4331,7 +4376,9 @@ class modelmatchworker(QObject):
                     if engine.turn == "white"
                     else self.black_model_id
                 )
-                move = choose_standard_opening_move(
+                started_move = time.perf_counter()
+                self.search_result = {}
+                move = None if book_closed else choose_standard_opening_move(
                     self.database,
                     snapshot,
                     ply,
@@ -4339,20 +4386,39 @@ class modelmatchworker(QObject):
                 )
                 source = "GM_OPENING_BOOK"
                 if move is None:
+                    book_closed = True
                     move, source = self._choose_move(
                         current_model_id,
                         snapshot,
                         legal_moves,
                     )
 
+                if self.stop_event.is_set():
+                    result_token, reason = "*", "CANCELLED"
+                    break
                 if move not in legal_moves:
-                    move = legal_moves[0]
-                    source = "LEGAL_FALLBACK"
+                    raise RuntimeError(f"{current_model_id} returned an illegal or missing move: {move}")
 
+                move_seconds = time.perf_counter() - started_move
+                parser = pgnparser()
+                san = parser.tao_san(engine, move, legal_moves)
+                before_fen = parser.snapshot_thanh_fen(snapshot).rsplit(" ", 1)[0] + f" {ply // 2 + 1}"
                 move_text = move_thanh_text(move)
                 engine.thuc_hien_nuoc_di(move)
                 moves.append(move_text)
+                san_moves.append(san)
+                after_snapshot = self._snapshot(engine)
+                after_fen = parser.snapshot_thanh_fen(after_snapshot).rsplit(" ", 1)[0] + f" {(ply + 1) // 2 + 1}"
+                evaluation = self.referee.evaluate(after_snapshot, moves, self.stop_event)
+                evaluation["ply"] = ply + 1
+                record = {"ply": ply + 1, "uci": move_text, "san": san,
+                          "fen_before": before_fen, "fen_after": after_fen,
+                          "model_id": current_model_id, "source": source,
+                          "move_seconds": move_seconds, "search": self.search_result,
+                          "evaluation": evaluation}
+                self.move_records.append(record)
                 progress = {
+                    **record,
                     "event": "MATCH_MOVE",
                     "series_id": self.series_id,
                     "match_number": self.match_number,
@@ -4375,7 +4441,9 @@ class modelmatchworker(QObject):
                 self.tien_do.emit(progress)
 
             if result_token is None:
-                result_token, reason = "1/2-1/2", "MAX_PLIES"
+                result_token, reason = self._finish_reason(engine, engine.lay_tat_ca_nuoc_di_hop_le(engine.turn))
+                if result_token is None:
+                    result_token, reason = "*", "MAX_PLIES"
 
             result = {
                 "event": "MATCH_RESULT",
@@ -4384,6 +4452,15 @@ class modelmatchworker(QObject):
                 "result": result_token,
                 "reason": reason,
                 "moves": moves,
+                "san_moves": san_moves,
+                "move_records": self.move_records,
+                "provenance": provenance,
+                "paired_colors": True,
+                "protocol_version": 2,
+                "opening_database_sha256": cached_sha256(self.database_path),
+                "source_sha256": file_sha256(Path(__file__)),
+                "python_version": sys.version,
+                "numpy_version": np.__version__ if np is not None else None,
                 "plies": len(moves),
                 "first_model_id": self.first_model_id,
                 "second_model_id": self.second_model_id,
@@ -4422,6 +4499,8 @@ class modelmatchworker(QObject):
                 pass
             self.ket_qua.emit(result)
         finally:
+            if self.referee:
+                self.referee.close()
             self.hoan_tat.emit()
 
 
@@ -4473,7 +4552,8 @@ class boardwidget(QWidget):
             if renderer.isValid():
                 self.piece_renderers[piece] = renderer
 
-        self.database = chessdatabase()
+        (self.project_dir / "chess_data").mkdir(parents=True, exist_ok=True)
+        self.database = chessdatabase(self.project_dir / "chess_data/chess_engine.db")
         self.pgn_parser = pgnparser()
 
         self.engine_thread = None
@@ -5234,6 +5314,10 @@ class boardwidget(QWidget):
             )
 
     def bat_dau_train_model(self):
+        if getattr(self, "arena_series_active", False):
+            self.train_status = "Stop the arena series before training."
+            self.update()
+            return
         if self.train_dang_chay:
             for stop_event in self.train_stop_events.values():
                 stop_event.set()
@@ -8133,12 +8217,16 @@ class monitorwidget(QWidget):
                 "model_label": spec["label"],
                 "architecture": spec["architecture"],
                 "model_variant": spec["variant"],
-                "status": report.get("status", "IDLE"),
+                "status": "SAVED RUN (NOT ACTIVE)" if report.get("status") == "RUNNING" else report.get("status", "IDLE"),
                 "trained_steps": report.get("trained_steps", 0),
                 "progress_percent": 100.0 if report.get("status") == "COMPLETE" else 0.0,
                 "latest_metrics": metrics,
                 "report": report,
-                "history": [],
+                "history": report.get("plot_history") or [
+                    {"step": item.get("trained_steps", 0), "loss": item[phase]["loss"], "phase": phase}
+                    for item in epochs for phase in ("train", "validation")
+                    if isinstance(item.get(phase), dict) and "loss" in item[phase]
+                ],
             }
 
     def activate_training_run(self, model_id):
@@ -8266,6 +8354,7 @@ class monitorwidget(QWidget):
 
             history_item = {
                 "step": self.checkpoint_steps,
+                "phase": progress.get("phase", "train"),
                 "wall_time": wall_time,
                 "loss": loss_value,
                 "loss_ema": run["loss_ema"],
@@ -8318,7 +8407,7 @@ class monitorwidget(QWidget):
             self.selected_training_model_id = model_id
         if self.selected_training_model_id == model_id:
             self.activate_training_run(model_id)
-            self.cap_nhat_heatmap_dai_han(float(progress.get("wall_time", time.time())))
+            # All-model plots replace the expensive loss-components heatmap.
         self.checkpoint_steps = int(progress.get("trained_steps", self.checkpoint_steps))
 
         self.update()
@@ -9207,117 +9296,8 @@ class monitorwidget(QWidget):
             )
 
     def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.fillRect(self.rect(), QColor("#000000"))
-        self.ve_header(painter)
-
-        margin = 14
-        gap = 10
-        content_top = 86
-        content_bottom = self.height() - margin
-        content_height = max(100, content_bottom - content_top)
-        top_height = int(content_height * 0.39)
-        bottom_height = content_height - top_height - gap
-        available_width = self.width() - margin * 2
-        first_width = int((available_width - gap) * 0.50)
-
-        loss_rect = QRectF(
-            margin,
-            content_top,
-            first_width,
-            top_height,
-        )
-        component_rect = QRectF(
-            margin + first_width + gap,
-            content_top,
-            available_width - first_width - gap,
-            top_height,
-        )
-
-        self.ve_bieu_do(
-            painter,
-            loss_rect,
-            "LOSS TREND // FULL RUN COMPRESSED // RAW VS EMA(0.05)",
-            (
-                ("RAW", "loss", self.neon_magenta),
-                ("EMA", "loss_ema", self.neon_green),
-            ),
-        )
-        self.ve_bieu_do(
-            painter,
-            component_rect,
-            "LOSS COMPONENTS // FULL RUN COMPRESSED",
-            (
-                ("LATENT", "latent_loss", self.neon_cyan),
-                ("VALUE", "value_loss", self.neon_orange),
-                ("RANK", "ranking_loss", self.neon_magenta),
-                ("VAR", "variance_loss", self.neon_green),
-            ),
-        )
-
-        bottom_y = content_top + top_height + gap
-        heatmap_width = int(available_width * 0.34)
-        telemetry_width = int(available_width * 0.28)
-        engine_width = available_width - heatmap_width - telemetry_width - gap * 2
-        log_height = max(92, int(bottom_height * 0.24))
-        upper_bottom_height = bottom_height - log_height - gap
-
-        heatmap_rect = QRectF(
-            margin,
-            bottom_y,
-            heatmap_width,
-            upper_bottom_height,
-        )
-        telemetry_rect = QRectF(
-            margin + heatmap_width + gap,
-            bottom_y,
-            telemetry_width,
-            upper_bottom_height,
-        )
-        engine_rect = QRectF(
-            margin + heatmap_width + telemetry_width + gap * 2,
-            bottom_y,
-            engine_width,
-            upper_bottom_height,
-        )
-        log_rect = QRectF(
-            margin,
-            bottom_y + upper_bottom_height + gap,
-            available_width,
-            log_height,
-        )
-
-        self.ve_heatmap(painter, heatmap_rect)
-        self.ve_danh_sach_chi_so(painter, telemetry_rect)
-        self.ve_engine(painter, engine_rect)
-        self.ve_log_footer(painter, log_rect)
-
-    def mousePressEvent(self, event):
-        for row_rect, model_id in self.training_row_rects:
-            if row_rect.contains(event.position()):
-                self.activate_training_run(model_id)
-                self.update()
-                return
-        super().mousePressEvent(event)
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_F11:
-            window = self.window()
-
-            if window.isFullScreen():
-                window.showNormal()
-            else:
-                window.showFullScreen()
-
-            return
-
-        if event.key() == Qt.Key_Escape:
-            if self.window().isFullScreen():
-                self.window().showNormal()
-                return
-
-        super().keyPressEvent(event)
+        from research_ui import paint_training
+        paint_training(self)
 
 
 class modelmatchwidget(QWidget):
@@ -9389,6 +9369,8 @@ class modelmatchwidget(QWidget):
         self.continue_button = QPushButton("CONTINUE LAST MATCHUP", self)
         self.stop_button = QPushButton("STOP SERIES", self)
         self.back_button = QPushButton("BACK TO MONITOR", self)
+        self.referee_button = QPushButton("REFERENCE ENGINE...", self)
+        self.referee_button.clicked.connect(self.choose_reference_engine)
         self.status_label = QLabel(
             "The series automatically schedules every ready model against every other model.",
             self,
@@ -9400,7 +9382,8 @@ class modelmatchwidget(QWidget):
         self.roster_label.setWordWrap(True)
 
         for combo in (self.white_combo, self.black_combo):
-            combo.setMinimumWidth(230)
+            combo.setMinimumWidth(140)
+            combo.setMaximumWidth(230)
         self.stop_button.setEnabled(False)
         self.start_button.clicked.connect(self.start_series)
         self.continue_button.clicked.connect(self.continue_last_matchup)
@@ -9427,9 +9410,11 @@ class modelmatchwidget(QWidget):
         layout.setContentsMargins(16, 12, 16, 8)
         layout.setSpacing(6)
         layout.addLayout(control_row)
+        layout.addWidget(self.referee_button, alignment=Qt.AlignLeft)
         layout.addWidget(self.roster_label)
         layout.addWidget(self.status_label)
         layout.addWidget(self.stats_label)
+        layout.addStretch(1)
         self.setStyleSheet(
             "QWidget { background: #000000; color: #B7FFAE; }"
             "QComboBox, QPushButton { background: #07150B; color: #B7FFAE; "
@@ -9446,6 +9431,16 @@ class modelmatchwidget(QWidget):
 
     def model_label(self, model_id):
         return self.specs_by_id.get(model_id, {}).get("label", model_id or "--")
+
+    def choose_reference_engine(self):
+        if self.series_running or self.match_running:
+            return
+        path, _ = QFileDialog.getOpenFileName(self, "Select a trusted local UCI chess engine", "", "Executables (*.exe);;All files (*)")
+        if not path:
+            return
+        from train_caissa_v7 import atomic_json
+        atomic_json(self.project_dir / "chess_data/arena_reference.json", {"path": str(Path(path).resolve())})
+        self.status_label.setText("Reference engine configured. Start a NEW series; the UCI handshake will be checked at match start.")
 
     def reload_arena_roster(self):
         previous_first = self.white_combo.currentData()
@@ -9476,7 +9471,7 @@ class modelmatchwidget(QWidget):
         model_ids = [spec["id"] for spec in self.model_specs]
         schedule = list(itertools.combinations(model_ids, 2))
         random.Random(20260903 + int(round_number)).shuffle(schedule)
-        return schedule
+        return [leg for pair in schedule for leg in (pair, pair[::-1])]
 
     def load_arena_state(self):
         if self.arena_history_path.exists():
@@ -9534,10 +9529,12 @@ class modelmatchwidget(QWidget):
         )
 
     def refresh_history_statistics(self):
+        from arena_research import completed_records
+        valid_history = completed_records(self.arena_history)
         total = len(self.arena_history)
         completed = sum(
             1
-            for item in self.arena_history
+            for item in valid_history
             if item.get("result") in ("1-0", "0-1", "1/2-1/2")
             and not item.get("cancelled")
             and not item.get("error")
@@ -9546,7 +9543,7 @@ class modelmatchwidget(QWidget):
             spec["id"]: {"wins": 0, "losses": 0, "draws": 0}
             for spec in self.model_specs
         }
-        for item in self.arena_history:
+        for item in valid_history:
             if item.get("result") not in ("1-0", "0-1", "1/2-1/2"):
                 continue
             white_id = item.get("white_model_id")
@@ -9576,7 +9573,7 @@ class modelmatchwidget(QWidget):
         draws = 0
         if first_id and second_id and first_id != second_id:
             selected_ids = {first_id, second_id}
-            for item in self.arena_history:
+            for item in valid_history:
                 if {
                     item.get("first_model_id"),
                     item.get("second_model_id"),
@@ -9618,6 +9615,7 @@ class modelmatchwidget(QWidget):
             ready and not running and self.last_matchup_available()
         )
         self.stop_button.setEnabled(running)
+        self.referee_button.setEnabled(not running)
         self.white_combo.setEnabled(not running)
         self.black_combo.setEnabled(not running)
 
@@ -9637,6 +9635,9 @@ class modelmatchwidget(QWidget):
     def start_series(self):
         if self.series_running or self.match_running:
             return
+        if self.board_widget.train_threads:
+            self.status_label.setText("Stop training before starting or resuming a benchmark series.")
+            return
         self.reload_arena_roster()
         if len(self.model_specs) < 2:
             self.status_label.setText(
@@ -9645,6 +9646,8 @@ class modelmatchwidget(QWidget):
             return
 
         self.series_id = uuid.uuid4().hex
+        from arena_research import arena_signature
+        self.series_signature = arena_signature(self.model_specs, self.board_widget.database.database_path)
         self.series_round = 1
         self.series_schedule = self.build_round_robin_schedule(self.series_round)
         self.series_pair_index = 0
@@ -9654,13 +9657,17 @@ class modelmatchwidget(QWidget):
         self.series_stop_requested = False
         self.resume_match_seed = None
         self.series_running = True
+        self.board_widget.arena_series_active = True
         self.status_label.setText(
-            "Series running continuously. Colors are randomized for every match."
+            "Continuous paired round-robin: random first color, then colors reversed."
         )
         self.start_next_series_match()
 
     def continue_last_matchup(self):
         if self.series_running or self.match_running:
+            return
+        if self.board_widget.train_threads:
+            self.status_label.setText("Stop training before starting or resuming a benchmark series.")
             return
         if not self.last_matchup_available():
             self.status_label.setText("No resumable matchup checkpoint is available.")
@@ -9676,6 +9683,12 @@ class modelmatchwidget(QWidget):
         )
         self.series_id = self.arena_checkpoint.get("series_id") or uuid.uuid4().hex
         self.reload_arena_roster()
+        from arena_research import arena_signature
+        current_signature = arena_signature(self.model_specs, self.board_widget.database.database_path)
+        if self.arena_checkpoint.get("series_signature", current_signature) != current_signature:
+            self.status_label.setText("Checkpoints or opening book changed. Start a NEW series to avoid mixing experiments.")
+            return
+        self.series_signature = current_signature
         self.series_round = max(
             1,
             int(self.arena_checkpoint.get("round_number", 1)),
@@ -9704,12 +9717,19 @@ class modelmatchwidget(QWidget):
         self.series_stop_requested = False
         self.resume_match_seed = self.arena_checkpoint.get("match_seed")
         self.series_running = True
+        self.board_widget.arena_series_active = True
         self.status_label.setText(
             "Resuming: the last saved matchup will be played again."
         )
         self.start_next_series_match()
 
     def start_next_series_match(self):
+        from arena_research import arena_signature
+        signature = arena_signature(self.model_specs, self.board_widget.database.database_path)
+        if getattr(self, "series_signature", signature) != signature:
+            self.stop_series()
+            self.status_label.setText("Model or book changed. Start a NEW series.")
+            return
         if (
             not self.series_running
             or self.series_stop_requested
@@ -9753,8 +9773,12 @@ class modelmatchwidget(QWidget):
         self.current_match_number = self.series_matches_started
         forced_seed = self.resume_match_seed
         self.resume_match_seed = None
+        if forced_seed is None:
+            key = f"{self.series_id}:{self.series_round}:" + ":".join(sorted(self.series_pair))
+            forced_seed = int(hashlib.sha256(key.encode()).hexdigest()[:8], 16)
         self.write_arena_checkpoint({
             "status": "RUNNING",
+            "series_signature": getattr(self, "series_signature", signature),
             "series_id": self.series_id,
             "first_model_id": first_model_id,
             "second_model_id": second_model_id,
@@ -9806,6 +9830,11 @@ class modelmatchwidget(QWidget):
             "R", "N", "B", "Q", "K", "B", "N", "R",
         ]
         self.current_ply = 0
+        self.current_turn = "white"
+        self.last_move = None
+        self.move_records = []
+        self.live_search = {}
+        self.evaluation = {}
         self.current_move = "--"
         self.current_source = "--"
         self.status_label.setText(
@@ -9823,6 +9852,7 @@ class modelmatchwidget(QWidget):
     def stop_series(self):
         self.series_stop_requested = True
         self.series_running = False
+        self.board_widget.arena_series_active = self.match_running
         if self.match_stop_event is not None:
             self.match_stop_event.set()
             self.status_label.setText(
@@ -9841,6 +9871,19 @@ class modelmatchwidget(QWidget):
     def receive_match_progress(self, progress):
         event = progress.get("event")
         if event == "MATCH_STARTED":
+            self.move_time_seconds = progress.get("move_time_seconds", ARENA_MOVE_TIME_SECONDS)
+            self.provenance = progress.get("provenance", {})
+            self.heldout_metrics = {}
+            for model_id, info in self.provenance.items():
+                spec = self.specs_by_id.get(model_id, {})
+                if spec.get("path"):
+                    path = spec["path"].with_suffix(".evaluation.json")
+                    try:
+                        metrics = json.loads(path.read_text(encoding="utf-8"))
+                        if metrics.get("checkpoint_sha256") == info.get("checkpoint_sha256") and metrics.get("split") == "validation":
+                            self.heldout_metrics[model_id] = metrics
+                    except (OSError, ValueError):
+                        pass
             self.match_seed = progress.get("match_seed")
             self.white_model_id = progress.get("white_model_id")
             self.black_model_id = progress.get("black_model_id")
@@ -9864,12 +9907,20 @@ class modelmatchwidget(QWidget):
             self.update()
             return
 
+        if event == "MATCH_SEARCH":
+            self.live_search = progress.get("search", {})
+            self.update()
+            return
         if event != "MATCH_MOVE":
             return
+        self.move_records = getattr(self, "move_records", []) + [progress.copy()]
+        self.evaluation = progress.get("evaluation", {})
+        self.live_search = progress.get("search", {})
+        self.last_move = progress.get("move")
         self.board = list(progress.get("board", self.board))
         self.current_ply = int(progress.get("ply", self.current_ply))
         self.current_turn = progress.get("turn", self.current_turn)
-        self.current_move = move_thanh_text(tuple(progress["move"]))
+        self.current_move = progress.get("san", move_thanh_text(tuple(progress["move"])))
         self.current_source = progress.get("source", "--")
         self.current_model_id = progress.get("model_id")
         self.update()
@@ -9925,6 +9976,7 @@ class modelmatchwidget(QWidget):
         self.match_worker = None
         self.match_stop_event = None
         self.match_running = False
+        self.board_widget.arena_series_active = self.series_running
         if (
             self.series_running
             and not self.series_stop_requested
@@ -9939,6 +9991,7 @@ class modelmatchwidget(QWidget):
             or self.match_result.get("error")
         ):
             self.series_running = False
+            self.board_widget.arena_series_active = False
             self.status_label.setText(
                 "Series paused. Continue Last Matchup will replay the saved matchup."
             )
@@ -9959,91 +10012,17 @@ class modelmatchwidget(QWidget):
         event.accept()
 
     def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.fillRect(self.rect(), QColor("#000000"))
-        painter.setPen(QPen(QColor("#39FF14"), 2))
-        painter.drawRect(QRectF(14, 78, self.width() - 28, self.height() - 92))
-        painter.setFont(QFont("Consolas", 15, QFont.Bold))
-        painter.setPen(QColor("#39FF14"))
-        painter.drawText(QRectF(28, 82, self.width() - 56, 30), Qt.AlignLeft, "CAISSA-JEPA // MODEL VS MODEL ARENA")
-
-        board_top = 122
-        board_left = 32
-        board_size = min(self.height() - 158, int(self.width() * 0.57))
-        board_size = max(320, (board_size // 8) * 8)
-        square = board_size / 8.0
-        board_rect = QRectF(board_left, board_top, board_size, board_size)
-
-        for row in range(8):
-            for col in range(8):
-                color = QColor("#B58863") if (row + col) % 2 else QColor("#F0D9B5")
-                painter.fillRect(
-                    QRectF(board_left + col * square, board_top + row * square, square + 0.5, square + 0.5),
-                    color,
-                )
-                piece = self.board[row * 8 + col]
-                if piece == ".":
-                    continue
-                renderer = self.board_widget.piece_renderers.get(piece)
-                target = QRectF(
-                    board_left + col * square + square * 0.08,
-                    board_top + row * square + square * 0.08,
-                    square * 0.84,
-                    square * 0.84,
-                )
-                if renderer is not None and renderer.isValid():
-                    renderer.render(painter, target.toRect())
-                else:
-                    painter.setFont(QFont("Arial", max(20, int(square * 0.62))))
-                    painter.setPen(QColor("#111111") if piece.isupper() else QColor("#F8F8F8"))
-                    painter.drawText(target, Qt.AlignCenter, self.board_widget.piece_symbols.get(piece, piece))
-
-        painter.setPen(QPen(QColor("#39FF14"), 2))
-        painter.setBrush(Qt.NoBrush)
-        painter.drawRect(board_rect)
-        painter.setFont(QFont("Consolas", 9))
-        painter.setPen(QColor("#63A86C"))
-        for index, letter in enumerate("abcdefgh"):
-            painter.drawText(QRectF(board_left + index * square, board_top + board_size + 4, square, 16), Qt.AlignCenter, letter)
-        for index in range(8):
-            painter.drawText(QRectF(board_left - 24, board_top + index * square + square * 0.35, 20, 16), Qt.AlignRight, str(8 - index))
-
-        side_left = board_left + board_size + 36
-        side_width = max(280, self.width() - side_left - 30)
-        side_rect = QRectF(side_left, board_top, side_width, board_size)
-        painter.setPen(QPen(QColor("#117A2B"), 2))
-        painter.drawRect(side_rect)
-        painter.setFont(QFont("Consolas", 10, QFont.Bold))
-        painter.setPen(QColor("#39FF14"))
-        painter.drawText(QRectF(side_left + 14, board_top + 14, side_width - 28, 24), Qt.AlignLeft, "READ-ONLY ENGINE SERIES")
-        painter.setFont(QFont("Consolas", 11))
-        y = board_top + 58
-        rows = (
-            ("WHITE", self.model_label(self.white_model_id)),
-            ("BLACK", self.model_label(self.black_model_id)),
-            ("TURN", str(self.current_turn).upper()),
-            ("PLY", self.current_ply),
-            ("LAST MOVE", self.current_move),
-            ("MOVE SOURCE", self.current_source),
-            ("SEED", self.match_seed or "--"),
-            ("MATCH #", self.current_match_number or "--"),
-        )
-        for label, value in rows:
-            painter.setPen(QColor("#63A86C"))
-            painter.drawText(QRectF(side_left + 14, y, side_width * 0.35, 22), Qt.AlignLeft, label)
-            painter.setPen(QColor("#B7FFAE"))
-            painter.drawText(QRectF(side_left + side_width * 0.35, y, side_width * 0.60, 22), Qt.AlignRight, str(value))
-            y += 30
-
-        if self.current_model_id:
-            painter.setPen(QColor("#00E5FF"))
-            painter.drawText(QRectF(side_left + 14, y + 12, side_width - 28, 40), Qt.AlignLeft | Qt.TextWordWrap, "ACTIVE: " + self.model_label(self.current_model_id))
-        painter.setPen(QColor("#FFB000"))
-        painter.drawText(QRectF(side_left + 14, side_rect.bottom() - 60, side_width - 28, 42), Qt.AlignLeft | Qt.TextWordWrap, "Opening book is shared by both agents. Model search starts after the opening transition.")
+        from research_ui import paint_arena
+        paint_arena(self)
 
 
 class monitor_window(QMainWindow):
+    def closeEvent(self, event):
+        if self.modelmatch_widget is not None and not self.modelmatch_widget.close():
+            event.ignore()
+            return
+        event.accept()
+
     def __init__(self, board_widget):
         super().__init__()
         self.setWindowTitle(APP_BUILD + " Debug Monitor")
@@ -10062,6 +10041,7 @@ class monitor_window(QMainWindow):
                     lambda: self.set_mode("monitor")
                 )
             self.setWindowTitle(APP_BUILD + " Model vs Model Arena")
+            self.takeCentralWidget()
             self.setCentralWidget(self.modelmatch_widget)
             self.modelmatch_widget.show()
             self.modelmatch_widget.raise_()
@@ -10069,6 +10049,7 @@ class monitor_window(QMainWindow):
             return
 
         self.setWindowTitle(APP_BUILD + " Debug Monitor")
+        self.takeCentralWidget()
         self.setCentralWidget(self.monitor_widget)
         self.monitor_widget.show()
         self.monitor_widget.raise_()

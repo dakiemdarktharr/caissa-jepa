@@ -3,7 +3,7 @@ param(
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "lejepa", "policy-value", "nnue")]
     [string]$Architecture = "adversarial-jepa",
-    [ValidateSet("h1", "h1-h2", "full", "no-response", "sigreg", "direct", "nnue")]
+    [ValidateSet("h1", "full", "sigreg", "direct", "nnue")]
     [string]$ModelVariant = "full",
     [int]$BatchSize = 64,
     [int]$LatentSize = 96,

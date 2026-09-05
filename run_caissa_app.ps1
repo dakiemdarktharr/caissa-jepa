@@ -1,5 +1,7 @@
 param(
-    [string]$Python = "D:\chess_robot_app\.venv\Scripts\python.exe"
+    [string]$Python = "D:\chess_robot_app\.venv\Scripts\python.exe",
+    [ValidateRange(1, 128)]
+    [int]$BlasThreads = 1
 )
 
 $ErrorActionPreference = "Stop"
@@ -17,6 +19,9 @@ if (-not (Test-Path -LiteralPath $Python)) {
 }
 
 Write-Host ("> {0} -B {1}" -f $Python, $MainPath) -ForegroundColor DarkGray
+$env:OPENBLAS_NUM_THREADS = "$BlasThreads"
+$env:OMP_NUM_THREADS = "$BlasThreads"
+$env:MKL_NUM_THREADS = "$BlasThreads"
 & $Python -B $MainPath
 if ($LASTEXITCODE -ne 0) {
     throw "CAISSA-JEPA exited with code $LASTEXITCODE"
