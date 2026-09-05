@@ -96,6 +96,9 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     resume = bool(getattr(arguments, "resume", False))
     progress_interval = float(getattr(arguments, "progress_interval", 10.0))
     allow_dataset_change = bool(getattr(arguments, "allow_dataset_change", False))
+    cache_workers = int(getattr(arguments, "cache_workers", 0) or 0)
+    budget_hours = float(getattr(arguments, "time_budget_hours", 8.0) or 0.0)
+    deadline_epoch = time.time() + budget_hours * 3600.0 if budget_hours > 0 else None
     dataset_dir = Path(arguments.dataset)
     model_path = Path(arguments.model)
     checkpoint_exists = model_path.exists()
@@ -187,6 +190,8 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         "eta_seconds": None,
         "estimated_finish_timestamp": None,
         "progress_percent": 0.0,
+        "cache_workers": cache_workers,
+        "time_budget_hours": budget_hours,
     })
     atomic_json(report_path, report)
     last_progress_write = 0.0
@@ -217,7 +222,12 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         if progress_callback is not None:
             progress_callback(report.copy())
 
+    def check_deadline() -> None:
+        if deadline_epoch and time.time() >= deadline_epoch:
+            raise TimeoutError("Training time budget exceeded")
+
     try:
+        check_deadline()
         if progress_callback is not None:
             progress_callback(report.copy())
         def cache_progress(payload):
@@ -226,7 +236,7 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             atomic_json(report_path, report)
             if progress_callback:
                 progress_callback(report.copy())
-        cache = SampleCache(dataset_dir, fingerprint, arguments.validation_percent, cache_progress).prepare()
+        cache = SampleCache(dataset_dir, fingerprint, arguments.validation_percent, cache_progress, workers=cache_workers, deadline_epoch=deadline_epoch).prepare()
         phase_batches = {
             phase: min(math.ceil(cache.counts[phase] / arguments.batch_size), limit)
             if limit else math.ceil(cache.counts[phase] / arguments.batch_size)
@@ -235,13 +245,15 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         if not phase_batches["train"]:
             raise ValueError("No valid training samples in this split")
         eta = TrainingETA(phase_batches, arguments.epochs)
-        report.update({"split_positions": cache.counts, "skipped_samples": cache.skipped,
-                       "cache_path": str(cache.path), **eta.fields()})
+        report.update({"split_positions": cache.counts, "skipped_samples": cache.skipped, "cache_workers": cache_workers,
+                       "cache_path": str(cache.path), "time_budget_hours": budget_hours, **eta.fields()})
         for epoch_offset in range(arguments.epochs):
+            check_deadline()
             epoch = completed_epochs + epoch_offset + 1
             train_values = MetricMean()
             tick = time.monotonic()
             for index, batch in enumerate(cache.batches("train", arguments.batch_size, arguments.seed + epoch), 1):
+                check_deadline()
                 latest = model.train_batch(batch, arguments.learning_rate)
                 train_values.add(latest, len(batch))
                 eta.observe("train", time.monotonic() - tick)
@@ -252,6 +264,7 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             validation_values = MetricMean()
             tick = time.monotonic()
             for index, batch in enumerate(cache.batches("validation", arguments.batch_size, arguments.seed), 1):
+                check_deadline()
                 latest = model.evaluate_batch(batch)
                 validation_values.add(latest, len(batch))
                 eta.observe("validation", time.monotonic() - tick)
@@ -299,7 +312,7 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         except Exception:
             pass
         report.update({
-            "status": "INTERRUPTED" if isinstance(error, KeyboardInterrupt) else "FAILED",
+            "status": "INTERRUPTED" if isinstance(error, KeyboardInterrupt) else "TIME_BUDGET_EXCEEDED" if isinstance(error, TimeoutError) else "FAILED",
             "error": repr(error),
             "trained_steps": model.trained_steps,
             "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -313,7 +326,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--model", default="chess_data/caissa_a_jepa_v7.npz")
-    parser.add_argument("--epochs", type=int, default=5)
+    parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--learning-rate", type=float, default=5e-4)
     parser.add_argument("--latent-size", type=int, default=96)
@@ -334,6 +347,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--allow-dataset-change", action="store_true")
     parser.add_argument("--resume", action="store_true", help="Tiếp tục từ checkpoint và training report hiện có")
     parser.add_argument("--progress-interval", type=float, default=10.0, help="Số giây tối thiểu giữa hai lần ghi heartbeat")
+    parser.add_argument("--cache-workers", type=int, default=0, help="Cache worker processes; 0 = auto, up to 8")
+    parser.add_argument("--time-budget-hours", type=float, default=8.0, help="Hard wall-clock budget including cache and training")
     return parser
 
 

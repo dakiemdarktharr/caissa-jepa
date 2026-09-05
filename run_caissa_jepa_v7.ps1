@@ -6,12 +6,14 @@ param(
     [int]$Latest = 0,
     [int]$Oldest = 1200,
     [double]$RequestGap = 1.0,
-    [int]$Epochs = 5,
+    [int]$Epochs = 1,
     [int]$BatchSize = 64,
     [int]$LatentSize = 96,
     [int]$ValidationPercent = 10,
     [int]$Seed = 20260903,
     [double]$ProgressInterval = 10.0,
+    [int]$CacheWorkers = 0,
+    [double]$TimeBudgetHours = 8.0,
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "lejepa", "policy-value", "nnue")]
     [string]$Architecture = "adversarial-jepa",
@@ -73,7 +75,7 @@ function Show-TrainingStatus {
 }
 
 function Invoke-Tests {
-    Invoke-V7Python @("-m", "py_compile", "main.py", "model_registry.py", "fen_dataset_tool.py", "adversarial_jepa.py", "lejepa.py", "policy_value_baseline.py", "nnue_baseline.py", "train_caissa_v7.py", "evaluate_action_ranking.py", "test_core.py", "test_v7.py", "test_gui_v7.py", "test_model_arena.py")
+    Invoke-V7Python @("-m", "py_compile", "main.py", "model_registry.py", "fen_dataset_tool.py", "adversarial_jepa.py", "lejepa.py", "policy_value_baseline.py", "nnue_baseline.py", "train_caissa_v7.py", "evaluate_action_ranking.py", "research_ui.py", "training_runtime.py", "test_core.py", "test_v7.py", "test_gui_v7.py", "test_model_arena.py")
     Invoke-V7Python @("test_core.py")
     Invoke-V7Python @("test_v7.py")
     Invoke-V7Python @("test_gui_v7.py")
@@ -145,7 +147,9 @@ function Invoke-Train {
         "--latent-size", "$LatentSize",
         "--validation-percent", "$ValidationPercent",
         "--seed", "$Seed",
-        "--progress-interval", "$ProgressInterval"
+        "--progress-interval", "$ProgressInterval",
+        "--cache-workers", "$CacheWorkers",
+        "--time-budget-hours", "$TimeBudgetHours"
     )
     if ($AllowPartialDataset -or $AllowDatasetChange) {
         $arguments += "--allow-dataset-change"
@@ -183,7 +187,9 @@ function Invoke-ContinueTrain {
         "--latent-size", "$LatentSize",
         "--validation-percent", "$ValidationPercent",
         "--seed", "$Seed",
-        "--progress-interval", "$ProgressInterval"
+        "--progress-interval", "$ProgressInterval",
+        "--cache-workers", "$CacheWorkers",
+        "--time-budget-hours", "$TimeBudgetHours"
     )
     if ($AllowPartialDataset -or $AllowDatasetChange) {
         $arguments += "--allow-dataset-change"

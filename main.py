@@ -3194,6 +3194,8 @@ class trainworker(QObject):
         model_variant="full",
         model_id="a-jepa-v7",
         model_label="A-JEPA v7",
+        cache_workers=0,
+        time_budget_hours=8.0,
     ):
         super().__init__()
         self.database_path = database_path
@@ -3208,6 +3210,8 @@ class trainworker(QObject):
         self.model_variant = str(model_variant)
         self.model_id = str(model_id)
         self.model_label = str(model_label)
+        self.cache_workers = int(cache_workers or 0)
+        self.time_budget_hours = float(time_budget_hours or 0.0)
         self.last_report = {}
 
     def _gui_progress(self, report):
@@ -3241,6 +3245,12 @@ class trainworker(QObject):
             "eta_status": report.get("eta_status", "CALIBRATING"),
             "estimated_finish_timestamp": report.get("estimated_finish_timestamp"),
             "prepared_positions": report.get("prepared_positions", 0),
+            "valid_cache_positions": report.get("valid_cache_positions", 0),
+            "source_bytes_processed": report.get("source_bytes_processed", 0),
+            "source_bytes_total": report.get("source_bytes_total", 0),
+            "cache_shards_completed": report.get("cache_shards_completed", 0),
+            "cache_shards_total": report.get("cache_shards_total", 0),
+            "cache_workers": report.get("cache_workers", self.cache_workers),
             "trained_steps": report.get("trained_steps", 0),
             "valid_samples": 0,
             "skipped_samples": 0,
@@ -3291,6 +3301,8 @@ class trainworker(QObject):
                 allow_dataset_change=self.allow_dataset_change,
                 resume=self.model_path.exists(),
                 progress_interval=0.5,
+                cache_workers=self.cache_workers,
+                time_budget_hours=self.time_budget_hours,
             )
             train_v7(arguments, progress_callback=self._gui_progress)
             report_path = self.model_path.with_suffix(".training.json")
@@ -5372,7 +5384,7 @@ class boardwidget(QWidget):
             self,
             "CAISSA-JEPA v7",
             "Additional training epochs for each selected model:",
-            5,
+                        1,
             1,
             10000,
         )

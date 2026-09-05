@@ -148,6 +148,30 @@ class ResearchUpgradeTests(unittest.TestCase):
             position["next_fen"] = position["fen"]
             self.assertIsNone(sample_from_dataset_position(position, np.random.default_rng(0)))
 
+    def test_cache_parallel_shards_resume_format(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            dataset = arena_fixture.ModelArenaTests().build_dataset(root)
+            manifest_path = dataset / "dataset_manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            first = manifest["shards"][0]
+            source = dataset / first["path"]
+            duplicate = dataset / "shards" / "parallel_copy.jsonl"
+            duplicate.write_bytes(source.read_bytes())
+            manifest["shards"].append({
+                "path": "shards/parallel_copy.jsonl",
+                "bytes": duplicate.stat().st_size,
+                "sha256": first.get("sha256", "parallel-copy"),
+            })
+            manifest["positions"] = int(manifest.get("positions", 0)) * 2
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            fingerprint = dataset_manifest_fingerprint(dataset)
+            cache = SampleCache(dataset, fingerprint, 1, workers=2).prepare()
+            self.assertGreater(cache.counts["train"] + cache.counts["validation"], 0)
+            self.assertEqual(cache.path.name.startswith("prepared-v4-"), True)
+            self.assertTrue((cache.path / "manifest.json").exists())
+            resumed = SampleCache(dataset, fingerprint, 1, workers=2).prepare()
+            self.assertEqual(cache.counts, resumed.counts)
     def test_losses_match_gradient_weights_and_single_legal_mask(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

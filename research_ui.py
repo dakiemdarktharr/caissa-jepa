@@ -67,7 +67,7 @@ def paint_training(widget):
     p.setRenderHint(QPainter.Antialiasing)
     p.fillRect(widget.rect(), QColor("#000000"))
     text(p, QRectF(18, 8, widget.width()-36, 32), "CAISSA-JEPA // ALL-MODEL TRAINING MONITOR", "#39FF14", 16, True)
-    text(p, QRectF(18, 40, widget.width()-36, 25), "Measured batches | ETA is an estimate, not a deadline | local-time finish | no loss-components panel", size=9)
+    text(p, QRectF(18, 40, widget.width()-36, 25), "Measured cache/training throughput | hard budget 08:00:00 | local-time finish | no loss-components panel", size=9)
     specs = training_model_specs(widget.board_widget.project_dir)
     width = (widget.width()-48)/2
     height = (widget.height()-92)/3
@@ -89,8 +89,8 @@ def paint_training(widget):
         eta = duration(latest.get("eta_seconds")) if active else "--"
         text(p, QRectF(x+12,y+61,width-24,20), f"ETA {eta} | finish {finish_text} | {latest.get('eta_status', '--') if active else status}", size=8)
         spread = latest.get("eta_range_seconds") if active else None
-        extra = f"range {duration(spread[0])} - {duration(spread[1])}" if spread else f"cache prepared: {latest.get('prepared_positions', 0):,} positions"
-        text(p, QRectF(x+12,y+81,width-24,20), f"{extra} | {latest.get('rows_per_second') or 0:,.1f} positions/s", "#63A86C", 8)
+        extra = f"range {duration(spread[0])} - {duration(spread[1])}" if spread else f"cache {latest.get('cache_shards_completed', 0)}/{latest.get('cache_shards_total', 0)} shards | {latest.get('prepared_positions', 0):,} positions"
+        text(p, QRectF(x+12,y+81,width-24,20), f"{extra} | {latest.get('rows_per_second') or latest.get('cache_rows_per_second') or 0:,.1f} positions/s", "#63A86C", 8)
         plot(p, QRectF(x+12,y+105,width-24,max(50,height-116)), run.get("history", []))
     rect = QRectF(32+width, 76+2*(height+8), width, height)
     panel(p, rect)

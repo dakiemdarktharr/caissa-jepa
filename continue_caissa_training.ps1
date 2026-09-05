@@ -1,5 +1,5 @@
 param(
-    [int]$AdditionalEpochs = 5,
+    [int]$AdditionalEpochs = 1,
     [string]$Model = "chess_data\caissa_a_jepa_v7.npz",
     [ValidateSet("adversarial-jepa", "lejepa", "policy-value", "nnue")]
     [string]$Architecture = "adversarial-jepa",
@@ -10,6 +10,8 @@ param(
     [int]$ValidationPercent = 10,
     [int]$Seed = 20260903,
     [double]$ProgressInterval = 10.0,
+    [int]$CacheWorkers = 0,
+    [double]$TimeBudgetHours = 8.0,
     [switch]$AllowPartialDataset,
     [switch]$AllowDatasetChange
 )
@@ -35,7 +37,9 @@ $arguments = @(
     "-LatentSize", "$LatentSize",
     "-ValidationPercent", "$ValidationPercent",
     "-Seed", "$Seed",
-    "-ProgressInterval", "$ProgressInterval"
+    "-ProgressInterval", "$ProgressInterval",
+    "-CacheWorkers", "$CacheWorkers",
+    "-TimeBudgetHours", "$TimeBudgetHours"
 )
 if ($AllowPartialDataset) {
     $arguments += "-AllowPartialDataset"
