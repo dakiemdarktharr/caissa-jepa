@@ -13,6 +13,13 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
+On Windows, the repository launcher resolves the configured virtual
+environment and starts the GUI from the correct project directory:
+
+```powershell
+.\run_caissa_app.ps1
+```
+
 Dữ liệu được tạo tự động trong `chess_data/chess_engine.db`. Model chỉ được tạo
 và cập nhật khi người dùng bấm **TRAIN MODEL**. Nút này có thể bấm lần nữa để
 dừng an toàn sau batch hiện tại.
