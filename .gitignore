@@ -12,3 +12,6 @@ fen_dataset_crawl*.log
 *.npz
 *.sqlite
 *.db
+dist/
+build/
+installer-output/

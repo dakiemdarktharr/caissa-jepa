@@ -47,9 +47,28 @@ from PySide6.QtWidgets import (
 )
 
 from model_registry import arena_model_specs, spec_by_id, training_model_specs
+from image_zip_import import zipimageimportworker
 
 
 APP_BUILD = "CAISSA-JEPA-v7"
+
+
+def application_resource_dir() -> Path:
+    """Return the read-only directory that contains bundled application assets."""
+    if getattr(sys, "frozen", False):
+        return Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+    return Path(__file__).resolve().parent
+
+
+def application_data_dir() -> Path:
+    """Return a writable directory for datasets, models, logs, and databases."""
+    if not getattr(sys, "frozen", False):
+        return Path(__file__).resolve().parent
+    if os.name == "nt":
+        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local"))
+    else:
+        base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share"))
+    return base / "CAISSA-JEPA"
 
 
 ARENA_MAX_PLIES = 240
@@ -4552,9 +4571,14 @@ class boardwidget(QWidget):
         self.project_dir = (
             Path(project_dir)
             if project_dir is not None
-            else Path(__file__).resolve().parent
+            else application_data_dir()
         )
-        self.asset_dir = self.project_dir / "assets/chess_pieces"
+        self.resource_dir = (
+            Path(project_dir)
+            if project_dir is not None
+            else application_resource_dir()
+        )
+        self.asset_dir = self.resource_dir / "assets/chess_pieces"
         self.piece_renderers = {}
 
         for piece, filename in self.piece_to_file.items():
@@ -4620,6 +4644,7 @@ class boardwidget(QWidget):
 
         self.history_button_rect = QRectF()
         self.import_button_rect = QRectF()
+        self.zip_import_button_rect = QRectF()
         self.train_button_rect = QRectF()
         self.train_dropdown_rect = QRectF()
         self.model_match_button_rect = QRectF()
@@ -5251,6 +5276,74 @@ class boardwidget(QWidget):
         self.import_status = "Reading GM data..."
         self.update()
         thread.start()
+
+    def bat_dau_import_images_zip(self):
+        if self.import_dang_chay:
+            return
+
+        zip_paths, _ = QFileDialog.getOpenFileNames(
+            self,
+            "Select image ZIP archives",
+            "",
+            "ZIP archives (*.zip);;All files (*)",
+        )
+        if len(zip_paths) == 0:
+            return
+
+        stop_event = threading.Event()
+        thread = QThread(self)
+        worker = zipimageimportworker(
+            zip_paths,
+            self.project_dir / "fen_dataset",
+            stop_event,
+        )
+        worker.moveToThread(thread)
+        thread.started.connect(worker.chay)
+        worker.tien_do.connect(self.nhan_tien_do_image_import)
+        worker.ket_qua.connect(self.nhan_ket_qua_image_import)
+        worker.hoan_tat.connect(thread.quit)
+        worker.hoan_tat.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(
+            lambda thread_da_xong=thread: self.ket_thuc_import_thread(
+                thread_da_xong
+            )
+        )
+
+        self.import_thread = thread
+        self.import_worker = worker
+        self.import_stop_event = stop_event
+        self.import_dang_chay = True
+        self.import_status = "Extracting images from ZIP..."
+        self.update()
+        thread.start()
+
+    @Slot(object)
+    def nhan_tien_do_image_import(self, stats):
+        size_gib = stats["bytes_read"] / (1024 ** 3)
+        self.import_status = (
+            f"ZIP {stats['files_seen']} files | "
+            f"+{stats['imported']} images | {size_gib:.2f} GiB"
+        )
+        self.update()
+
+    @Slot(object)
+    def nhan_ket_qua_image_import(self, stats):
+        if "error" in stats:
+            self.import_status = "ZIP import error: " + stats["error"]
+        else:
+            self.import_status = (
+                f"ZIP complete: +{stats['imported']} images | "
+                f"duplicates {stats['duplicates']} | "
+                f"skipped {stats['skipped']} | errors {stats['errors']}"
+            )
+            if stats.get("warnings"):
+                self.import_status += f" | warnings {len(stats['warnings'])}"
+
+        monitor_stats = stats.copy()
+        monitor_stats["event"] = "ZIP_IMPORT_RESULT"
+        self.monitor_state.emit(monitor_stats)
+        self.update()
 
     @Slot(object)
     def nhan_tien_do_import(self, stats):
@@ -6807,7 +6900,7 @@ class boardwidget(QWidget):
         panel_width = min(145, max(90, self.width() - panel_x - 12))
         button_height = max(34, int(square_size * 0.48))
         gap = 10
-        total_height = button_height * 4 + gap * 3
+        total_height = button_height * 5 + gap * 4
         panel_y = starty + (board_size - total_height) / 2
 
         self.history_button_rect = QRectF(
@@ -6822,15 +6915,21 @@ class boardwidget(QWidget):
             panel_width,
             button_height,
         )
-        self.train_button_rect = QRectF(
+        self.zip_import_button_rect = QRectF(
             panel_x,
             panel_y + (button_height + gap) * 2,
             panel_width,
             button_height,
         )
-        self.model_match_button_rect = QRectF(
+        self.train_button_rect = QRectF(
             panel_x,
             panel_y + (button_height + gap) * 3,
+            panel_width,
+            button_height,
+        )
+        self.model_match_button_rect = QRectF(
+            panel_x,
+            panel_y + (button_height + gap) * 4,
             panel_width,
             button_height,
         )
@@ -6846,6 +6945,10 @@ class boardwidget(QWidget):
             (
                 self.import_button_rect,
                 "IMPORT..." if self.import_dang_chay else "IMPORT PGN",
+            ),
+            (
+                self.zip_import_button_rect,
+                "ZIP..." if self.import_dang_chay else "IMPORT ZIP",
             ),
             (
                 self.train_button_rect,
@@ -6891,7 +6994,7 @@ class boardwidget(QWidget):
         if status_parts:
             status_rect = QRectF(
                 panel_x,
-                self.train_button_rect.bottom() + 8,
+                self.model_match_button_rect.bottom() + 8,
                 panel_width,
                 max(45, int(square_size * 0.8)),
             )
@@ -7897,6 +8000,10 @@ class boardwidget(QWidget):
             self.bat_dau_import_pgn()
             return
 
+        if self.zip_import_button_rect.contains(event.position()):
+            self.bat_dau_import_images_zip()
+            return
+
         if self.train_button_rect.contains(event.position()):
             if self.train_dropdown_rect.contains(event.position()):
                 self.mo_menu_chon_model_train()
@@ -7988,6 +8095,9 @@ class boardwidget(QWidget):
             self.setCursor(Qt.PointingHandCursor)
             return
         if self.import_button_rect.contains(event.position()):
+            self.setCursor(Qt.PointingHandCursor)
+            return
+        if self.zip_import_button_rect.contains(event.position()):
             self.setCursor(Qt.PointingHandCursor)
             return
         if self.train_button_rect.contains(event.position()):

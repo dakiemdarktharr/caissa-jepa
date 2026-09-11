@@ -1,3 +1,23 @@
+## Desktop application packaging
+
+The desktop app keeps source-mode data in the repository and uses a writable
+per-user data directory when installed. Build a Windows desktop bundle with:
+
+    .\build_installer.ps1
+
+The script builds a PyInstaller folder bundle and, when Inno Setup 6 is
+installed, creates installer-output\CAISSA-JEPA-Setup.exe. Install the build
+dependencies first when needed:
+
+    & D:\chess_robot_app\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+
+The app now has an IMPORT ZIP button. It accepts one or more ZIP archives,
+extracts supported raster images safely into fen_dataset\images, prevents
+path traversal and symlink extraction, avoids duplicate files by SHA-256, and
+writes an import manifest at
+fen_dataset\images\image_import_manifest.json. The current chess JEPA
+trainer remains FEN/PGN-based; imported images are stored as a managed dataset
+for the image pipeline and are not silently mixed into chess-position samples.
 # CAISSA-JEPA Chess v7
 
 **CAISSA-JEPA: Counterfactual Adversarial Imagination with Symbolic State
