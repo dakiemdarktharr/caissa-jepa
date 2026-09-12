@@ -7,6 +7,7 @@ import json
 import math
 import os
 import time
+import uuid
 from collections import defaultdict
 from pathlib import Path
 from typing import Callable, Optional
@@ -24,6 +25,7 @@ from policy_value_baseline import DirectPolicyValueBaseline
 from lejepa import LeJEPA
 from nnue_baseline import NNUEStyleBaseline
 from training_runtime import SampleCache, MetricMean, TrainingETA
+from runtime_safety import FileLease, atomic_json, checkpoint_commit, restore_committed
 
 
 def mean_metrics(values: list[dict]) -> dict:
@@ -65,7 +67,7 @@ def read_json_with_retry(path: Path, attempts: int = 8) -> dict:
     raise AssertionError("unreachable")
 
 
-def atomic_json(path: Path, payload: dict, replace_attempts: int = 8) -> None:
+def _legacy_atomic_json(path: Path, payload: dict, replace_attempts: int = 8) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     with temporary.open("w", encoding="utf-8") as handle:
@@ -83,6 +85,18 @@ def atomic_json(path: Path, payload: dict, replace_attempts: int = 8) -> None:
 
 
 def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[dict], None]] = None) -> int:
+    path = Path(arguments.model)
+    with FileLease(path.with_suffix(".writer.lock")):
+        if not getattr(arguments, "resume", False) and path.exists():
+            raise FileExistsError("NEW training requires a new checkpoint path; select Resume for existing weights")
+        if getattr(arguments, "resume", False):
+            committed = restore_committed(path)
+            if committed is not None:
+                atomic_json(path.with_suffix(".training.json"), committed)
+        return _train_locked(arguments, progress_callback)
+
+
+def _train_locked(arguments, progress_callback=None):
     # Preserve the programmatic API used by early v7 scripts, which did not
     # yet have an explicit architecture argument.
     architecture = getattr(arguments, "architecture", "adversarial-jepa")
@@ -98,7 +112,12 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
     allow_dataset_change = bool(getattr(arguments, "allow_dataset_change", False))
     cache_workers = int(getattr(arguments, "cache_workers", 0) or 0)
     budget_hours = float(getattr(arguments, "time_budget_hours", 8.0) or 0.0)
-    deadline_epoch = time.time() + budget_hours * 3600.0 if budget_hours > 0 else None
+    deadline_epoch = getattr(arguments, "deadline_epoch", None)
+    if deadline_epoch is None:
+        deadline_epoch = time.time() + budget_hours * 3600.0 if budget_hours > 0 else None
+    # Cooperative cutoff reserves time for persistence/shutdown. This is not
+    # an OS-enforced kill: disk stalls may still exceed the reserve.
+    cutoff = deadline_epoch - min(30.0, budget_hours * 180.0) if deadline_epoch else None
     dataset_dir = Path(arguments.dataset)
     model_path = Path(arguments.model)
     checkpoint_exists = model_path.exists()
@@ -164,6 +183,8 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             "note": "Weighted objectives corrected; old loss curves are not directly comparable. Fresh training is recommended for the paper.",
         })
     report.update({
+        "run_id": uuid.uuid4().hex,
+        "pid": os.getpid(),
         "model": str(model_path),
         "dataset": str(dataset_dir),
         "dataset_fingerprint": fingerprint,
@@ -184,15 +205,20 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         "phase": "starting",
         "completed_epochs": completed_epochs,
         "trained_steps": model.trained_steps,
-        "runtime_version": 2,
+        "runtime_version": 3,
         "objective_version": 2,
-        "resume_policy": "restart unfinished epoch from saved weights",
+        "resume_policy": "rollback unfinished epoch to committed generation (optimizer and EMA included)",
         "eta_seconds": None,
         "estimated_finish_timestamp": None,
         "progress_percent": 0.0,
         "cache_workers": cache_workers,
         "time_budget_hours": budget_hours,
+        "deadline_epoch": deadline_epoch,
     })
+    report.pop("error", None)
+    report.pop("finished_at", None)
+    checkpoint_commit(model, report.copy())
+    committed_steps = model.trained_steps
     atomic_json(report_path, report)
     last_progress_write = 0.0
 
@@ -223,7 +249,10 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
             progress_callback(report.copy())
 
     def check_deadline() -> None:
-        if deadline_epoch and time.time() >= deadline_epoch:
+        stop = getattr(arguments, "stop_event", None)
+        if stop is not None and stop.is_set():
+            raise KeyboardInterrupt("Training stopped")
+        if cutoff and time.time() >= cutoff:
             raise TimeoutError("Training time budget exceeded")
 
     try:
@@ -231,12 +260,13 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         if progress_callback is not None:
             progress_callback(report.copy())
         def cache_progress(payload):
+            check_deadline()
             report.update(payload)
             report["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
             atomic_json(report_path, report)
             if progress_callback:
                 progress_callback(report.copy())
-        cache = SampleCache(dataset_dir, fingerprint, arguments.validation_percent, cache_progress, workers=cache_workers, deadline_epoch=deadline_epoch).prepare()
+        cache = SampleCache(dataset_dir, fingerprint, arguments.validation_percent, cache_progress, workers=cache_workers, deadline_epoch=cutoff).prepare()
         phase_batches = {
             phase: min(math.ceil(cache.counts[phase] / arguments.batch_size), limit)
             if limit else math.ceil(cache.counts[phase] / arguments.batch_size)
@@ -272,7 +302,6 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
                 save_progress(epoch, "validation", index, latest)
                 if arguments.max_validation_batches and index >= arguments.max_validation_batches:
                     break
-            model.save()
             epoch_report = {
                 "epoch": epoch,
                 "trained_steps": model.trained_steps,
@@ -290,10 +319,13 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
                 "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 **eta.fields(),
             })
+            checkpoint_commit(model, report.copy())
+            committed_steps = model.trained_steps
             atomic_json(report_path, report)
             if progress_callback is not None:
                 progress_callback(report.copy())
-            print(json.dumps(epoch_report, ensure_ascii=False, sort_keys=True))
+            if __import__("sys").stdout is not None:
+                print(json.dumps(epoch_report, ensure_ascii=False, sort_keys=True))
         report.update({
             "status": "COMPLETE",
             "phase": "complete",
@@ -307,14 +339,12 @@ def train(arguments: argparse.Namespace, progress_callback: Optional[Callable[[d
         if progress_callback is not None:
             progress_callback(report.copy())
     except BaseException as error:
-        try:
-            model.save()
-        except Exception:
-            pass
         report.update({
             "status": "INTERRUPTED" if isinstance(error, KeyboardInterrupt) else "TIME_BUDGET_EXCEEDED" if isinstance(error, TimeoutError) else "FAILED",
             "error": repr(error),
-            "trained_steps": model.trained_steps,
+            "uncommitted_steps_discarded": model.trained_steps - committed_steps,
+            "trained_steps": committed_steps,
+            "resume_policy": "rollback unfinished epoch to committed generation (optimizer and EMA included)",
             "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         })
         atomic_json(report_path, report)
@@ -347,8 +377,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--allow-dataset-change", action="store_true")
     parser.add_argument("--resume", action="store_true", help="Tiếp tục từ checkpoint và training report hiện có")
     parser.add_argument("--progress-interval", type=float, default=10.0, help="Số giây tối thiểu giữa hai lần ghi heartbeat")
-    parser.add_argument("--cache-workers", type=int, default=0, help="Cache worker processes; 0 = auto, up to 8")
-    parser.add_argument("--time-budget-hours", type=float, default=8.0, help="Hard wall-clock budget including cache and training")
+    parser.add_argument("--cache-workers", type=int, default=0, help="Cache worker processes; 0 = conservative auto, up to 2")
+    parser.add_argument("--time-budget-hours", type=float, default=8.0, help="Cooperative wall-clock budget including cache; reserves time for shutdown")
     return parser
 
 

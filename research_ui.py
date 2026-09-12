@@ -46,7 +46,9 @@ def plot(p, rect, history):
         for index, point in enumerate(points):
             if point.get("phase", "train") != phase:
                 continue
-            x = area.x() + area.width() * index / max(1, len(points)-1)
+            first_step = min(h.get("step", 0) for h in points)
+            last_step = max(h.get("step", 0) for h in points)
+            x = area.x() + area.width() * (point.get("step", 0)-first_step) / max(1, last_step-first_step)
             y = area.bottom() - area.height() * (point["loss"]-lo)/(hi-lo)
             if previous:
                 path.lineTo(x, y)
@@ -67,7 +69,7 @@ def paint_training(widget):
     p.setRenderHint(QPainter.Antialiasing)
     p.fillRect(widget.rect(), QColor("#000000"))
     text(p, QRectF(18, 8, widget.width()-36, 32), "CAISSA-JEPA // ALL-MODEL TRAINING MONITOR", "#39FF14", 16, True)
-    text(p, QRectF(18, 40, widget.width()-36, 25), "Measured cache/training throughput | hard budget 08:00:00 | local-time finish | no loss-components panel", size=9)
+    text(p, QRectF(18, 40, widget.width()-36, 25), "Shared 8-hour session budget (cooperative) | one trainer at a time | cache ETA excludes unmeasured training", size=9)
     specs = training_model_specs(widget.board_widget.project_dir)
     width = (widget.width()-48)/2
     height = (widget.height()-92)/3
@@ -163,6 +165,7 @@ def paint_arena(w):
         f"Current series / White model: {stats['wins']}W {stats['draws']}D {stats['losses']}L | score {score}",
         f"Paired games {stats['pairs']} | relative Elo {elo}",
         f"95% score bound {ci_text} (fixed-sample; NOT sequential proof)",
+        f"Censored {stats['censored']} | errors {stats['failures']} | exploratory results only",
         f"Seed {w.match_seed} | randomized first color + reversed-color leg",
     ]
     if evaluation.get('reference_error'):

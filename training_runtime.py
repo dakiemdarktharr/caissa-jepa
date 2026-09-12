@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 import os
 import pickle
@@ -13,6 +14,21 @@ from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from pathlib import Path
 
 import numpy as np
+from runtime_safety import FileLease, atomic_json as _atomic_json
+
+_worker_cancel = None
+
+
+def _init_cache_worker(cancel):
+    global _worker_cancel
+    _worker_cancel = cancel
+
+
+def _check_worker(deadline):
+    if _worker_cancel is not None and _worker_cancel.is_set():
+        raise InterruptedError("Cache preparation stopped")
+    if deadline and time.time() >= deadline:
+        raise TimeoutError("Cache time budget exceeded")
 
 
 class MetricMean:
@@ -71,7 +87,7 @@ class TrainingETA:
         }
 
 
-def _atomic_json(path: Path, payload: dict) -> None:
+def _legacy_atomic_json(path: Path, payload: dict) -> None:
     """Write progress and manifest records atomically."""
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -116,6 +132,7 @@ def _cache_shard_worker(payload: dict) -> dict:
     last_update = 0.0
     source_bytes = source_positions = valid_positions = skipped = 0
     records = []
+    source_digest = hashlib.sha256()
     rng = np.random.default_rng(20260903 + int(payload["index"]))
 
     def progress(done=False):
@@ -133,8 +150,8 @@ def _cache_shard_worker(payload: dict) -> dict:
 
     with source_path.open("rb") as source, output_part.open("wb") as output:
         for raw_line in source:
-            if deadline_epoch and time.time() >= deadline_epoch:
-                raise TimeoutError("Cache time budget exceeded")
+            _check_worker(deadline_epoch)
+            source_digest.update(raw_line)
             source_bytes += len(raw_line)
             positions = []
             try:
@@ -147,8 +164,7 @@ def _cache_shard_worker(payload: dict) -> dict:
                     continue
                 prepared = []
                 for position in positions:
-                    if deadline_epoch and time.time() >= deadline_epoch:
-                        raise TimeoutError("Cache time budget exceeded")
+                    _check_worker(deadline_epoch)
                     sample = sample_from_dataset_position(position, rng)
                     if sample is None:
                         skipped += 1
@@ -172,10 +188,16 @@ def _cache_shard_worker(payload: dict) -> dict:
                 last_update = now
         output.flush()
         os.fsync(output.fileno())
+    expected = payload.get("source_sha256")
+    if expected and source_digest.hexdigest() != expected:
+        raise ValueError(f"Source checksum mismatch: {source_path}")
     output_part.replace(output_path)
     elapsed = max(1e-6, time.monotonic() - started)
     metadata = {
-        "version": 4,
+        "version": 5,
+        "signature": payload.get("signature"),
+        "source_sha256": source_digest.hexdigest(),
+        "output_bytes": output_path.stat().st_size,
         "index": payload["index"],
         "source_path": payload["source_path"],
         "source_bytes": source_bytes,
@@ -199,7 +221,7 @@ class SampleCache:
     when that process was interrupted. Version 4 prepares source shards in
     parallel and publishes each completed shard atomically.
     """
-    VERSION = 4
+    VERSION = 5
 
     def __init__(self, dataset, fingerprint, validation_percent, callback=None, workers=None, deadline_epoch=None):
         self.dataset = Path(dataset)
@@ -211,6 +233,8 @@ class SampleCache:
         self.path = self.dataset / f"prepared-v{self.VERSION}-{fingerprint[:16]}-{validation_percent}"
         self.lock_path = self.path / ".build.lock"
         self.manifest = None
+        self._lease = None
+        self._baseline = None
 
     @staticmethod
     def _signature(dataset: Path, dataset_manifest: dict) -> str:
@@ -236,6 +260,8 @@ class SampleCache:
         for shard in metadata.get("shards", []):
             if not (self.path / shard["file"]).exists() or not (self.path / shard["metadata"]).exists():
                 return None
+            if (self.path / shard["file"]).stat().st_size != shard.get("output_bytes"):
+                return None
         return metadata
 
     def _load_complete(self, metadata: dict):
@@ -245,35 +271,18 @@ class SampleCache:
         self.skipped = int(metadata.get("skipped", 0))
         return self
 
-    def _lock_owner_alive(self) -> bool:
-        owner = self._read_json(self.lock_path)
-        if not owner:
-            return False
-        try:
-            os.kill(int(owner["pid"]), 0)
-            return True
-        except (OSError, ValueError, TypeError):
-            return False
-
     def _acquire_lock(self) -> bool:
-        self.path.mkdir(parents=True, exist_ok=True)
-        try:
-            descriptor = os.open(str(self.lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError:
-            try:
-                age = time.time() - self.lock_path.stat().st_mtime
-            except FileNotFoundError:
-                return False
-            if age > 120 and not self._lock_owner_alive():
-                self.lock_path.unlink(missing_ok=True)
-                return self._acquire_lock()
-            return False
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            json.dump({"pid": os.getpid(), "started_at": time.time()}, handle)
-        return True
+        if self._lease is None:
+            self._lease = FileLease(self.lock_path)
+        return self._lease.acquire()
 
     def _release_lock(self):
-        self.lock_path.unlink(missing_ok=True)
+        if self._lease is not None:
+            self._lease.release()
+
+    def _check_deadline(self):
+        if self.deadline_epoch and time.time() >= self.deadline_epoch:
+            raise TimeoutError("Cache time budget exceeded")
 
     def _progress(self, manifest: dict, phase: str, started: float, workers: int):
         source_shards = manifest.get("shards", [])
@@ -294,7 +303,11 @@ class SampleCache:
                 valid_count += int(progress.get("valid_positions", 0))
                 skipped += int(progress.get("skipped_samples", 0))
         elapsed = max(1e-6, time.monotonic() - started)
-        rate = byte_count / elapsed
+        if self._baseline is None:
+            self._baseline = (byte_count, position_count, time.monotonic())
+        base_bytes, base_positions, base_time = self._baseline
+        elapsed = max(1e-6, time.monotonic() - base_time)
+        rate = max(0, byte_count - base_bytes) / elapsed
         eta = max(0, total_bytes - byte_count) / rate if rate > 0 else None
         self.callback({
             "phase": phase,
@@ -307,7 +320,8 @@ class SampleCache:
             "cache_shards_completed": len(completed),
             "cache_shards_total": len(source_shards),
             "cache_workers": workers,
-            "cache_rows_per_second": position_count / elapsed,
+            "cache_rows_per_second": max(0, position_count - base_positions) / elapsed,
+            "eta_scope": "cache only; training not yet calibrated",
             "eta_seconds": eta,
             "estimated_finish_timestamp": time.time() + eta if eta is not None else None,
             "eta_status": "MEASURED CACHE ESTIMATE" if eta is not None else "CALIBRATING CACHE",
@@ -337,18 +351,17 @@ class SampleCache:
                 "validation_percent": self.validation_percent,
                 "index": shard["index"],
                 "deadline_epoch": self.deadline_epoch,
+                "signature": manifest["signature"],
+                "source_sha256": shard.get("sha256"),
             })
-        if workers <= 1:
-            for payload in payloads:
-                result = _cache_shard_worker(payload)
-                self._mark_shard(manifest, result)
-                self._progress(manifest, "preparing_cache", started, 1)
-            return
         context = __import__("multiprocessing").get_context("spawn")
-        executor = ProcessPoolExecutor(max_workers=workers, mp_context=context)
+        cancel = context.Event()
+        executor = ProcessPoolExecutor(max_workers=workers, mp_context=context,
+                                       initializer=_init_cache_worker, initargs=(cancel,))
         pending = {executor.submit(_cache_shard_worker, payload): payload for payload in payloads}
         try:
             while pending:
+                self._check_deadline()
                 done, _ = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
                 self._progress(manifest, "preparing_cache", started, workers)
                 for future in done:
@@ -360,6 +373,7 @@ class SampleCache:
                     self._mark_shard(manifest, result)
                     self._progress(manifest, "preparing_cache", started, workers)
         finally:
+            cancel.set()
             executor.shutdown(wait=True, cancel_futures=True)
 
     def prepare(self):
@@ -367,6 +381,9 @@ class SampleCache:
             raise TimeoutError("Cache time budget exceeded before preparation")
         dataset_manifest = json.loads((self.dataset / "dataset_manifest.json").read_text(encoding="utf-8"))
         signature = self._signature(self.dataset, dataset_manifest)
+        identity = hashlib.sha256(signature.encode()).hexdigest()[:16]
+        self.path = self.dataset / f"prepared-v{self.VERSION}-{self.fingerprint[:16]}-{self.validation_percent}-{identity}"
+        self.lock_path = self.path / ".build.lock"
         ready = self._ready_manifest(signature)
         if ready:
             return self._load_complete(ready)
@@ -374,6 +391,7 @@ class SampleCache:
         if not self._acquire_lock():
             started = time.monotonic()
             while True:
+                self._check_deadline()
                 ready = self._ready_manifest(signature)
                 if ready:
                     return self._load_complete(ready)
@@ -404,6 +422,7 @@ class SampleCache:
                         "index": index,
                         "path": shard["path"],
                         "bytes": int(shard.get("bytes", 0)),
+                        "sha256": shard.get("sha256"),
                         "file": stem + ".bin",
                         "metadata": stem + ".json",
                         "progress": stem + ".progress.json",
@@ -415,13 +434,16 @@ class SampleCache:
             missing = []
             for shard in manifest["shards"]:
                 metadata = self._read_json(self.path / shard["metadata"])
-                if metadata and (self.path / shard["file"]).exists():
+                if (metadata and metadata.get("version") == self.VERSION
+                        and metadata.get("signature") == signature
+                        and (self.path / shard["file"]).exists()
+                        and (self.path / shard["file"]).stat().st_size == metadata.get("output_bytes")):
                     shard.update(metadata)
                     shard["complete"] = True
                     continue
                 shard["complete"] = False
                 missing.append(shard)
-            workers = max(1, min(len(missing), self.workers or min(8, os.cpu_count() or 1))) if missing else 1
+            workers = max(1, min(len(missing), self.workers or min(2, os.cpu_count() or 1))) if missing else 1
             self._progress(manifest, "preparing_cache", time.monotonic(), workers)
             if missing:
                 self._build_missing(manifest, missing, workers)
@@ -452,6 +474,8 @@ class SampleCache:
             rng.shuffle(references)
         handles = {}
         pending = []
+        shuffle_buffer = []
+        buffer_limit = max(batch_size * 8, 512)
         try:
             for reference in references:
                 file_name = reference["file"]
@@ -467,10 +491,24 @@ class SampleCache:
                             item[name] = tuple(item[name])
                     alternatives = item.pop("legal_alternatives", [])
                     item["negative_action"] = tuple(alternatives[int(rng.integers(len(alternatives)))]) if alternatives else item["own_action"]
+                    if split == "train":
+                        shuffle_buffer.append(item)
+                        if len(shuffle_buffer) < buffer_limit:
+                            continue
+                        index = int(rng.integers(len(shuffle_buffer)))
+                        item = shuffle_buffer[index]
+                        shuffle_buffer[index] = shuffle_buffer[-1]
+                        shuffle_buffer.pop()
                     pending.append(item)
                     if len(pending) == batch_size:
                         yield pending
                         pending = []
+            rng.shuffle(shuffle_buffer)
+            for item in shuffle_buffer:
+                pending.append(item)
+                if len(pending) == batch_size:
+                    yield pending
+                    pending = []
             if pending:
                 yield pending
         finally:

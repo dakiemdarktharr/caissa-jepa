@@ -33,6 +33,8 @@ def cached_sha256(path):
 
 
 def arena_signature(specs, database_path):
+    from arena_protocol import SUITE_HASH, build_identity
+    from main import application_resource_dir
     paths = [s['path'] for s in specs if s.get('path')]
     config_dir = paths[0].parent if paths else Path(database_path).parent
     config = config_dir / 'arena_reference.json'
@@ -46,7 +48,9 @@ def arena_signature(specs, database_path):
     if reference_path:
         paths.append(Path(reference_path))
     paths += [Path(database_path), Path(str(database_path) + '-wal')]
-    return {str(p): [p.stat().st_size, p.stat().st_mtime_ns] for p in paths if p.exists()}
+    return {"files": {str(p): cached_sha256(p) for p in paths if p.exists()},
+            "opening_suite": SUITE_HASH, "protocol": 3,
+            "build": build_identity(application_resource_dir())}
 
 
 def parse_uci_info(line, turn):
@@ -174,7 +178,10 @@ class Referee:
         config = Path(project_dir) / "chess_data/arena_reference.json"
         path = os.environ.get("CAISSA_REFERENCE_ENGINE", "")
         if config.exists():
-            path = json.loads(config.read_text(encoding="utf-8")).get("path", path)
+            try:
+                path = json.loads(config.read_text(encoding="utf-8")).get("path", path)
+            except (OSError, ValueError, AttributeError) as error:
+                self.error = "Invalid reference configuration: " + str(error)
         if path:
             try:
                 self.uci = UCIReferee(path)
@@ -216,7 +223,7 @@ def evaluation_display(evaluation):
     """Return White fill and text; cp compression never labelled probability."""
     if not evaluation:
         return 0.5, "Pending"
-    if "wdl_white" in evaluation:
+    if "wdl_white" in evaluation and sum(evaluation["wdl_white"]) > 0:
         w, d, l = evaluation["wdl_white"]
         expected = (w + d / 2) / (w + d + l)
         return expected, f"White score {expected:.1%}"
@@ -265,5 +272,18 @@ def matchup_statistics(history, first, second):
         mean = sum(complete_pairs) / len(complete_pairs)
         epsilon = math.sqrt(math.log(40) / (2 * len(complete_pairs)))
         ci = [max(0, mean - epsilon), min(1, mean + epsilon)]
+    attempts = {}
+    for index, r in enumerate(history):
+        if {r.get("white_model_id"), r.get("black_model_id")} != {first, second}:
+            continue
+        key = (r.get("series_id"), r.get("match_seed", index), r.get("white_model_id"))
+        attempts[key] = r
+    censored = sum(r.get("reason") == "MAX_PLIES" for r in attempts.values())
+    failures = sum(bool(r.get("error")) for r in attempts.values())
+    denominator = n + censored
+    bounds = [(w + d * .5) / denominator, (w + d * .5 + censored) / denominator] if denominator else None
     return {"games": n, "wins": w, "draws": d, "losses": l, "score": score, "elo": elo,
-            "pairs": len(complete_pairs), "score_ci95": ci, "ci_method": "pair Hoeffding; fixed sample"}
+            "pairs": len(complete_pairs), "score_ci95": ci, "ci_method": "descriptive pair Hoeffding; NOT sequential evidence",
+            "censored": censored, "failures": failures,
+            "censoring_score_bounds": bounds, "ranking_ready": False,
+            "analysis_mode": "exploratory; fixed-budget independent confirmation required"}

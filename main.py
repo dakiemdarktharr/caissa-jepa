@@ -1,5 +1,12 @@
+import multiprocessing
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
+
 import hashlib
 import os
+# Apply before importing NumPy, including frozen/cache-worker entry points.
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
 import json
 import itertools
 import math
@@ -50,7 +57,8 @@ from model_registry import arena_model_specs, spec_by_id, training_model_specs
 from image_zip_import import zipimageimportworker
 
 
-APP_BUILD = "CAISSA-JEPA-v7"
+APP_BUILD = "CAISSA-JEPA-v7.1"
+_training_gate = threading.Semaphore(1)
 
 
 def application_resource_dir() -> Path:
@@ -3232,6 +3240,7 @@ class trainworker(QObject):
         self.cache_workers = int(cache_workers or 0)
         self.time_budget_hours = float(time_budget_hours or 0.0)
         self.last_report = {}
+        self.deadline_epoch = None
 
     def _gui_progress(self, report):
         if self.stop_event.is_set():
@@ -3272,7 +3281,9 @@ class trainworker(QObject):
             "cache_workers": report.get("cache_workers", self.cache_workers),
             "trained_steps": report.get("trained_steps", 0),
             "valid_samples": 0,
-            "skipped_samples": 0,
+            "skipped_samples": report.get("skipped_samples", 0),
+            "cache_rows_per_second": report.get("cache_rows_per_second"),
+            "eta_scope": report.get("eta_scope", "remaining model batches"),
             "rows_per_second": report.get("rows_per_second"),
             "metrics": latest_metrics,
             "wall_time": time.time(),
@@ -3281,7 +3292,17 @@ class trainworker(QObject):
 
     @Slot()
     def chay(self):
+        acquired = False
         try:
+            while not acquired:
+                if self.stop_event.is_set():
+                    raise traincancelled()
+                if self.deadline_epoch and time.time() >= self.deadline_epoch:
+                    raise TimeoutError("Shared training session budget exhausted while queued")
+                acquired = _training_gate.acquire(timeout=0.25)
+                if not acquired:
+                    self._gui_progress({"phase": "queued", "eta_status": "QUEUED - shared session budget",
+                                        "trained_steps": 0})
             if np is None:
                 raise RuntimeError("NumPy is not installed")
             manifest_path = self.dataset_path / "dataset_manifest.json"
@@ -3322,6 +3343,8 @@ class trainworker(QObject):
                 progress_interval=0.5,
                 cache_workers=self.cache_workers,
                 time_budget_hours=self.time_budget_hours,
+                deadline_epoch=self.deadline_epoch,
+                stop_event=self.stop_event,
             )
             train_v7(arguments, progress_callback=self._gui_progress)
             report_path = self.model_path.with_suffix(".training.json")
@@ -3337,7 +3360,7 @@ class trainworker(QObject):
                 "metrics": self.last_report.get("latest_metrics", {}),
                 "model_path": str(self.model_path),
             })
-        except traincancelled:
+        except KeyboardInterrupt:
             self.ket_qua.emit({
                 "model_id": self.model_id,
                 "model_label": self.model_label,
@@ -3359,6 +3382,8 @@ class trainworker(QObject):
                 "model_path": str(self.model_path),
             })
         finally:
+            if acquired:
+                _training_gate.release()
             self.hoan_tat.emit()
 
 
@@ -3436,7 +3461,12 @@ class caissamcts:
             "halfmove_clock": engine.halfmove_clock,
             "position_counts": engine.position_counts.copy(),
         }
-        _, priors, _ = self.model.score_legal_moves(snapshot, legal_moves)
+        from adversarial_jepa import AdversarialJEPA
+        if isinstance(self.model, AdversarialJEPA):
+            _, priors, _ = self.model.score_legal_moves(snapshot, legal_moves,
+                deadline=self.end_time, stop_event=self.stop_event)
+        else:
+            _, priors, _ = self.model.score_legal_moves(snapshot, legal_moves)
 
         for move, prior in zip(legal_moves, priors):
             if node is self.root and move == self.preferred_move:
@@ -4383,12 +4413,14 @@ class modelmatchworker(QObject):
                 "white_model_id": self.white_model_id,
                 "black_model_id": self.black_model_id,
                 "match_seed": self.match_seed,
-                "opening_policy": "GM opening book until midgame transition",
+                "opening_policy": "Frozen standard opening suite, 12 plies; then model search",
             })
 
             moves = []
             san_moves = []
             book_closed = False
+            from arena_protocol import opening_for, SUITE_HASH, build_identity
+            opening_name, opening_moves = opening_for(self.match_seed)
             result_token = None
             reason = None
             for ply in range(self.max_plies):
@@ -4409,13 +4441,8 @@ class modelmatchworker(QObject):
                 )
                 started_move = time.perf_counter()
                 self.search_result = {}
-                move = None if book_closed else choose_standard_opening_move(
-                    self.database,
-                    snapshot,
-                    ply,
-                    random_generator,
-                )
-                source = "GM_OPENING_BOOK"
+                move = text_thanh_move(opening_moves[ply]) if ply < len(opening_moves) else None
+                source = "FROZEN_STANDARD_OPENING"
                 if move is None:
                     book_closed = True
                     move, source = self._choose_move(
@@ -4487,9 +4514,13 @@ class modelmatchworker(QObject):
                 "move_records": self.move_records,
                 "provenance": provenance,
                 "paired_colors": True,
-                "protocol_version": 2,
+                "protocol_version": 3,
+                "search_track": "native whole-system (not representation-only comparison)",
+                "opening_suite_sha256": SUITE_HASH,
+                "opening_name": opening_name,
+                "opening_plies": len(opening_moves),
                 "opening_database_sha256": cached_sha256(self.database_path),
-                "source_sha256": file_sha256(Path(__file__)),
+                "source_sha256": build_identity(application_resource_dir()),
                 "python_version": sys.version,
                 "numpy_version": np.__version__ if np is not None else None,
                 "plies": len(moves),
@@ -4503,7 +4534,7 @@ class modelmatchworker(QObject):
                 "second_model_label": second_spec["label"],
                 "move_time_seconds": self.move_time,
                 "max_plies": self.max_plies,
-                "opening_policy": "GM opening book until midgame transition",
+                "opening_policy": "Frozen standard opening suite, 12 plies; then model search",
                 "started_at": self.started_at,
                 "finished_at": datetime.now().isoformat(),
             }
@@ -5382,6 +5413,10 @@ class boardwidget(QWidget):
     def mo_menu_chon_model_train(self):
         menu = QMenu(self)
         menu.setTitle("Training models")
+        dataset_action = menu.addAction("Select FEN dataset folder...")
+        dataset_action.setEnabled(not self.train_dang_chay)
+        dataset_action.triggered.connect(self.choose_training_dataset)
+        menu.addSeparator()
 
         for spec in self.training_model_specs:
             ready_text = "READY / RESUME" if spec["path"].exists() else "NEW"
@@ -5418,6 +5453,19 @@ class boardwidget(QWidget):
                 f"Unable to read {spec['label']} checkpoint: {error}"
             )
 
+    def choose_training_dataset(self):
+        path = QFileDialog.getExistingDirectory(self, "Select folder containing dataset_manifest.json", str(self.project_dir))
+        if not path:
+            return
+        candidate = Path(path)
+        if not (candidate / "dataset_manifest.json").is_file():
+            QMessageBox.warning(self, "FEN dataset required", "This folder has no dataset_manifest.json. Image ZIPs are staging data, not FEN training samples.")
+            return
+        from runtime_safety import atomic_json
+        atomic_json(self.project_dir / "chess_data" / "dataset_location.json", {"path": str(candidate.resolve())})
+        self.train_status = "Dataset selected: " + str(candidate)
+        self.update()
+
     def bat_dau_train_model(self):
         if getattr(self, "arena_series_active", False):
             self.train_status = "Stop the arena series before training."
@@ -5446,6 +5494,13 @@ class boardwidget(QWidget):
             return
 
         dataset_path = self.project_dir / "fen_dataset"
+        location = self.project_dir / "chess_data" / "dataset_location.json"
+        if location.exists():
+            try:
+                dataset_path = Path(json.loads(location.read_text(encoding="utf-8"))["path"])
+            except (OSError, ValueError, KeyError) as error:
+                self.train_status = "Invalid dataset location: " + str(error)
+                return
         manifest_path = dataset_path / "dataset_manifest.json"
         if not manifest_path.exists():
             self.train_status = "FEN dataset is missing; run the crawler"
@@ -5513,6 +5568,7 @@ class boardwidget(QWidget):
                 return
             allow_dataset_change = True
 
+        session_deadline = time.time() + 8 * 3600
         for spec in selected_specs:
             if spec["id"] in self.train_threads:
                 continue
@@ -5534,6 +5590,7 @@ class boardwidget(QWidget):
                 model_label=spec["label"],
             )
             worker.moveToThread(thread)
+            worker.deadline_epoch = session_deadline
             thread.started.connect(worker.chay)
             worker.tien_do.connect(self.nhan_tien_do_train)
             worker.ket_qua.connect(self.nhan_ket_qua_train)
@@ -9476,7 +9533,8 @@ class modelmatchwidget(QWidget):
         self.arena_history_path = (
             self.project_dir / "chess_data" / "arena_results.jsonl"
         )
-        self.arena_history = []
+        from arena_store import ArenaHistory
+        self.arena_history = ArenaHistory(self.project_dir / "chess_data" / "arena_history.sqlite")
         self.arena_checkpoint = {}
 
         self.white_combo = QComboBox(self)
@@ -9596,22 +9654,7 @@ class modelmatchwidget(QWidget):
         return [leg for pair in schedule for leg in (pair, pair[::-1])]
 
     def load_arena_state(self):
-        if self.arena_history_path.exists():
-            try:
-                lines = self.arena_history_path.read_text(
-                    encoding="utf-8"
-                ).splitlines()
-                for line in lines:
-                    if not line.strip():
-                        continue
-                    try:
-                        item = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-                    if isinstance(item, dict):
-                        self.arena_history.append(item)
-            except OSError:
-                pass
+        self.arena_history.import_jsonl(self.arena_history_path)
 
         if self.arena_checkpoint_path.exists():
             try:
@@ -9652,8 +9695,10 @@ class modelmatchwidget(QWidget):
 
     def refresh_history_statistics(self):
         from arena_research import completed_records
-        valid_history = completed_records(self.arena_history)
-        total = len(self.arena_history)
+        series = self.series_id or self.arena_checkpoint.get("series_id")
+        current_history = [r for r in self.arena_history if r.get("series_id") == series] if series else []
+        valid_history = completed_records(current_history)
+        total = len(current_history)
         completed = sum(
             1
             for item in valid_history
@@ -10204,7 +10249,7 @@ class main_window(QMainWindow):
         event.accept()
 
 
-if __name__ == "__main__":
+def run_application():
     app = QApplication(sys.argv)
     window = main_window()
     monitor = monitor_window(window.board_widget)
@@ -10219,4 +10264,8 @@ if __name__ == "__main__":
     monitor.showFullScreen()
     monitor.raise_()
     monitor.activateWindow()
-    sys.exit(app.exec())
+    return app.exec()
+
+
+if __name__ == "__main__":
+    sys.exit(run_application())

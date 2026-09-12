@@ -324,8 +324,8 @@ class AdversarialJEPA:
         latent = self.encode(states)
         targets = {
             1: self.encode(next_states, target=True),
-            2: self.encode(future2_states, target=True),
-            4: self.encode(future4_states, target=True),
+            2: self.encode(future2_states, target=True) if 2 in self.enabled_horizons else None,
+            4: self.encode(future4_states, target=True) if 4 in self.enabled_horizons else None,
         }
         neutral_action = np.zeros(ACTION_SIZE, dtype=np.float32)
         action_sets = {
@@ -349,6 +349,9 @@ class AdversarialJEPA:
         losses: dict[int, float] = {}
 
         for horizon in (1, 2, 4):
+            if horizon not in self.enabled_horizons:
+                losses[horizon] = 0.0
+                continue
             prediction = self._predict(latent, action_sets[horizon], horizon)
             mask = masks[horizon]
             denominator = max(1.0, float(np.sum(mask)) * self.latent_size)
@@ -450,8 +453,8 @@ class AdversarialJEPA:
         latent = self.encode(states)
         targets = {
             1: self.encode(next_states, target=True),
-            2: self.encode(future2_states, target=True),
-            4: self.encode(future4_states, target=True),
+            2: self.encode(future2_states, target=True) if 2 in self.enabled_horizons else None,
+            4: self.encode(future4_states, target=True) if 4 in self.enabled_horizons else None,
         }
         neutral_action = np.zeros(ACTION_SIZE, dtype=np.float32)
         action_sets = {
@@ -471,6 +474,9 @@ class AdversarialJEPA:
         }
         losses = {}
         for horizon in (1, 2, 4):
+            if horizon not in self.enabled_horizons:
+                losses[horizon] = 0.0
+                continue
             prediction = self._predict(latent, action_sets[horizon], horizon)
             mask = masks[horizon]
             losses[horizon] = float(np.sum(((prediction - targets[horizon]) * mask) ** 2) / max(1.0, float(np.sum(mask)) * self.latent_size))
@@ -501,6 +507,8 @@ class AdversarialJEPA:
         legal_moves: list,
         temperature: float = 0.25,
         max_opponent_branches: Optional[int] = None,
+        deadline=None,
+        stop_event=None,
     ) -> tuple[list[float], list[float], float]:
         """Robust action priors by explicitly pooling opponent replies.
 
@@ -513,6 +521,14 @@ class AdversarialJEPA:
         root_latent = self.encode(encode_snapshot(snapshot)[None, :])
         raw_scores = []
         for move in legal_moves:
+            if ((deadline is not None and __import__("time").perf_counter() >= deadline)
+                    or (stop_event is not None and stop_event.is_set())):
+                # Use the trained policy head for remaining legal moves. Never
+                # change legal-move coverage merely because the budget expired.
+                actions = np.stack([encode_action(m) for m in legal_moves[len(raw_scores):]])
+                fallback = np.tanh((actions @ self.policy_action_w) @ root_latent[0] / math.sqrt(self.latent_size))
+                raw_scores.extend(fallback.tolist())
+                break
             engine = vitriengine(snapshot, 0.02)
             undo = engine.thuc_hien_nuoc_di(move)
             try:

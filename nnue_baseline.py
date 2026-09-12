@@ -194,6 +194,15 @@ class NNUEStyleBaseline:
         )[:, None]
         return features, targets
 
+    def _sparse_batch(self, samples):
+        indices = [active_feature_indices(item["state"]) for item in samples]
+        pre = np.stack([self.input_b + self.input_w[index].sum(axis=0) for index in indices])
+        hidden = self._squared_clipped_relu(pre)
+        pre_value = hidden @ self.output_w + self.output_b
+        targets = np.clip(np.asarray([s["outcome"] for s in samples], dtype=np.float32), -1, 1)[:, None]
+        return indices, targets, {"pre_activation": pre, "hidden": hidden,
+                                  "pre_value": pre_value, "value": np.tanh(pre_value)}
+
     @staticmethod
     def _squared_clipped_relu(pre_activation: np.ndarray) -> np.ndarray:
         clipped = np.clip(pre_activation, 0.0, 1.0)
@@ -269,8 +278,7 @@ class NNUEStyleBaseline:
     def train_batch(self, samples: list[dict], learning_rate: float = 5e-4) -> dict:
         if not samples:
             raise ValueError("Empty batch")
-        features, targets = self._prepare_batch(samples)
-        forward = self._forward(features)
+        indices, targets, forward = self._sparse_batch(samples)
         batch_size = len(samples)
         value = forward["value"]
         error = value - targets
@@ -283,7 +291,11 @@ class NNUEStyleBaseline:
         pre_gradient = hidden_gradient * self._squared_clipped_relu_gradient(
             forward["pre_activation"]
         )
-        gradients["input_w"] = features.T @ pre_gradient
+        # Preserve dense Adam momentum semantics, but avoid the enormous dense
+        # input matrix and its matrix multiplications.
+        gradients["input_w"] = np.zeros_like(self.input_w)
+        for index, gradient in zip(indices, pre_gradient):
+            np.add.at(gradients["input_w"], index, gradient)
         gradients["input_b"] = np.sum(pre_gradient, axis=0)
         gradient_norm = math.sqrt(
             sum(float(np.sum(value * value)) for value in gradients.values())
@@ -297,8 +309,8 @@ class NNUEStyleBaseline:
     def evaluate_batch(self, samples: list[dict]) -> dict:
         if not samples:
             raise ValueError("Empty batch")
-        features, targets = self._prepare_batch(samples)
-        return self._metrics(targets, self._forward(features))
+        _, targets, forward = self._sparse_batch(samples)
+        return self._metrics(targets, forward)
 
     def _predict_features(self, indices: np.ndarray) -> float:
         value = self._forward_active(indices)["value"]

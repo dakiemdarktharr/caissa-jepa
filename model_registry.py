@@ -30,7 +30,7 @@ TRAINING_MODEL_DEFINITIONS = (
     },
     {
         "id": "lejepa-sigreg",
-        "label": "LeJEPA SIGReg No-EMA",
+        "label": "LeJEPA-inspired SIGReg No-EMA",
         "architecture": "lejepa",
         "variant": "sigreg",
         "filename": "lejepa_sigreg.npz",

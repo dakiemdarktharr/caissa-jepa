@@ -1,5 +1,5 @@
 #define AppName "CAISSA-JEPA"
-#define AppVersion "v7"
+#define AppVersion "7.1"
 #define AppPublisher "CAISSA-JEPA Research"
 #ifndef AppBuildDir
   #define AppBuildDir "..\dist\Caissa-JEPA"
@@ -21,12 +21,15 @@ SolidCompression=yes
 WizardStyle=modern
 UninstallDisplayName={#AppName}
 
+[Tasks]
+Name: "desktopicon"; Description: "Create a desktop shortcut"; Flags: unchecked
+
 [Files]
 Source: "{#AppBuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\Caissa-JEPA.exe"; WorkingDir: "{app}"
-Name: "{autodesktop}\{#AppName}"; Filename: "{app}\Caissa-JEPA.exe"; WorkingDir: "{app}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\Caissa-JEPA.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\Caissa-JEPA.exe"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent

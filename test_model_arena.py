@@ -207,13 +207,13 @@ class ModelArenaTests(unittest.TestCase):
                 "alpha-beta",
                 threading.Event(),
                 move_time=0.05,
-                max_plies=4,
+                max_plies=14,
             )
             worker.tien_do.connect(progress.append)
             worker.ket_qua.connect(results.append)
             worker.chay()
             moves = [item for item in progress if item["event"] == "MATCH_MOVE"]
-            self.assertEqual(len(moves), 4)
+            self.assertEqual(len(moves), 14)
             self.assertTrue(any(item["source"] == "NNUE_ALPHA_BETA" for item in moves))
             self.assertEqual(len(results), 1)
 
@@ -269,6 +269,7 @@ class ModelArenaTests(unittest.TestCase):
             history_path.parent.mkdir(parents=True, exist_ok=True)
             history_path.write_text(
                 json.dumps({
+                    "series_id": "series-1",
                     "result": "1-0",
                     "first_model_id": "alpha-beta",
                     "second_model_id": "a-jepa-h1",

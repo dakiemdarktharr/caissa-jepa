@@ -168,7 +168,7 @@ class ResearchUpgradeTests(unittest.TestCase):
             fingerprint = dataset_manifest_fingerprint(dataset)
             cache = SampleCache(dataset, fingerprint, 1, workers=2).prepare()
             self.assertGreater(cache.counts["train"] + cache.counts["validation"], 0)
-            self.assertEqual(cache.path.name.startswith("prepared-v4-"), True)
+            self.assertEqual(cache.path.name.startswith("prepared-v5-"), True)
             self.assertTrue((cache.path / "manifest.json").exists())
             resumed = SampleCache(dataset, fingerprint, 1, workers=2).prepare()
             self.assertEqual(cache.counts, resumed.counts)

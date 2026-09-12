@@ -345,7 +345,8 @@ class LeJEPA:
         eligible = np.any(batch["own_actions"] != batch["negative_actions"], axis=1)
         margins = np.where(eligible, 0.20 - positive_score + negative_score, 0.0)
         ranking_loss = float(np.mean(np.maximum(0.0, margins)))
-        sigreg_input = np.concatenate([latent] + [targets[h] for h in HORIZONS], axis=0)
+        valid_rows = {h: masks[h][:, 0].astype(bool) for h in HORIZONS}
+        sigreg_input = np.concatenate([latent] + [targets[h][valid_rows[h]] for h in HORIZONS], axis=0)
         sigreg_loss, sigreg_gradient = self._sigreg(sigreg_input)
         return {
             "latent": latent,
@@ -359,6 +360,7 @@ class LeJEPA:
             "negative_embed": negative_embed,
             "margins": margins,
             "sigreg_input": sigreg_input,
+            "sigreg_valid_rows": valid_rows,
             "sigreg_loss": sigreg_loss,
             "sigreg_gradient": sigreg_gradient,
         }
@@ -441,8 +443,10 @@ class LeJEPA:
         latent_gradient += sigreg_gradient[:batch_size]
         offset = batch_size
         for horizon in HORIZONS:
-            target_gradients[horizon] += sigreg_gradient[offset : offset + batch_size]
-            offset += batch_size
+            valid = forward["sigreg_valid_rows"][horizon]
+            count = int(np.sum(valid))
+            target_gradients[horizon][valid] += sigreg_gradient[offset : offset + count]
+            offset += count
 
         value_prediction = forward["value_prediction"]
         value_error = forward["value_error"]

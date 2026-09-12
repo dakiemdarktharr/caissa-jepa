@@ -8,6 +8,8 @@ from datetime import datetime
 from pathlib import Path, PurePosixPath
 
 from PySide6.QtCore import QObject, Signal, Slot
+from PySide6.QtGui import QImageReader
+from runtime_safety import FileLease
 
 
 class zipimageimportworker(QObject):
@@ -38,7 +40,10 @@ class zipimageimportworker(QObject):
             return None
         if any(part in ("", ".", "..") for part in candidate.parts):
             return None
-        if ":" in candidate.parts[0]:
+        if any(":" in part or part.rstrip(" .") != part
+               or any(ord(c) < 32 for c in part)
+               or part.split(".")[0].upper() in {"CON", "PRN", "AUX", "NUL", *[f"COM{i}" for i in range(1, 10)], *[f"LPT{i}" for i in range(1, 10)]}
+               for part in candidate.parts):
             return None
         if Path(candidate.name).suffix.lower() not in zipimageimportworker.allowed_extensions:
             return None
@@ -58,7 +63,7 @@ class zipimageimportworker(QObject):
     @staticmethod
     def safe_archive_name(file_path):
         archive_name = re.sub(r"[^A-Za-z0-9._-]+", "_", file_path.stem)
-        return archive_name[:80] or "archive"
+        return archive_name[:80].strip(". ") or "archive"
 
     def _target_for(self, base_target, digest):
         target = base_target
@@ -72,6 +77,14 @@ class zipimageimportworker(QObject):
         return target, False
 
     def _copy_member(self, archive, info, target, bytes_read):
+        root = self.image_root.resolve()
+        if not target.resolve().is_relative_to(root):
+            raise ValueError("ZIP destination escapes the image staging folder")
+        for parent in (target, *target.parents):
+            if parent == self.dataset_path.parent:
+                break
+            if parent.is_symlink() or (hasattr(parent, "is_junction") and parent.is_junction()):
+                raise ValueError("ZIP destination contains a link or junction")
         target.parent.mkdir(parents=True, exist_ok=True)
         temporary = target.with_name(f".{target.name}.{uuid.uuid4().hex}.part")
         digest = hashlib.sha256()
@@ -93,6 +106,16 @@ class zipimageimportworker(QObject):
                     destination.write(chunk)
             if info.file_size != member_bytes:
                 raise ValueError("ZIP member size changed while it was being read")
+            reader = QImageReader(str(temporary))
+            try:
+                reader.setDecideFormatFromContent(True)
+                size = reader.size()
+                if not size.isValid() or size.width() * size.height() > 40_000_000:
+                    raise ValueError("Invalid image or image exceeds 40 megapixels")
+                if reader.read().isNull():
+                    raise ValueError("Image decoding failed")
+            finally:
+                del reader  # QImageReader owns an open file handle on Windows.
             digest_text = digest.hexdigest()
             final_target, duplicate = self._target_for(target, digest_text)
             if duplicate:
@@ -128,11 +151,12 @@ class zipimageimportworker(QObject):
             payload = json.loads(self.manifest_path.read_text(encoding="utf-8"))
             imports = payload.get("imports", [])
             return imports if isinstance(imports, list) else []
-        except Exception:
-            return []
+        except Exception as error:
+            raise ValueError("Image manifest is unreadable; preserve it and repair before importing") from error
 
     @Slot()
     def chay(self):
+        lease = FileLease(self.image_root / ".import.lock")
         stats = {
             "archives_seen": 0,
             "files_seen": 0,
@@ -145,6 +169,9 @@ class zipimageimportworker(QObject):
         }
         import_records = []
         try:
+            if not lease.acquire():
+                raise RuntimeError("Another image import is already running")
+            existing_imports = self._existing_imports()
             self.image_root.mkdir(parents=True, exist_ok=True)
             for zip_path in self.zip_paths:
                 if self.stop_event.is_set():
@@ -221,7 +248,9 @@ class zipimageimportworker(QObject):
                     archive_record["errors"] += 1
                     archive_record["error"] = str(error)
                     import_records.append(archive_record)
-            self._write_manifest(self._existing_imports() + import_records)
+            self._write_manifest(existing_imports + import_records)
+            stats["training_ready"] = False
+            stats["note"] = "Image staging only. Current chess trainers require a FEN dataset."
             stats["cancelled"] = self.stop_event.is_set()
             stats["dataset_path"] = str(self.image_root.resolve())
             self.ket_qua.emit(stats)
@@ -229,4 +258,5 @@ class zipimageimportworker(QObject):
             stats["error"] = str(error)
             self.ket_qua.emit(stats)
         finally:
+            lease.release()
             self.hoan_tat.emit()

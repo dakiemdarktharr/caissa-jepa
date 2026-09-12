@@ -1,12 +1,17 @@
 ## Desktop application packaging
 
+Version 7.1 reliability changes, safe resume behavior, installer usage and
+explicit research limitations are documented in [Release 7.1](docs/RELEASE_7_1.md).
+The package is a research prototype, not a claim that all Q1 validation work is complete.
+
 The desktop app keeps source-mode data in the repository and uses a writable
 per-user data directory when installed. Build a Windows desktop bundle with:
 
     .\build_installer.ps1
 
-The script builds a PyInstaller folder bundle and, when Inno Setup 6 is
-installed, creates installer-output\CAISSA-JEPA-Setup.exe. Install the build
+The script builds a PyInstaller folder bundle, verifies its frozen self-test,
+and creates installer-output\CAISSA-JEPA-Setup.exe using Inno Setup. Pass
+`-SkipInstaller` explicitly for portable-only output. Install the build
 dependencies first when needed:
 
     & D:\chess_robot_app\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
