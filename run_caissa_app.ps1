@@ -1,5 +1,5 @@
 param(
-    [string]$Python = "D:\chess_robot_app\.venv\Scripts\python.exe",
+    [string]$Python = "$PSScriptRoot\.venv\Scripts\python.exe",
     [ValidateRange(1, 128)]
     [int]$BlasThreads = 1
 )

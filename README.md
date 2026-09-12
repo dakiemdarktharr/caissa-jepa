@@ -14,7 +14,12 @@ and creates installer-output\CAISSA-JEPA-Setup.exe using Inno Setup. Pass
 `-SkipInstaller` explicitly for portable-only output. Install the build
 dependencies first when needed:
 
-    & D:\chess_robot_app\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+    & .\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+
+Source launch/training/build scripts default to the project's `.venv`, not a
+separate drive-D workspace. If creating a new checkout, create `.venv` with
+`python -m venv .venv`, then install `requirements.txt` using that interpreter.
+Legacy data is preserved separately; see [workspace migration](docs/WORKSPACE_MIGRATION.md).
 
 The app now has an IMPORT ZIP button. It accepts one or more ZIP archives,
 extracts supported raster images safely into fen_dataset\images, prevents

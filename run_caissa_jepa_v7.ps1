@@ -1,7 +1,7 @@
 param(
     [ValidateSet("tests", "crawl", "status", "train-status", "train", "continue-train", "evaluate", "all")]
     [string]$Mode = "status",
-    [string]$Python = "D:\chess_robot_app\.venv\Scripts\python.exe",
+    [string]$Python = "$PSScriptRoot\.venv\Scripts\python.exe",
     [double]$TargetGB = 4.0,
     [int]$Latest = 0,
     [int]$Oldest = 1200,
