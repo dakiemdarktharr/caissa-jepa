@@ -47,7 +47,7 @@ class ResearchUpgradeTests(unittest.TestCase):
             eta.observe("validation", 1)
         self.assertEqual(eta.fields()["eta_seconds"], 12)
         self.assertEqual(eta.fields()["overall_total"], 12)
-        self.assertIn("MEASURED", eta.fields()["eta_status"])
+        self.assertIn("PILOT", eta.fields()["eta_status"])
         for _ in range(5):
             eta.observe("train", 2)
         for _ in range(2):
@@ -104,7 +104,7 @@ class ResearchUpgradeTests(unittest.TestCase):
             dataset = arena_fixture.ModelArenaTests().build_dataset(root)
             path = root/"pv.npz"
             DirectPolicyValueBaseline(path, latent_size=8).save()
-            result = evaluate(dataset,path,"policy-value","train",1,2)
+            result = evaluate(dataset,path,"policy-value","train",1,2,fixture_only=True)
             self.assertEqual(result["positions"],2)
             self.assertTrue(path.with_suffix(".evaluation.json").exists())
             self.assertGreater(result["mean_reciprocal_rank"],0)
@@ -168,7 +168,7 @@ class ResearchUpgradeTests(unittest.TestCase):
             fingerprint = dataset_manifest_fingerprint(dataset)
             cache = SampleCache(dataset, fingerprint, 1, workers=2).prepare()
             self.assertGreater(cache.counts["train"] + cache.counts["validation"], 0)
-            self.assertEqual(cache.path.name.startswith("prepared-v5-"), True)
+            self.assertEqual(cache.path.name.startswith(f"prepared-v{SampleCache.VERSION}-"), True)
             self.assertTrue((cache.path / "manifest.json").exists())
             resumed = SampleCache(dataset, fingerprint, 1, workers=2).prepare()
             self.assertEqual(cache.counts, resumed.counts)
@@ -264,7 +264,8 @@ class ResearchUpgradeTests(unittest.TestCase):
         from main import modelmatchwidget
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            AdversarialJEPA(root/'chess_data/caissa_a_jepa_h1.npz', latent_size=8, variant='h1').save()
+            model = AdversarialJEPA(root/'chess_data/caissa_a_jepa_h1.npz', latent_size=8, variant='h1')
+            arena_fixture.verified_arena_fixture(root, [model])
             board = boardwidget(project_dir=root)
             arena = modelmatchwidget(board)
             original = modelmatchworker

@@ -40,6 +40,22 @@ GM_PGN = '''[Event "Arena sample"]
 '''
 
 
+def verified_arena_fixture(root, models):
+    from test_mars_hardening import disjoint_fixture
+    from research_dataset import publish_audit
+    from runtime_safety import atomic_json
+    dataset = disjoint_fixture(root)
+    plan_path = root / "audit.json"
+    plan = publish_audit(dataset, plan_path)
+    assert plan["status"] == "PASSED", plan["errors"]
+    sample = sample_from_dataset_position(next(iter_dataset_games(dataset))["positions"][0], np.random.default_rng(0))
+    for model in models:
+        model.dataset_fingerprint = plan["dataset_fingerprint"]
+        model.train_batch([sample])
+        model.save()
+    atomic_json(root / "chess_data/dataset_location.json", {"path": str(dataset), "split_plan": str(plan_path)})
+
+
 class ModelArenaTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -63,8 +79,8 @@ class ModelArenaTests(unittest.TestCase):
     def test_registry_exposes_independent_training_checkpoints(self):
         with tempfile.TemporaryDirectory() as temporary:
             specs = training_model_specs(Path(temporary))
-            self.assertEqual(len(specs), 5)
-            self.assertEqual(sum(s['architecture'] in ('adversarial-jepa', 'lejepa') for s in specs), 3)
+            self.assertEqual(len(specs), 7)
+            self.assertEqual(sum(s['architecture'] in ('adversarial-jepa', 'lejepa') for s in specs), 5)
             self.assertEqual(len({str(spec["path"]) for spec in specs}), len(specs))
             self.assertTrue(any(spec["variant"] == "h1" for spec in specs))
             self.assertTrue(any(spec["architecture"] == "policy-value" for spec in specs))
@@ -111,7 +127,7 @@ class ModelArenaTests(unittest.TestCase):
 
             trainer_path = root / "chess_data/trainer_lejepa.npz"
             self.assertEqual(
-                train(Namespace(
+                train(Namespace(fixture_only=True,
                     dataset=str(dataset),
                     model=str(trainer_path),
                     epochs=1,
@@ -171,7 +187,7 @@ class ModelArenaTests(unittest.TestCase):
 
             trainer_path = root / "chess_data/trainer_nnue.npz"
             self.assertEqual(
-                train(Namespace(
+                train(Namespace(fixture_only=True,
                     dataset=str(dataset),
                     model=str(trainer_path),
                     epochs=1,
@@ -264,6 +280,7 @@ class ModelArenaTests(unittest.TestCase):
                 variant="full",
             )
             second_model.save()
+            verified_arena_fixture(root, [model, second_model])
 
             history_path = root / "chess_data/arena_results.jsonl"
             history_path.parent.mkdir(parents=True, exist_ok=True)

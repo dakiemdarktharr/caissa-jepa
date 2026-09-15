@@ -115,7 +115,7 @@ def snapshot_to_fen(snapshot: dict, fullmove_number: int) -> str:
     """Return a complete FEN while preserving the parser's rule semantics."""
     parser = pgnparser()
     fields = parser.snapshot_thanh_fen(snapshot).split()
-    fields[-1] = str(max(1, fullmove_number))
+    fields[-1] = str(snapshot.get("fullmove_number", max(1, fullmove_number)))
     return " ".join(fields)
 
 
@@ -406,6 +406,16 @@ class ShardedDatasetWriter:
         listed_final = [item.get("path") for item in self.manifest.get("shards", [])]
         if actual_final != listed_final:
             return True
+        entries = self.manifest.get("shards", [])
+        for field, shard_field, open_field in (("written_bytes", "bytes", "open_shard_bytes"),
+                                               ("games", "games", "open_shard_games"),
+                                               ("positions", "positions", "open_shard_positions")):
+            if all(shard_field in item for item in entries):
+                actual = sum(int(item[shard_field]) for item in entries) + int(self.manifest.get(open_field, 0))
+                if self.manifest.get(field) != actual:
+                    return True
+        if any(path.stat().st_size != entry.get("bytes") for path, entry in zip(final_paths, entries)):
+            return True
         part = self._part_path()
         stored_bytes = self.manifest.get("open_shard_bytes")
         if stored_bytes is None:
@@ -435,6 +445,7 @@ class ShardedDatasetWriter:
                 "path": str(path.relative_to(self.output_dir)).replace("\\", "/"),
                 "bytes": path.stat().st_size,
                 "sha256": ResilientDownloader.file_sha256(path),
+                "games": game_count, "positions": position_count,
             })
         if part_paths:
             current = max(part_paths, key=self._shard_number)
@@ -475,6 +486,7 @@ class ShardedDatasetWriter:
             "path": str(final.relative_to(self.output_dir)).replace("\\", "/"),
             "bytes": final.stat().st_size,
             "sha256": ResilientDownloader.file_sha256(final),
+            "games": self.open_shard_games, "positions": self.open_shard_positions,
         })
         self.current_shard += 1
         self.current_bytes = 0
@@ -512,6 +524,8 @@ class ShardedDatasetWriter:
         return True
 
     def _save_manifest(self, status: str) -> None:
+        if status == "TARGET_REACHED" and self.total_bytes < self.target_bytes:
+            status = "COMPLETE"
         self.manifest.update({
             "schema_version": SCHEMA_VERSION,
             "updated_at": utc_now(),
@@ -551,19 +565,32 @@ class FenDatasetBuilder:
             self.state.mark_processed(game_hash, source_name, positions)
 
     def close(self, status: str) -> None:
+        from dataset_integrity import sha256_file
+        ledger = self.writer.output_dir / "parser_quarantine.jsonl"
+        if ledger.exists():
+            self.writer.manifest["parser_quarantine_sha256"] = sha256_file(ledger)
         self.writer.close(status)
         self.state.close()
 
     def _game_payload(self, game_text: str, source: dict) -> Optional[dict]:
+        self.last_skip_reason = None
         headers = self.parser.doc_headers(game_text)
+        if headers.get("Variant", "Standard").casefold() not in ("standard", "chess"):
+            self.last_skip_reason = "unsupported_variant"
+            return None
         white_gm = title_matches(headers.get("WhiteTitle", ""), self.allowed_titles)
         black_gm = title_matches(headers.get("BlackTitle", ""), self.allowed_titles)
         if not (white_gm or black_gm):
+            self.last_skip_reason = "no_eligible_player"
             return None
 
         parsed = self.parser.parse_game(game_text)
         records = parsed["records"]
         if not records:
+            self.last_skip_reason = "empty_game"
+            return None
+        if parsed["result"] not in ("1-0", "0-1", "1/2-1/2"):
+            self.last_skip_reason = "unfinished_result"
             return None
 
         digest = sha256_bytes(game_text.encode("utf-8"))
@@ -614,6 +641,8 @@ class FenDatasetBuilder:
         return {
             "schema_version": SCHEMA_VERSION,
             "game_hash": digest,
+            "initial_fen": snapshot_to_fen(json_thanh_snapshot(records[0]["position_json"]), 1),
+            "canonical_moves": [r["move_text"].lower() for r in records],
             "source": source,
             "headers": {
                 key: headers.get(key, "")
@@ -625,7 +654,19 @@ class FenDatasetBuilder:
         }
 
     def ingest_path(self, path: Path, source: dict) -> dict:
-        stats = {"seen": 0, "accepted": 0, "skipped": 0, "duplicates": 0, "positions": 0, "full": False}
+        stats = {"seen": 0, "accepted": 0, "skipped": 0, "duplicates": 0, "positions": 0, "full": False, "skip_reasons": {}}
+        from dataset_integrity import sha256_file
+        source = {**source, "sha256": sha256_file(path), "license": source.get("license", "UNKNOWN")}
+        def quarantine(reason, text, member, detail=None):
+            stats["skip_reasons"][reason] = stats["skip_reasons"].get(reason, 0) + 1
+            entry = {"schema_version": 2, "reason": reason, "raw_pgn_sha256": sha256_bytes(text.encode()),
+                     "source": member, "detail": detail}
+            with (self.writer.output_dir / "parser_quarantine.jsonl").open("a", encoding="utf-8") as ledger:
+                ledger.write(json.dumps(entry, sort_keys=True) + "\n")
+        license_item = {"source_sha256": source["sha256"], "license": source["license"], "name": source.get("name")}
+        metadata = self.writer.manifest.setdefault("license_metadata", [])
+        if license_item not in metadata:
+            metadata.append(license_item)
         self.writer.register_source(source)
         with open_pgn_members(path) as members:
             for member_name, games in members:
@@ -636,23 +677,29 @@ class FenDatasetBuilder:
                     try:
                         payload = self._game_payload(game_text, member_source)
                     except Exception as error:
-                        print(f"Bỏ qua game không parse được: {error}", file=sys.stderr)
+                        reason = "unsupported_move" if "@" in str(error) or "0000" in str(error) else "malformed_or_illegal_move"
+                        quarantine(reason, game_text, member_source, str(error))
+                        print(f"Parser rejected game: {error}", file=sys.stderr)
                         stats["skipped"] += 1
                         continue
                     if payload is None:
+                        quarantine(self.last_skip_reason or "no_eligible_positions", game_text, member_source)
                         stats["skipped"] += 1
                         continue
                     if self.state.is_processed(payload["game_hash"]):
+                        quarantine("duplicate_raw_game", game_text, member_source)
                         stats["duplicates"] += 1
                         continue
                     if not self.writer.write_game(payload):
                         stats["full"] = True
+                        self.writer.manifest.setdefault("parser_runs", []).append(stats.copy())
                         return stats
                     self.state.mark_processed(
                         payload["game_hash"], source.get("name", path.name), len(payload["positions"])
                     )
                     stats["accepted"] += 1
                     stats["positions"] += len(payload["positions"])
+        self.writer.manifest.setdefault("parser_runs", []).append(stats.copy())
         return stats
 
 

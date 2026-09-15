@@ -15,6 +15,7 @@ from pathlib import Path
 
 import numpy as np
 from runtime_safety import FileLease, atomic_json as _atomic_json
+from dataset_integrity import sha256_file
 
 _worker_cancel = None
 
@@ -55,13 +56,18 @@ class TrainingETA:
         self.epochs = epochs
         self.total = sum(phase_batches.values()) * epochs
         self.times = {phase: deque(maxlen=64) for phase in phase_batches}
+        self.samples = {phase: deque(maxlen=64) for phase in phase_batches}
         self.done = defaultdict(int)
         self.completed = 0
 
-    def observe(self, phase, seconds):
-        self.times[phase].append(max(1e-6, seconds))
+    def observe(self, phase, seconds, count=0):
+        self.times[phase].append(max(1e-9, seconds))
+        self.samples[phase].append(count)
         self.done[phase] += 1
         self.completed += 1
+
+    def rows_per_second(self, phase):
+        return sum(self.samples[phase]) / max(1e-9, sum(self.times[phase]))
 
     def fields(self):
         remaining = {p: n * self.epochs - self.done[p] for p, n in self.phase_batches.items()}
@@ -82,7 +88,7 @@ class TrainingETA:
             "progress_percent": 100.0 * self.completed / max(1, self.total),
             "eta_seconds": eta,
             "eta_range_seconds": [max(0.0, eta - spread), eta + spread] if spread is not None else None,
-            "eta_status": "MEASURED ESTIMATE" if known else "PROVISIONAL (validation unmeasured)" if eta is not None else "CALIBRATING",
+            "eta_status": "PILOT ESTIMATE" if known and self.completed < 30 else "MEASURED ESTIMATE" if known else "PROVISIONAL (validation unmeasured)" if eta is not None else "CALIBRATING",
             "estimated_finish_timestamp": time.time() + eta if eta is not None else None,
         }
 
@@ -158,12 +164,21 @@ def _cache_shard_worker(payload: dict) -> dict:
                 game = json.loads(raw_line)
                 positions = game.get("positions", [])
                 source_positions += len(positions)
+                plan = payload.get("split_plan")
+                split = plan["assignments"][game["game_hash"]] if plan else stable_split(game["game_hash"], payload["validation_percent"])
+                if split not in ("train", "validation"):
+                    skipped += len(positions)
+                    continue
                 result = game.get("headers", {}).get("Result")
                 if result not in ("1-0", "0-1", "1/2-1/2"):
                     skipped += len(positions)
                     continue
                 prepared = []
-                for position in positions:
+                included = set(plan.get("included_position_indices", {}).get(game["game_hash"], [])) if plan and "included_position_indices" in plan else None
+                for position_index, position in enumerate(positions):
+                    if included is not None and position_index not in included:
+                        skipped += 1
+                        continue
                     _check_worker(deadline_epoch)
                     sample = sample_from_dataset_position(position, rng)
                     if sample is None:
@@ -172,7 +187,6 @@ def _cache_shard_worker(payload: dict) -> dict:
                         prepared.append(sample)
                         valid_positions += 1
                 if prepared:
-                    split = stable_split(game["game_hash"], payload["validation_percent"])
                     offset, length = _write_frame(output, {"split": split, "samples": prepared})
                     records.append({
                         "offset": offset,
@@ -194,10 +208,11 @@ def _cache_shard_worker(payload: dict) -> dict:
     output_part.replace(output_path)
     elapsed = max(1e-6, time.monotonic() - started)
     metadata = {
-        "version": 5,
+        "version": SampleCache.VERSION,
         "signature": payload.get("signature"),
         "source_sha256": source_digest.hexdigest(),
         "output_bytes": output_path.stat().st_size,
+        "output_sha256": sha256_file(output_path),
         "index": payload["index"],
         "source_path": payload["source_path"],
         "source_bytes": source_bytes,
@@ -207,6 +222,7 @@ def _cache_shard_worker(payload: dict) -> dict:
         "records": records,
         "elapsed_seconds": elapsed,
     }
+    metadata["metadata_sha256"] = hashlib.sha256(json.dumps(metadata, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     _atomic_json(metadata_part, metadata)
     metadata_part.replace(metadata_path)
     progress(True)
@@ -221,10 +237,10 @@ class SampleCache:
     when that process was interrupted. Version 4 prepares source shards in
     parallel and publishes each completed shard atomically.
     """
-    VERSION = 5
+    VERSION = 7
 
-    def __init__(self, dataset, fingerprint, validation_percent, callback=None, workers=None, deadline_epoch=None):
-        self.dataset = Path(dataset)
+    def __init__(self, dataset, fingerprint, validation_percent, callback=None, workers=None, deadline_epoch=None, split_plan=None):
+        self.dataset = Path(dataset).resolve(strict=True)
         self.fingerprint = fingerprint
         self.validation_percent = validation_percent
         self.callback = callback or (lambda payload: None)
@@ -232,37 +248,93 @@ class SampleCache:
         self.deadline_epoch = float(deadline_epoch) if deadline_epoch else None
         self.path = self.dataset / f"prepared-v{self.VERSION}-{fingerprint[:16]}-{validation_percent}"
         self.lock_path = self.path / ".build.lock"
+        self.split_plan = split_plan
         self.manifest = None
         self._lease = None
         self._baseline = None
 
     @staticmethod
-    def _signature(dataset: Path, dataset_manifest: dict) -> str:
+    def _signature(dataset: Path, dataset_manifest: dict, verify_sources=True) -> str:
         signature = []
         for shard in dataset_manifest.get("shards", []):
             source = dataset / shard["path"]
             stat = source.stat()
+            if verify_sources and shard.get("sha256") and sha256_file(source) != shard["sha256"]:
+                raise ValueError(f"Source checksum mismatch: {source}")
             signature.append((shard["path"], stat.st_size, stat.st_mtime_ns, shard.get("sha256")))
         return json.dumps(signature, separators=(",", ":"), sort_keys=True)
 
     def _read_json(self, path: Path) -> dict | None:
         try:
             return json.loads(path.read_text(encoding="utf-8"))
-        except (FileNotFoundError, PermissionError, json.JSONDecodeError):
+        except (OSError, ValueError):
+            return None
+
+    def _verified_shard(self, shard, signature):
+        """Authenticate bytes and validate the complete contiguous frame index."""
+        try:
+            path = self.path / shard["file"]
+            metadata_path = self.path / shard["metadata"]
+            if path.resolve().parent != self.path.resolve() or metadata_path.resolve().parent != self.path.resolve():
+                return None
+            metadata = self._read_json(metadata_path)
+            if not isinstance(metadata, dict):
+                return None
+            checked = {k: v for k, v in metadata.items() if k != "metadata_sha256"}
+            if metadata.get("metadata_sha256") != hashlib.sha256(json.dumps(checked, sort_keys=True, separators=(",", ":")).encode()).hexdigest():
+                return None
+            if (metadata.get("version") != self.VERSION or metadata.get("signature") != signature
+                    or metadata.get("index") != shard["index"]
+                    or metadata.get("source_path") != shard["path"]
+                    or metadata.get("source_sha256") != shard.get("sha256")
+                    or metadata.get("output_bytes") != path.stat().st_size
+                    or metadata.get("output_sha256") != sha256_file(path)):
+                return None
+            offset = count = 0
+            with path.open("rb") as handle:
+                for record in metadata["records"]:
+                    if (record["offset"] != offset or record["length"] < 8
+                            or record["split"] not in ("train", "validation")
+                            or not isinstance(record["n"], int) or record["n"] <= 0):
+                        return None
+                    handle.seek(offset)
+                    stored = struct.unpack("<Q", handle.read(8))[0]
+                    if stored != record["length"] - 8:
+                        return None
+                    frame = _read_frame(handle, offset, record["length"])
+                    if frame["split"] != record["split"] or len(frame["samples"]) != record["n"]:
+                        return None
+                    offset += record["length"]
+                    count += record["n"]
+            if offset != metadata["output_bytes"] or count != metadata["valid_positions"]:
+                return None
+            return metadata
+        except (OSError, ValueError, KeyError, TypeError, struct.error, pickle.UnpicklingError, EOFError, zlib.error):
             return None
 
     def _ready_manifest(self, signature: str) -> dict | None:
-        metadata = self._read_json(self.path / "manifest.json")
-        if not metadata or metadata.get("version") != self.VERSION or metadata.get("signature") != signature:
+        manifest = self._read_json(self.path / "manifest.json")
+        if (not isinstance(manifest, dict) or manifest.get("version") != self.VERSION
+                or manifest.get("signature") != signature or manifest.get("status") != "COMPLETE"):
             return None
-        if metadata.get("status") != "COMPLETE":
+        source = json.loads(signature)
+        shards = manifest.get("shards", [])
+        if len(shards) != len(source):
             return None
-        for shard in metadata.get("shards", []):
-            if not (self.path / shard["file"]).exists() or not (self.path / shard["metadata"]).exists():
+        counts = {"train": 0, "validation": 0}
+        skipped = 0
+        for index, shard in enumerate(shards):
+            if shard.get("index") != index or shard.get("path") != source[index][0]:
                 return None
-            if (self.path / shard["file"]).stat().st_size != shard.get("output_bytes"):
+            metadata = self._verified_shard(shard, signature)
+            if not metadata or any(shard.get(k) != v for k, v in metadata.items()):
                 return None
-        return metadata
+            for record in metadata["records"]:
+                counts[record["split"]] += record["n"]
+            skipped += metadata["skipped_samples"]
+        if manifest.get("counts") != counts or manifest.get("skipped") != skipped:
+            return None
+        return manifest
 
     def _load_complete(self, metadata: dict):
         self.manifest = metadata
@@ -344,6 +416,7 @@ class SampleCache:
         for shard in missing:
             payloads.append({
                 "dataset": str(self.dataset),
+                "split_plan": self.split_plan,
                 "source_path": shard["path"],
                 "output_path": str(self.path / shard["file"]),
                 "metadata_path": str(self.path / shard["metadata"]),
@@ -407,37 +480,30 @@ class SampleCache:
                     break
                 time.sleep(0.5)
         try:
-            current = self._read_json(self.path / "manifest.json")
-            if not current or current.get("signature") != signature:
-                manifest = {
-                    "version": self.VERSION,
-                    "status": "BUILDING",
-                    "signature": signature,
-                    "source_positions": int(dataset_manifest.get("positions", 0)),
-                    "shards": [],
-                }
-                for index, shard in enumerate(dataset_manifest.get("shards", [])):
-                    stem = f"shard_{index:05d}"
-                    manifest["shards"].append({
-                        "index": index,
-                        "path": shard["path"],
-                        "bytes": int(shard.get("bytes", 0)),
-                        "sha256": shard.get("sha256"),
-                        "file": stem + ".bin",
-                        "metadata": stem + ".json",
-                        "progress": stem + ".progress.json",
-                        "complete": False,
-                    })
-                _atomic_json(self.path / "manifest.json", manifest)
-            else:
-                manifest = current
+            manifest = {
+                "version": self.VERSION,
+                "status": "BUILDING",
+                "signature": signature,
+                "source_positions": int(dataset_manifest.get("positions", 0)),
+                "shards": [],
+            }
+            for index, shard in enumerate(dataset_manifest.get("shards", [])):
+                stem = f"shard_{index:05d}"
+                manifest["shards"].append({
+                    "index": index,
+                    "path": shard["path"],
+                    "bytes": int(shard.get("bytes", 0)),
+                    "sha256": shard.get("sha256"),
+                    "file": stem + ".bin",
+                    "metadata": stem + ".json",
+                    "progress": stem + ".progress.json",
+                    "complete": False,
+                })
+            _atomic_json(self.path / "manifest.json", manifest)
             missing = []
             for shard in manifest["shards"]:
-                metadata = self._read_json(self.path / shard["metadata"])
-                if (metadata and metadata.get("version") == self.VERSION
-                        and metadata.get("signature") == signature
-                        and (self.path / shard["file"]).exists()
-                        and (self.path / shard["file"]).stat().st_size == metadata.get("output_bytes")):
+                metadata = self._verified_shard(shard, signature)
+                if metadata:
                     shard.update(metadata)
                     shard["complete"] = True
                     continue

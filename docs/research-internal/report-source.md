@@ -1,3 +1,9 @@
+# Historical research notes — superseded
+
+This 2026-09-05 record is retained for provenance. Its roster, dataset availability,
+and inference descriptions are superseded by `V7_RESEARCH_PROTOCOL.md` and
+`docs/RESEARCH_IDENTITY.md`. It is not current MARS-JEPA Chess evidence.
+
 # CAISSA-JEPA: research decisions and implementation handoff
 
 Date: 5 September 2026. Audience: project owner and future paper reviewers.

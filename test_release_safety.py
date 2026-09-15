@@ -50,7 +50,7 @@ class ReleaseSafetyTests(unittest.TestCase):
             path = Path(folder)/"model.npz"
             path.write_bytes(b"do not overwrite")
             with self.assertRaises(FileExistsError):
-                train(Namespace(model=str(path), resume=False))
+                train(Namespace(fixture_only=True, model=str(path), resume=False))
             self.assertEqual(path.read_bytes(), b"do not overwrite")
 
     def test_h1_skips_disabled_predictors(self):
@@ -156,7 +156,7 @@ class ReleaseSafetyTests(unittest.TestCase):
             root = Path(folder)
             dataset = fixtures.ModelArenaTests().build_dataset(root)
             def arguments(path, epochs, resume=False):
-                return Namespace(model=str(path), dataset=str(dataset), architecture="adversarial-jepa",
+                return Namespace(fixture_only=True, model=str(path), dataset=str(dataset), architecture="adversarial-jepa",
                     model_variant="h1", latent_size=8, epochs=epochs, resume=resume,
                     seed=20260903, validation_percent=10, batch_size=2, learning_rate=5e-4,
                     max_train_batches=3, max_validation_batches=1, progress_interval=.01,

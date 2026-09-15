@@ -2,6 +2,7 @@
 import hashlib
 import json
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -18,8 +19,14 @@ class ArenaHistory:
                 CREATE TABLE IF NOT EXISTS import_cursor (path TEXT PRIMARY KEY, offset INTEGER);
             """)
 
+    @contextmanager
     def connect(self):
-        return sqlite3.connect(self.path, timeout=10)
+        db = sqlite3.connect(self.path, timeout=10)
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
 
     @staticmethod
     def _insert(db, item):
@@ -63,8 +70,17 @@ class ArenaHistory:
 
     def __iter__(self):
         with self.connect() as db:
-            for row in db.execute("SELECT summary FROM matches ORDER BY id"):
-                yield json.loads(row[0])
+            limit = db.execute("SELECT coalesce(max(id),0) FROM matches").fetchone()[0]
+        cursor = 0
+        while cursor < limit:
+            with self.connect() as db:
+                rows = db.execute("SELECT id,summary FROM matches WHERE id>? AND id<=? ORDER BY id LIMIT 128",
+                                  (cursor, limit)).fetchall()
+            if not rows:
+                return
+            # No connection survives a yield, including partial consumption.
+            for cursor, summary in rows:
+                yield json.loads(summary)
 
     def __getitem__(self, index):
         if isinstance(index, slice):

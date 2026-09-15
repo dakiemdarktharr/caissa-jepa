@@ -68,11 +68,11 @@ def paint_training(widget):
     p = QPainter(widget)
     p.setRenderHint(QPainter.Antialiasing)
     p.fillRect(widget.rect(), QColor("#000000"))
-    text(p, QRectF(18, 8, widget.width()-36, 32), "CAISSA-JEPA // ALL-MODEL TRAINING MONITOR", "#39FF14", 16, True)
-    text(p, QRectF(18, 40, widget.width()-36, 25), "Shared 8-hour session budget (cooperative) | one trainer at a time | cache ETA excludes unmeasured training", size=9)
+    text(p, QRectF(18, 8, widget.width()-36, 32), "MARS-JEPA Chess // ALL-MODEL TRAINING MONITOR", "#39FF14", 16, True)
+    text(p, QRectF(18, 40, widget.width()-36, 25), "Equal share of 8 training hours | queue/cache time excluded | one trainer at a time", size=9)
     specs = training_model_specs(widget.board_widget.project_dir)
     width = (widget.width()-48)/2
-    height = (widget.height()-92)/3
+    height = (widget.height()-92)/math.ceil((len(specs)+1)/2)
     for index, spec in enumerate(specs):
         x, y = 16 + (index % 2)*(width+16), 76 + (index//2)*(height+8)
         rect = QRectF(x, y, width, height)
@@ -93,8 +93,8 @@ def paint_training(widget):
         spread = latest.get("eta_range_seconds") if active else None
         extra = f"range {duration(spread[0])} - {duration(spread[1])}" if spread else f"cache {latest.get('cache_shards_completed', 0)}/{latest.get('cache_shards_total', 0)} shards | {latest.get('prepared_positions', 0):,} positions"
         text(p, QRectF(x+12,y+81,width-24,20), f"{extra} | {latest.get('rows_per_second') or latest.get('cache_rows_per_second') or 0:,.1f} positions/s", "#63A86C", 8)
-        plot(p, QRectF(x+12,y+105,width-24,max(50,height-116)), run.get("history", []))
-    rect = QRectF(32+width, 76+2*(height+8), width, height)
+        plot(p, QRectF(x+12,y+105,width-24,max(15,height-116)), run.get("history", []))
+    rect = QRectF(16+(len(specs)%2)*(width+16), 76+(len(specs)//2)*(height+8), width, height)
     panel(p, rect)
     text(p, rect.adjusted(12,8,-12,-height+35), "EXPERIMENT NOTES", "#39FF14", 11, True)
     text(p, rect.adjusted(12,40,-12,-12),

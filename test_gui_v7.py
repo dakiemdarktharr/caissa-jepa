@@ -82,6 +82,7 @@ class GuiParityTests(unittest.TestCase):
             )
             worker.tien_do.connect(progress.append)
             worker.ket_qua.connect(results.append)
+            worker.fixture_only = True
             worker.chay()
 
             self.assertTrue(progress)

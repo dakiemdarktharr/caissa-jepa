@@ -49,7 +49,7 @@ def benchmark(dataset, games=16, repeats=3):
             models[name]={"median_batch_seconds":statistics.median(values),"batch_positions":len(sample)}
         return {"scope":"microbenchmark; warm cache; NOT full training speedup",
                 "games":len(selected),"train_positions":count,"build_seconds":preparation,
-                "cache_bytes":cache.path.stat().st_size,"timings_seconds":measurements,
+                "cache_bytes":sum(p.stat().st_size for p in cache.path.rglob("*") if p.is_file()),"timings_seconds":measurements,
                 "cached_preparation_speedup":statistics.median(measurements['uncached'])/statistics.median(measurements['cached']),
                 "models":models}
 

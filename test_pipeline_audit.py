@@ -21,7 +21,7 @@ class PipelineAuditTests(unittest.TestCase):
             self.assertNotIn('None', result['result_counts'])
             self.assertEqual(before, {p: p.read_bytes() for p in dataset.rglob('*') if p.is_file()})
 
-    def test_stale_counters_are_detected_when_writer_misses_them(self):
+    def test_stale_counters_request_reconciliation(self):
         with tempfile.TemporaryDirectory() as folder:
             dataset = fixtures.ModelArenaTests().build_dataset(Path(folder))
             path = dataset / 'dataset_manifest.json'
@@ -31,7 +31,7 @@ class PipelineAuditTests(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()):
                 result = audit(dataset)
             self.assertIn('games', result['manifest_mismatches'])
-            self.assertFalse(result['existing_writer_requests_reconciliation'])
+            self.assertTrue(result['existing_writer_requests_reconciliation'])
 
 
 if __name__ == '__main__':

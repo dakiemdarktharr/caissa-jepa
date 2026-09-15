@@ -1,131 +1,97 @@
-# CAISSA-JEPA v7 research protocol
+# MARS-JEPA Chess research protocol, version 2
 
-CAISSA-JEPA v7 is a chess-focused adversarial JEPA experiment. It is not yet
-evidence that JEPA improves chess planning. The protocol exists to make that
-claim testable.
+The canonical scope and compatibility boundary are defined in
+[RESEARCH_IDENTITY.md](docs/RESEARCH_IDENTITY.md). This protocol supersedes the
+historical three-JEPA roster and minimum-over-replies inference description.
 
-## Immutable legacy artifacts
+## Data and history
 
-Keep the v6 source, `chess_engine.db`, and `caissa_jepa.npz` unchanged. Train
-v7 into a new path such as `chess_data/caissa_a_jepa_v7.npz`. Every experiment
-records the FEN dataset manifest hash, model checkpoint, seed, split and
-hyperparameters.
+Version-2 research audit plans bind actual shard SHA-256, byte/row/position
+counts, unfinished rows, code identity, source hashes, licenses and deterministic
+train/validation/locked-final-test assignments. Canonical game identity combines
+normalized move sequence and stable event provenance; an additional trajectory
+identity detects copies with changed headers. Game/event groups remain together.
 
-## Dataset
+Before any split, duplicate games and positions are counted. Held-out records
+own shared positions; conflicting records in earlier splits are quarantined,
+including records whose future targets overlap held-out positions. Context and
+H1/H2/H4 targets are included in overlap checks. The gate rejects empty splits,
+invalid transitions, unknown licenses and stale fingerprints. Every exclusion
+has a reason and source identity. Final-test records never enter training caches.
 
-The dataset tool emits one JSONL row per game. Each position stores a complete
-FEN, UCI action, opponent response, action sequence through four ply and an
-outcome from the side-to-move perspective. A game enters the default dataset
-when at least one player has PGN title `GM`; all plies are retained so the
-model learns opponent behavior as well as GM moves.
+Legality validation covers all six FEN fields, including en-passant and clocks.
+FEN cannot reconstruct repetition history. Existing encoders retain their
+compatibility feature shapes and omit clocks/history. Exact chess rules and a
+full-history independent referee determine terminal outcomes. Models must not
+be described as fully history-aware. JEPA uses absolute board/action coordinates;
+no geometric augmentation or side-to-move board symmetry is currently applied.
 
-Build from a local PGN/ZIP:
+## Objectives and response aggregation
 
-```powershell
-python fen_dataset_tool.py ingest --input path\to\games.pgn --output fen_dataset
-```
+The registered ablations are H1, H1/H2, H1/H2/H4, no-response, LeJEPA-inspired,
+direct policy/value and local NNUE-style. H1 predicts a state after our action;
+there is no opponent reply inside a one-ply target. The response-aware hypothesis
+is tested by the longer-horizon variants. Disabled predictors remain allocated
+for checkpoint compatibility; allocated parameter matching is not active-FLOP
+matching. Training and inference time must also be matched and reported.
 
-Run the resumable public TWIC source:
+The chosen mismatch resolution is restriction to the learned behavioral response
+policy: H2 branch values are averaged using the current policy head on the actual
+post-action state. The historical policy objective is a margin loss, so its
+softmax probabilities are an **uncalibrated surrogate**, not a calibrated response
+likelihood or worst-case estimate. H1 values are negated from next-player POV;
+H2 values already have root-player POV. Exact terminal rules override prediction.
+H4 remains an auxiliary observed-trajectory objective. Missing targets are
+explicitly absent and excluded from the corresponding losses. No counterfactual
+outcome labels are invented.
 
-```powershell
-python fen_dataset_tool.py crawl-twic --output fen_dataset --target-gb 4
-python fen_dataset_tool.py verify --output fen_dataset
-```
+LeJEPA-inspired uses bounded tanh latents and simplified SIGReg quadrature. Its
+manual gradients are checked numerically; this does not reproduce the published
+method's assumptions or theoretical guarantees.
 
-The crawler observes backoff, `Retry-After`, HTTP Range resumption and source
-errors. It must not be configured to evade rate limits, logins, CAPTCHAs or
-terms of service. TWIC material has source-specific redistribution terms; the
-manifest records provenance, but publication still requires a license review.
+## Four separate experiment families
 
-## Model and accuracy changes
+1. Representation: horizon target errors, variance/covariance, effective rank,
+   norms and at least three-seed stability. No engine-strength conclusion.
+2. Policy/value: all-legal top-1/top-5, MRR, NLL, value MSE and tactical/endgame
+   strata. WDL Brier/calibration from a declared scalar-to-WDL surrogate must be
+   labelled as such; it is not a learned WDL head.
+3. Same-search: matched data, model parameters, search, seeds and compute to
+   isolate architecture effects. Different search methods cannot establish this.
+4. Engine strength: complete systems with their own search, clearly separated
+   from architecture causality.
 
-The v7 A-JEPA predicts:
+## Confirmatory contract
 
-```text
-H1: state + our action -> next latent
-H2: state + our action + opponent response -> future latent
-H4: state + action sequence (self, opponent, self, opponent) -> future latent
-```
+`confirmatory_protocol.py` implements a fail-closed versioned contract and paired
+statistics. Smoke protocols require at least 50 unique legal opening positions;
+final protocols require at least 100. The 120 checked-in legal opening fixtures
+are synthetic variations of six families and require an independent diversity
+review before final confirmation. Merely increasing their count is insufficient.
 
-It adds an exact-rule branch score: for each candidate action, enumerate legal
-opponent replies and pool by worst predicted root-perspective value. This is
-the initial minimax-aware baseline. It is compared against single-future and
-direct policy/value baselines; it is not assumed superior.
+Pin an independent UCI binary's SHA-256, version, options and analysis time;
+freeze checkpoint/configuration/dataset/split identities, at least three model
+seeds, and search algorithm/time/node/thread budgets. Every opening/seed receives
+a color-swapped pair. Exactly one primary metric is predeclared: paired game
+score. Use fixed-sample opening-cluster confidence intervals with a conservative bounded-score envelope, conditional on the tested checkpoint cohort, keeping all seeds
+within each opening cluster, and Holm correction for secondary comparisons.
+No optional stopping or replacement of failed games is allowed.
 
-Train with a game-level deterministic split:
+Timeouts, illegal moves, cancellations, infrastructure errors and max-ply
+truncations are censored/error outcomes, never silent draws. Incomplete pairs
+block confirmatory ranking. Only chess-rule terminal draws are draws. The GUI's
+continuous arena remains exploratory; a classical display referee cannot make
+`ranking_ready` true. Missing or changed dataset identity also blocks confirmation.
 
-```powershell
-python train_caissa_v7.py --dataset fen_dataset --model chess_data\caissa_a_jepa_v7.npz --epochs 5
-python train_caissa_v7.py --architecture policy-value --dataset fen_dataset --model chess_data\policy_value_baseline.npz --epochs 5
-python train_caissa_v7.py --architecture nnue --model-variant nnue --dataset fen_dataset --model chess_data\nnue_style_baseline.npz --epochs 5
-```
+## Kill criteria
 
-Để tiếp tục một checkpoint đã train dở, dùng `--resume` hoặc runner Windows:
+Freeze the design before opening final-test results. If `full` fails to beat
+`h1`, `h1-h2`, and `no-response` with uncertainty intervals under matched data,
+parameters, search and compute, narrow the claim to the supported component or
+pivot. Report negative results, all failed/censored outcomes and seed variation.
+A lower auxiliary loss alone is not evidence of stronger chess planning.
 
-```powershell
-.\continue_caissa_training.ps1 -AdditionalEpochs 5
-.\watch_caissa_training.ps1 -Follow -IntervalSeconds 10
-```
+No production training or valid model-v-model result was created in the
+hardening task because the dataset was intentionally removed.
 
-Trainer lưu heartbeat nguyên tử vào file `.training.json` sau mỗi khoảng thời
-gian cấu hình bằng `--progress-interval`. Checkpoint chỉ được thay thế nguyên
-tử sau mỗi epoch và giữ cả optimizer state cùng EMA target state.
-
-The trainer refuses to resume against a dataset with a different manifest hash
-unless `--allow-dataset-change` is given explicitly. Its `.training.json`
-report is part of the experiment artifact.
-
-## Model matrix and arena normalization
-
-The GUI can train independent checkpoints for A-JEPA H1-only, A-JEPA H1+H2,
-full A-JEPA H1+H2+H4, no-response A-JEPA, chess-adapted LeJEPA with SIGReg,
-and Direct Policy/Value. It also includes an NNUE-style value baseline whose
-checkpoint is consumed by the existing alpha-beta search. Alpha-Beta is
-retained as a non-trained classical engine reference. The NNUE-style model is
-an experiment-compatible NumPy implementation, not a Stockfish-compatible
-`.nnue` binary. Each trainable run has its own checkpoint and heartbeat
-report; the monitor keeps a separate timeline per model.
-
-The LeJEPA entry follows the core objective described by Balestriero and
-LeCun: a JEPA prediction loss combined with Sketched Isotropic Gaussian
-Regularization (SIGReg), without an EMA/teacher encoder. In this repository,
-the state/action encoder and predictor are intentionally adapted to symbolic
-chess and implemented in NumPy; this must be reported as an adaptation in the
-paper, not as an unchanged reproduction of the original vision code.
-
-The MODEL VS MODEL arena uses one shared GM opening-book policy for every
-agent. The book is followed while the existing opening predicate is true; only
-after that transition does the selected agent search. The two selected agents
-are assigned White/Black with a recorded random seed, and the board is
-read-only so user clicks cannot change the game. The arena records the model
-assignment, move source, seed, result and reason in its live event stream and
-appends completed results to `chess_data/arena_results.jsonl`.
-When the immutable `chess_data/caissa_jepa.npz` exists, the legacy v6 model is
-also exposed as a non-trainable arena reference.
-
-`START SERIES` creates a round-robin schedule from every ready model in the
-arena roster. Each unordered pair appears once per round; after all pairs have
-played, the next round begins and continues until the user presses
-`STOP SERIES`. Before each match, the application atomically writes
-`chess_data/arena_checkpoint.json`; after an interruption,
-`CONTINUE LAST MATCHUP` replays the last saved pair and seed before continuing
-the series. The JSONL history is append-only and is the source for win/draw
-statistics; interrupted/error records are retained but are not counted as
-completed games.
-
-This is an evaluation harness, not evidence by itself. Final paper results
-must still use locked openings, color-swapped paired games, equal time/node
-budgets, multiple seeds, confidence intervals and a held-out confirmation set.
-
-## Required benchmark sequence
-
-1. Validate v6/classical alpha-beta, NNUE-style alpha-beta, uniform MCTS,
-   value-only MCTS and direct policy/value under equal time and node budgets.
-2. Compare H1-only against H1+H2 and H1+H2+H4 with equal parameters/data.
-3. Compare single future against response-conditioned worst-case pooling.
-4. Run multiple seeds; keep validation tuning separate from final test games.
-5. Report tactical solve rate, action ranking, calibration, nodes/time and
-   Elo/SPRT. Loss alone is not a success metric.
-
-Only after this sequence should v7 be used to make claims about adversarial
-JEPA value for chess planning.
+The default paired adapter is `research_search.py` (`mars-common-negamax-v1`). It uses the same root-ordering interface and exact negamax for all registered models, with explicit tree-node accounting and measured wall-time overruns. `tools/run_confirmatory.py --validate-only` checks a supplied frozen protocol without playing games. The default manifest is blocked until verified data, checkpoints and referee configuration are supplied.

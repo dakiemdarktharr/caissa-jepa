@@ -115,7 +115,7 @@ class V7DataPipelineTests(unittest.TestCase):
             builder.close("COMPLETE")
             self.assertEqual(first["accepted"], 1)
             self.assertEqual(first["positions"], 6)
-            self.assertEqual(command_verify(Namespace(output=str(output))), 0)
+            self.assertEqual(command_verify(Namespace(fixture_only=True, output=str(output))), 0)
 
             shard = next((output / "shards").glob("*.jsonl"))
             row = json.loads(shard.read_text(encoding="utf-8").splitlines()[0])
@@ -136,7 +136,7 @@ class V7DataPipelineTests(unittest.TestCase):
             second = resumed.ingest_path(source, {"name": "local-test"})
             resumed.close("COMPLETE")
             self.assertEqual(second["duplicates"], 1)
-            self.assertEqual(command_verify(Namespace(output=str(output))), 0)
+            self.assertEqual(command_verify(Namespace(fixture_only=True, output=str(output))), 0)
 
     def test_resumable_downloader_uses_http_range(self):
         server = ThreadingHTTPServer(("127.0.0.1", 0), _RangeHandler)
@@ -211,7 +211,7 @@ class V7DataPipelineTests(unittest.TestCase):
             self.assertTrue(all(np.isfinite(value) for value in baseline_metrics.values()))
             _, baseline_priors, _ = baseline.score_legal_moves(state, legal)
             self.assertAlmostEqual(sum(baseline_priors), 1.0, places=5)
-            ranking = evaluate(dataset, model_path, "adversarial-jepa", "train", 0, 3)
+            ranking = evaluate(dataset, model_path, "adversarial-jepa", "train", 0, 3, fixture_only=True)
             self.assertEqual(ranking["positions"], 3)
             self.assertTrue(np.isfinite(ranking["mean_nll"]))
 
@@ -231,7 +231,7 @@ class V7DataPipelineTests(unittest.TestCase):
             builder.ingest_path(source, {"name": "local-test"})
             builder.close("COMPLETE")
             model_path = root / "trained_v7.npz"
-            result = train(Namespace(
+            result = train(Namespace(fixture_only=True,
                 dataset=str(dataset), model=str(model_path), epochs=1,
                 batch_size=2, learning_rate=0.001, latent_size=16,
                 seed=9, validation_percent=1, max_train_batches=2,
@@ -244,7 +244,7 @@ class V7DataPipelineTests(unittest.TestCase):
             self.assertGreaterEqual(report["epochs"][0]["trained_steps"], 1)
             first_steps = report["trained_steps"]
             self.assertEqual(report["status"], "COMPLETE")
-            resumed = train(Namespace(
+            resumed = train(Namespace(fixture_only=True,
                 dataset=str(dataset), model=str(model_path), epochs=1,
                 batch_size=2, learning_rate=0.001, latent_size=16,
                 seed=9, validation_percent=1, max_train_batches=2,
@@ -261,23 +261,22 @@ class V7DataPipelineTests(unittest.TestCase):
             changed_manifest["incremental_training_test"] = True
             manifest_path.write_text(json.dumps(changed_manifest), encoding="utf-8")
             with self.assertRaises(RuntimeError):
-                train(Namespace(
+                train(Namespace(fixture_only=True,
                     dataset=str(dataset), model=str(model_path), epochs=1,
                     batch_size=2, learning_rate=0.001, latent_size=16,
                     seed=9, validation_percent=1, max_train_batches=1,
                     max_validation_batches=1, allow_dataset_change=False,
                     resume=True, progress_interval=0.001,
                 ))
-            incremental = train(Namespace(
-                dataset=str(dataset), model=str(model_path), epochs=1,
-                batch_size=2, learning_rate=0.001, latent_size=16,
-                seed=9, validation_percent=1, max_train_batches=1,
-                max_validation_batches=1, allow_dataset_change=True,
-                resume=True, progress_interval=0.001,
-            ))
-            self.assertEqual(incremental, 0)
-            incremental_report = json.loads(model_path.with_suffix(".training.json").read_text(encoding="utf-8"))
-            self.assertEqual(incremental_report["completed_epochs"], 3)
+            with self.assertRaisesRegex(ValueError, "overrides are disabled"):
+                train(Namespace(fixture_only=True,
+                    dataset=str(dataset), model=str(model_path), epochs=1,
+                    batch_size=2, learning_rate=0.001, latent_size=16,
+                    seed=9, validation_percent=1, max_train_batches=1,
+                    max_validation_batches=1, allow_dataset_change=True,
+                    resume=True, progress_interval=0.001,
+                ))
+
 
 
 if __name__ == "__main__":

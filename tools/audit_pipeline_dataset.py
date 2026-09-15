@@ -87,11 +87,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('dataset')
     parser.add_argument('--report', required=True)
+    parser.add_argument('--research', action='store_true', help='Version-2 full-FEN audit and locked disjoint split plan')
     args = parser.parse_args()
     dataset = Path(args.dataset).resolve(strict=True)
     report = Path(args.report).resolve()
     if report == dataset or dataset in report.parents:
         parser.error('Report must be outside the input dataset')
-    result = audit(dataset)
+    from research_dataset import audit_dataset
+    result = audit_dataset(dataset) if args.research else audit(dataset)
     atomic_json(report, result)
     print(json.dumps({k: v for k, v in result.items() if k not in ('shards', 'duplicates')}))

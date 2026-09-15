@@ -1,0 +1,101 @@
+{
+  "cache_failure": {
+    "probes": [
+      {
+        "names": [
+          "dataset_manifest.json",
+          "dataset_state.sqlite",
+          "downloads",
+          "migration_verification.json",
+          "prepared-v3-a9d514c4e32e2e4b-10.sqlite",
+          "prepared-v4-a9d514c4e32e2e4b-10",
+          "shards"
+        ],
+        "path": "C:\\Users\\ANHKHOI\\AppData\\Local\\CAISSA-JEPA\\fen_dataset\\prepared-v5-a9d514c4e32e2e4b-10-d3ec6ce1c9d8e6bc",
+        "traceback": "Traceback (most recent call last):\n  File \"<stdin>\", line 10, in <module>\n  File \"C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python39_64\\lib\\pathlib.py\", line 1323, in mkdir\n    self._accessor.mkdir(self, mode)\nFileExistsError: [WinError 183] Cannot create a file when that file already exists: 'C:\\\\Users\\\\ANHKHOI\\\\AppData\\\\Local\\\\CAISSA-JEPA\\\\fen_dataset\\\\prepared-v5-a9d514c4e32e2e4b-10-d3ec6ce1c9d8e6bc'\n"
+      },
+      {
+        "names": [
+          "dataset_manifest.json",
+          "dataset_state.sqlite",
+          "downloads",
+          "migration_verification.json",
+          "prepared-v3-a9d514c4e32e2e4b-10.sqlite",
+          "prepared-v4-a9d514c4e32e2e4b-10",
+          "shards"
+        ],
+        "path": "D:\\CAISSA-JEPA\\fen_dataset\\prepared-v5-a9d514c4e32e2e4b-10-d3ec6ce1c9d8e6bc",
+        "status": "PASSED"
+      }
+    ]
+  },
+  "derived": {
+    "actual": {
+      "games": 90001,
+      "positions": 8284281,
+      "written_bytes": 4035243006
+    },
+    "dataset": "D:\\CAISSA-JEPA\\datasets\\audited-v1-20260913",
+    "errors": [],
+    "manifest_sha256": "db71651b9ca8a11f4c6b4c675b53b181479a962e05680538439f1b982371b2f6",
+    "scope": "All rows, aggregate counts, sizes, SHA-256 and game hashes; not legal replay",
+    "shard_count": 17,
+    "status": "PASSED",
+    "version": 1
+  },
+  "installed_exe_sha256": "63e25d95b3ef825e03acee0ed00c7d3f80a1cf798ddabb94da27f396b13425f4",
+  "production_checkpoint_reports_unchanged": 11,
+  "production_training_started": false,
+  "research": {
+    "canonical_duplicate_count": 474,
+    "counts": {
+      "excluded": 483,
+      "selection": 4607,
+      "test": 4231,
+      "train": 71738,
+      "validation": 8942
+    },
+    "limitations": [
+      "Observed position overlap must be addressed or disclosed before confirmatory claims",
+      "Event groups may span dates; ordering by final date does not guarantee strict global temporal separation",
+      "Canonical identity is observed full trajectory, not a legal replay proof",
+      "No independent reference engine configured"
+    ],
+    "position_overlap": {
+      "selection/test": {
+        "all": 10743,
+        "both_beyond_ply_12": 5602
+      },
+      "train/selection": {
+        "all": 30124,
+        "both_beyond_ply_12": 20445
+      },
+      "train/test": {
+        "all": 28176,
+        "both_beyond_ply_12": 18997
+      },
+      "train/validation": {
+        "all": 48212,
+        "both_beyond_ply_12": 34318
+      },
+      "validation/selection": {
+        "all": 15463,
+        "both_beyond_ply_12": 8810
+      },
+      "validation/test": {
+        "all": 14286,
+        "both_beyond_ply_12": 7960
+      }
+    },
+    "research_ready": false
+  },
+  "source_base_commit": "dddd3d3",
+  "split_plan_sha256": "68c651922f3be0c496dce89175af706685c43792fa2ffc65ba3097748e371322",
+  "tests": {
+    "core": "PASSED",
+    "frozen_smoke": "PASSED",
+    "installed_smoke": "PASSED",
+    "source_smoke": "PASSED",
+    "unittest": 52
+  }
+}

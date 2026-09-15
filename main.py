@@ -106,6 +106,7 @@ class vitriengine:
         self.castling_rights = snapshot["castling_rights"].copy()
         self.en_passant_target = snapshot["en_passant_target"]
         self.halfmove_clock = snapshot.get("halfmove_clock", 0)
+        self.fullmove_number = snapshot.get("fullmove_number", 1)
         self.position_counts = snapshot.get("position_counts", {}).copy()
 
         self.gioi_han_giay = max(0.02, float(gioi_han_giay))
@@ -669,6 +670,7 @@ class vitriengine:
             "castling_rights": self.castling_rights.copy(),
             "en_passant_target": self.en_passant_target,
             "halfmove_clock": self.halfmove_clock,
+            "fullmove_number": self.fullmove_number,
             "turn": self.turn,
             "zobrist_hash": self.zobrist_hash,
             "new_position_key": None,
@@ -707,6 +709,8 @@ class vitriengine:
         else:
             self.halfmove_clock += 1
 
+        if self.turn == "black":
+            self.fullmove_number += 1
         self.turn = self.mau_doi_thu(self.turn)
 
         new_key = self.tao_key_position()
@@ -755,6 +759,7 @@ class vitriengine:
         self.castling_rights = undo_info["castling_rights"]
         self.en_passant_target = undo_info["en_passant_target"]
         self.halfmove_clock = undo_info["halfmove_clock"]
+        self.fullmove_number = undo_info["fullmove_number"]
         self.turn = undo_info["turn"]
         self.zobrist_hash = undo_info["zobrist_hash"]
 
@@ -1643,6 +1648,7 @@ def snapshot_thanh_json(snapshot):
         "castling_rights": snapshot["castling_rights"],
         "en_passant_target": snapshot["en_passant_target"],
         "halfmove_clock": snapshot.get("halfmove_clock", 0),
+        "fullmove_number": snapshot.get("fullmove_number", 1),
     }
 
     return json.dumps(
@@ -1661,6 +1667,7 @@ def json_thanh_snapshot(snapshot_json):
         "castling_rights": data["castling_rights"],
         "en_passant_target": data.get("en_passant_target"),
         "halfmove_clock": data.get("halfmove_clock", 0),
+        "fullmove_number": data.get("fullmove_number", 1),
         "position_counts": {},
     }
 
@@ -2250,8 +2257,14 @@ class pgnparser:
     def fen_thanh_snapshot(self, fen_text):
         parts = fen_text.strip().split()
 
-        if len(parts) < 4:
-            raise ValueError("FEN is missing fields")
+        if len(parts) != 6:
+            raise ValueError("FEN requires exactly six fields")
+        if parts[1] not in ("w", "b") or not re.fullmatch(r"-|K?Q?k?q?", parts[2]):
+            raise ValueError("Invalid FEN side or castling rights")
+        if parts[3] != "-" and not re.fullmatch(r"[a-h][36]", parts[3]):
+            raise ValueError("Invalid FEN en-passant target")
+        if not parts[4].isdigit() or not parts[5].isdigit() or int(parts[5]) < 1:
+            raise ValueError("Invalid FEN clocks")
 
         board = []
         ranks = parts[0].split("/")
@@ -2260,8 +2273,12 @@ class pgnparser:
             raise ValueError("FEN must contain 8 ranks")
 
         for rank_text in ranks:
+            if sum(int(c) if c in "12345678" else 1 for c in rank_text) != 8:
+                raise ValueError("Each FEN rank must contain eight squares")
             for character in rank_text:
                 if character.isdigit():
+                    if character not in "12345678":
+                        raise ValueError("Invalid FEN empty-square run")
                     board.extend(["."] * int(character))
                 elif character in "PNBRQKpnbrqk":
                     board.append(character)
@@ -2271,6 +2288,10 @@ class pgnparser:
         if len(board) != 64:
             raise ValueError("FEN must contain 64 squares")
 
+        if board.count("K") != 1 or board.count("k") != 1:
+            raise ValueError("FEN must have exactly one king per side")
+        if any(piece in "Pp" for piece in board[:8] + board[-8:]):
+            raise ValueError("FEN contains an unpromoted pawn on the last rank")
         turn = "white" if parts[1] == "w" else "black"
         castling_text = parts[2]
         en_passant_target = None
@@ -2294,6 +2315,7 @@ class pgnparser:
             },
             "en_passant_target": en_passant_target,
             "halfmove_clock": halfmove_clock,
+            "fullmove_number": int(parts[5]),
             "position_counts": {},
         }
 
@@ -2350,7 +2372,7 @@ class pgnparser:
                 castling_text,
                 en_passant_text,
                 str(snapshot.get("halfmove_clock", 0)),
-                "1",
+                str(snapshot.get("fullmove_number", 1)),
             )
         )
 
@@ -2586,6 +2608,7 @@ class pgnparser:
                 "castling_rights": engine.castling_rights.copy(),
                 "en_passant_target": engine.en_passant_target,
                 "halfmove_clock": engine.halfmove_clock,
+                "fullmove_number": engine.fullmove_number,
                 "position_counts": {},
             }
             position_key = key_thanh_text(engine.tao_key_position())
@@ -2598,6 +2621,7 @@ class pgnparser:
                 "castling_rights": engine.castling_rights.copy(),
                 "en_passant_target": engine.en_passant_target,
                 "halfmove_clock": engine.halfmove_clock,
+                "fullmove_number": engine.fullmove_number,
                 "position_counts": {},
             }
             records.append({
@@ -3241,6 +3265,7 @@ class trainworker(QObject):
         self.time_budget_hours = float(time_budget_hours or 0.0)
         self.last_report = {}
         self.deadline_epoch = None
+        self.split_plan = None
 
     def _gui_progress(self, report):
         if self.stop_event.is_set():
@@ -3293,21 +3318,21 @@ class trainworker(QObject):
     @Slot()
     def chay(self):
         acquired = False
+        worker_run_id = __import__("uuid").uuid4().hex
+        queued_at = time.monotonic()
         try:
             while not acquired:
                 if self.stop_event.is_set():
                     raise traincancelled()
-                if self.deadline_epoch and time.time() >= self.deadline_epoch:
-                    raise TimeoutError("Shared training session budget exhausted while queued")
                 acquired = _training_gate.acquire(timeout=0.25)
                 if not acquired:
-                    self._gui_progress({"phase": "queued", "eta_status": "QUEUED - shared session budget",
+                    self._gui_progress({"phase": "queued", "eta_status": "QUEUED - training budget has not started",
                                         "trained_steps": 0})
             if np is None:
                 raise RuntimeError("NumPy is not installed")
             manifest_path = self.dataset_path / "dataset_manifest.json"
             if not manifest_path.exists():
-                raise RuntimeError("FEN dataset is missing; run the crawler first")
+                raise RuntimeError("No verified dataset available. Select or download a verified dataset.")
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             if manifest.get("status") not in ("TARGET_REACHED", "COMPLETE"):
                 raise RuntimeError(
@@ -3339,11 +3364,16 @@ class trainworker(QObject):
                 max_train_batches=0,
                 max_validation_batches=0,
                 allow_dataset_change=self.allow_dataset_change,
-                resume=self.model_path.exists(),
+                resume=getattr(self, "training_mode", "fresh") == "resume",
+                fixture_only=getattr(self, "fixture_only", False),
+                archive_existing=getattr(self, "archive_existing", False),
                 progress_interval=0.5,
                 cache_workers=self.cache_workers,
                 time_budget_hours=self.time_budget_hours,
                 deadline_epoch=self.deadline_epoch,
+                queue_seconds=time.monotonic() - queued_at,
+                split_plan=self.split_plan,
+                budget_protocol="equal active training time; queue and preparation excluded",
                 stop_event=self.stop_event,
             )
             train_v7(arguments, progress_callback=self._gui_progress)
@@ -3378,6 +3408,11 @@ class trainworker(QObject):
                 "architecture": self.architecture,
                 "model_variant": self.model_variant,
                 "error": str(error),
+                "traceback": __import__("traceback").format_exc(),
+                "pid": os.getpid(), "run_id": self.last_report.get("run_id", worker_run_id),
+                "phase": self.last_report.get("phase", "worker_preflight"),
+                "dataset_fingerprint": self.last_report.get("dataset_fingerprint"),
+                "model_configuration": {"architecture": self.architecture, "variant": self.model_variant, "latent_size": self.latent_size},
                 "trained_steps": self.last_report.get("trained_steps", 0),
                 "model_path": str(self.model_path),
             })
@@ -4455,9 +4490,13 @@ class modelmatchworker(QObject):
                     result_token, reason = "*", "CANCELLED"
                     break
                 if move not in legal_moves:
-                    raise RuntimeError(f"{current_model_id} returned an illegal or missing move: {move}")
+                    result_token, reason = "*", "ILLEGAL_MOVE"
+                    break
 
                 move_seconds = time.perf_counter() - started_move
+                if source != "FROZEN_STANDARD_OPENING" and move_seconds > self.move_time + .05:
+                    result_token, reason = "*", "TIMEOUT"
+                    break
                 parser = pgnparser()
                 san = parser.tao_san(engine, move, legal_moves)
                 before_fen = parser.snapshot_thanh_fen(snapshot).rsplit(" ", 1)[0] + f" {ply // 2 + 1}"
@@ -4514,7 +4553,10 @@ class modelmatchworker(QObject):
                 "move_records": self.move_records,
                 "provenance": provenance,
                 "paired_colors": True,
-                "protocol_version": 3,
+                "protocol_version": 4,
+                "research_name": "MARS-JEPA Chess", "experiment_family": "engine-strength",
+                "ranking_ready": False,
+                "validation_status": "EXPLORATORY; independent confirmation required",
                 "search_track": "native whole-system (not representation-only comparison)",
                 "opening_suite_sha256": SUITE_HASH,
                 "opening_name": opening_name,
@@ -5419,7 +5461,7 @@ class boardwidget(QWidget):
         menu.addSeparator()
 
         for spec in self.training_model_specs:
-            ready_text = "READY / RESUME" if spec["path"].exists() else "NEW"
+            ready_text = "EXISTING / UNVERIFIED" if spec["path"].exists() else "NEW"
             action = menu.addAction(f"{spec['label']}   [{ready_text}]")
             action.setCheckable(True)
             action.setChecked(bool(self.training_selection.get(spec["id"], False)))
@@ -5434,7 +5476,7 @@ class boardwidget(QWidget):
         info.setEnabled(False)
         menu.exec(self.mapToGlobal(self.train_dropdown_rect.bottomLeft().toPoint()))
 
-    def cac_model_fingerprint_changed(self, spec, dataset_path):
+    def cac_model_fingerprint_changed(self, spec, dataset_path, split_plan=None):
         if np is None or not spec["path"].exists():
             return False
 
@@ -5442,11 +5484,14 @@ class boardwidget(QWidget):
             from adversarial_jepa import dataset_manifest_fingerprint
 
             current_fingerprint = dataset_manifest_fingerprint(dataset_path)
+            if split_plan:
+                from research_dataset import verify_plan
+                current_fingerprint = verify_plan(dataset_path, split_plan)["dataset_fingerprint"]
             with np.load(spec["path"], allow_pickle=False) as data:
                 checkpoint_fingerprint = str(data["dataset_fingerprint"][0])
             return bool(
-                checkpoint_fingerprint
-                and checkpoint_fingerprint != current_fingerprint
+                not checkpoint_fingerprint or not split_plan
+                or checkpoint_fingerprint != current_fingerprint
             )
         except Exception as error:
             raise RuntimeError(
@@ -5462,7 +5507,19 @@ class boardwidget(QWidget):
             QMessageBox.warning(self, "FEN dataset required", "This folder has no dataset_manifest.json. Image ZIPs are staging data, not FEN training samples.")
             return
         from runtime_safety import atomic_json
-        atomic_json(self.project_dir / "chess_data" / "dataset_location.json", {"path": str(candidate.resolve())})
+        plan_path, _ = QFileDialog.getOpenFileName(self, "Select verified version-2 dataset audit / split plan", str(candidate.parent), "JSON (*.json)")
+        if not plan_path:
+            self.train_status = "Dataset selection requires a verified audit and locked split plan."
+            return
+        try:
+            from research_dataset import verify_plan
+            plan = verify_plan(candidate, plan_path)
+        except Exception as error:
+            self.train_status = "Dataset verification failed: " + str(error)
+            return
+        atomic_json(self.project_dir / "chess_data" / "dataset_location.json",
+                    {"path": str(candidate.resolve()), "split_plan": str(Path(plan_path).resolve()),
+                     "dataset_fingerprint": plan["dataset_fingerprint"]})
         self.train_status = "Dataset selected: " + str(candidate)
         self.update()
 
@@ -5493,17 +5550,26 @@ class boardwidget(QWidget):
             self.update()
             return
 
-        dataset_path = self.project_dir / "fen_dataset"
+        from research_dataset import resolve_dataset
+        try:
+            dataset_path = resolve_dataset(self.project_dir)
+        except (OSError, ValueError, KeyError) as error:
+            self.train_status = str(error)
+            self.update()
+            return
+        split_plan_path = None
         location = self.project_dir / "chess_data" / "dataset_location.json"
         if location.exists():
             try:
-                dataset_path = Path(json.loads(location.read_text(encoding="utf-8"))["path"])
+                configured_dataset = json.loads(location.read_text(encoding="utf-8"))
+                dataset_path = Path(configured_dataset["path"])
+                split_plan_path = configured_dataset.get("split_plan")
             except (OSError, ValueError, KeyError) as error:
                 self.train_status = "Invalid dataset location: " + str(error)
                 return
         manifest_path = dataset_path / "dataset_manifest.json"
         if not manifest_path.exists():
-            self.train_status = "FEN dataset is missing; run the crawler"
+            self.train_status = "No verified dataset available. Select or download a verified dataset."
             self.update()
             return
 
@@ -5530,7 +5596,7 @@ class boardwidget(QWidget):
 
         epochs, accepted = QInputDialog.getInt(
             self,
-            "CAISSA-JEPA v7",
+            "MARS-JEPA Chess",
             "Additional training epochs for each selected model:",
                         1,
             1,
@@ -5539,36 +5605,26 @@ class boardwidget(QWidget):
         if not accepted:
             return
 
-        allow_dataset_change = False
-        try:
-            changed_specs = [
-                spec
-                for spec in selected_specs
-                if self.cac_model_fingerprint_changed(spec, dataset_path)
-            ]
-        except RuntimeError as error:
-            self.train_status = str(error)
-            self.update()
+        training_mode, mode_accepted = QInputDialog.getItem(
+            self, "MARS-JEPA Chess", "Training mode:", ["Fresh (preserve existing weights in archive)", "Resume"], 0, False)
+        if not mode_accepted:
             return
-
-        if changed_specs:
-            names = ", ".join(spec["label"] for spec in changed_specs)
-            answer = QMessageBox.question(
-                self,
-                "Dataset Changed",
-                "The dataset fingerprint differs for:\n"
-                + names
-                + "\n\nContinue incremental training for these models?",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No,
-            )
-            if answer != QMessageBox.Yes:
-                self.train_status = "Cancelled: dataset fingerprint mismatch"
+        training_mode = "Fresh" if training_mode.startswith("Fresh") else "Resume"
+        allow_dataset_change = False
+        if training_mode == "Resume":
+            try:
+                changed_specs = [spec for spec in selected_specs if self.cac_model_fingerprint_changed(spec, dataset_path, split_plan_path)]
+            except RuntimeError as error:
+                self.train_status = str(error)
                 self.update()
                 return
-            allow_dataset_change = True
+            if changed_specs:
+                self.train_status = "Checkpoint incompatible/unverified: dataset fingerprint mismatch. Select matching verified data or Fresh training."
+                self.update()
+                return
 
-        session_deadline = time.time() + 8 * 3600
+        active_specs = [spec for spec in selected_specs if spec["id"] not in self.train_threads]
+        per_model_hours = 8.0 / max(1, len(active_specs))
         for spec in selected_specs:
             if spec["id"] in self.train_threads:
                 continue
@@ -5590,7 +5646,11 @@ class boardwidget(QWidget):
                 model_label=spec["label"],
             )
             worker.moveToThread(thread)
-            worker.deadline_epoch = session_deadline
+            worker.training_mode = training_mode.lower()
+            worker.archive_existing = training_mode == "Fresh"
+            worker.split_plan = split_plan_path
+            worker.deadline_epoch = None
+            worker.time_budget_hours = per_model_hours
             thread.started.connect(worker.chay)
             worker.tien_do.connect(self.nhan_tien_do_train)
             worker.ket_qua.connect(self.nhan_ket_qua_train)
@@ -8338,7 +8398,11 @@ class monitorwidget(QWidget):
         self.sample_count = 0
 
         try:
-            dataset_manifest = self.board_widget.project_dir / "fen_dataset/dataset_manifest.json"
+            dataset_root = self.board_widget.project_dir / "fen_dataset"
+            location = self.board_widget.project_dir / "chess_data/dataset_location.json"
+            if location.exists():
+                dataset_root = Path(json.loads(location.read_text(encoding="utf-8"))["path"])
+            dataset_manifest = dataset_root / "dataset_manifest.json"
             if dataset_manifest.exists():
                 with dataset_manifest.open("r", encoding="utf-8") as handle:
                     self.sample_count = int(json.load(handle).get("positions", 0))

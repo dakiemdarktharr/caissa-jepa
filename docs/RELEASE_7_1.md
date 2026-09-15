@@ -111,3 +111,7 @@ installer itself is unsigned; no signing certificate was supplied.
 The builder isolates DLL discovery from unrelated PATH entries (including
 Poppler ICU) and supplies the Qt-compatible VC runtime at the bundle root.
 A frozen executable smoke test is a mandatory gate before installer compilation.
+
+## Research hardening (source branch, not a new installer release)
+
+The research identity is now MARS-JEPA Chess. See [the current protocol](../V7_RESEARCH_PROTOCOL.md) and [hardening handoff](MARS_HARDENING.md). Legacy executable and storage names remain compatible. The production dataset was intentionally removed; historical package checks do not validate present training or match results.

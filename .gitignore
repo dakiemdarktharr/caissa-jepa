@@ -15,3 +15,9 @@ fen_dataset_crawl*.log
 dist/
 build/
 installer-output/
+
+# Generated research artifacts are local only.
+*.jsonl
+*.log
+prepared-v*/
+*.generations/

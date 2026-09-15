@@ -1,4 +1,4 @@
-"""CAISSA-JEPA v7: action-sequence and opponent-conditioned chess JEPA.
+"""MARS-JEPA Chess: action-sequence and response-conditioned latent prediction.
 
 This module intentionally keeps exact chess rules outside the learned model.
 Rules enumerate legal action/response branches; the model learns a compact
@@ -107,6 +107,7 @@ def snapshot_from_engine(engine: vitriengine) -> dict:
         "castling_rights": engine.castling_rights.copy(),
         "en_passant_target": engine.en_passant_target,
         "halfmove_clock": engine.halfmove_clock,
+        "fullmove_number": engine.fullmove_number,
         "position_counts": engine.position_counts.copy(),
     }
 
@@ -130,6 +131,8 @@ def sample_from_dataset_position(position: dict, random_generator: np.random.Gen
         second_opponent_action = move_from_uci(position.get("second_opponent_action_uci"), "black" if state["turn"] == "white" else "white")
         future2 = snapshot_from_fen(position["future2_fen"]) if position.get("future2_fen") else None
         future4 = snapshot_from_fen(position["future4_fen"]) if position.get("future4_fen") else None
+        if (future2 is not None and opponent_action is None) or (future4 is not None and any(a is None for a in (opponent_action, next_our_action, second_opponent_action))):
+            return None
         outcome = float(position["outcome_pov"])
         if not np.isfinite(outcome) or not -1 <= outcome <= 1:
             return None
@@ -142,7 +145,10 @@ def sample_from_dataset_position(position: dict, random_generator: np.random.Gen
                 return None
             engine.thuc_hien_nuoc_di(action)
             if expected and (engine.board != expected["board"] or engine.turn != expected["turn"]
-                             or engine.castling_rights != expected["castling_rights"]):
+                             or engine.castling_rights != expected["castling_rights"]
+                             or engine.en_passant_target != expected["en_passant_target"]
+                             or engine.halfmove_clock != expected["halfmove_clock"]
+                             or engine.fullmove_number != expected["fullmove_number"]):
                 return None
         return {
             "state": state,
@@ -162,7 +168,7 @@ def sample_from_dataset_position(position: dict, random_generator: np.random.Gen
 
 
 class AdversarialJEPA:
-    """Small NumPy A-JEPA baseline with exact response-branch scoring."""
+    """Small NumPy JEPA baseline with behavioral response-weighted scoring."""
 
     trainable_names = (
         "encoder_w", "encoder_b", "predictor_w1", "predictor_b1",
@@ -186,6 +192,7 @@ class AdversarialJEPA:
         self.adam_v: dict[str, np.ndarray] = {}
         self.dataset_fingerprint = ""
         self.seed = 20260903
+        self.ema_decay = 0.995
         if variant not in MODEL_VARIANTS:
             raise ValueError(f"Unknown A-JEPA model variant: {variant}")
         self.variant = variant
@@ -224,6 +231,7 @@ class AdversarialJEPA:
             self.adam_step = int(data["adam_step"][0])
             self.dataset_fingerprint = str(data["dataset_fingerprint"][0])
             self.seed = int(data["seed"][0])
+            self.ema_decay = float(data["ema_decay"][0]) if "ema_decay" in data else 0.995
             stored_variant = "full"
             if "model_variant" in data:
                 stored_variant = str(data["model_variant"][0])
@@ -252,6 +260,7 @@ class AdversarialJEPA:
             "adam_step": np.array([self.adam_step], dtype=np.int64),
             "dataset_fingerprint": np.array([self.dataset_fingerprint]),
             "seed": np.array([self.seed], dtype=np.int64),
+            "ema_decay": np.array([self.ema_decay], dtype=np.float64),
             "model_variant": np.array([self.variant]),
             "target_w": self.target_w,
             "target_b": self.target_b,
@@ -403,8 +412,8 @@ class AdversarialJEPA:
         gradients["encoder_b"] = np.sum(pre_encoder_gradient, axis=0)
         gradient_norm = math.sqrt(sum(float(np.sum(value * value)) for value in gradients.values()))
         self._adam(gradients, learning_rate)
-        self.target_w = 0.995 * self.target_w + 0.005 * self.encoder_w
-        self.target_b = 0.995 * self.target_b + 0.005 * self.encoder_b
+        self.target_w = self.ema_decay * self.target_w + (1.0 - self.ema_decay) * self.encoder_w
+        self.target_b = self.ema_decay * self.target_b + (1.0 - self.ema_decay) * self.encoder_b
         self.trained_steps += 1
         return {
             "loss": sum(weights[horizon] * losses[horizon] for horizon in (1, 2, 4)) + value_loss + 0.25 * ranking_loss + 0.05 * variance_loss,
@@ -510,11 +519,11 @@ class AdversarialJEPA:
         deadline=None,
         stop_event=None,
     ) -> tuple[list[float], list[float], float]:
-        """Robust action priors by explicitly pooling opponent replies.
+        """Expected H2 value under the learned policy-induced reply distribution.
 
-        The returned score is the minimum predicted root-perspective value over
-        legal opponent responses.  ``max_opponent_branches`` is opt-in only;
-        leaving it None evaluates every legal response.
+        This is an uncalibrated behavioral policy surrogate, not a worst-case
+        estimate. No minimization over unobserved responses is claimed. H4 is
+        an observed-trajectory auxiliary objective; it supplies no outcome labels.
         """
         if not legal_moves:
             return [], [], 1.0
@@ -552,7 +561,12 @@ class AdversarialJEPA:
                 latent_batch = np.repeat(root_latent, len(replies), axis=0)
                 predicted = self._predict(latent_batch, [own_batch, response_batch], 2)
                 branch_values = self.value(predicted)[:, 0]
-                raw_scores.append(float(np.min(branch_values)))
+                reply_latent = self.encode(encode_snapshot(snapshot_from_engine(engine))[None, :])
+                reply_actions = np.stack([encode_action(reply) for reply in replies])
+                logits = (reply_actions @ self.policy_action_w) @ reply_latent[0] / math.sqrt(self.latent_size)
+                probabilities = np.exp(logits - np.max(logits))
+                probabilities /= probabilities.sum()
+                raw_scores.append(float(probabilities @ branch_values))
             finally:
                 engine.hoan_tac_nuoc_di(undo)
         scores = np.array(raw_scores, dtype=np.float32)

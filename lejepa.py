@@ -168,7 +168,7 @@ class LeJEPA:
             "seed": np.array([self.seed], dtype=np.int64),
             "adam_step": np.array([self.adam_step], dtype=np.int64),
             "dataset_fingerprint": np.array([self.dataset_fingerprint]),
-            "sigreg_weight": np.array([self.sigreg_weight], dtype=np.float32),
+            "sigreg_weight": np.array([self.sigreg_weight], dtype=np.float64),
             "sigreg_slices_count": np.array(
                 [self.sigreg_slices_count], dtype=np.int64
             ),

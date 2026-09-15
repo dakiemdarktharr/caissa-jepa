@@ -83,9 +83,10 @@ def parse_uci_info(line, turn):
 
 class UCIReferee:
     """One pinned local engine, bounded reads, no shell, no contestant feedback."""
-    def __init__(self, path, milliseconds=150, *, command=None):
+    def __init__(self, path, milliseconds=150, *, command=None, options=None):
         self.path = str(Path(path).resolve(strict=True))
         self.milliseconds = milliseconds
+        self.options = options or {"Threads": 1, "Hash": 32, "UCI_ShowWDL": "true"}
         self.lines = queue.Queue()
         self.name = Path(path).stem
         self.digest = file_sha256(path)
@@ -101,9 +102,11 @@ class UCIReferee:
             for line in self.until("uciok", 8):
                 if line.startswith("id name "):
                     self.name = line[8:]
-            for command in ("setoption name Threads value 1", "setoption name Hash value 32",
-                            "setoption name UCI_ShowWDL value true", "isready"):
-                self.send(command)
+            for name, value in self.options.items():
+                if any(c in str(name) + str(value) for c in "\r\n"):
+                    raise ValueError("Invalid UCI option")
+                self.send(f"setoption name {name} value {value}")
+            self.send("isready")
             self.until("readyok", 8)
         except BaseException:
             self.close()
@@ -239,7 +242,7 @@ def evaluation_display(evaluation):
 def completed_records(history):
     unique = {}
     for index, item in enumerate(history):
-        if item.get("result") not in ("1-0", "0-1", "1/2-1/2") or item.get("cancelled") or item.get("error") or item.get("reason") == "MAX_PLIES":
+        if item.get("result") not in ("1-0", "0-1", "1/2-1/2") or item.get("cancelled") or item.get("error") or item.get("reason") in {"MAX_PLIES", "TIMEOUT", "ILLEGAL_MOVE", "CANCELLED", "ERROR"}:
             continue
         key = (item.get("series_id"), item.get("match_seed"), item.get("white_model_id"), item.get("black_model_id"))
         if key[0] is None or key[1] is None:
@@ -278,7 +281,7 @@ def matchup_statistics(history, first, second):
             continue
         key = (r.get("series_id"), r.get("match_seed", index), r.get("white_model_id"))
         attempts[key] = r
-    censored = sum(r.get("reason") == "MAX_PLIES" for r in attempts.values())
+    censored = sum(r.get("reason") in {"MAX_PLIES", "TIMEOUT", "ILLEGAL_MOVE", "CANCELLED", "ERROR"} for r in attempts.values())
     failures = sum(bool(r.get("error")) for r in attempts.values())
     denominator = n + censored
     bounds = [(w + d * .5) / denominator, (w + d * .5 + censored) / denominator] if denominator else None
