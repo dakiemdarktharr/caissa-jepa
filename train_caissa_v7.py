@@ -205,7 +205,7 @@ def _train_locked(arguments, progress_callback=None):
         split_plan_hash = sha256_file(arguments.split_plan)
         fingerprint = split_plan["dataset_fingerprint"]
     elif not fixture_only:
-        raise ValueError("Training requires a verified version-2 research audit and locked split plan. Select or download a verified dataset.")
+        raise ValueError("Training requires a verified version-3 research audit and four-stage split plan. Select or download a verified dataset.")
     elif getattr(arguments, "split_plan", None):
         split_plan = read_json_with_retry(Path(arguments.split_plan))
         from dataset_integrity import sha256_file

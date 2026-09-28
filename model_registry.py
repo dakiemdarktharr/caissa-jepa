@@ -155,7 +155,7 @@ def model_manifest(spec, model):
     config = {"schema_version": 1, "research_name": "MARS-JEPA Chess",
               "registry_id": spec["id"], "architecture": spec["architecture"],
               "variant": spec["variant"], "latent_size": model.latent_size, "seed": model.seed,
-              "objective_version": 3, "response_aggregation": "learned behavioral policy expectation; uncalibrated",
+              "objective_version": 4, "response_aggregation": "learned behavioral policy expectation; uncalibrated",
               "ema_decay": getattr(model, "ema_decay", None), "sigreg_weight": getattr(model, "sigreg_weight", None),
               "features": {"coordinate_system": "king-conditioned side-to-move features" if spec["architecture"] == "nnue" else "absolute board; no symmetry augmentation",
                            "history_aware": False, "clock_features": False,

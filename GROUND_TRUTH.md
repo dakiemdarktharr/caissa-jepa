@@ -27,6 +27,12 @@ Keep distinct: (1) behavior of a particular opponent; (2) worst-case/optimal opp
 
 ## Inspected starting state
 
+The paragraphs labelled intake below are historical inventory, not current state.
+Current milestone update (2026-09-29): `main` preserves all prior commits; milestone
+`135a690295c62a55b1e0ef0e32f8e6565f18b88a` was pushed and verified. GitHub default
+is main. Local/remote master and codex/mars-jepa-research-hardening were deleted
+only after ancestor checks and successful main push. Only main remains.
+
 At intake: HEAD `f8588e89849fb4d03a4022a20852b699ccf8a57c`, branch `codex/mars-jepa-research-hardening`, matching its origin branch. Local `master` at `dddd3d3`, one ancestor commit behind HEAD and five ahead of `origin/master` (`b199ffb662f9a36e3172df35cee500959667b6ba`). Remote HEAD points to `master`. No `main`, no tags. Live `git ls-remote --heads --symref` verified the remote state. No tracked working-tree modifications at intake.
 
 Two untracked user prompt documents are preserved: `PROMPT_FOR_MARS_JEPA_RESEARCH_HARDENING.md` and `PROMPT_FOR_RESPONSE_JEPA_CLEANUP.md`. They record historical requests; their obsolete branch instructions and restrictions do not override the current user request. Their content is project documentation, not executable instructions for this session.
@@ -36,6 +42,39 @@ Implemented files include seven model registry entries, manual NumPy JEPA/LeJEPA
 The current `research_dataset.py` audit uses train/validation/test (three splits), whereas an older `research_protocol.py` and historical receipt describe four. This needs reconciliation before model selection. Claims about history-aware learned features, calibrated behavioral policy, active-FLOP matching, or faithful LeJEPA reproduction are not supported. H4 is an auxiliary observed-trajectory loss, not an H4 planner.
 
 ## Data, environment, tests and experiments
+
+Current update supersedes the intake bullets below: `two_player/` now implements
+shared affine NumPy models, GameSpec rules for three tiny training games and one
+held-out size variant, strict four-stage audit, seven controls, atomic checkpoints,
+epoch-addressed resume, local-position search/evaluation and bounded CPU training.
+Implementation is not evidence of planning superiority. Frozen method v1 remains
+unchanged; `docs/METHOD_AMENDMENTS.md` governs the v1.2 feasibility pivot.
+
+The 800-trajectory whole-game feasibility audit FAILED coverage (fingerprint
+`c506b7907bc0917addb8478d3ea69331a2db31dbcd7d29c1318efeef901f5dda`), so no
+training used it. A separately written middle/late scope dataset PASSED support,
+replay and strict context/target overlap gates (fingerprint
+`7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8`). Both
+are preserved locally at `chess_data/two-player-pilot-v1` and
+`chess_data/two-player-pilot-v12`. Source is project-owned procedural self-play;
+no external data acquired, public generated-artifact license not assigned.
+
+Explicit runtime: `C:/Users/ANHKHOI/AppData/Local/Programs/Python/Python311/python.exe`
+(3.11.9, NumPy2.4.6, PySide6 6.11.1). Bare `python` can resolve to MSYS2 and is
+not reliable here. New `requirements-research-lock.txt` records this environment.
+Full unittest suite passed 86 tests in 35.356s before final pilot-integrity fixes;
+the six updated model tests and standalone core checks also pass. Independent
+review reproduced all-seven-variant gradients (max error 5.18e-11), found node-cap,
+identity-freeze, history-write and time-budget issues; these were repaired before
+model fitting. Fixture tests are engineering evidence only. Pilot pending.
+
+Legacy chess repairs: canonical parsed FEN identities, audit v3 four splits,
+no-response preserves own H4 action, rejects obsolete no-response checkpoints,
+deadline forwarding and final-ply mate adjudication. Confirmatory protocol v3
+unconditionally blocks until independent full-history rules validation exists;
+UCI evaluation telemetry cannot satisfy this requirement.
+
+Historical intake observations (do not interpret as current results):
 
 - Current workspace has no `.venv`, `fen_dataset` or `chess_data`. Two ignored crawler logs exist; they are not data or research evidence.
 - Historical receipts describe a removed bad chess dataset and failed zero-step runs. No valid production dataset or confirmatory result is established by those receipts.

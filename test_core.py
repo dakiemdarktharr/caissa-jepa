@@ -50,7 +50,7 @@ except ImportError:
     qt_core.Signal = _Signal
     qt_core.Slot = _slot
 
-    for name in ("QColor", "QFont", "QPainter", "QPen"):
+    for name in ("QColor", "QFont", "QPainter", "QPen", "QImageReader"):
         setattr(qt_gui, name, _Dummy)
 
     qt_svg.QSvgRenderer = _Dummy
@@ -61,6 +61,8 @@ except ImportError:
         "QInputDialog",
         "QMainWindow",
         "QWidget",
+        "QComboBox", "QLabel", "QHBoxLayout", "QMessageBox", "QMenu",
+        "QPushButton", "QVBoxLayout",
     ):
         setattr(qt_widgets, name, _Dummy)
 

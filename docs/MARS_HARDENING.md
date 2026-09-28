@@ -1,5 +1,11 @@
 # MARS-JEPA Chess hardening handoff
 
+Historical handoff for commit f8588e8; the items below describe that milestone.
+Superseded in the active source by audit v3/four splits, canonical FEN identities,
+corrected no-response H4 masking and unconditional confirmation blocking until
+independent full-history rule replay exists. Pinned UCI telemetry below is not
+independent rules validation. See `V7_RESEARCH_PROTOCOL.md` and `GROUND_TRUTH.md`.
+
 This change is engineering validation, not evidence that the research hypothesis
 is true. The production dataset was intentionally removed. No production
 training or valid model-v-model result was created in this task.

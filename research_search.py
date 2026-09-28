@@ -20,6 +20,18 @@ class BudgetEnd(Exception):
     pass
 
 
+def terminal_result(engine):
+    """Local rule adjudication, NOT independent UCI outcome validation."""
+    moves = engine.lay_tat_ca_nuoc_di_hop_le(engine.turn)
+    if not moves:
+        if engine.is_king_in_check(engine.turn):
+            return ("0-1" if engine.turn == "white" else "1-0"), "CHECKMATE"
+        return "1/2-1/2", "STALEMATE"
+    if engine.is_draw_search() or engine.halfmove_clock >= 100:
+        return "1/2-1/2", "RULE_DRAW"
+    return None
+
+
 def search_move(model, snapshot, config):
     start = time.perf_counter()
     deadline = start + config["move_seconds"]
@@ -36,7 +48,9 @@ def search_move(model, snapshot, config):
     ordered = legal
     try:
         check()
-        _, priors, _ = model.score_legal_moves(snapshot, legal)
+        import inspect
+        kwargs = {"deadline": deadline} if "deadline" in inspect.signature(model.score_legal_moves).parameters else {}
+        _, priors, _ = model.score_legal_moves(snapshot, legal, **kwargs)
         ordered = [legal[i] for i in sorted(range(len(legal)), key=lambda i: (-priors[i], i))]
         check()
     except BudgetEnd:
@@ -142,6 +156,10 @@ def play_pair(protocol, opening_id, seed, stop_event=None):
                     engine.thuc_hien_nuoc_di(move)
                     moves.append(move_thanh_text(move))
                     measured["uci"] = moves[-1]
+                    terminal = terminal_result(engine)
+                    if terminal is not None:
+                        result, reason = terminal
+                        break
                     measured["referee"] = referee.evaluate(moves, engine.turn, stop_event)
             except InterruptedError:
                 reason = "CANCELLED"
@@ -153,5 +171,6 @@ def play_pair(protocol, opening_id, seed, stop_event=None):
                             "protocol_sha256": protocol_hash, "search_configuration": protocol["search"],
                             "referee_sha256": protocol["referee"]["sha256"],
                             "dataset_fingerprint": protocol["dataset_fingerprint"],
-                            "budget_enforcement_verified": True})
+                            "budget_enforcement_verified": True,
+                            "independent_rules_verified": False})
     return records

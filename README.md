@@ -1,4 +1,38 @@
-# MARS-JEPA Chess
+# CAISSA-JEPA: two-player JEPA research
+
+The active research program tests action-conditioned latent prediction in
+alternating, deterministic, fully observed, zero-sum games. Read
+[Ground Truth](GROUND_TRUTH.md), [roadmap](ROADMAP.md), [frozen method](METHOD_SPEC.md)
+and its [amendments](docs/METHOD_AMENDMENTS.md) first. The primary-source
+[related-work matrix](docs/RELATED_WORK.md) identifies substantial novelty risk,
+including MuZero, SPR/EfficientZero and RePAIR. No planning advantage or Q1
+publication readiness has been established.
+
+`two_player/` is the GUI-independent, shared-weight tiny-game research pipeline:
+tic-tac-toe, gravity connect-3 and 4x4 Reversi; a 3x4 connect-3 size combination
+is held out. Scope is middle/late local-position diagnostics, not whole-game
+strength or unseen-family transfer. Seven controls include latent JEPA, recurrent
+H1 inference, no-response, no-variance, direct policy/value, decoded dynamics and
+value-only dynamics. The original whole-game data audit failed and is preserved.
+
+Use Python 3.11.9 and `requirements-research-lock.txt` for the verified environment.
+The following creates fresh ignored directories; existing paths are refused:
+
+```powershell
+$env:OPENBLAS_NUM_THREADS='1'
+$env:OMP_NUM_THREADS='1'
+python -B -m two_player.data chess_data/my-audit --games 200 --seed 1701 --scope middle-late
+python -B -m two_player.train chess_data/my-audit chess_data/my-pilot
+```
+
+Training replays the data audit and rejects failure. Selection/final predictions
+are excluded. Generated self-play is locally authorized project-owned data; its
+public artifact license is unassigned, so datasets/checkpoints are not published.
+See [source and license register](docs/DATA_SOURCES.md). No external corpus was
+downloaded. The legacy chess confirmatory gate is unconditionally blocked pending
+independent full-history rule validation; UCI evaluation is not such validation.
+
+## Legacy MARS-JEPA Chess compatibility implementation
 
 **MARS-JEPA: Multi-Horizon Action-Conditioned Response-Aware State Prediction for Resource-Bounded Zero-Sum Chess**
 
@@ -12,7 +46,7 @@ policy/value quality, and complete search strength must be measured separately.
 There is no generic two-player-game transfer claim, demonstrated superiority
 over Stockfish, Q1-readiness claim, or acceptance-probability estimate.
 
-The production dataset was intentionally removed because its integrity and
+The legacy chess production dataset was intentionally removed because its integrity and
 split validity were not trusted. No production training or valid model-v-model
 result was created by the research-hardening task. Old receipts describe
 historical runs and do not authorize using old data or checkpoints.

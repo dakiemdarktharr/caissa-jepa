@@ -242,6 +242,8 @@ class AdversarialJEPA:
                     f"Checkpoint variant mismatch: requested={self.variant}, "
                     f"checkpoint={stored_variant}"
                 )
+            if stored_variant == "no-response" and ("response_mask_version" not in data or int(data["response_mask_version"][0]) != 2):
+                raise ValueError("Legacy no-response checkpoint masks an own action; fresh training is required")
             self.variant = stored_variant
             self.enabled_horizons = MODEL_VARIANTS[stored_variant]["enabled_horizons"]
             self.response_conditioned = MODEL_VARIANTS[stored_variant]["response_conditioned"]
@@ -262,6 +264,7 @@ class AdversarialJEPA:
             "seed": np.array([self.seed], dtype=np.int64),
             "ema_decay": np.array([self.ema_decay], dtype=np.float64),
             "model_variant": np.array([self.variant]),
+            "response_mask_version": np.array([2], dtype=np.int64),
             "target_w": self.target_w,
             "target_b": self.target_b,
         }
@@ -343,7 +346,7 @@ class AdversarialJEPA:
             4: [
                 own_actions,
                 opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
-                next_our_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+                next_our_actions,
                 second_opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
             ],
         }
@@ -472,7 +475,7 @@ class AdversarialJEPA:
             4: [
                 own_actions,
                 opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
-                next_our_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
+                next_our_actions,
                 second_opponent_actions if self.response_conditioned else np.repeat(neutral_action[None, :], batch_size, axis=0),
             ],
         }

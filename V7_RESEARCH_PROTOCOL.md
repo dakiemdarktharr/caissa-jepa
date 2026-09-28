@@ -1,4 +1,4 @@
-# MARS-JEPA Chess research protocol, version 2
+# MARS-JEPA Chess research protocol, version 3
 
 The canonical scope and compatibility boundary are defined in
 [RESEARCH_IDENTITY.md](docs/RESEARCH_IDENTITY.md). This protocol supersedes the
@@ -6,9 +6,9 @@ historical three-JEPA roster and minimum-over-replies inference description.
 
 ## Data and history
 
-Version-2 research audit plans bind actual shard SHA-256, byte/row/position
+Version-3 research audit plans bind actual shard SHA-256, byte/row/position
 counts, unfinished rows, code identity, source hashes, licenses and deterministic
-train/validation/locked-final-test assignments. Canonical game identity combines
+train/validation/model-selection/locked-final-test assignments. Canonical game identity combines
 normalized move sequence and stable event provenance; an additional trajectory
 identity detects copies with changed headers. Game/event groups remain together.
 
@@ -21,8 +21,9 @@ has a reason and source identity. Final-test records never enter training caches
 
 Legality validation covers all six FEN fields, including en-passant and clocks.
 FEN cannot reconstruct repetition history. Existing encoders retain their
-compatibility feature shapes and omit clocks/history. Exact chess rules and a
-full-history independent referee determine terminal outcomes. Models must not
+compatibility feature shapes and omit clocks/history. Local exact chess rules
+currently determine terminal outcomes; independent full-history rule replay is
+not implemented, so the confirmatory gate is unconditionally blocked. Models must not
 be described as fully history-aware. JEPA uses absolute board/action coordinates;
 no geometric augmentation or side-to-move board symmetry is currently applied.
 
@@ -70,6 +71,7 @@ are synthetic variations of six families and require an independent diversity
 review before final confirmation. Merely increasing their count is insufficient.
 
 Pin an independent UCI binary's SHA-256, version, options and analysis time;
+this pins evaluation telemetry, not an independent terminal adjudicator.
 freeze checkpoint/configuration/dataset/split identities, at least three model
 seeds, and search algorithm/time/node/thread budgets. Every opening/seed receives
 a color-swapped pair. Exactly one primary metric is predeclared: paired game
@@ -94,4 +96,9 @@ A lower auxiliary loss alone is not evidence of stronger chess planning.
 No production training or valid model-v-model result was created in the
 hardening task because the dataset was intentionally removed.
 
-The default paired adapter is `research_search.py` (`mars-common-negamax-v1`). It uses the same root-ordering interface and exact negamax for all registered models, with explicit tree-node accounting and measured wall-time overruns. `tools/run_confirmatory.py --validate-only` checks a supplied frozen protocol without playing games. The default manifest is blocked until verified data, checkpoints and referee configuration are supplied.
+The default paired adapter is `research_search.py` (`mars-common-negamax-v1`). It uses the same root-ordering interface and exact negamax for all registered models, with explicit tree-node accounting and measured wall-time overruns. `tools/run_confirmatory.py --validate-only` checks a supplied frozen protocol without playing games. Every manifest remains blocked until independent full-history rule replay is implemented and reviewed, in addition to verified data, checkpoints and referee configuration. Supplying an assertion boolean cannot bypass this missing implementation.
+
+Audit v3 canonicalizes parsed FEN before identity/overlap checks and excludes the
+Git commit provenance field from the dataset fingerprint. Source hashes still
+bind relevant audit code. No-response masking version 2 removes opponent replies
+only, preserving the next own action at H4; older no-response weights are rejected.

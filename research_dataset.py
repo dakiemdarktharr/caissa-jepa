@@ -1,4 +1,4 @@
-"""Version 2 research audit. No acquisition, training or implicit data discovery."""
+"""Version 3 four-stage research audit. No acquisition or implicit data discovery."""
 from __future__ import annotations
 from collections import Counter, defaultdict
 import hashlib
@@ -11,8 +11,8 @@ import numpy as np
 from dataset_integrity import inspect_dataset, sha256_file
 from runtime_safety import atomic_json
 
-AUDIT_VERSION = 2
-SPLITS = ("train", "validation", "test")
+AUDIT_VERSION = 3
+SPLITS = ("train", "validation", "selection", "test")
 FEN_FIELDS = ("fen", "next_fen", "future2_fen", "future4_fen")
 
 
@@ -20,10 +20,17 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+def canonical_fen(fen):
+    """Hash parsed rule state, never equivalent textual FEN spellings."""
+    from main import pgnparser
+    parser = pgnparser()
+    return parser.snapshot_thanh_fen(parser.fen_thanh_snapshot(fen))
+
+
 def game_identity(game):
     positions = game["positions"]
     sequence = game.get("canonical_moves") or [p["action_uci"].lower() for p in positions]
-    trajectory = digest([" ".join(game.get("initial_fen", positions[0]["fen"]).split()), sequence])
+    trajectory = digest([canonical_fen(game.get("initial_fen", positions[0]["fen"])), sequence])
     headers = game.get("headers", {})
     provenance = {k: str(headers.get(k, "")).strip().casefold() for k in ("Event", "Site", "Date", "Round")}
     return digest([trajectory, provenance]), trajectory
@@ -31,7 +38,7 @@ def game_identity(game):
 
 def position_keys(position):
     # Ignore clocks for leakage detection; retain all six fields for legality.
-    return {" ".join(position[f].split()[:4]) for f in FEN_FIELDS if position.get(f)}
+    return {" ".join(canonical_fen(position[f]).split()[:4]) for f in FEN_FIELDS if position.get(f)}
 
 
 def resolve_dataset(project, explicit=None):
@@ -141,7 +148,7 @@ def audit_dataset(dataset):
     assignments = {game["game_hash"]: "excluded" for game in rows()}
     for index, group in enumerate(ordered):
         fraction = index / max(1, len(ordered))
-        split = "train" if fraction < .8 else "validation" if fraction < .9 else "test"
+        split = "train" if fraction < .7 else "validation" if fraction < .8 else "selection" if fraction < .9 else "test"
         for key in groups[group]:
             assignments[key] = split
     # Held-out ownership wins. Exclude whole training records if any context or
@@ -159,7 +166,7 @@ def audit_dataset(dataset):
                 if any(k in used and used[k] != split for k in keys):
                     reject(game, "cross_split_position_overlap", index)
                     continue
-                input_key = " ".join(position["fen"].split()[:4])
+                input_key = " ".join(canonical_fen(position["fen"]).split()[:4])
                 if input_key in input_seen:
                     duplicates["positions"] += 1
                     reject(game, "duplicate_input_position", index)
@@ -199,7 +206,7 @@ def audit_dataset(dataset):
             "dataset_manifest_sha256": source_manifest, "source_hashes": receipt["shards"],
             "actual": {**receipt["actual"], "unfinished_rows": unfinished},
             "code_commit": commit, "audit_code_sha256": code_hash, "license_metadata": licenses,
-            "split_policy": "chronological event groups 80/10/10; held-out position ownership; no clock-based leakage evasion",
+            "split_policy": "chronological event groups 70/10/10/10; canonical parsed FEN; held-out position ownership",
             "assignments": assignments, "included_position_indices": kept,
             "split_position_counts": dict(per_split), "locked_final_test": True,
             "cross_split_position_overlap": 0, "duplicate_counts": dict(duplicates),
@@ -214,7 +221,9 @@ def audit_dataset(dataset):
         raise ValueError("Dataset manifest changed during research audit")
     if any(sha256_file(root / shard["path"]) != shard["sha256"] for shard in receipt["shards"]):
         raise ValueError("Dataset source changed during research audit")
-    plan["dataset_fingerprint"] = digest(plan)
+    # Commit is audit provenance. Unrelated documentation commits must not
+    # invalidate otherwise identical data/splits; relevant source hashes remain.
+    plan["dataset_fingerprint"] = digest({k: v for k, v in plan.items() if k != "code_commit"})
     return plan
 
 
@@ -231,7 +240,8 @@ def publish_audit(dataset, output):
 def verify_plan(dataset, plan_path):
     actual = audit_dataset(dataset)
     stored = json.loads(Path(plan_path).read_text(encoding="utf-8"))
-    if actual != stored or actual["status"] != "PASSED":
+    comparable = lambda plan: {k: v for k, v in plan.items() if k != "code_commit"}
+    if comparable(actual) != comparable(stored) or actual["status"] != "PASSED":
         raise ValueError("Research audit/split fingerprint invalid or changed: " + "; ".join(actual["errors"][:5]))
     return actual
 

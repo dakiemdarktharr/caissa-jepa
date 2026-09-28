@@ -6,11 +6,16 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | --- | --- |
 | `GROUND_TRUTH.md` | Current session authority and resume entry; read first |
 | `AGENTS.md` | Active project collaboration rules |
-| `README.md` | Implemented chess prototype entry; new multi-game work must be distinguished |
-| `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v2 protocol; not the forthcoming cross-game protocol |
+| `README.md` | Current two-player research entry plus legacy chess compatibility |
+| `ROADMAP.md` | Current milestones and evidence/kill gates |
+| `METHOD_SPEC.md` | Frozen original v1; read amendments before implementation |
+| `docs/METHOD_AMENDMENTS.md` | Active v1.2 middle/late feasibility design and objective controls |
+| `docs/RELATED_WORK.md` | Primary-source positioning review; not an exhaustive publication review |
+| `docs/DATA_SOURCES.md` | Source/license register; no external data acquired |
+| `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |
-| `docs/MARS_HARDENING.md` | Current source hardening handoff and unsolved scientific blockers |
+| `docs/MARS_HARDENING.md` | Historical f8588e8 handoff with explicit superseding v3 note |
 | `docs/RESEARCH_DECISIONS.md` | Current chess decisions, superseding the earlier roster |
 | `TECHNICAL_GUIDE.md` | Historical code tour; some objective/UI descriptions are superseded; verify against source |
 | `PROMPT_FOR_MARS_JEPA_RESEARCH_HARDENING.md` | Preserved user-authored historical specification; superseded by current request |

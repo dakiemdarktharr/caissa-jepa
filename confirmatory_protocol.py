@@ -8,7 +8,7 @@ from contextlib import contextmanager
 import numpy as np
 from dataset_integrity import sha256_file
 
-VERSION = 2
+VERSION = 3
 FAMILIES = ("representation", "policy-value", "same-search", "engine-strength")
 CENSORED = {"MAX_PLIES", "TIMEOUT", "ILLEGAL_MOVE", "CANCELLED", "ERROR", "CENSORED"}
 
@@ -47,11 +47,15 @@ def protocol_manifest(family="same-search", final=False):
             "stopping_rule": "all scheduled opening/seed/color pairs, no optional stopping or replacement",
             "failure_policy": "timeout/illegal/cancellation/max-ply/error are censored; any incomplete pair blocks confirmatory ranking",
             "referee": {}, "dataset_fingerprint": None, "split_fingerprint": None,
-            "models": [], "ranking_ready": False}
+            "models": [], "ranking_ready": False,
+            "independent_rules_validator": None}
 
 
 def protocol_errors(protocol, verify_binary=True):
     errors = []
+    # No independent full-history rules validator is wired into this runner.
+    # A UCI evaluation score is insufficient, even when its binary is pinned.
+    errors.append("Independent rule replay/outcome validation is not implemented; confirmation is blocked")
     if protocol.get("version") != VERSION or protocol.get("family") not in FAMILIES:
         errors.append("Unsupported protocol or experiment family")
     openings = protocol.get("openings", [])

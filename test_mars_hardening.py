@@ -182,7 +182,7 @@ class HardeningTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'positive'): train(arguments)
             arguments.epochs=1; arguments.fixture_only=False
             with patch('train_caissa_v7.SampleCache.prepare', side_effect=AssertionError('must not cache')):
-                with self.assertRaisesRegex(ValueError, 'version-2'): train(arguments)
+                with self.assertRaisesRegex(ValueError, 'version-3'): train(arguments)
             self.assertFalse((root/'new.npz').exists())
 
     def test_complete_fen_semantics_and_undo(self):
@@ -229,11 +229,12 @@ class HardeningTests(unittest.TestCase):
             plan_path=root/'audit.json'; plan=publish_audit(dataset,plan_path)
             self.assertEqual(plan['status'],'PASSED',plan['errors'])
             self.assertEqual(plan,verify_plan(dataset,plan_path))
-            split_keys={s:set() for s in ('train','validation','test')}
+            split_keys={s:set() for s in ('train','validation','selection','test')}
             for game in iter_dataset_games(dataset):
                 for i in plan['included_position_indices'].get(game['game_hash'],[]):
                     split_keys[plan['assignments'][game['game_hash']]].update(position_keys(game['positions'][i]))
-            for a,b in (('train','validation'),('train','test'),('validation','test')):
+            from itertools import combinations
+            for a,b in combinations(split_keys,2):
                 self.assertFalse(split_keys[a]&split_keys[b])
             corrupted=copy.deepcopy(plan); corrupted['included_position_indices']={}
             atomic_json(plan_path,corrupted)

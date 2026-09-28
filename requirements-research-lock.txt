@@ -1,0 +1,4 @@
+# Verified CPU research runtime on Windows, 2026-09-29; Python 3.11.9.
+# NumPy-only two_player pipeline; legacy GUI additionally requires PySide6.
+numpy==2.4.6
+PySide6==6.11.1
