@@ -73,3 +73,23 @@ Reversi4. Seed98372, otherwise identical admission rules, support floors,
 scope expansion motivated by rule-only support failure, not tuning on learned
 performance. The new board still fits the common padded action/feature contract;
 it is a development game and not a secretly reused transfer test.
+
+## Survey amendment 3 — strict split-support failure, before v2 fitting
+
+Survey02 passes difficulty support but its full root/child/grandchild footprint
+ownership analysis leaves only13 Reversi4 validation roots after excluding old
+training states. This is a benchmark-size failure, not a model result. Preserve
+the bank and counts in `V2_SURVEY_RESULTS.md`.
+
+Survey03 uses connect4 4x5 and **Reversi6x6**, seed98373. Keep the same5..8 empty
+cell roots, admission predicates,2,000 trajectories,500 admitted roots and120s/game
+limits. Reference version2 generalizes the independently tested bitboard center
+initialization to even square boards;6x6 differential tests must pass first.
+
+Cache semantics change prospectively: clear exact cached values between queries
+when resident entries reach400,000, maintain the500,000 resident cap, and record
+clear count/peak entries separately from cumulative expanded nodes and time.
+This bounds memory without treating reused-cache capacity as a scientific sample
+limit. No incomplete subtree value may be cached as exact. Timeouts are unresolved
+and remain counted. The resulting task remains endgame local planning; increasing
+board size does not justify whole-game or held-out-family generalization claims.

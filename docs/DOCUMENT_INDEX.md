@@ -15,6 +15,13 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/TWO_PLAYER_PILOT_20260929.md` | Executed exploratory 21-run evidence, ceiling/negative results and limitations |
 | `docs/INDEPENDENT_REVIEW_20260929.md` | Independent agent findings, repairs and unresolved scientific issues |
 | `docs/WORKING_PAPER.md` | Exploratory research-note draft; not submission-ready |
+| `docs/METHOD_V2.md` | Frozen recurrent reply-fork v2 development specification |
+| `docs/V2_RESEARCH_CONTROL.md` | Adaptive development, baseline fairness and protected evaluation stages |
+| `docs/V2_PREDICTIVE_RESEARCH.md` | Primary-source predictive consistency review |
+| `docs/V2_GAME_EVALUATION_RESEARCH.md` | Game planning, benchmark and adaptive-evaluation review |
+| `docs/V2_FORK_GEOMETRY_NOVELTY.md` | Follow-up novelty risks and sibling-loss algebra |
+| `docs/BENCHMARK_V2_SPEC.md` | Prospective rule-only survey protocol and amendments |
+| `docs/V2_SURVEY_RESULTS.md` | All survey attempts, failures and immutable fork audit |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |

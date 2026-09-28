@@ -13,7 +13,7 @@ import math
 from pathlib import Path
 import time
 
-REFERENCE_VERSION = "independent-bitboard-v1"
+REFERENCE_VERSION = "independent-bitboard-v2"
 PASS = -1
 
 
@@ -47,8 +47,8 @@ class ReferenceGame:
         if type(self.gravity) is not bool or type(self.reversi) is not bool:
             raise ValueError("Rule flags must be boolean")
         if self.reversi:
-            if self.rows != 4 or self.cols != 4 or self.gravity or self.k != 0:
-                raise ValueError("Reference Reversi is pinned to 4x4, k=0")
+            if self.rows != self.cols or self.rows % 2 or self.gravity or self.k != 0:
+                raise ValueError("Reference Reversi requires an even square, k=0, no gravity")
         elif not 2 <= self.k <= max(self.rows, self.cols):
             raise ValueError("Invalid connection length")
 
@@ -81,7 +81,10 @@ class ReferenceGame:
 
     def initial(self):
         if self.reversi:
-            return ReferenceState((1 << 6) | (1 << 9), (1 << 5) | (1 << 10))
+            lower = self.rows // 2
+            upper = lower - 1
+            return ReferenceState((1 << (upper * self.cols + lower)) | (1 << (lower * self.cols + upper)),
+                                  (1 << (upper * self.cols + upper)) | (1 << (lower * self.cols + lower)))
         return ReferenceState(0, 0)
 
     @cached_property

@@ -15,6 +15,15 @@ Version 1 — 2026-09-29. Sizes are relative, not completion-date promises. Q1 i
 | M8 locked confirmatory study / large | M7 pass | Freeze independent referee/teacher identity, dataset/checkpoint/config/source hashes, primary metric, paired schedule/seeds/sample size/CI/multiplicity/censor/stopping rules; complete uncensored planned set | BLOCKED until readiness review; no fabricated protocol values chosen after outcomes |
 | M9 paper and reproducibility release / large | M8 or documented negative pivot | Systematic review updated; method/ablations/negative findings/limitations/threats/license/reproduction statements; independent review; artifacts storage plan; no Q1 guarantee | Exploratory working paper and reproducibility report drafted; submission-quality study remains incomplete |
 
+V2 M7 progress: preserved failed survey01/02, passed prospective survey03 on
+Connect4 4x5/Reversi6; full fork audit passes509 training/209 development roots.
+Frozen `docs/METHOD_V2.md` replaces v1 only for this new development cycle.
+Six recurrent/direct objective families and a finite36-cell learning-rate/seed
+grid are implemented for integration review. No selection/final predictions or
+v2 superiority claim. Development promotion requires the declared0.05 margin,
+both-game gains and paired-seed consistency against all tuned control families.
+Further capacity/weight/compute studies and independent selection remain gates.
+
 ## Experiment stages and budgets
 
 Exploratory pilot: generated tiny games and fixed small configurations, single CPU BLAS thread, no paid/GPU resources. Record time, peak memory where measurable, sample exclusions, per-seed metrics. These data can diagnose implementation/feasibility and inform development; they cannot become confirmatory by relabeling. Start with a bounded run (minutes, small tens of MB model/data target), measure actual resource cost, and stop on numerical/audit failure. Increase only if the measured pilot supports a useful question within local resources.

@@ -40,6 +40,33 @@ benchmark redesign, not scaling this setup. See the
 [independent review](docs/INDEPENDENT_REVIEW_20260929.md). Engineering verification:
 87 unit tests, standalone core checks and 13 source-release smoke checks passed.
 
+V2 is a separately frozen [recurrent reply-fork study](docs/METHOD_V2.md).
+Its [prospective benchmark audit](docs/V2_SURVEY_RESULTS.md) passes for Connect4
+4x5 and Reversi6, with independent bitboard labels and complete cross-split
+context/target isolation. `two_player_v2/` uses a shared two-layer encoder and
+recurrent dynamics with direct, value-dynamics, decoded, projected JEPA, raw JEPA
+and no-response comparisons. This is development work; improvement is unproven.
+Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
+[novelty-risk follow-up](docs/V2_FORK_GEOMETRY_NOVELTY.md) before interpreting it.
+
+Use the verified CPython runtime (bare `python` may resolve to another Windows
+installation). After the source/test gate passes, reproduce the new local study:
+
+```powershell
+$py='C:/Users/ANHKHOI/AppData/Local/Programs/Python/Python311/python.exe'
+$env:OPENBLAS_NUM_THREADS='1'
+$env:OMP_NUM_THREADS='1'
+& $py -B -m benchmarks.survey chess_data/my-v2-survey --expanded --reversi6
+& $py -B -m two_player_v2.data chess_data/my-v2-survey chess_data/two-player-pilot-v12 chess_data/my-v2-forks
+& $py -B -m two_player_v2.runtime chess_data/my-v2-forks chess_data/my-v2-grid
+```
+
+The prior v1.2 dataset is required to audit its training-state exclusion; use
+the original v1 generation command above with its frozen seed and parameters.
+All output paths must be fresh. The finite grid is serial and bounded; no paid
+compute is used. An interrupted attempt with unaccounted elapsed compute cannot
+be silently resumed inside the same grid budget.
+
 ## Legacy MARS-JEPA Chess compatibility implementation
 
 **MARS-JEPA: Multi-Horizon Action-Conditioned Response-Aware State Prediction for Resource-Bounded Zero-Sum Chess**

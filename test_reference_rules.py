@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import random
+import time
 import unittest
 
 from benchmarks.reference_rules import (PASS, ReferenceGame, ReferenceState,
@@ -41,6 +42,73 @@ class ReferenceRulesTests(unittest.TestCase):
             self.assertEqual(actual.player, expected.player)
             counters['compared_transitions'] += 1
         return other
+
+    def test_reversi6_generated_rules_forced_pass_and_endgame_values(self):
+        started = time.perf_counter()
+        adapter = BoardGame('reference-reversi6-fixture', 6, 6, 0, reversi=True)
+        reference = reference_for(adapter)
+        self.assertEqual(reference.board(reference.initial()), adapter.initial().board)
+        counts = dict(state_visits=0, terminal_visits=0, forced_pass_visits=0,
+                      compared_transitions=0, solver_positions=0, solver_nodes=0)
+        rng = random.Random(9837306)
+        unique = set(); endgames = {}
+        for _ in range(120):
+            state = adapter.initial()
+            for _ply in range(2 * 36 + 3):
+                other = self.compare_state(adapter, reference, state, counts)
+                unique.add(state)
+                legal = reference.legal_actions(other)
+                if not legal:
+                    break
+                if state.board.count(0) <= 6:
+                    endgames[state] = None
+                child = reference.transition(other, rng.choice(legal))
+                state = State(reference.board(child), child.player)
+            else:
+                self.fail('Reversi6 exceeded finite-length bound')
+        solver = ReferenceSolver(reference, node_limit=100_000, time_limit=5.)
+        adapter_cache = {}
+        for state in list(endgames)[:32]:
+            other = reference.from_board(state.board, state.player)
+            expected = {a: -exact_value(adapter, adapter.transition(state, a), adapter_cache)
+                        for a in adapter.legal_actions(state)}
+            actual = {adapter_action(adapter, a): v for a, v in solver.action_values(other).items()}
+            self.assertEqual(actual, expected)
+            counts['solver_nodes'] += solver.last_stats['nodes']
+            self.assertEqual(solver.value(other), max(expected.values()))
+            counts['solver_positions'] += 1
+        self.assertEqual(counts['solver_positions'], 32)
+        self.assertEqual(counts['terminal_visits'], 120)
+        self.assertGreater(counts['forced_pass_visits'], 0)
+        # Explicit pass and terminal signs, independent of stochastic coverage.
+        forced = reference.from_board((0, 1, -1, -1, -1, -1) + (-1,) * 30)
+        self.assertEqual(reference.legal_actions(forced), (PASS,))
+        self.assertEqual(solver.value(forced), -1)
+        after_pass = reference.transition(forced, PASS)
+        self.assertEqual(solver.value(after_pass), 1)
+        end = reference.transition(after_pass, 0)
+        self.assertEqual(reference.terminal(end), -1)
+        self.assertEqual(solver.value(end), -1)
+        self.assertEqual(reference.legal_actions(end), ())
+        counts.update(unique_states=len(unique), seconds=time.perf_counter() - started)
+        print('REFERENCE_REVERSI6_COVERAGE ' + json.dumps(counts, sort_keys=True))
+
+    def test_generic_even_reversi_configuration(self):
+        for size in (2, 4, 6, 8):
+            game = ReferenceGame(size, size, 0, reversi=True)
+            state = game.initial()
+            self.assertEqual(state.plus.bit_count(), 2)
+            self.assertEqual(state.minus.bit_count(), 2)
+            self.assertEqual(len(game.board(state)), size * size)
+            if size == 2:
+                self.assertEqual(game.terminal(state), 0)
+            else:
+                self.assertEqual(len(game.legal_actions(state)), 4)
+        for args in ((5, 5, 0), (4, 6, 0), (6, 6, 3)):
+            with self.assertRaises(ValueError):
+                ReferenceGame(*args, reversi=True)
+        with self.assertRaises(ValueError):
+            ReferenceGame(6, 6, 0, gravity=True, reversi=True)
 
     def test_reference_dependency_isolation_and_rectangular_rules(self):
         path = Path(__file__).parent / 'benchmarks' / 'reference_rules.py'

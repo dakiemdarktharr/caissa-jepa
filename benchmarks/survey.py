@@ -29,25 +29,28 @@ def shallow_values(game,state):
     return values,nonterminal
 
 
-def survey(output,games_per_game=2000,seed=98371,time_limit=120.,admitted_limit=500,expanded=False):
+def survey(output,games_per_game=2000,seed=98371,time_limit=120.,admitted_limit=500,expanded=False,reversi6=False):
     output=Path(output); output.mkdir(parents=True,exist_ok=False)
     if not 1<=games_per_game<=2000 or not 0<time_limit<=120 or not 1<=admitted_limit<=500:
         raise ValueError('Survey budget exceeds frozen limits')
     result={'stage':'rule-only development feasibility','seed':seed,'games_per_game':games_per_game,
-            'code_commit':code_commit(),'model_predictions':0,'games':{},'expanded':expanded,
+            'code_commit':code_commit(),'model_predictions':0,'games':{},'expanded':expanded,'reversi6':reversi6,
             'survey_sha256':hashlib.sha256(Path(__file__).read_bytes().replace(b'\r\n',b'\n')).hexdigest(),
             'adapter_package_sha256':source_hash()}
     games={'connect4-4x5':BoardGame('connect4-4x5',4,5,4,gravity=True),'reversi4':GAMES['reversi4']} if expanded else {name:GAMES[name] for name in ('connect3','reversi4')}
+    if reversi6:
+        if not expanded: raise ValueError('Survey03 requires expanded connect4 scope')
+        del games['reversi4']; games['reversi6']=BoardGame('reversi6',6,6,0,reversi=True)
     for offset,(name,game) in enumerate(games.items()):
         started=time.perf_counter(); deadline=started+time_limit
         ref=ReferenceGame(game.rows,game.cols,game.k,game.gravity,game.reversi)
         solver=ReferenceSolver(ref,time_limit=10.)
         rng=np.random.default_rng(np.random.SeedSequence([seed,offset]))
         records=[]; seen=set(); admitted_trajectories=set(); rejected=Counter(); solve_stats=Counter(); sampled=0
-        stop='trajectory_limit'
+        stop='trajectory_limit'; cache_clears=0; peak_cache=0
         for episode in range(games_per_game):
             if time.perf_counter()>=deadline: stop='time_limit'; break
-            if len(solver.cache)>=500000: stop='cache_limit'; break
+            if not reversi6 and len(solver.cache)>=500000: stop='cache_limit'; break
             if len(records)>=admitted_limit: stop='admitted_limit'; break
             state=game.initial(); candidates=[]; actions=[]
             while game.terminal(state) is None:
@@ -74,12 +77,15 @@ def survey(output,games_per_game=2000,seed=98371,time_limit=120.,admitted_limit=
                 if set(ref.legal_actions(refstate))!={reference_action(a,game.cols) for a in legal}:
                     raise ValueError('Independent legal action disagreement')
                 solver.time_limit=min(10.,max(.001,deadline-time.perf_counter()))
+                if reversi6 and len(solver.cache)>=400000:
+                    solver.cache.clear(); cache_clears+=1
                 try:
                     oracle=solver.action_values(refstate)
                 except ReferenceBudgetExceeded:
                     rejected['oracle_budget_unresolved']+=1
                     continue
                 finally:
+                    peak_cache=max(peak_cache,len(solver.cache))
                     for metric in ('nodes','cache_hits','transitions','terminal_nodes','seconds'):
                         solve_stats[metric]+=solver.last_stats[metric]
                 if max(oracle.values())==min(oracle.values()):
@@ -111,6 +117,7 @@ def survey(output,games_per_game=2000,seed=98371,time_limit=120.,admitted_limit=
                 'unique_admitted_trajectories':len(admitted_trajectories),
                 'unique_canonical_roots_examined':len(seen),'exclusions':dict(rejected),
                 'oracle_stats':dict(solve_stats),'oracle_cache_entries':len(solver.cache),
+                'cache_clears':cache_clears,'peak_cache_entries':peak_cache,
                 'seconds':time.perf_counter()-started,'stopped_by':stop,
                 'reference':ref.identity(),'records_sha256':digest(records),
                 'status':'PASSED_SUPPORT' if len(records)>=100 and beyond>=50 else 'FAILED_SUPPORT'}
@@ -128,5 +135,7 @@ if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser(description=__doc__); parser.add_argument('output')
     parser.add_argument('--expanded',action='store_true')
+    parser.add_argument('--reversi6',action='store_true')
     args=parser.parse_args()
-    raise SystemExit(0 if survey(args.output,seed=98372 if args.expanded else 98371,expanded=args.expanded)['status']=='PASSED' else 2)
+    raise SystemExit(0 if survey(args.output,seed=98373 if args.reversi6 else 98372 if args.expanded else 98371,
+                               expanded=args.expanded,reversi6=args.reversi6)['status']=='PASSED' else 2)

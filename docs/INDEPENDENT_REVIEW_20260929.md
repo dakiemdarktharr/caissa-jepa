@@ -47,3 +47,27 @@ tic-tac-toe reachable-state agreement with a separate bitboard rules fixture.
   engine/reference match evaluation. No claim of faithful SPR/MuZero reproduction.
 - Selection/final predictions remain unopened; confirmation and paper-submission
   readiness remain blocked. These are visible roadmap items, not waived findings.
+
+## V2 pre-fit review (supersedes corresponding engineering limitations only)
+
+Separate same-project bitboard rules now cover both v2 games; they are not an
+external engine. Complete counterfactual fork labels use each successor's exact
+mover-perspective value. All six split intersections were independently rebuilt
+with both canonical keys and raw encoded features: zero overlaps. Data tests
+cover legal enumeration, terminal masking, unrelated exact-recursion labels,
+held-out-first quarantine, tampering and protected split access.
+
+Model reviewer ran11 tests plus306 independent finite-difference checks on17
+real TicTacToe forks, maximum absolute error6.69e-10. H2 BPTT, normalization,
+EMA stop-gradient, terminal masks and own-action retention were checked.
+Evaluator review found no minimax/perspective/pass/node-cap defect; median_std
+was added to implement the frozen collapse gate.
+
+Runtime review found missing serialization time on resume, failure rows reported
+as completed, and an after-write storage-cap gap. Repairs add an active-attempt
+budget journal (unknown interrupted time fails closed), explicit decision/control
+status counts and post-write cap checks. Frozen schedule and controls get hashes.
+Objective weights remain fixed in the first grid; this is not optimal tuning of
+all baseline families. Exact-state gains would support representation utility;
+learned latent-planning claims require the separate hybrid evidence. No final
+predictions, external publication or positive outcome follow from these tests.

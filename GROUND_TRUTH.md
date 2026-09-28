@@ -24,8 +24,8 @@ Optimize baseline families with comparable development opportunity, retain an
 attempt ledger including failures, and keep independent selection/final stages.
 Method uniqueness remains a prior-art question, never a naming claim. The earlier
 Computer Use Esc interrupted one turn; the subsequent user message resumed work.
-Active v2 progress: two Exa research streams completed (100 requested search-result
-slots, not100 unique papers), documented in `docs/V2_PREDICTIVE_RESEARCH.md` and
+Active v2 progress: two Exa research streams and one follow-up completed (150 requested search-result
+slots, not150 unique papers), documented in `docs/V2_PREDICTIVE_RESEARCH.md` and
 `docs/V2_GAME_EVALUATION_RESEARCH.md`. Read `docs/V2_RESEARCH_CONTROL.md` for the
 adaptive-development and fair-baseline boundaries.
 
@@ -39,8 +39,26 @@ survey02 expanded to connect4 4x5 and passed difficulty support (500/191 and
 Reversi4 356/352). Artifacts are `chess_data/v2-survey-01` and `v2-survey-02`.
 No v2 model fitted/scored. Further root/target split analysis found only13
 Reversi4 validation roots after old-training and cross-split exclusion; this
-cannot support a credible second-family comparison. A prospective6x6 Reversi
-survey is next, preserving all prior survey failures and source hashes.
+cannot support a credible second-family comparison. Prospective survey03 therefore
+uses Reversi6 and Connect4, passing with500/499 and500/195 admitted/beyond-depth
+roots. `docs/METHOD_V2.md` freezes the recurrent shared encoder, matched legal
+fork supervision, six variants, two learning rates, three seeds and40 epochs
+before fitting. The fork-geometry novelty review identifies strong prior art
+and a centered-MSE equivalence; uniqueness is not established.
+
+Immutable dataset `chess_data/v2-forks-01` PASSED audit:984 roots,17,612 nodes,
+12,833 forks; train509/development209/selection131/final135 roots. All six split
+pairs have zero canonical and feature-byte overlap. Fingerprint:
+`3297fa10abd296299ccff6a80238a7db20b883369f0603a03b5f33983ccc57c2`.
+No v2 fit or selection/final predictions yet.29 integrated rules/data/model/
+evaluator tests passed8.941s. Full regression then passed126 tests in72.353s;
+runtime-specific10 tests passed0.324s. An earlier concurrent-source test run had
+one expectation mismatch after the new invalid-cap guard; the fresh run passes.
+Independent real-rule gradient audit:306 checks, maximum error6.69e-10. Runtime
+repairs reviewed; report verification is the last pre-fit integration gate.
+Local CPU: AMD Ryzen AI5 340,6cores/12logical processors,16,418,648,064bytes RAM.
+Training is serial single-BLAS-thread; no cloud/GPU spending.37 Markdown files
+were mirrored with matching SHA256 and Ground Truth reopened in Obsidian.
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
@@ -158,10 +176,10 @@ Project destination: `D:/notes/vault_1/Caissa-JEPA/`.
 Entry page: `D:/notes/vault_1/Caissa-JEPA/GROUND_TRUTH.md`.
 Initial copy and opening verification: PASS on 2026-09-29. All 22 project Markdown files copied with matching SHA-256. Obsidian quick switcher lists the copied hierarchy and Ground Truth was opened with its actual text visibly rendered. The pre-code memory gate is complete.
 
-Latest mirror comprises30 project Markdown files, including the current roadmap,
+The previous v1 mirror comprised30 project Markdown files, including its roadmap,
 method/amendments, source review, data register, executed pilot, independent review
-and working paper. Final sync requires matching all30 SHA-256 values and reading
-the refreshed Ground Truth in Obsidian; the final handoff reports verification.
+and working paper. The live v2 mirror now includes the additional v2 documents;
+each sync verifies every project Markdown SHA-256 and reports its actual count.
 On resumption, the actual Ground Truth page was reopened successfully in Obsidian.
 Active v2 documents are added in the next mirror sync; do not confuse the previous
 30-file snapshot with the later live count.
