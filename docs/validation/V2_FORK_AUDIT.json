@@ -1,0 +1,218 @@
+{
+  "version": "reply-forks-v2.0",
+  "method": "caissa-two-player-v2.0",
+  "code_commit": "a7fc752ef80b335b31b92b83303e1f852deadb6a",
+  "source_identity": {
+    "two_player_v2/data.py": "a267963799a8f209c450d58d3044c0216054fc78d1377d20888040658699c778",
+    "two_player_v2/__init__.py": "0df8921ce2fd6bed7152440f8240096ae0255023b2354dbe31ce4c6b216bd98b",
+    "two_player/games.py": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "two_player/data.py": "7025e9ee790ed9310fe3288f2b3fec67eb6158e6eda83c9549689e5108a41538",
+    "benchmarks/reference_rules.py": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e"
+  },
+  "survey_fingerprint": "048bb21819a87158e9427ed38d0afe1c0e6f25f796c0f75fd3ae4bf383f3777f",
+  "old_training_exclusion_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+  "audit": {
+    "counts": {
+      "connect4-4x5/final": 70,
+      "reversi6/final": 65,
+      "connect4-4x5/selection": 59,
+      "connect4-4x5/cross_split_fork_closure_overlap": 16,
+      "reversi6/selection": 72,
+      "connect4-4x5/development": 107,
+      "reversi6/development": 102,
+      "connect4-4x5/train": 248,
+      "reversi6/train": 261
+    },
+    "excluded_roots": [
+      {
+        "root_id": "869adadf06b54f7fc5ae710e3f301f03a6be9ddc9296d24a28f5c5d4f7d943ca",
+        "game": "connect4-4x5",
+        "split": "selection",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "2d62ae4b294da3ac2e3035c1b694647f241ced39b5adaad9dd3fe0f83ba46d82",
+        "game": "connect4-4x5",
+        "split": "development",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "56eac2e4a00b3a42102e9c80a7977fa02b350379b315dc05cd742eb545100fad",
+        "game": "connect4-4x5",
+        "split": "development",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "af97bd5d062ee68acd0200e7672f38f29fd6aff8a9334e46373c68e8fbafd15e",
+        "game": "connect4-4x5",
+        "split": "development",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "f57ca642897b85058bae7288f21e01530717cf3a51a68b72de5d14ca4ff170da",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "4b43ea2002613c5d777d25b4382efc5d7be09ef94f313a4514d944e3d140d19a",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "4a302996b659a5119c7295f8f4ed2415552181c3d24470dc5c3ea424c5710dfb",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "c536192463e2e5f68492899702bf8c483dc9a08986824f679bc80cc8494f9ed4",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "d4183e20eb8c23fa5748c289db0164a3b957615c16e63682befbc56c5ba44ec6",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "f822c0d48ec08b9bd5104e0727fa7b19c192e39e0a0f8d42a1726c1aae5c90b2",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "be37ad297f2b74b038dd05260a334f6edffd030b5db26d5cf7bc6ca37870e23b",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "6bec0f69caec28e443815024dfff9fce926ba3da0ba8113be00b72e81fe9b643",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "a903f6410c8320fa3410a877edadcb44b3e58c3cd7e0708fe86b4deb6720c855",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "e27f119bc4eb9093a72e32328cfac9d4c245c14da80bd3021460fd7d896f0b3b",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "ccf1741b01420b1e697f584a02c52705a83caeaff9f3a56b6c867aaaee26a632",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      },
+      {
+        "root_id": "61b636ef165ff6cd4ce6bbe52308af61b79ff31a5c47136542c17738d505ed92",
+        "game": "connect4-4x5",
+        "split": "train",
+        "reason": "cross_split_fork_closure_overlap"
+      }
+    ],
+    "errors": [],
+    "status": "PASSED",
+    "cross_split_feature_overlap": 0,
+    "pairwise_intersections": {
+      "train/development": {
+        "canonical": 0,
+        "feature_bytes": 0
+      },
+      "train/selection": {
+        "canonical": 0,
+        "feature_bytes": 0
+      },
+      "train/final": {
+        "canonical": 0,
+        "feature_bytes": 0
+      },
+      "development/selection": {
+        "canonical": 0,
+        "feature_bytes": 0
+      },
+      "development/final": {
+        "canonical": 0,
+        "feature_bytes": 0
+      },
+      "selection/final": {
+        "canonical": 0,
+        "feature_bytes": 0
+      }
+    }
+  },
+  "oracle": {
+    "connect4-4x5": {
+      "reference": {
+        "config": {
+          "reference_version": "independent-bitboard-v2",
+          "rows": 4,
+          "cols": 5,
+          "k": 4,
+          "gravity": true,
+          "reversi": false,
+          "action_encoding": "contiguous row-major; forced pass=-1",
+          "terminal_utility": "absolute player +1; solver player-to-move",
+          "independence": "separate same-project implementation, not a third-party engine"
+        },
+        "config_sha256": "798b9f5a5cd6466ead7c84b19c0176c27678e432cfea8a3147eefa88e4bf619a",
+        "source_sha256": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e"
+      },
+      "nodes": 82614,
+      "transitions": 130128,
+      "cache_hits": 47514,
+      "seconds": 2.5147768996539526,
+      "labelled_states": 7458
+    },
+    "reversi6": {
+      "reference": {
+        "config": {
+          "reference_version": "independent-bitboard-v2",
+          "rows": 6,
+          "cols": 6,
+          "k": 0,
+          "gravity": false,
+          "reversi": true,
+          "action_encoding": "contiguous row-major; forced pass=-1",
+          "terminal_utility": "absolute player +1; solver player-to-move",
+          "independence": "separate same-project implementation, not a third-party engine"
+        },
+        "config_sha256": "c26428a40f816602d0810f739750c9d1e5c193d7f771fa0ed7d20b7b6d3542ad",
+        "source_sha256": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e"
+      },
+      "nodes": 368376,
+      "transitions": 427433,
+      "cache_hits": 59057,
+      "seconds": 21.931170002149884,
+      "labelled_states": 10154
+    }
+  },
+  "artifacts": {
+    "forks.json": {
+      "sha256": "f09d55886284692b325d6b6109b9116561fa792cfa739b42312f2f24a5f31813",
+      "bytes": 9889235
+    }
+  },
+  "root_count": 984,
+  "node_count": 17612,
+  "fork_count": 12833,
+  "seconds": 30.98123599999235,
+  "labels": "independent same-project exact minimax",
+  "provenance": {
+    "source": "project-owned legal counterfactual forks",
+    "public_data_license": "NOT_ASSIGNED",
+    "external_data": false,
+    "local_research_authorized": true
+  },
+  "dataset_fingerprint": "3297fa10abd296299ccff6a80238a7db20b883369f0603a03b5f33983ccc57c2"
+}

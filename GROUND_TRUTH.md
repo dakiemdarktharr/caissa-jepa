@@ -50,15 +50,32 @@ Immutable dataset `chess_data/v2-forks-01` PASSED audit:984 roots,17,612 nodes,
 12,833 forks; train509/development209/selection131/final135 roots. All six split
 pairs have zero canonical and feature-byte overlap. Fingerprint:
 `3297fa10abd296299ccff6a80238a7db20b883369f0603a03b5f33983ccc57c2`.
-No v2 fit or selection/final predictions yet.29 integrated rules/data/model/
+V2 grid01 COMPLETED36/36 at source commit
+`325afc0502911314d585a659ce456bb150b6231e`, pushed and verified on sole branch
+main. All36 cells remain frozen and preserved locally. No selection/final
+predictions.29 integrated rules/data/model/
 evaluator tests passed8.941s. Full regression then passed126 tests in72.353s;
 runtime-specific10 tests passed0.324s. An earlier concurrent-source test run had
 one expectation mismatch after the new invalid-cap guard; the fresh run passes.
 Independent real-rule gradient audit:306 checks, maximum error6.69e-10. Runtime
-repairs reviewed; report verification is the last pre-fit integration gate.
+repairs reviewed;6 report tests passed9.614s and its independent audit passed.
 Local CPU: AMD Ryzen AI5 340,6cores/12logical processors,16,418,648,064bytes RAM.
 Training is serial single-BLAS-thread; no cloud/GPU spending.37 Markdown files
 were mirrored with matching SHA256 and Ground Truth reopened in Obsidian.
+New `docs/V2_EXPERIMENT_LOG.md` records the full sequence and current run.
+
+**V2 grid01 outcome: not promoted.** All15,048 learned decisions and836 fixed
+controls completed without censor/error/collapse. Tuned rjepa exact equal-game
+regret0.2491448293 versus value-dynamics0.2476635514: improvement-0.0014812779,
+development bootstrap95% interval[-0.0494331,0.0487142]. Rjepa beats direct and
+decoded pooled means but is worse on Connect4 than direct/value-dynamics.
+No JEPA-superiority claim. Read `docs/V2_GRID01_RESULTS.md` and its aggregate
+JSON in docs/validation. Independent reviewer recomputed all saved actions,
+oracle regrets/tie-breaks, hashes and paired schedules without rerunning models.
+Each run40epochs/2640steps/334080forkdraws; totaltraining513.287s, range11.691–18.316s;
+process-lifetime peak RSS213,417,984bytes; local run artifacts36,905,709bytes.
+Next: diagnostics-driven finite v2 development amendment, fair tuning of the
+strong value-dynamics control. Do not touch selection/final or relabel this grid.
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.

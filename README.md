@@ -46,6 +46,9 @@ Its [prospective benchmark audit](docs/V2_SURVEY_RESULTS.md) passes for Connect4
 context/target isolation. `two_player_v2/` uses a shared two-layer encoder and
 recurrent dynamics with direct, value-dynamics, decoded, projected JEPA, raw JEPA
 and no-response comparisons. This is development work; improvement is unproven.
+The [36-run v2 grid](docs/V2_GRID01_RESULTS.md) completed without errors, but
+JEPA did not beat the strongest tuned value-dynamics baseline (regret0.249145
+versus0.247664). Development continues; selection/final predictions remain closed.
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
 [novelty-risk follow-up](docs/V2_FORK_GEOMETRY_NOVELTY.md) before interpreting it.
 

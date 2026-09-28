@@ -22,6 +22,9 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/V2_FORK_GEOMETRY_NOVELTY.md` | Follow-up novelty risks and sibling-loss algebra |
 | `docs/BENCHMARK_V2_SPEC.md` | Prospective rule-only survey protocol and amendments |
 | `docs/V2_SURVEY_RESULTS.md` | All survey attempts, failures and immutable fork audit |
+| `docs/V2_EXPERIMENT_LOG.md` | Attempt ledger including failed candidates and finite grid sequence |
+| `docs/V2_GRID01_RESULTS.md` | Executed36-run development outcome; not promoted |
+| `docs/V2_INDEPENDENT_RESULTS_REVIEW.md` | Independent action/hash/schedule audit of completed v2 grid |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |

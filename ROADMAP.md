@@ -23,6 +23,10 @@ grid are implemented for integration review. No selection/final predictions or
 v2 superiority claim. Development promotion requires the declared0.05 margin,
 both-game gains and paired-seed consistency against all tuned control families.
 Further capacity/weight/compute studies and independent selection remain gates.
+Grid01 then completed36/36 with no failures/censors/collapse, but rjepa0.249145
+did not beat stronger value-dynamics0.247664. Preserve all results; next is a
+diagnostics-driven finite amendment with equally strong controls. Selection/final
+remain closed. This is continued M7 development, not a passed promotion gate.
 
 ## Experiment stages and budgets
 
