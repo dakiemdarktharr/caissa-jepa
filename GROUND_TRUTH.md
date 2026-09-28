@@ -77,6 +77,16 @@ process-lifetime peak RSS213,417,984bytes; local run artifacts36,905,709bytes.
 Next: diagnostics-driven finite v2 development amendment, fair tuning of the
 strong value-dynamics control. Do not touch selection/final or relabel this grid.
 
+V2.1 amendment now frozen in `docs/METHOD_V21.md` before fitting: coherent legal
+symmetry augmentation for every control, auxiliary weights0.1/1 for decoded/
+rjepa/raw/no-response, two rates andthree seeds =60 cells. Same model/data/labels,
+40epochs and promotion threshold. New package `two_player_v21/` keeps original
+v2 source immutable. Implementation/review complete; source freeze and grid02
+launch next.21 v2.1 augmentation/runtime/report tests passed, and independent
+review found no blocking fairness/identity/augmentation issue. No v2.1 fit yet. Training-only
+gradient/group probes and limits are recorded in `docs/V2_GRID01_DIAGNOSIS.md`.
+They do not establish causality or novelty. V2.1 may still fail; all attempts stay.
+
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
 - Copy all project Markdown to a dedicated vault folder; do not move/delete originals. Ground Truth must exist in both places, and UI readability must be verified before code changes.

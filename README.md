@@ -49,6 +49,10 @@ and no-response comparisons. This is development work; improvement is unproven.
 The [36-run v2 grid](docs/V2_GRID01_RESULTS.md) completed without errors, but
 JEPA did not beat the strongest tuned value-dynamics baseline (regret0.249145
 versus0.247664). Development continues; selection/final predictions remain closed.
+The next [v2.1 amendment](docs/METHOD_V21.md) preserves that source and uses
+`two_player_v21/` for coherent legal-symmetry augmentation and a finite auxiliary
+weight grid. [Training-only diagnosis](docs/V2_GRID01_DIAGNOSIS.md) motivates the
+change; it does not establish a positive outcome or a new objective.
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
 [novelty-risk follow-up](docs/V2_FORK_GEOMETRY_NOVELTY.md) before interpreting it.
 
@@ -62,6 +66,10 @@ $env:OMP_NUM_THREADS='1'
 & $py -B -m benchmarks.survey chess_data/my-v2-survey --expanded --reversi6
 & $py -B -m two_player_v2.data chess_data/my-v2-survey chess_data/two-player-pilot-v12 chess_data/my-v2-forks
 & $py -B -m two_player_v2.runtime chess_data/my-v2-forks chess_data/my-v2-grid
+& $py -B -m two_player_v2.report chess_data/my-v2-grid chess_data/my-v2-report
+# Separate adaptive follow-up, after its source/test gate:
+& $py -B -m two_player_v21.runtime chess_data/my-v2-forks chess_data/my-v21-grid
+& $py -B -m two_player_v21.report chess_data/my-v21-grid chess_data/my-v21-report
 ```
 
 The prior v1.2 dataset is required to audit its training-state exclusion; use

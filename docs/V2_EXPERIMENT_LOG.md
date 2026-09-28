@@ -70,3 +70,16 @@ frozen replication/selection protocol; it would not establish Q1 readiness.
   limited seed-population uncertainty. Holdout stages are still essential.
 - Recent JEPA/SPR/value-equivalence work creates substantial novelty risk.
   A win would motivate further research, not justify a firstness claim.
+
+## Grid02 prospective amendment
+
+METHOD_V21 freezes60 cells with coherent legal-symmetry augmentation and
+auxiliary weights0.1/1.0, while preserving the original v2 package and data.
+Train-only gradient/sibling probes are in V2_GRID01_DIAGNOSIS. No consistent
+gradient conflict justified model partitioning; capacity stays fixed. Sibling
+residual reweighting remains a distinct later hypothesis, not mixed into grid02.
+
+Prefit augmentation/runtime tests:13 passed1.791s.100 augmentation-only calls
+on128 training fork feature rows took0.190875s; no optimizer steps or development
+predictions were made. This timing is a feasibility check, not an efficiency
+comparison. Report verification and source freeze precede any grid02 fitting.

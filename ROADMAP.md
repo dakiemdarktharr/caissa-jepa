@@ -27,6 +27,10 @@ Grid01 then completed36/36 with no failures/censors/collapse, but rjepa0.249145
 did not beat stronger value-dynamics0.247664. Preserve all results; next is a
 diagnostics-driven finite amendment with equally strong controls. Selection/final
 remain closed. This is continued M7 development, not a passed promotion gate.
+V2.1 next finite cycle uses coherent legal-symmetry augmentation for all controls
+and a small equally offered latent/reconstruction weight grid (60cells). Capacity,
+labels and original v2 code remain unchanged. See METHOD_V21; group-relative
+decision geometry remains a separately declared later hypothesis if warranted.
 
 ## Experiment stages and budgets
 
