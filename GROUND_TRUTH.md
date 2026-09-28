@@ -16,6 +16,32 @@ Keep distinct: (1) behavior of a particular opponent; (2) worst-case/optimal opp
 
 ## User decisions and constraints
 
+Latest steering (2026-09-29): user explicitly requests continued v2 development,
+deep research and iterative model/workflow changes toward a professor-reviewable
+candidate that outperforms baselines. This is authorization to continue research,
+not evidence that a positive result exists or permission to bias comparisons.
+Optimize baseline families with comparable development opportunity, retain an
+attempt ledger including failures, and keep independent selection/final stages.
+Method uniqueness remains a prior-art question, never a naming claim. The earlier
+Computer Use Esc interrupted one turn; the subsequent user message resumed work.
+Active v2 progress: two Exa research streams completed (100 requested search-result
+slots, not100 unique papers), documented in `docs/V2_PREDICTIVE_RESEARCH.md` and
+`docs/V2_GAME_EVALUATION_RESEARCH.md`. Read `docs/V2_RESEARCH_CONTROL.md` for the
+adaptive-development and fair-baseline boundaries.
+
+Independent same-project bitboard reference passed4 tests: all5,478 TTT states,
+16,167 exhaustive transitions and39,596 generated transition comparisons;117
+Reversi forced-pass visits and128 endgame action-value sets. It is not a
+third-party engine. Source/version hashes are pinned in survey receipts.
+
+V2 survey01 failed connect3 difficulty support (500admitted but26beyond-depth);
+survey02 expanded to connect4 4x5 and passed difficulty support (500/191 and
+Reversi4 356/352). Artifacts are `chess_data/v2-survey-01` and `v2-survey-02`.
+No v2 model fitted/scored. Further root/target split analysis found only13
+Reversi4 validation roots after old-training and cross-split exclusion; this
+cannot support a credible second-family comparison. A prospective6x6 Reversi
+survey is next, preserving all prior survey failures and source hashes.
+
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
 - Copy all project Markdown to a dedicated vault folder; do not move/delete originals. Ground Truth must exist in both places, and UI readability must be verified before code changes.
@@ -136,6 +162,9 @@ Latest mirror comprises30 project Markdown files, including the current roadmap,
 method/amendments, source review, data register, executed pilot, independent review
 and working paper. Final sync requires matching all30 SHA-256 values and reading
 the refreshed Ground Truth in Obsidian; the final handoff reports verification.
+On resumption, the actual Ground Truth page was reopened successfully in Obsidian.
+Active v2 documents are added in the next mirror sync; do not confuse the previous
+30-file snapshot with the later live count.
 
 Copy only project Markdown, preserving relative paths and originals. Exclude `.git`, environments, caches, generated/build/data directories, non-project notes and non-Markdown artifacts. No datasets/checkpoints are copied to this potentially synced vault. Record file counts and hash comparison; annotate superseded documents through `docs/DOCUMENT_INDEX.md`.
 
