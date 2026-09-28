@@ -32,6 +32,8 @@ Current milestone update (2026-09-29): `main` preserves all prior commits; miles
 `135a690295c62a55b1e0ef0e32f8e6565f18b88a` was pushed and verified. GitHub default
 is main. Local/remote master and codex/mars-jepa-research-hardening were deleted
 only after ancestor checks and successful main push. Only main remains.
+Verified implementation milestone `66ff9f27b25bc8d0bfc92628976a91c122724f87`
+was subsequently pushed; this is the exact source commit for the pilot below.
 
 At intake: HEAD `f8588e89849fb4d03a4022a20852b699ccf8a57c`, branch `codex/mars-jepa-research-hardening`, matching its origin branch. Local `master` at `dddd3d3`, one ancestor commit behind HEAD and five ahead of `origin/master` (`b199ffb662f9a36e3172df35cee500959667b6ba`). Remote HEAD points to `master`. No `main`, no tags. Live `git ls-remote --heads --symref` verified the remote state. No tracked working-tree modifications at intake.
 
@@ -63,10 +65,39 @@ Explicit runtime: `C:/Users/ANHKHOI/AppData/Local/Programs/Python/Python311/pyth
 (3.11.9, NumPy2.4.6, PySide6 6.11.1). Bare `python` can resolve to MSYS2 and is
 not reliable here. New `requirements-research-lock.txt` records this environment.
 Full unittest suite passed 86 tests in 35.356s before final pilot-integrity fixes;
-the six updated model tests and standalone core checks also pass. Independent
+the six updated model tests and standalone core checks also pass. Final full
+suite: **87 tests passed in52.122s**; standalone core PASS and source release
+smoke PASS with13 checks. Independent
 review reproduced all-seven-variant gradients (max error 5.18e-11), found node-cap,
 identity-freeze, history-write and time-budget issues; these were repaired before
-model fitting. Fixture tests are engineering evidence only. Pilot pending.
+model fitting. Fixture tests are engineering evidence only.
+
+**Pilot completed:** 21/21 predeclared runs (7 variants x3 seeds), 10 epochs and
+180 steps each, 1,129 training records; 68 frozen roots and 2,856 learned planner
+decisions plus68 no-model decisions. No failures, censoring or collapse alerts.
+All dataset/source/schedule identities and checkpoint hashes independently verified.
+Selection/final prediction counters remain0. Actual results and all aggregate
+metrics: `docs/TWO_PLAYER_PILOT_20260929.md` and
+`docs/validation/TWO_PLAYER_PILOT_20260929.json`. Local checkpoints:
+`chess_data/two-player-runs-v12/`. Training source hash:
+`c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2`.
+
+**Scientific outcome:** no JEPA advantage established. All learned exact-state
+variants have zero regret on a ceiling-prone schedule; connect3 has only2 roots
+with no neural leaves. Full hybrid JEPA has Reversi regret5/72 across seeds versus
+direct0/72 and decoded5/72. These are regret units per local decisions, not win
+counts or a significance result. Held-out-size transfer benefit and regularizer
+benefit are unproven. M7 pivots to a separately frozen, discriminating development
+benchmark; scaling this pilot and confirmatory work stop at the roadmap gates.
+Working paper is `docs/WORKING_PAPER.md`, explicitly not submission-ready.
+Independent findings/disposition: `docs/INDEPENDENT_REVIEW_20260929.md`.
+
+Resource evidence: training251.21s total,8.84–18.64s/run; maximum traced
+allocations16,966,858 bytes, not RSS; local run artifacts11,245,483 bytes.
+Tracemalloc and overlapping regression execution preclude efficiency claims.
+No paid/cloud/GPU services or external corpus used. Generated artifacts remain
+excluded from both Git and Obsidian; only source/docs/small aggregate receipts
+are published. Remaining research M7–M9 is not complete or claimed complete.
 
 Legacy chess repairs: canonical parsed FEN identities, audit v3 four splits,
 no-response preserves own H4 action, rejects obsolete no-response checkpoints,
@@ -100,6 +131,11 @@ Discovered through Computer Use on 2026-09-29: Obsidian 1.13.7 vault manager sho
 Project destination: `D:/notes/vault_1/Caissa-JEPA/`.
 Entry page: `D:/notes/vault_1/Caissa-JEPA/GROUND_TRUTH.md`.
 Initial copy and opening verification: PASS on 2026-09-29. All 22 project Markdown files copied with matching SHA-256. Obsidian quick switcher lists the copied hierarchy and Ground Truth was opened with its actual text visibly rendered. The pre-code memory gate is complete.
+
+Latest mirror comprises30 project Markdown files, including the current roadmap,
+method/amendments, source review, data register, executed pilot, independent review
+and working paper. Final sync requires matching all30 SHA-256 values and reading
+the refreshed Ground Truth in Obsidian; the final handoff reports verification.
 
 Copy only project Markdown, preserving relative paths and originals. Exclude `.git`, environments, caches, generated/build/data directories, non-project notes and non-Markdown artifacts. No datasets/checkpoints are copied to this potentially synced vault. Record file counts and hash comparison; annotate superseded documents through `docs/DOCUMENT_INDEX.md`.
 

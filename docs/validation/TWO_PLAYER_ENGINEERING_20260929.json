@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-29",
+  "source_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+  "python": "3.11.9",
+  "numpy": "2.4.6",
+  "pyside6": "6.11.1",
+  "unittest_count": 87,
+  "unittest_seconds": 52.122,
+  "unittest_status": "PASSED",
+  "core": "PASSED",
+  "release": {
+    "checks": [
+      "junction cache path + nonempty training/validation splits",
+      "train/resume a-jepa-h1",
+      "train/resume a-jepa-v7",
+      "train/resume a-jepa-h1-h2",
+      "train/resume a-jepa-no-response",
+      "train/resume lejepa-sigreg",
+      "train/resume policy-value-v1",
+      "train/resume nnue-style-v1",
+      "same-length cache corruption recovered",
+      "startup collision traceback and resolved paths",
+      "Qt monitor and bundled SVG assets",
+      "ZIP decode/path validation and image staging",
+      "arena frozen opening + learned moves + JSONL/PGN persistence"
+    ],
+    "frozen": false,
+    "status": "PASSED"
+  },
+  "unit_log_sha256": "A806B66EAAE69BFCB5B486F203EC4FAA9D8631BB208A400EC18E195113D1E28E",
+  "note": "Engineering fixtures only, not research performance; no installer built"
+}

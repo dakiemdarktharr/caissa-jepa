@@ -10,10 +10,10 @@ Version 1 — 2026-09-29. Sizes are relative, not completion-date promises. Q1 i
 | M3 correctness and modular games / medium | M1,M2 | Repair reproduced leakage/ablation/terminal flaws; GameSpec supports legal transitions/terminal/role transforms; multiple game families; rule/oracle tests and negative tests | Implemented and tested; independent review repairs applied; independent rules for all games still deferred |
 | M4 audited generated pilot data / medium | M3 | Versioned manifests, SHA/provenance, replay every trajectory, duplicate/symmetry checks, four nonempty splits per trained game; explicit quarantine counts and holdout | Whole-game audit FAILED; amended middle/late v1.2 PASSED; failed artifact retained |
 | M5 representation/training runtime / medium | M4 | Shared weights across supported adapters; JEPA H1/H2, H1/no-response/no-regularizer controls, policy-value and decoded-dynamics; gradients, masks, seed/resume/atomic serialization, source/config/data fingerprints | Implemented seven variants including value-dynamics; gradients/resume/masks pass; pilot next |
-| M6 bounded exploratory pilot / medium | M5 | At least 3 seeds, all-legal policy/value and collapse diagnostics; same-search comparisons; time/memory and per-game results; held-out variant zero-shot; negative results retained | Pending; small CPU scope only |
-| M7 development and model selection / large | M6 pass | Fix weaknesses using development data; extend heterogeneous games/chess adapter; opponent pool/random/reference/self-play; independent rule validation; held-out whole game and few-shot comparison; matched wall-time and active compute tracks | Pending; do not silently extrapolate pilot |
+| M6 bounded exploratory pilot / medium | M5 | At least 3 seeds, all-legal policy/value and collapse diagnostics; same-search comparisons; time/memory and per-game results; held-out variant zero-shot; negative results retained | Executed 21/21 runs at 66ff9f2; no demonstrated JEPA benefit, severe diagnostic ceiling; see pilot report |
+| M7 development and model selection / large | M6 evidence | Fix weaknesses using development data; extend heterogeneous games/chess adapter; opponent pool/random/reference/self-play; independent rule validation; held-out whole game and few-shot comparison; matched wall-time and active compute tracks | PIVOT: benchmark redesign first; scaling current training is stopped by the benefit/coverage gates; selection remains unopened |
 | M8 locked confirmatory study / large | M7 pass | Freeze independent referee/teacher identity, dataset/checkpoint/config/source hashes, primary metric, paired schedule/seeds/sample size/CI/multiplicity/censor/stopping rules; complete uncensored planned set | BLOCKED until readiness review; no fabricated protocol values chosen after outcomes |
-| M9 paper and reproducibility release / large | M8 or documented negative pivot | Systematic review updated; method/ablations/negative findings/limitations/threats/license/reproduction statements; independent review; artifacts storage plan; no Q1 guarantee | Pending |
+| M9 paper and reproducibility release / large | M8 or documented negative pivot | Systematic review updated; method/ablations/negative findings/limitations/threats/license/reproduction statements; independent review; artifacts storage plan; no Q1 guarantee | Exploratory working paper and reproducibility report drafted; submission-quality study remains incomplete |
 
 ## Experiment stages and budgets
 
@@ -35,5 +35,28 @@ Tiny-game exact minimax regret and exploitable-policy best response support corr
 - **License/storage:** uncertain rights block that source only. Local project-owned procedural data is the fallback. No cloud spending, external restricted uploads or large Git blobs.
 
 ## Update rule
+
+Evidence-driven decision after the fixed 21-run pilot: preserve all outputs and
+do not increase epochs, replace the schedule, select a favorable seed or open
+final predictions. Every learned exact-state variant hits zero regret, connect3
+has only two roots with no neural leaves, and full hybrid JEPA does not improve
+over direct/decoded controls. This fails the broad-benefit gate without disproving
+JEPA generally. The next design must be separately versioned before fitting:
+
+1. Generate a new development situation bank, independent of this exposed pilot;
+   use rule-only admission criteria and predeclared strata beyond search depth.
+2. Require at least100 independent root situations per scientific game, with
+   at least50 having nonterminal depth2 leaves and unequal exact action values.
+   These are proposed engineering floors, not a statistical power calculation.
+   If a game cannot support them, retain it only as a correctness fixture.
+3. Pin and differential-test an independent rules implementation for every game;
+   record exact oracle/reference costs and source/license identities.
+4. Add untrained and recurrent multi-step-trained consistency controls, balanced
+   game sampling and separately matched step/compute tracks. Freeze new budgets
+   after measuring oracle feasibility, before comparing learned objectives.
+5. Only after that benchmark passes and new exploratory evidence is informative,
+   resume M7 training, opponent/match studies, held-out-family/few-shot work and
+   model selection. M8 needs a power-based final sample size and an independent
+   readiness review. Do not relabel this pilot as confirmation.
 
 Commit verified milestones on main, push without rewriting history, verify remote SHA, and mirror all Markdown to Obsidian. Record reviewer findings and repairs. Mark only deliverables actually executed as complete. Unfinished study stages must remain explicit, even when engineering tests pass.

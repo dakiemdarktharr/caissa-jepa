@@ -1,0 +1,6022 @@
+{
+  "stage": "exploratory middle/late local-position pilot",
+  "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+  "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+  "raw_receipt_sha256": "e6054e93882c3091d61d80a94bb267b0cfb28390741937dcbf30587e743edb36",
+  "schedule_sha256": "2c7665c215ef6d2c352bf49bd5717033882e13a6adc054c075845f1bd52bca14",
+  "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+  "dataset": {
+    "method": "caissa-two-player-v1.2",
+    "source_sha256": "ab3505f01253b52e168b21668998f6e873ec597440df528f5167239fcd448de8",
+    "code_commit": "135a690295c62a55b1e0ef0e32f8e6565f18b88a",
+    "generator": {
+      "games_per_game": 200,
+      "seed": 1701,
+      "scope": "middle-late"
+    },
+    "provenance": {
+      "owner": "project",
+      "source": "procedural self-play from project-owned rules",
+      "external_data": false,
+      "local_research_authorized": true,
+      "public_artifact_license": "NOT_ASSIGNED; do not distribute generated artifacts"
+    },
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "artifacts": {
+      "trajectories.jsonl": {
+        "sha256": "5634238ea8304e15b4dd0403d4967ba8f532158361cfb35c1546a5c720a9a3e6",
+        "bytes": 157498,
+        "rows": 800
+      },
+      "records.jsonl": {
+        "sha256": "cc0a7c92be1a3d2828122d8b180c7bd44eef2b77e15cb4cc5050b5fe277f456c",
+        "bytes": 1097331,
+        "rows": 2572
+      }
+    },
+    "seconds": 0.8803402000048663,
+    "production_training_allowed": true
+  },
+  "audit": {
+    "schema_version": "tiny-trajectories-v1",
+    "rules_version": "tiny-rules-v1",
+    "scope": "middle-late",
+    "raw_trajectories": 800,
+    "unique_trajectories": 747,
+    "retained_records": 2572,
+    "support": {
+      "tic-tac-toe/train": {
+        "raw_records": 492,
+        "retained_records": 183,
+        "trajectories": 79,
+        "h2_records": 126,
+        "retention_fraction": 0.3719512195121951,
+        "phases": {
+          "middle": 118,
+          "late": 65
+        }
+      },
+      "tic-tac-toe/validation": {
+        "raw_records": 55,
+        "retained_records": 30,
+        "trajectories": 11,
+        "h2_records": 19,
+        "retention_fraction": 0.5454545454545454,
+        "phases": {
+          "middle": 16,
+          "late": 14
+        }
+      },
+      "tic-tac-toe/selection": {
+        "raw_records": 93,
+        "retained_records": 63,
+        "trajectories": 18,
+        "h2_records": 47,
+        "retention_fraction": 0.6774193548387096,
+        "phases": {
+          "middle": 40,
+          "late": 23
+        }
+      },
+      "tic-tac-toe/test": {
+        "raw_records": 83,
+        "retained_records": 83,
+        "trajectories": 23,
+        "h2_records": 60,
+        "retention_fraction": 1.0,
+        "phases": {
+          "middle": 66,
+          "late": 17
+        }
+      },
+      "connect3/train": {
+        "raw_records": 327,
+        "retained_records": 300,
+        "trajectories": 88,
+        "h2_records": 212,
+        "retention_fraction": 0.9174311926605505,
+        "phases": {
+          "middle": 266,
+          "late": 34
+        }
+      },
+      "connect3/validation": {
+        "raw_records": 44,
+        "retained_records": 41,
+        "trajectories": 11,
+        "h2_records": 30,
+        "retention_fraction": 0.9318181818181818,
+        "phases": {
+          "middle": 35,
+          "late": 6
+        }
+      },
+      "connect3/selection": {
+        "raw_records": 40,
+        "retained_records": 40,
+        "trajectories": 12,
+        "h2_records": 28,
+        "retention_fraction": 1.0,
+        "phases": {
+          "middle": 38,
+          "late": 2
+        }
+      },
+      "connect3/test": {
+        "raw_records": 51,
+        "retained_records": 51,
+        "trajectories": 15,
+        "h2_records": 36,
+        "retention_fraction": 1.0,
+        "phases": {
+          "middle": 49,
+          "late": 2
+        }
+      },
+      "reversi4/train": {
+        "raw_records": 892,
+        "retained_records": 646,
+        "trajectories": 127,
+        "h2_records": 567,
+        "retention_fraction": 0.7242152466367713,
+        "phases": {
+          "middle": 523,
+          "late": 123
+        }
+      },
+      "reversi4/validation": {
+        "raw_records": 97,
+        "retained_records": 79,
+        "trajectories": 15,
+        "h2_records": 68,
+        "retention_fraction": 0.8144329896907216,
+        "phases": {
+          "middle": 65,
+          "late": 14
+        }
+      },
+      "reversi4/selection": {
+        "raw_records": 152,
+        "retained_records": 143,
+        "trajectories": 23,
+        "h2_records": 123,
+        "retention_fraction": 0.9407894736842105,
+        "phases": {
+          "middle": 111,
+          "late": 32
+        }
+      },
+      "reversi4/test": {
+        "raw_records": 135,
+        "retained_records": 135,
+        "trajectories": 21,
+        "h2_records": 114,
+        "retention_fraction": 1.0,
+        "phases": {
+          "middle": 100,
+          "late": 35
+        }
+      },
+      "connect3-heldout/transfer": {
+        "raw_records": 778,
+        "retained_records": 778,
+        "trajectories": 183,
+        "h2_records": 595,
+        "retention_fraction": 1.0,
+        "phases": {
+          "middle": 585,
+          "late": 193
+        }
+      }
+    },
+    "exclusion_counts": {
+      "outside_predeclared_middle_late_scope": 3502,
+      "duplicate_symmetry_trajectory": 53,
+      "cross_split_context_or_target_overlap": 667
+    },
+    "cross_split_overlap": 0,
+    "split_policy": "canonical trajectory hash 70/10/10/10; strict context/H1/H2 symmetry ownership; heldout size variant transfer only",
+    "errors": [],
+    "status": "PASSED",
+    "records_sha256": "01102b00ef6eab95a0d9726ac26fb13c761054b64563ed98ab5bb832eae9a9a7",
+    "source_rows_sha256": "6cb6351fcf289282e180abe813abfd882323cda257b10a95d66530e61469ede9",
+    "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8"
+  },
+  "hardware": {
+    "cpu": "AMD Ryzen AI 5 340 w/ Radeon 840M",
+    "physical_cores": 6,
+    "logical_cores": 12,
+    "physical_memory_bytes": 16418648064,
+    "blas_threads": 1
+  },
+  "timing_limitations": "tracemalloc enabled; early runs overlapped regression tests; not an isolated efficiency benchmark",
+  "uncertainty": "Three seed values retained; conditional trajectory bootstrap for NLL/value MSE only. Seed ranges are descriptive. Zero-regret ceiling is not equivalence. No confirmatory p-values.",
+  "selection_predictions": 0,
+  "final_predictions": 0,
+  "no_model_baseline": {
+    "tic-tac-toe": {
+      "scheduled": 18,
+      "completed": 18,
+      "censored": 0,
+      "mean_regret": 0.0
+    },
+    "connect3": {
+      "scheduled": 2,
+      "completed": 2,
+      "censored": 0,
+      "mean_regret": 0.0
+    },
+    "reversi4": {
+      "scheduled": 24,
+      "completed": 24,
+      "censored": 0,
+      "mean_regret": 0.041666666666666664
+    },
+    "connect3-heldout": {
+      "scheduled": 24,
+      "completed": 24,
+      "censored": 0,
+      "mean_regret": 0.0
+    }
+  },
+  "checkpoints": [
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "8e9e07138382b6e4318978d433facc72aa754acf5ed383b5b075ea08e51fa6de",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "full",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 14.563350300013553,
+      "peak_tracemalloc_bytes": 16296410,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "872513f7fb3607445eeb5eab267ff0ead8c181ec652b52bd5264efb128c7b232"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "566d6c752284b245fead38639af59e0c22bc04bf81788cfd6ad828cffa45ed8f",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "h1",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 13.249118800013093,
+      "peak_tracemalloc_bytes": 16588922,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "d455e2e2c0f48313657f510063572a6cd51a92c4d610c0b48443f82650af2889"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "981ec0f3fc23dfade312c274f12a59f7478e3ec6ae10f24ff04d3e248f560b49",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "no-response",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 15.940201499994146,
+      "peak_tracemalloc_bytes": 16965962,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "26c00ca2b37735162ae9bd6f23afcb964b5dba1e91ce784872a67fa4d605a099"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "8b5658425e4ccd53814c0192436887926637bb5db1247747dac81dffd3d0cffb",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "no-var",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 18.638207300013164,
+      "peak_tracemalloc_bytes": 16296682,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "cd676ec63060aa17a61b59af79b3fb09ccf7ccefcd38b5a8b8430f97281114a0"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "231f3f3e3ce7379af43e42661b6530ae03a20bd5aadb4f52ed9c32a32ad2ab91",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "direct",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 8546
+      },
+      "seconds": 17.791570799978217,
+      "peak_tracemalloc_bytes": 16576146,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "2c2ba528785964444134d1095de80e127c79e7c1bd53893acd1cec88e6b67fd0"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "df844a0b22ece83628384467c29a5c198fa4347106035b7b4b1618081e7fddc0",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "decoded",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 20360
+      },
+      "seconds": 11.17593910000869,
+      "peak_tracemalloc_bytes": 16677298,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "6e7245f08db64ffb2dc713079f140209db03385cca96b7fbc2d98c6bf9f2107f"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "2eef0a7ce889376c67aa6de6a15055862e23970177f609c6e2ed5cc13b7bcc25",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 17,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 11.77405569999246,
+      "peak_tracemalloc_bytes": 16464466,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "137f657970328c1f3700d6b49e785beda6ab9e217ed5ea8b44291c8dc4648dd9"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "5680b8ff18901eb8e53ebcaa12e3f1e12ac830441713703ce02a77b57de75fdb",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "full",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 11.532556599995587,
+      "peak_tracemalloc_bytes": 16966858,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "96d7ff5208de729917c855754def96cf390c35a8345a4b2610a1c6147ddfd897"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "7eef292c0f5b55a20f96baf4f74e0c317abec864495d81cfd609118ecd6fe48c",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "h1",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 9.765946300001815,
+      "peak_tracemalloc_bytes": 16296682,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "969203251ce2737f4ed21909e68f9d4ed75c2c7d42b3fb3030c88596ceb7aee8"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "120298347fb2dafc486434804c7eea64b9948070e0ceee94aa1ef2ce0dd32323",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "no-response",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 12.535088600008748,
+      "peak_tracemalloc_bytes": 16576146,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "5513e706f32acf1858aa9c71a69b35a512b9011409d6fa97a9afaa20d7c67d9d"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "ec9f80dd9af95c74e0661ef88f8420bc256dc84ab42e39f7917c12489eac5154",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "no-var",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 10.907255500002066,
+      "peak_tracemalloc_bytes": 16678834,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "0ce8104358dbfdda3d48f5fb80e9a69b2d888c8f7a4f08179c3a4f4d7fb5ac1f"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "daaf25bdc1534e552eaaa965fdcf9b7cf977e64fbcd6a577320bdf252fa01a04",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "direct",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 8546
+      },
+      "seconds": 10.726839500013739,
+      "peak_tracemalloc_bytes": 16464466,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "44c8daee143de24ff3205228c690b012fbefeac3cc72f9398bc3cc1a5a74e6a6"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "ea95070d01a6cf2b4a12afb59be8fbca226ef1aa65b6099b23deed22bfd0b8cf",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "decoded",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 20360
+      },
+      "seconds": 10.003275399998529,
+      "peak_tracemalloc_bytes": 16966858,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "e5f9d1acfc4f4ee211f0e8bc52b5f566c7d5b4d7d023cb08113ce52bb9b679f2"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "2c6ab17e01149240be58966083ff4a14d88955ff21cc5b216632275ae7c81cd7",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 29,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 10.97170150000602,
+      "peak_tracemalloc_bytes": 16296682,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "612d6dfa6e135cb35781b5ff9171e1c780e0747d54f60f111b55f82a57284d51"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "7886335cac5709d391583a4caee9a4e5998e58af9542558ce6ac86d8fdc57bba",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "full",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 8.924353000009432,
+      "peak_tracemalloc_bytes": 16576146,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "5a57b54d57377021593adde1a99e093a8043276b1e8ef3cff90e444ad6919dc7"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "1c61d03d7a801ce396b3bca75793a8b151ba70d9c77a97dde036986f7e5db1ce",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "h1",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 11.859406500007026,
+      "peak_tracemalloc_bytes": 16678834,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "bf54e3cdd6af7a45f926457c46a8548f090faacb19d6d1963d53a6df1f728f62"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "76ba8c5f3ef07180982a09bfcc450f7f7bdabc9f47552c0c8d7f8e2c3789843b",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "no-response",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 9.60786720001488,
+      "peak_tracemalloc_bytes": 16464332,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "b0e00f1b4e99415895ac92b5c8906c66619820b36c7763e1d7fd21e442cada4c"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "50d6af0b2dc954eaf9238527ce49ad7336b73cdc3794f517d3a11365768a99f1",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "no-var",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 9.084492299996782,
+      "peak_tracemalloc_bytes": 16966724,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "41b86b2a8b6499c1e7016a614a2c88b08cbfa50c6f248663ec1545d148595a08"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "e68f050fb026d7fb1a20c9726f376a084a881e3d755a200ef3074f8932029ea5",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "direct",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 8546
+      },
+      "seconds": 8.84083939998527,
+      "peak_tracemalloc_bytes": 16296682,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "4d0a64978343fecd3a6622c754ab9095a8f7a94a4d6ef204791c61f799a17805"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "34e86ce4962a5a9ccca42b3621be015edb44cef4fd806551d38ab33471995c52",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "decoded",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 20360
+      },
+      "seconds": 13.33546249999199,
+      "peak_tracemalloc_bytes": 16576012,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "906e719ac5e0e86b681023acc4e17c529b7a50a8ba76f507f107ec71290742f4"
+    },
+    {
+      "status": "trained",
+      "identity": {
+        "source_sha256": "c22863ccaf6c1edacc115f7090e6294b1d280d441d3b5df70159acdec34578a2",
+        "dataset_fingerprint": "7430e1cd7204ca09c6c7b730e694282435a7e91bfc8e8938f2554563707584e8",
+        "config_sha256": "cb1e91accffad7d3b6ee3ad4453ce4ba5a10fbca85cf2d5278494968387eb433",
+        "epochs": 10,
+        "shuffle": "SeedSequence(seed,epoch); boundary-only resume",
+        "python": "3.11.9",
+        "numpy": "2.4.6"
+      },
+      "code_commit": "66ff9f27b25bc8d0bfc92628976a91c122724f87",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 43,
+        "latent": 32,
+        "learning_rate": 0.001,
+        "ema": 0.99,
+        "batch_size": 64
+      },
+      "epochs": 10,
+      "steps": 180,
+      "training_records": 1129,
+      "parameters": {
+        "allocated": 20360,
+        "active": 13826
+      },
+      "seconds": 9.979945300001418,
+      "peak_tracemalloc_bytes": 16678700,
+      "time_scope": "current attempt only; resumed attempts are not compute-comparable",
+      "resumed": false,
+      "history_complete": true,
+      "memory_scope": "Python/NumPy traced allocations; not process RSS",
+      "checkpoint_sha256": "5d7dc912903b92b04c8dd9e8079037f391b663269165d7048985c87626fe8cfa"
+    }
+  ],
+  "metrics": [
+    {
+      "variant": "full",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2194103213595546,
+        "policy_mrr": 0.5905555555555555,
+        "policy_top1": 0.36666666666666664,
+        "value_mse": 0.9195460301037649,
+        "effective_rank": 8.938893772101732,
+        "median_latent_std": 0.12253302990778708,
+        "latent_norm": 1.520612551897324,
+        "off_diagonal_covariance_rms": 0.00558072037198508,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.027346553182008723,
+        "h2_count": 19,
+        "h2_latent_mse": 0.032069776613839134,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0117422278353123,
+            1.4327523017238866
+          ],
+          "value_mse": [
+            0.6521257508225023,
+            1.2441671260889178
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0036295999598223716,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.004189300030702725,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2734869977901597,
+        "policy_mrr": 0.49186991869918695,
+        "policy_top1": 0.17073170731707318,
+        "value_mse": 0.9448642603089304,
+        "effective_rank": 8.604447676597433,
+        "median_latent_std": 0.13959399389282753,
+        "latent_norm": 1.7847328407422758,
+        "off_diagonal_covariance_rms": 0.008523640088698768,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.03411967503104226,
+        "h2_count": 30,
+        "h2_latent_mse": 0.03683389534712284,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.2105960245171927,
+            1.3551528608274512
+          ],
+          "value_mse": [
+            0.7515979270956875,
+            1.1527950328009442
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002734999870881438,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.000278900028206408,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4910482506765346,
+        "policy_mrr": 0.869198312236287,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7298456307076827,
+        "effective_rank": 9.961118819914153,
+        "median_latent_std": 0.1887910502897051,
+        "latent_norm": 1.856510937182671,
+        "off_diagonal_covariance_rms": 0.013060778929186865,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.03607996790256255,
+        "h2_count": 68,
+        "h2_latent_mse": 0.03756899461979241,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.39939256887610003,
+            0.5797293196605943
+          ],
+          "value_mse": [
+            0.36194613969411865,
+            1.088968857349119
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.004809399979421869,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.004906899994239211,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0985419942524746,
+        "policy_mrr": 0.6089331619537275,
+        "policy_top1": 0.34318766066838047,
+        "value_mse": 1.0725618392793685,
+        "effective_rank": 11.84135984198098,
+        "median_latent_std": 0.1341575642175488,
+        "latent_norm": 1.6195858876982356,
+        "off_diagonal_covariance_rms": 0.005598844490342984,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.037915002531304934,
+        "h2_count": 595,
+        "h2_latent_mse": 0.039538823441550776,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.061792969447323,
+            1.1341102680896606
+          ],
+          "value_mse": [
+            0.991244201829576,
+            1.1425481466911114
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.004158299998380244,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0037020999880041927,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2180429593060473,
+        "policy_mrr": 0.5633333333333332,
+        "policy_top1": 0.3,
+        "value_mse": 0.9223486747529442,
+        "effective_rank": 8.658997425792043,
+        "median_latent_std": 0.1307257432322933,
+        "latent_norm": 1.5096100256087535,
+        "off_diagonal_covariance_rms": 0.00619745899359621,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.03653710122087704,
+        "h2_count": 19,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0136843682484344,
+            1.4282970396296664
+          ],
+          "value_mse": [
+            0.6474271683336571,
+            1.2526556384540715
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0075233000388834625,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.008930400013923645,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.275735748066596,
+        "policy_mrr": 0.4959349593495935,
+        "policy_top1": 0.17073170731707318,
+        "value_mse": 0.945862036974994,
+        "effective_rank": 8.559109190561099,
+        "median_latent_std": 0.13760882833168092,
+        "latent_norm": 1.7624174643120518,
+        "off_diagonal_covariance_rms": 0.00877273023238019,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.03814748341424202,
+        "h2_count": 30,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.2104975595498624,
+            1.3613346630980252
+          ],
+          "value_mse": [
+            0.7490046259856166,
+            1.1527873366176213
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002340000355616212,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00027459999546408653,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4923842510443461,
+        "policy_mrr": 0.869198312236287,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7391842019135612,
+        "effective_rank": 9.405562898163907,
+        "median_latent_std": 0.19110423367315565,
+        "latent_norm": 1.8500622919266658,
+        "off_diagonal_covariance_rms": 0.014733933100164926,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.03158168870127804,
+        "h2_count": 68,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.40084931594752105,
+            0.5813302299839274
+          ],
+          "value_mse": [
+            0.36213409204090297,
+            1.1060593596760102
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.010313799924915656,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.125,
+        "nonzero_regret": 2,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.009052400011569262,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0984609012161768,
+        "policy_mrr": 0.6050771208226221,
+        "policy_top1": 0.3393316195372751,
+        "value_mse": 1.0824995468316323,
+        "effective_rank": 11.423118436239957,
+        "median_latent_std": 0.14142297952036334,
+        "latent_norm": 1.6296646618445407,
+        "off_diagonal_covariance_rms": 0.006165378898429721,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.047958993563221086,
+        "h2_count": 595,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0622490378999137,
+            1.1338305610715196
+          ],
+          "value_mse": [
+            1.0008429890705604,
+            1.15386746424773
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0063338000036310405,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.007567300024675205,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2194878125230992,
+        "policy_mrr": 0.5922222222222222,
+        "policy_top1": 0.36666666666666664,
+        "value_mse": 0.9200933541911345,
+        "effective_rank": 8.919935798636615,
+        "median_latent_std": 0.12213774304044561,
+        "latent_norm": 1.5208768716713492,
+        "off_diagonal_covariance_rms": 0.0055907857254895955,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.027878143060117783,
+        "h2_count": 19,
+        "h2_latent_mse": 0.02696367922073777,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0116754221684914,
+            1.4329338977613164
+          ],
+          "value_mse": [
+            0.6539489569066207,
+            1.2439485478733001
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.004259199893567711,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.004557099920930341,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2733254377523493,
+        "policy_mrr": 0.4878048780487805,
+        "policy_top1": 0.17073170731707318,
+        "value_mse": 0.9436429581025788,
+        "effective_rank": 8.589136809485801,
+        "median_latent_std": 0.13979185339709535,
+        "latent_norm": 1.795734338316222,
+        "off_diagonal_covariance_rms": 0.008524879435963835,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.03448170484343718,
+        "h2_count": 30,
+        "h2_latent_mse": 0.03197306531964265,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.2104105085439938,
+            1.3546337884951427
+          ],
+          "value_mse": [
+            0.7514748815231496,
+            1.1492921532523885
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002624999906402081,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00029960001120343804,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4914446085774616,
+        "policy_mrr": 0.869198312236287,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7289478288287373,
+        "effective_rank": 9.91061803486784,
+        "median_latent_std": 0.18992148056421854,
+        "latent_norm": 1.868478770206386,
+        "off_diagonal_covariance_rms": 0.013132504194829704,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.03717851173528721,
+        "h2_count": 68,
+        "h2_latent_mse": 0.0353666026984281,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.39982700041237895,
+            0.580246455818436
+          ],
+          "value_mse": [
+            0.362916131245258,
+            1.08679408470345
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.005586100014625117,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.005596300004981458,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0987985434478067,
+        "policy_mrr": 0.6086118251928021,
+        "policy_top1": 0.34318766066838047,
+        "value_mse": 1.0694581054673442,
+        "effective_rank": 11.816572975122748,
+        "median_latent_std": 0.13390510434932076,
+        "latent_norm": 1.6285491808612191,
+        "off_diagonal_covariance_rms": 0.005599979992374713,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.03793494959987941,
+        "h2_count": 595,
+        "h2_latent_mse": 0.034998380154884955,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0619615826875715,
+            1.1343105696434463
+          ],
+          "value_mse": [
+            0.9883558460983273,
+            1.1391639291187958
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.004428999993251637,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.005143000045791268,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2194103300956451,
+        "policy_mrr": 0.5905555555555555,
+        "policy_top1": 0.36666666666666664,
+        "value_mse": 0.9195460038628668,
+        "effective_rank": 8.938893426519789,
+        "median_latent_std": 0.12253303130945928,
+        "latent_norm": 1.520612675955444,
+        "off_diagonal_covariance_rms": 0.005580719965857934,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.0273465515179388,
+        "h2_count": 19,
+        "h2_latent_mse": 0.032069774219697464,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0117422454433196,
+            1.432752310632434
+          ],
+          "value_mse": [
+            0.6521257209593727,
+            1.2441671075745209
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.005177799990633503,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.004288300027837977,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2734869932962543,
+        "policy_mrr": 0.49186991869918695,
+        "policy_top1": 0.17073170731707318,
+        "value_mse": 0.9448642663070866,
+        "effective_rank": 8.604447499947895,
+        "median_latent_std": 0.13959399585936602,
+        "latent_norm": 1.7847328204684862,
+        "off_diagonal_covariance_rms": 0.008523639397501162,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.034119674320483746,
+        "h2_count": 30,
+        "h2_latent_mse": 0.03683389339780909,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.2105960205769546,
+            1.3551528572424785
+          ],
+          "value_mse": [
+            0.7515979136027712,
+            1.152795047108201
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002536000101827085,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.000314799981424585,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.49104824098017946,
+        "policy_mrr": 0.869198312236287,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7298456317132602,
+        "effective_rank": 9.961118376906164,
+        "median_latent_std": 0.18879105468757246,
+        "latent_norm": 1.8565109500666488,
+        "off_diagonal_covariance_rms": 0.013060777705389279,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.036079964942487774,
+        "h2_count": 68,
+        "h2_latent_mse": 0.037568991831684696,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.39939256031566045,
+            0.5797293125975305
+          ],
+          "value_mse": [
+            0.36194614408522163,
+            1.088968856867148
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0060140001005493104,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.006237399880774319,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.098541997066333,
+        "policy_mrr": 0.6089331619537275,
+        "policy_top1": 0.34318766066838047,
+        "value_mse": 1.0725618330291018,
+        "effective_rank": 11.841359393806115,
+        "median_latent_std": 0.13415756505011323,
+        "latent_norm": 1.6195859967069457,
+        "off_diagonal_covariance_rms": 0.005598844095135214,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.037915000795239115,
+        "h2_count": 595,
+        "h2_latent_mse": 0.03953882116871238,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.061792971486903,
+            1.1341102703523818
+          ],
+          "value_mse": [
+            0.9912441968617682,
+            1.1425481397566757
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.004163999896263704,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.004633799981093034,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.214583098729848,
+        "policy_mrr": 0.5922222222222222,
+        "policy_top1": 0.36666666666666664,
+        "value_mse": 0.9207271801958432,
+        "effective_rank": 8.939300526861166,
+        "median_latent_std": 0.12910725112138258,
+        "latent_norm": 1.4507021985139839,
+        "off_diagonal_covariance_rms": 0.006158538557799486,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": null,
+        "h2_count": 19,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0115654104292495,
+            1.4226491750273171
+          ],
+          "value_mse": [
+            0.6492845948125411,
+            1.2543005442220445
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0034732000494841486,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.003400399989914149,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2793948470932612,
+        "policy_mrr": 0.49593495934959353,
+        "policy_top1": 0.17073170731707318,
+        "value_mse": 0.9453132429620859,
+        "effective_rank": 8.412739318438598,
+        "median_latent_std": 0.14512353137830553,
+        "latent_norm": 1.591619968469818,
+        "off_diagonal_covariance_rms": 0.009626254200703642,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": null,
+        "h2_count": 30,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.2128587840147433,
+            1.3686642402047071
+          ],
+          "value_mse": [
+            0.7469711403421984,
+            1.1586472198788162
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00023960001999512315,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002497000095900148,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4898265038716474,
+        "policy_mrr": 0.871308016877637,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7304120588669333,
+        "effective_rank": 10.107970141743477,
+        "median_latent_std": 0.19496241239833872,
+        "latent_norm": 1.624063356476092,
+        "off_diagonal_covariance_rms": 0.014241450747138402,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": null,
+        "h2_count": 68,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.39883988650903096,
+            0.5789812665613647
+          ],
+          "value_mse": [
+            0.35989878131575326,
+            1.0917465271405697
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.00432650008588098,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0039975000254344195,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.1000635611506024,
+        "policy_mrr": 0.6098971722365037,
+        "policy_top1": 0.34704370179948585,
+        "value_mse": 1.0730465501451645,
+        "effective_rank": 11.74929250924275,
+        "median_latent_std": 0.14019172341946284,
+        "latent_norm": 1.4788267930906214,
+        "off_diagonal_covariance_rms": 0.006166851380683991,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": null,
+        "h2_count": 595,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0635466901690098,
+            1.1356261641598768
+          ],
+          "value_mse": [
+            0.9916900484865562,
+            1.1442319637397715
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002727300045080483,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002648700086865574,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2140515112266534,
+        "policy_mrr": 0.595,
+        "policy_top1": 0.36666666666666664,
+        "value_mse": 0.9193666207244342,
+        "effective_rank": 8.79943843207737,
+        "median_latent_std": 0.12507802240770183,
+        "latent_norm": 1.533852960652311,
+        "off_diagonal_covariance_rms": 0.005889889615434604,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.12121419629593264,
+        "h2_count": 19,
+        "h2_latent_mse": 0.12446103846231756,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.013780755756358,
+            1.4199832164390696
+          ],
+          "value_mse": [
+            0.649312417727185,
+            1.247013719587664
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002169899962609634,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0023347000242210925,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2752572843859986,
+        "policy_mrr": 0.5040650406504065,
+        "policy_top1": 0.1951219512195122,
+        "value_mse": 0.9464045461447872,
+        "effective_rank": 8.458648796220464,
+        "median_latent_std": 0.13916833808290452,
+        "latent_norm": 1.8887468344020975,
+        "off_diagonal_covariance_rms": 0.008633026006837243,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.21008131225189067,
+        "h2_count": 30,
+        "h2_latent_mse": 0.19820292993730843,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.208581883923893,
+            1.363130287720871
+          ],
+          "value_mse": [
+            0.7496693507373342,
+            1.157108953564315
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002010999887716025,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0001849000109359622,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4912439816546206,
+        "policy_mrr": 0.871308016877637,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7273637899676181,
+        "effective_rank": 9.835062658873296,
+        "median_latent_std": 0.18780106476671962,
+        "latent_norm": 1.9661900668421808,
+        "off_diagonal_covariance_rms": 0.013181462923382714,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.24141027521419225,
+        "h2_count": 68,
+        "h2_latent_mse": 0.22949824160098148,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4002162417340065,
+            0.5787985167234256
+          ],
+          "value_mse": [
+            0.36117488299499256,
+            1.085719611815254
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.002897499973187223,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.125,
+        "nonzero_regret": 2,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.00322850004886277,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0973000829438742,
+        "policy_mrr": 0.6120394173093402,
+        "policy_top1": 0.34832904884318766,
+        "value_mse": 1.0740144853402291,
+        "effective_rank": 11.577221335786305,
+        "median_latent_std": 0.13427706844087645,
+        "latent_norm": 1.6831676783607483,
+        "off_diagonal_covariance_rms": 0.005837748251586865,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.17555710860379242,
+        "h2_count": 595,
+        "h2_latent_mse": 0.16584587486320837,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0604285227107293,
+            1.1319597806930934
+          ],
+          "value_mse": [
+            0.9929553257170515,
+            1.1443016179116328
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0024357001238968223,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0026880000077653676,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 17,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2143414190907875,
+        "policy_mrr": 0.5922222222222222,
+        "policy_top1": 0.36666666666666664,
+        "value_mse": 0.9184114338415019,
+        "effective_rank": 8.926185118769663,
+        "median_latent_std": 0.12935357535593134,
+        "latent_norm": 1.447465967588602,
+        "off_diagonal_covariance_rms": 0.006132227846330923,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.08760563029396673,
+        "h2_count": 19,
+        "h2_latent_mse": 0.09296996399994344,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0102292332454972,
+            1.422059577755621
+          ],
+          "value_mse": [
+            0.6470630399711095,
+            1.2510919375813032
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002601899905130267,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0024894999514799565,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 17,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2792074734180123,
+        "policy_mrr": 0.49593495934959353,
+        "policy_top1": 0.17073170731707318,
+        "value_mse": 0.9461851161546131,
+        "effective_rank": 8.400636039672568,
+        "median_latent_std": 0.14558640601958417,
+        "latent_norm": 1.586814283663122,
+        "off_diagonal_covariance_rms": 0.009624010412431909,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.12123596596029135,
+        "h2_count": 30,
+        "h2_latent_mse": 0.11564185435734291,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.2132221662492904,
+            1.367719738111375
+          ],
+          "value_mse": [
+            0.7455584021545297,
+            1.1627484227955234
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00015140001778490841,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00018080000882036984,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 17,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4899344980282197,
+        "policy_mrr": 0.871308016877637,
+        "policy_top1": 0.759493670886076,
+        "value_mse": 0.7308443553075679,
+        "effective_rank": 10.100273059487535,
+        "median_latent_std": 0.19458083994319758,
+        "latent_norm": 1.6296873096849451,
+        "off_diagonal_covariance_rms": 0.014150086845091671,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.13108395815962032,
+        "h2_count": 68,
+        "h2_latent_mse": 0.11886036538786797,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.3994691986747457,
+            0.5789045484460694
+          ],
+          "value_mse": [
+            0.35903364978855906,
+            1.0932094790186662
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0029187000181991607,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0031039999739732593,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 17,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.099643241436091,
+        "policy_mrr": 0.6089331619537275,
+        "policy_top1": 0.3444730077120823,
+        "value_mse": 1.0759907408968425,
+        "effective_rank": 11.741574126237374,
+        "median_latent_std": 0.1380997877334144,
+        "latent_norm": 1.4667097742384165,
+        "off_diagonal_covariance_rms": 0.006139154092958762,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.10339558836994275,
+        "h2_count": 595,
+        "h2_latent_mse": 0.09548573864806538,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.062899793922253,
+            1.1348479883054479
+          ],
+          "value_mse": [
+            0.9945367649560232,
+            1.147125233620553
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002361299906624481,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0024068998463917524,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2486214486641962,
+        "policy_mrr": 0.5272222222222223,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9387933033017934,
+        "effective_rank": 8.26833932585851,
+        "median_latent_std": 0.12511775230920524,
+        "latent_norm": 1.519954790043365,
+        "off_diagonal_covariance_rms": 0.006318782319583935,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.03416321698721506,
+        "h2_count": 19,
+        "h2_latent_mse": 0.0358879367928794,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0273602150460375,
+            1.471799437041992
+          ],
+          "value_mse": [
+            0.6274382653789398,
+            1.321688749168162
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0022877000155858696,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002411600056802854,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2548654978101914,
+        "policy_mrr": 0.524390243902439,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9535044152361657,
+        "effective_rank": 10.335141151236813,
+        "median_latent_std": 0.12992188868293028,
+        "latent_norm": 1.8342126342420846,
+        "off_diagonal_covariance_rms": 0.005904632989234378,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.02911520776470801,
+        "h2_count": 30,
+        "h2_latent_mse": 0.034293993968357646,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1845311946710282,
+            1.3526698035885514
+          ],
+          "value_mse": [
+            0.7281504416492769,
+            1.208107733107585
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014410002040676773,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00015999999595806003,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.5087149730991402,
+        "policy_mrr": 0.8248945147679325,
+        "policy_top1": 0.6835443037974683,
+        "value_mse": 0.7313126514874458,
+        "effective_rank": 9.035849788843352,
+        "median_latent_std": 0.18347869517777488,
+        "latent_norm": 1.9301403075501606,
+        "off_diagonal_covariance_rms": 0.014278007888052974,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.040030738091730286,
+        "h2_count": 68,
+        "h2_latent_mse": 0.04194635391709588,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.41223628227008285,
+            0.5998050112643356
+          ],
+          "value_mse": [
+            0.3513462061269927,
+            1.115067503571799
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0029072999313939363,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.125,
+        "nonzero_regret": 2,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0030736999469809234,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0924684953421322,
+        "policy_mrr": 0.6188946015424165,
+        "policy_top1": 0.36503856041131105,
+        "value_mse": 1.0536163226949316,
+        "effective_rank": 12.091565998339892,
+        "median_latent_std": 0.1319689571614326,
+        "latent_norm": 1.668014771291399,
+        "off_diagonal_covariance_rms": 0.005154187611551521,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.035958640653764896,
+        "h2_count": 595,
+        "h2_latent_mse": 0.04134526540679091,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0552187832154905,
+            1.1288913437979886
+          ],
+          "value_mse": [
+            0.9583486853645755,
+            1.133940837003999
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0023746000952087343,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0023672000388614833,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2494004327651083,
+        "policy_mrr": 0.53,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9363598921122338,
+        "effective_rank": 8.209942057608687,
+        "median_latent_std": 0.12623515708211125,
+        "latent_norm": 1.4481986135398408,
+        "off_diagonal_covariance_rms": 0.006657860274303702,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.03412768263588443,
+        "h2_count": 19,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0254256528518255,
+            1.4732540455761065
+          ],
+          "value_mse": [
+            0.6270393921091479,
+            1.3203113852550021
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.00248910000664182,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002930900052888319,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2569381604579826,
+        "policy_mrr": 0.5121951219512195,
+        "policy_top1": 0.21951219512195122,
+        "value_mse": 0.9519368623490916,
+        "effective_rank": 10.20821761291199,
+        "median_latent_std": 0.13535112768203142,
+        "latent_norm": 1.720366654730347,
+        "off_diagonal_covariance_rms": 0.006396882366861754,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.029891789599721275,
+        "h2_count": 30,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1853926635135754,
+            1.3553942253194498
+          ],
+          "value_mse": [
+            0.7201353760253084,
+            1.2092699576319001
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0001456999743822962,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00016369999502785504,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.5077244130932499,
+        "policy_mrr": 0.820675105485232,
+        "policy_top1": 0.6708860759493671,
+        "value_mse": 0.7379216764753772,
+        "effective_rank": 8.85185901134287,
+        "median_latent_std": 0.19134958331664198,
+        "latent_norm": 1.834539330006499,
+        "off_diagonal_covariance_rms": 0.01570768234333195,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.0310260236788365,
+        "h2_count": 68,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.41185021552776657,
+            0.5981240851329359
+          ],
+          "value_mse": [
+            0.3500241679351877,
+            1.1295644244211258
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.003377799963345751,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0035771999682765454,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.093454674448638,
+        "policy_mrr": 0.6213581833761782,
+        "policy_top1": 0.37017994858611825,
+        "value_mse": 1.0566207453370995,
+        "effective_rank": 11.977487587095363,
+        "median_latent_std": 0.13404751671075799,
+        "latent_norm": 1.5906539883969282,
+        "off_diagonal_covariance_rms": 0.005516525532954905,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.03762614843551577,
+        "h2_count": 595,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.056143402594406,
+            1.1299430598036133
+          ],
+          "value_mse": [
+            0.9621216285388949,
+            1.135941450611217
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.00247269996907562,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0025922999484464526,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.248963574718917,
+        "policy_mrr": 0.5272222222222223,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9389548979688993,
+        "effective_rank": 8.25980095059091,
+        "median_latent_std": 0.12487749397112141,
+        "latent_norm": 1.5257679639123574,
+        "off_diagonal_covariance_rms": 0.006329682485472908,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.03459559920460795,
+        "h2_count": 19,
+        "h2_latent_mse": 0.032068529522740766,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.027560130316322,
+            1.4724624251463851
+          ],
+          "value_mse": [
+            0.6275499366096258,
+            1.3217507231170829
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021945000044070184,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0023108999303076416,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2547606326579517,
+        "policy_mrr": 0.5121951219512195,
+        "policy_top1": 0.21951219512195122,
+        "value_mse": 0.953665136964931,
+        "effective_rank": 10.320077420310838,
+        "median_latent_std": 0.1301786049211262,
+        "latent_norm": 1.842473088336901,
+        "off_diagonal_covariance_rms": 0.0059174786205521464,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.02952131548593569,
+        "h2_count": 30,
+        "h2_latent_mse": 0.030256950540989216,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1843057964298072,
+            1.3527422134119897
+          ],
+          "value_mse": [
+            0.7286529068059919,
+            1.2091113917043244
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0001503000094089657,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00016870000399649143,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.5086940006149587,
+        "policy_mrr": 0.8248945147679325,
+        "policy_top1": 0.6835443037974683,
+        "value_mse": 0.7297215362853398,
+        "effective_rank": 9.011567208498896,
+        "median_latent_std": 0.18350586583265283,
+        "latent_norm": 1.939126402668699,
+        "off_diagonal_covariance_rms": 0.014330513046231338,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.041291245932585235,
+        "h2_count": 68,
+        "h2_latent_mse": 0.040088022095375535,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.41245695317053616,
+            0.5997982349472375
+          ],
+          "value_mse": [
+            0.3514547318675686,
+            1.1120077365184353
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0031744999869260937,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.08333333333333333,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.003611099993577227,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0926458956260108,
+        "policy_mrr": 0.6191088260497001,
+        "policy_top1": 0.36503856041131105,
+        "value_mse": 1.0522728136918513,
+        "effective_rank": 12.079584094812216,
+        "median_latent_std": 0.13158393269707508,
+        "latent_norm": 1.6765845927424559,
+        "off_diagonal_covariance_rms": 0.005153401485871505,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.03635688358927026,
+        "h2_count": 595,
+        "h2_latent_mse": 0.038189055089289096,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0553708332734224,
+            1.1290291920601856
+          ],
+          "value_mse": [
+            0.9571520828183157,
+            1.1325561027525897
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002367200155276805,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0023363000946119428,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2486214761793861,
+        "policy_mrr": 0.5272222222222223,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.938793304387238,
+        "effective_rank": 8.268338105834921,
+        "median_latent_std": 0.12511775662741303,
+        "latent_norm": 1.5199551177635533,
+        "off_diagonal_covariance_rms": 0.006318781578797892,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.034163210101995446,
+        "h2_count": 19,
+        "h2_latent_mse": 0.03588793018099975,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0273602775914605,
+            1.47179942653088
+          ],
+          "value_mse": [
+            0.6274382526947511,
+            1.3216887790023994
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.006757800030754879,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.007886799983680248,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2548654799655803,
+        "policy_mrr": 0.524390243902439,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9535044072974086,
+        "effective_rank": 10.335143639572168,
+        "median_latent_std": 0.1299218495394857,
+        "latent_norm": 1.8342132507973627,
+        "off_diagonal_covariance_rms": 0.005904626921842367,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.02911519533954113,
+        "h2_count": 30,
+        "h2_latent_mse": 0.03429398553485871,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1845311814397002,
+            1.352669744267677
+          ],
+          "value_mse": [
+            0.728150445460496,
+            1.2081077159664204
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00027520000003278255,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0005851000023540109,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.5087149545948677,
+        "policy_mrr": 0.8248945147679325,
+        "policy_top1": 0.6835443037974683,
+        "value_mse": 0.7313126448981533,
+        "effective_rank": 9.035846744514203,
+        "median_latent_std": 0.1834787086901276,
+        "latent_norm": 1.930141393062892,
+        "off_diagonal_covariance_rms": 0.014278003524999616,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.04003071787152171,
+        "h2_count": 68,
+        "h2_latent_mse": 0.04194634034384631,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4122362334027088,
+            0.5998049958524114
+          ],
+          "value_mse": [
+            0.35134620426477053,
+            1.1150674874630593
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.009901300014462322,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.125,
+        "nonzero_regret": 2,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.010358099912991747,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0924684980588037,
+        "policy_mrr": 0.6188946015424165,
+        "policy_top1": 0.36503856041131105,
+        "value_mse": 1.053616323431319,
+        "effective_rank": 12.09156424193138,
+        "median_latent_std": 0.13196895530863145,
+        "latent_norm": 1.6680152586938077,
+        "off_diagonal_covariance_rms": 0.005154186028480043,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.03595863292163098,
+        "h2_count": 595,
+        "h2_latent_mse": 0.041345257887573164,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0552187915799447,
+            1.128891349045348
+          ],
+          "value_mse": [
+            0.9583486832559275,
+            1.133940840673279
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0049801000277511775,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.005999499873723835,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.253936525271972,
+        "policy_mrr": 0.53,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9437083521056497,
+        "effective_rank": 8.327472437259704,
+        "median_latent_std": 0.13016280037996852,
+        "latent_norm": 1.3243907868034486,
+        "off_diagonal_covariance_rms": 0.006907590345759187,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": null,
+        "h2_count": 19,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0258417151217671,
+            1.4818721644139232
+          ],
+          "value_mse": [
+            0.6333676032734965,
+            1.3265852610308733
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0027251999999862164,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0026625999889802188,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2676078818926009,
+        "policy_mrr": 0.5121951219512195,
+        "policy_top1": 0.21951219512195122,
+        "value_mse": 0.953229091556363,
+        "effective_rank": 10.090545081887415,
+        "median_latent_std": 0.14171018170579763,
+        "latent_norm": 1.3769164959880589,
+        "off_diagonal_covariance_rms": 0.007276238997480374,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": null,
+        "h2_count": 30,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1982798306925377,
+            1.3623399069470472
+          ],
+          "value_mse": [
+            0.7244976974704729,
+            1.21234332002268
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00025889999233186245,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00027129999944008887,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.5049011487826763,
+        "policy_mrr": 0.8238396624472574,
+        "policy_top1": 0.6835443037974683,
+        "value_mse": 0.7313549570219545,
+        "effective_rank": 9.244327147685064,
+        "median_latent_std": 0.19899995434387513,
+        "latent_norm": 1.543066927258465,
+        "off_diagonal_covariance_rms": 0.016106937366773825,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": null,
+        "h2_count": 68,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.41313027224690435,
+            0.5961281329823935
+          ],
+          "value_mse": [
+            0.3468628863227778,
+            1.1193486436468854
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0041942999814637005,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0036835999344475567,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0937711028069204,
+        "policy_mrr": 0.6254284490145672,
+        "policy_top1": 0.37532133676092544,
+        "value_mse": 1.0552519735374926,
+        "effective_rank": 12.180377318261435,
+        "median_latent_std": 0.13807866447770933,
+        "latent_norm": 1.3732844384060268,
+        "off_diagonal_covariance_rms": 0.005765623075394939,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": null,
+        "h2_count": 595,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0562275582904779,
+            1.129983505865159
+          ],
+          "value_mse": [
+            0.9591930526191477,
+            1.136422743000532
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0025350000069011003,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0026524999702814966,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2522672280354503,
+        "policy_mrr": 0.5272222222222223,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9437013087561961,
+        "effective_rank": 8.36620918018217,
+        "median_latent_std": 0.12880834521306758,
+        "latent_norm": 1.4953245764857257,
+        "off_diagonal_covariance_rms": 0.006399936863828891,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.14311712755686976,
+        "h2_count": 19,
+        "h2_latent_mse": 0.14078518223981462,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.026209687827916,
+            1.480499100586578
+          ],
+          "value_mse": [
+            0.6335278442851006,
+            1.328137687622265
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021932000818196684,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002707200008444488,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2627947024656798,
+        "policy_mrr": 0.5101626016260162,
+        "policy_top1": 0.21951219512195122,
+        "value_mse": 0.9538010985847306,
+        "effective_rank": 10.33720432409081,
+        "median_latent_std": 0.13351917824932652,
+        "latent_norm": 1.7776178135782421,
+        "off_diagonal_covariance_rms": 0.006128947755592314,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.2621594981155928,
+        "h2_count": 30,
+        "h2_latent_mse": 0.27310905510290984,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.190201053196946,
+            1.363923284096848
+          ],
+          "value_mse": [
+            0.7297400760920745,
+            1.2069168072719874
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014459999511018395,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00016429999959655106,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.5071426884473659,
+        "policy_mrr": 0.8175105485232067,
+        "policy_top1": 0.6708860759493671,
+        "value_mse": 0.7313064570917408,
+        "effective_rank": 8.949465117169101,
+        "median_latent_std": 0.18999790075996986,
+        "latent_norm": 1.9489075111493486,
+        "off_diagonal_covariance_rms": 0.014664282465370241,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.2788513425110261,
+        "h2_count": 68,
+        "h2_latent_mse": 0.28421313160104583,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4144630233114389,
+            0.5978858039296795
+          ],
+          "value_mse": [
+            0.3490356242576669,
+            1.1170888994640606
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0029542000556830317,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.002967200009152293,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.09494999875602,
+        "policy_mrr": 0.6213581833761782,
+        "policy_top1": 0.36889460154241643,
+        "value_mse": 1.0531538955197113,
+        "effective_rank": 12.178325663311313,
+        "median_latent_std": 0.13152808811664662,
+        "latent_norm": 1.6640632812304061,
+        "off_diagonal_covariance_rms": 0.005249186003055431,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.18658317364559218,
+        "h2_count": 595,
+        "h2_latent_mse": 0.1927576903170326,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0569848776588706,
+            1.1313716416262467
+          ],
+          "value_mse": [
+            0.9573400818902054,
+            1.1334869314891183
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002321200037840754,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0025728000327944756,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 29,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2530151078120468,
+        "policy_mrr": 0.53,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.943802287192837,
+        "effective_rank": 8.335281502514134,
+        "median_latent_std": 0.13036629560354102,
+        "latent_norm": 1.3249473803744654,
+        "off_diagonal_covariance_rms": 0.006847326491527847,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.09007643447943596,
+        "h2_count": 19,
+        "h2_latent_mse": 0.09144620635153884,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.025800652436633,
+            1.4806972651435546
+          ],
+          "value_mse": [
+            0.6337891828104989,
+            1.326601622647108
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021072999807074666,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021999999589752406,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 29,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2672816276032672,
+        "policy_mrr": 0.516260162601626,
+        "policy_top1": 0.21951219512195122,
+        "value_mse": 0.9533902076275241,
+        "effective_rank": 10.171568818753984,
+        "median_latent_std": 0.14092141671564912,
+        "latent_norm": 1.364120770656993,
+        "off_diagonal_covariance_rms": 0.007198375589286174,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.10625254573782478,
+        "h2_count": 30,
+        "h2_latent_mse": 0.11567183448334006,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1982967505995241,
+            1.3627310126053502
+          ],
+          "value_mse": [
+            0.7239897879733088,
+            1.212158040788523
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014620000729337335,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00016289995983242989,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 29,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.504940184577639,
+        "policy_mrr": 0.8238396624472574,
+        "policy_top1": 0.6835443037974683,
+        "value_mse": 0.7321297210143223,
+        "effective_rank": 9.27026317365358,
+        "median_latent_std": 0.19980860256535385,
+        "latent_norm": 1.5395167053126173,
+        "off_diagonal_covariance_rms": 0.016027448671072295,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.11346940904507585,
+        "h2_count": 68,
+        "h2_latent_mse": 0.12244239420463207,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4120616242746994,
+            0.5967490851020868
+          ],
+          "value_mse": [
+            0.34728042018505945,
+            1.1203351915659026
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.002735800080699846,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.002886400034185499,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 29,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0942639274847468,
+        "policy_mrr": 0.6225364181662382,
+        "policy_top1": 0.37017994858611825,
+        "value_mse": 1.055887244939655,
+        "effective_rank": 12.18780813805368,
+        "median_latent_std": 0.1388340014331314,
+        "latent_norm": 1.3625713239204396,
+        "off_diagonal_covariance_rms": 0.005756819718958695,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.09599808930199362,
+        "h2_count": 595,
+        "h2_latent_mse": 0.10259687185093254,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0564665516685336,
+            1.13046576972428
+          ],
+          "value_mse": [
+            0.9598097446821949,
+            1.1372394849758942
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002131499903043732,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002280200074892491,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2720198581024973,
+        "policy_mrr": 0.5549999999999999,
+        "policy_top1": 0.3,
+        "value_mse": 0.940957394421068,
+        "effective_rank": 8.40351382345279,
+        "median_latent_std": 0.12861109749922078,
+        "latent_norm": 1.636198759618864,
+        "off_diagonal_covariance_rms": 0.006230408055157996,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.02578431409054116,
+        "h2_count": 19,
+        "h2_latent_mse": 0.028303770900704923,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.042449568687716,
+            1.4943164599321037
+          ],
+          "value_mse": [
+            0.6660385395157333,
+            1.2825625047482538
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0020865000842604786,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0022745000605937093,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2792998238089084,
+        "policy_mrr": 0.5264227642276422,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9607327918036889,
+        "effective_rank": 10.533096886750464,
+        "median_latent_std": 0.12701641742129338,
+        "latent_norm": 1.790808061385301,
+        "off_diagonal_covariance_rms": 0.0056087066470246,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.02576556235718423,
+        "h2_count": 30,
+        "h2_latent_mse": 0.026507880248205475,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.17040257137375,
+            1.4210029580861696
+          ],
+          "value_mse": [
+            0.7579993702132597,
+            1.204556539097496
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00015570002142339945,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00018099998123943806,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4978093139784079,
+        "policy_mrr": 0.8417721518987342,
+        "policy_top1": 0.7088607594936709,
+        "value_mse": 0.7346566504892276,
+        "effective_rank": 8.573556785843172,
+        "median_latent_std": 0.19259892398714037,
+        "latent_norm": 1.950627865784851,
+        "off_diagonal_covariance_rms": 0.015069094885883268,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.03541630436004355,
+        "h2_count": 68,
+        "h2_latent_mse": 0.03861066832297884,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4088353662465342,
+            0.5769860756205331
+          ],
+          "value_mse": [
+            0.37501014741198785,
+            1.0917372691067357
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0027385000430513173,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.00287730002310127,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0943955026718988,
+        "policy_mrr": 0.6071122536418166,
+        "policy_top1": 0.3380462724935733,
+        "value_mse": 1.0642059817803284,
+        "effective_rank": 11.730533178157394,
+        "median_latent_std": 0.12876794907613542,
+        "latent_norm": 1.6973481400892143,
+        "off_diagonal_covariance_rms": 0.005132828423776819,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.030774227160885095,
+        "h2_count": 595,
+        "h2_latent_mse": 0.03081712201372025,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0588123234232576,
+            1.1282837899228397
+          ],
+          "value_mse": [
+            0.967073653211506,
+            1.1480971900600465
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.00223590005771257,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002319999970495701,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2707444487680215,
+        "policy_mrr": 0.5561111111111111,
+        "policy_top1": 0.3,
+        "value_mse": 0.9389834250548291,
+        "effective_rank": 8.210813245541877,
+        "median_latent_std": 0.12579566490641841,
+        "latent_norm": 1.575720067028811,
+        "off_diagonal_covariance_rms": 0.0065900114567005895,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.02819185008375843,
+        "h2_count": 19,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0416905730882122,
+            1.4893017123332688
+          ],
+          "value_mse": [
+            0.6538128080178695,
+            1.2912343779392914
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021754000626970083,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0024535999400541186,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2754706772533935,
+        "policy_mrr": 0.5304878048780488,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9573593946155925,
+        "effective_rank": 10.601069394377102,
+        "median_latent_std": 0.13029933793662962,
+        "latent_norm": 1.658179447030393,
+        "off_diagonal_covariance_rms": 0.005795315001600762,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.02689144995410386,
+        "h2_count": 30,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1643575632340002,
+            1.4157288827689096
+          ],
+          "value_mse": [
+            0.740552958242488,
+            1.2103501803283994
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0001453999720979482,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0001632999919820577,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4971649700185529,
+        "policy_mrr": 0.8417721518987342,
+        "policy_top1": 0.7088607594936709,
+        "value_mse": 0.7374992160668852,
+        "effective_rank": 8.463625523969979,
+        "median_latent_std": 0.19651185181639094,
+        "latent_norm": 1.776944568430458,
+        "off_diagonal_covariance_rms": 0.01659121216354723,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.029786220484680524,
+        "h2_count": 68,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4087380347650218,
+            0.57584636675349
+          ],
+          "value_mse": [
+            0.3735983240626597,
+            1.0980989446256946
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0027246000827290118,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.125,
+        "nonzero_regret": 2,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0030443999858107418,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "h1",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0936722838449664,
+        "policy_mrr": 0.6110754070265638,
+        "policy_top1": 0.34832904884318766,
+        "value_mse": 1.0684939802791287,
+        "effective_rank": 11.468444961621472,
+        "median_latent_std": 0.13443953014751525,
+        "latent_norm": 1.6173096416838435,
+        "off_diagonal_covariance_rms": 0.005511986285821056,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.030731394580201434,
+        "h2_count": 595,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0583935284683643,
+            1.127519005928781
+          ],
+          "value_mse": [
+            0.9690936248459017,
+            1.1552946641672066
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002351200004341081,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0026993000938091427,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2718787188490432,
+        "policy_mrr": 0.556111111111111,
+        "policy_top1": 0.3,
+        "value_mse": 0.9409053050557293,
+        "effective_rank": 8.398646996711996,
+        "median_latent_std": 0.1278452185513465,
+        "latent_norm": 1.6410965203165593,
+        "off_diagonal_covariance_rms": 0.00623689518427072,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.02633346622824343,
+        "h2_count": 19,
+        "h2_latent_mse": 0.026234260565050956,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0422011127435462,
+            1.4939595512509016
+          ],
+          "value_mse": [
+            0.6692566225323326,
+            1.278088803249647
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0020779000769834965,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0023250000085681677,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2790323006307263,
+        "policy_mrr": 0.5304878048780488,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9612337897548963,
+        "effective_rank": 10.50698812765758,
+        "median_latent_std": 0.1270525844090985,
+        "latent_norm": 1.7890235270099473,
+        "off_diagonal_covariance_rms": 0.00564274907823219,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.026369322832103456,
+        "h2_count": 30,
+        "h2_latent_mse": 0.025290919576281382,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1707563938049188,
+            1.4205106787037378
+          ],
+          "value_mse": [
+            0.7601812008219615,
+            1.2019075059670103
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014399999054148793,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00020619999850168824,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.49799957571411146,
+        "policy_mrr": 0.8417721518987342,
+        "policy_top1": 0.7088607594936709,
+        "value_mse": 0.735602644745323,
+        "effective_rank": 8.561864780829959,
+        "median_latent_std": 0.19199551348988175,
+        "latent_norm": 1.9487353313307478,
+        "off_diagonal_covariance_rms": 0.015116137797113372,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.03602487466712936,
+        "h2_count": 68,
+        "h2_latent_mse": 0.037128475714605376,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.40869900298455564,
+            0.5774262170708292
+          ],
+          "value_mse": [
+            0.3782646728308804,
+            1.0899591276358258
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.002749100123764947,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.08333333333333333,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0028905000945087522,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "no-response",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0943536353401904,
+        "policy_mrr": 0.6081833761782347,
+        "policy_top1": 0.3393316195372751,
+        "value_mse": 1.062172369934366,
+        "effective_rank": 11.732418158382693,
+        "median_latent_std": 0.1287902848288926,
+        "latent_norm": 1.7017555935489173,
+        "off_diagonal_covariance_rms": 0.005138139800865129,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.03148577658470028,
+        "h2_count": 595,
+        "h2_latent_mse": 0.028980594398813907,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0587753673347389,
+            1.1281184042595616
+          ],
+          "value_mse": [
+            0.9653632695159969,
+            1.145312958617514
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002177400019718334,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0023050999734550714,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.272019835709821,
+        "policy_mrr": 0.5549999999999999,
+        "policy_top1": 0.3,
+        "value_mse": 0.9409573884874238,
+        "effective_rank": 8.403508555465743,
+        "median_latent_std": 0.1286110949314613,
+        "latent_norm": 1.6362016337453353,
+        "off_diagonal_covariance_rms": 0.006230405929143513,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.025784302034995155,
+        "h2_count": 19,
+        "h2_latent_mse": 0.02830376208564249,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0424494003875984,
+            1.494316561442372
+          ],
+          "value_mse": [
+            0.6660385211086729,
+            1.282562539658802
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021104000334162265,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002342600026167929,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2792999531161715,
+        "policy_mrr": 0.5264227642276422,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9607328209977246,
+        "effective_rank": 10.533093915050987,
+        "median_latent_std": 0.12701641156910254,
+        "latent_norm": 1.7908128891690747,
+        "off_diagonal_covariance_rms": 0.005608699324124722,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.025765540915883078,
+        "h2_count": 30,
+        "h2_latent_mse": 0.026507855729061724,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1704028324689524,
+            1.4210030531021005
+          ],
+          "value_mse": [
+            0.7579993816486339,
+            1.2045566167375377
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0001422999775968492,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00016020002658478916,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4978093114338549,
+        "policy_mrr": 0.8417721518987342,
+        "policy_top1": 0.7088607594936709,
+        "value_mse": 0.7346566345153175,
+        "effective_rank": 8.573552412755461,
+        "median_latent_std": 0.19259896500503448,
+        "latent_norm": 1.9506326146255304,
+        "off_diagonal_covariance_rms": 0.015069071524107315,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.035416272432787395,
+        "h2_count": 68,
+        "h2_latent_mse": 0.03861063902141243,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4088353366948655,
+            0.5769860493234705
+          ],
+          "value_mse": [
+            0.3750101407681549,
+            1.091737242167041
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0028371000080369413,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0028362000302877277,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "no-var",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0943954801225446,
+        "policy_mrr": 0.6071122536418166,
+        "policy_top1": 0.3380462724935733,
+        "value_mse": 1.0642059666795305,
+        "effective_rank": 11.730524342102003,
+        "median_latent_std": 0.1287678351249927,
+        "latent_norm": 1.6973523298330027,
+        "off_diagonal_covariance_rms": 0.005132825553737099,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.030774215605364957,
+        "h2_count": 595,
+        "h2_latent_mse": 0.03081711477631208,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.058812301424641,
+            1.1282837794380236
+          ],
+          "value_mse": [
+            0.9670736367152223,
+            1.1480971732679333
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002122499921824783,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.002281499997479841,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2738608347319562,
+        "policy_mrr": 0.545,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9423803523799497,
+        "effective_rank": 8.364758945900943,
+        "median_latent_std": 0.1303447424149427,
+        "latent_norm": 1.5174487426797647,
+        "off_diagonal_covariance_rms": 0.006749106001261151,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": null,
+        "h2_count": 19,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.043732147920092,
+            1.4943807681741812
+          ],
+          "value_mse": [
+            0.6695944078479348,
+            1.282197566961582
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0021713000314775854,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.0020817999029532075,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2754106194589678,
+        "policy_mrr": 0.5223577235772358,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9631838471656414,
+        "effective_rank": 10.551173222194516,
+        "median_latent_std": 0.13642007963607417,
+        "latent_norm": 1.5378293387302795,
+        "off_diagonal_covariance_rms": 0.00626938579340277,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": null,
+        "h2_count": 30,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1658211378330565,
+            1.4185375839801917
+          ],
+          "value_mse": [
+            0.7579762493537435,
+            1.207458997024082
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014559997362084687,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014570000348612666,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.497050439983291,
+        "policy_mrr": 0.831223628691983,
+        "policy_top1": 0.6962025316455697,
+        "value_mse": 0.7361803193225478,
+        "effective_rank": 8.709253299713385,
+        "median_latent_std": 0.1998354429098385,
+        "latent_norm": 1.6791983354004416,
+        "off_diagonal_covariance_rms": 0.016760199801796414,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": null,
+        "h2_count": 68,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4090974604284168,
+            0.5765433249278744
+          ],
+          "value_mse": [
+            0.37592641842266145,
+            1.0927501671091087
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0028553999436553568,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0029605000163428485,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "direct",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0936268652491206,
+        "policy_mrr": 0.6063624678663239,
+        "policy_top1": 0.34190231362467866,
+        "value_mse": 1.0632726366032652,
+        "effective_rank": 11.903985848327718,
+        "median_latent_std": 0.13293705567833933,
+        "latent_norm": 1.5625367358618378,
+        "off_diagonal_covariance_rms": 0.005428161933364029,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": null,
+        "h2_count": 595,
+        "h2_latent_mse": null,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0590050795707788,
+            1.1272484348878935
+          ],
+          "value_mse": [
+            0.9661019127799804,
+            1.1469245359084483
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.003078499954426661,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0022416000720113516,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2723602930236781,
+        "policy_mrr": 0.5394444444444443,
+        "policy_top1": 0.26666666666666666,
+        "value_mse": 0.9420262103795639,
+        "effective_rank": 8.311298983562391,
+        "median_latent_std": 0.1287454091391603,
+        "latent_norm": 1.5771229298141374,
+        "off_diagonal_covariance_rms": 0.006491633954259089,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.16383810749609137,
+        "h2_count": 19,
+        "h2_latent_mse": 0.17391249157899702,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0422107613431633,
+            1.4964517543094544
+          ],
+          "value_mse": [
+            0.6645096651359671,
+            1.2888037958997098
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.004121399892028421,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.004631299991160631,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2808057716676082,
+        "policy_mrr": 0.5264227642276422,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.963160829409427,
+        "effective_rank": 10.54967537919762,
+        "median_latent_std": 0.13408387014518802,
+        "latent_norm": 1.7324696046123134,
+        "off_diagonal_covariance_rms": 0.005799282333130947,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.24041728526778572,
+        "h2_count": 30,
+        "h2_latent_mse": 0.24829416804607382,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1696096497303712,
+            1.4282530284598631
+          ],
+          "value_mse": [
+            0.7567178823482394,
+            1.2075098979755021
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0002455000358168036,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.0003197999903932214,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4978689671037238,
+        "policy_mrr": 0.8375527426160336,
+        "policy_top1": 0.7088607594936709,
+        "value_mse": 0.7363916468559389,
+        "effective_rank": 8.625553865236405,
+        "median_latent_std": 0.19467683809491076,
+        "latent_norm": 1.8698925091826164,
+        "off_diagonal_covariance_rms": 0.015516136127561107,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.29034485994900927,
+        "h2_count": 68,
+        "h2_latent_mse": 0.30169064525450556,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.40963627593267604,
+            0.5781757648533614
+          ],
+          "value_mse": [
+            0.3767697202444508,
+            1.092363460979223
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.005235200049355626,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.005620999960228801,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "decoded",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0934618043324347,
+        "policy_mrr": 0.6095758354755784,
+        "policy_top1": 0.34318766066838047,
+        "value_mse": 1.0653531291577765,
+        "effective_rank": 11.72075329731845,
+        "median_latent_std": 0.1308488318445412,
+        "latent_norm": 1.6782770493247003,
+        "off_diagonal_covariance_rms": 0.005202734400546848,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.20978433121180495,
+        "h2_count": 595,
+        "h2_latent_mse": 0.21328031401902423,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0585420736177524,
+            1.127423441116372
+          ],
+          "value_mse": [
+            0.9677473327504135,
+            1.1496576308457611
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.003970199992181733,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.004342899919720367,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 43,
+      "game": "tic-tac-toe",
+      "representation": {
+        "count": 30,
+        "trajectories": 11,
+        "policy_nll": 1.2710392139060196,
+        "policy_mrr": 0.556111111111111,
+        "policy_top1": 0.3,
+        "value_mse": 0.9424467312265333,
+        "effective_rank": 8.377861016680342,
+        "median_latent_std": 0.1300669598096889,
+        "latent_norm": 1.5151209473254992,
+        "off_diagonal_covariance_rms": 0.006729242320311912,
+        "collapse_alert": false,
+        "h1_count": 30,
+        "h1_latent_mse": 0.10990480807227355,
+        "h2_count": 19,
+        "h2_latent_mse": 0.1086263978009026,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.0399839060721123,
+            1.4909199553140096
+          ],
+          "value_mse": [
+            0.6660064737680097,
+            1.286736059381555
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002085399959469214,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      },
+      "hybrid": {
+        "scheduled": 18,
+        "completed": 18,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 15,
+        "seconds_total": 0.002219699992565438,
+        "nodes_total": 125,
+        "value_calls_total": 35
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 43,
+      "game": "connect3",
+      "representation": {
+        "count": 41,
+        "trajectories": 11,
+        "policy_nll": 1.2772696915660111,
+        "policy_mrr": 0.5223577235772358,
+        "policy_top1": 0.24390243902439024,
+        "value_mse": 0.9633489180656046,
+        "effective_rank": 10.534883763999664,
+        "median_latent_std": 0.13652129556089831,
+        "latent_norm": 1.5455552356563966,
+        "off_diagonal_covariance_rms": 0.006275659021824942,
+        "collapse_alert": false,
+        "h1_count": 41,
+        "h1_latent_mse": 0.11219627277571045,
+        "h2_count": 30,
+        "h2_latent_mse": 0.10864155044115836,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.1678688354931992,
+            1.4222462247097807
+          ],
+          "value_mse": [
+            0.7575676279458081,
+            1.2107203104899493
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00014630000805482268,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      },
+      "hybrid": {
+        "scheduled": 2,
+        "completed": 2,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 0,
+        "oracle_action_gap_positions": 1,
+        "seconds_total": 0.00016150003648363054,
+        "nodes_total": 5,
+        "value_calls_total": 0
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 43,
+      "game": "reversi4",
+      "representation": {
+        "count": 79,
+        "trajectories": 15,
+        "policy_nll": 0.4973556959462443,
+        "policy_mrr": 0.8270042194092826,
+        "policy_top1": 0.6835443037974683,
+        "value_mse": 0.7351326954929146,
+        "effective_rank": 8.726226379042751,
+        "median_latent_std": 0.20111140354328488,
+        "latent_norm": 1.682387772106602,
+        "off_diagonal_covariance_rms": 0.016668837232337953,
+        "collapse_alert": false,
+        "h1_count": 79,
+        "h1_latent_mse": 0.11370885559751266,
+        "h2_count": 68,
+        "h2_latent_mse": 0.11661168326035434,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            0.4095661174055147,
+            0.5772067439060338
+          ],
+          "value_mse": [
+            0.3721602758689671,
+            1.0948571160295066
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.0027780999953392893,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.041666666666666664,
+        "nonzero_regret": 1,
+        "neural_positions": 18,
+        "oracle_action_gap_positions": 3,
+        "seconds_total": 0.002841099980287254,
+        "nodes_total": 81,
+        "value_calls_total": 41
+      }
+    },
+    {
+      "variant": "value-dynamics",
+      "seed": 43,
+      "game": "connect3-heldout",
+      "representation": {
+        "count": 778,
+        "trajectories": 183,
+        "policy_nll": 1.0938109325344336,
+        "policy_mrr": 0.6052913453299057,
+        "policy_top1": 0.3393316195372751,
+        "value_mse": 1.0660633169438603,
+        "effective_rank": 11.859274048407928,
+        "median_latent_std": 0.1335191212213624,
+        "latent_norm": 1.5672827146478607,
+        "off_diagonal_covariance_rms": 0.005438086174039242,
+        "collapse_alert": false,
+        "h1_count": 778,
+        "h1_latent_mse": 0.1169843791617953,
+        "h2_count": 595,
+        "h2_latent_mse": 0.11310146769811608,
+        "cluster_bootstrap_95": {
+          "policy_nll": [
+            1.058975667304691,
+            1.1275926026027652
+          ],
+          "value_mse": [
+            0.9685499785665954,
+            1.1504876456609632
+          ],
+          "replicates": 500,
+          "seed": 901
+        }
+      },
+      "exact": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0022439000895246863,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      },
+      "hybrid": {
+        "scheduled": 24,
+        "completed": 24,
+        "censored": 0,
+        "blocked": false,
+        "mean_regret": 0.0,
+        "nonzero_regret": 0,
+        "neural_positions": 12,
+        "oracle_action_gap_positions": 12,
+        "seconds_total": 0.0023629999777767807,
+        "nodes_total": 93,
+        "value_calls_total": 24
+      }
+    }
+  ]
+}

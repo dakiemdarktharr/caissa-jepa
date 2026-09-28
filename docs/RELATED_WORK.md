@@ -8,6 +8,40 @@ Search families: JEPA foundations; predictive auxiliary objectives in RL; board-
 
 Full text inspected for the nearest chess method RePAIR and the EfficientZero consistency objective. Primary abstracts inspected for the remaining papers; detailed baseline/result replication is pending and cannot be implied from an abstract. Official repository/documentation inspected for Polygames, OpenSpiel licensing, Lichess and UCI data. Search stops here for the first design because key novelty threats are identified; it resumes before freezing confirmatory hypotheses and submission.
 
+Follow-up during the bounded pilot: inspected full-text method/results passages
+for MuZero and SPR, the I-JEPA architecture/collapse sections, and LeJEPA's SIGReg
+construction. The initial matrix records first-pass depth; the notes below update
+those four entries. This was literature review only; the running pilot design was
+not altered after fitting began.
+
+### Nearest-objective full-text checks
+
+- [MuZero v2, Sections 3–4](https://arxiv.org/html/1911.08265v2): the recurrent
+  action-conditioned model trains reward, policy and value at multiple unrolled
+  steps; it does not require observation reconstruction or an explicit latent
+  matching objective. Board-game experiments use five unrolled training steps
+  and 800 search simulations. Thus our value-dynamics control probes a small
+  part of this distinction, but lacks search-improved targets, learned reward
+  and MuZero's architecture. It must never be labelled a MuZero replication.
+- [SPR v3, Sections 2 and 4](https://arxiv.org/html/2007.05929v3): recurrent
+  action-conditioned predictions match EMA target projections with normalized
+  similarity; losses truncate at episode boundaries. The original evaluation
+  covers 26 Atari games at 100k environment steps with ten SPR seeds and compares
+  augmentation/no-augmentation controls. Our affine direct-H2 unnormalized MSE
+  and behavior-policy supervision differ. A recurrent multi-step consistency
+  control trained through both turns remains necessary; recurrent H1 inference
+  alone does not provide that training control.
+- [I-JEPA v3, Sections 2–3](https://arxiv.org/html/2301.08243v3): target-block
+  positions condition the predictor, target encoders use EMA, and architectural
+  asymmetry addresses collapse. Our action slots and supervised heads are an
+  adaptation; merely using an EMA target does not establish planning benefit or
+  a collapse guarantee in the tiny-game setting.
+- [LeJEPA v3, Section 4](https://arxiv.org/html/2511.08544v3): SIGReg uses random
+  projections and empirical characteristic-function discrepancy against Gaussian
+  targets. Its construction is substantially different from the pilot's variance
+  floor. The pilot is neither SIGReg nor a theoretical LeJEPA reproduction; the
+  legacy bounded-tanh approximation cannot inherit the original claims.
+
 ## Related-work matrix
 
 | Work and primary source | Question / design | Domain and data | Baseline / metric / relevant evidence | Difference and consequence for CAISSA |

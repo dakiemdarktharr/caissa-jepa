@@ -12,6 +12,9 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/METHOD_AMENDMENTS.md` | Active v1.2 middle/late feasibility design and objective controls |
 | `docs/RELATED_WORK.md` | Primary-source positioning review; not an exhaustive publication review |
 | `docs/DATA_SOURCES.md` | Source/license register; no external data acquired |
+| `docs/TWO_PLAYER_PILOT_20260929.md` | Executed exploratory 21-run evidence, ceiling/negative results and limitations |
+| `docs/INDEPENDENT_REVIEW_20260929.md` | Independent agent findings, repairs and unresolved scientific issues |
+| `docs/WORKING_PAPER.md` | Exploratory research-note draft; not submission-ready |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |

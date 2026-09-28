@@ -32,6 +32,14 @@ See [source and license register](docs/DATA_SOURCES.md). No external corpus was
 downloaded. The legacy chess confirmatory gate is unconditionally blocked pending
 independent full-history rule validation; UCI evaluation is not such validation.
 
+The [executed 21-run pilot](docs/TWO_PLAYER_PILOT_20260929.md) found no demonstrated
+JEPA advantage: exact-state search hit a diagnostic ceiling; hybrid full JEPA
+did not outperform direct or decoded controls. The next roadmap milestone is
+benchmark redesign, not scaling this setup. See the
+[working research note](docs/WORKING_PAPER.md) and
+[independent review](docs/INDEPENDENT_REVIEW_20260929.md). Engineering verification:
+87 unit tests, standalone core checks and 13 source-release smoke checks passed.
+
 ## Legacy MARS-JEPA Chess compatibility implementation
 
 **MARS-JEPA: Multi-Horizon Action-Conditioned Response-Aware State Prediction for Resource-Bounded Zero-Sum Chess**
