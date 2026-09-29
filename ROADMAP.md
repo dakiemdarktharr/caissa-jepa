@@ -65,6 +65,22 @@ sample is a warning about variable label cost, not a population estimate. Root
 admission cannot depend on oracle completion: predeclared solver timeouts count
 against coverage, and failing that gate forces a narrower domain or a new
 method version before labels/training.
+An exact alpha-beta/transposition solver was then implemented against the
+project-owned reference rules. It matches plain exact labels across sampled
+small-game states and two solved Connect4-4x5 roots; its five focused tests
+include all5,478 reachable Tic-Tac-Toe states, and 15 rules/reference tests
+pass. On the same five nonterminal roots it solved4/5
+versus2/5 within1s. This supports further feasibility only; one root still
+times out, and the sample cannot establish coverage. See
+`docs/validation/V26_ORACLE_FEASIBILITY_02.json`.
+The full repository suite passes322 tests (115.2s) after the solver addition.
+The pinned-seed model-blind probe then solved17/24 Connect4-4x5 candidates,
+13 of which had unequal exact action outcomes. It solved all eight Reversi6 and
+Reversi8 roots chosen at eight or fewer empty cells, but these late-game states
+are mostly cheap for exact search. This suggests Reversi endgames are a weak
+primary planning challenge, while Connect4 midgame still has costly roots.
+Full per-root cost receipts are under `docs/validation/V26_ORACLE_FEASIBILITY_03_*`;
+none of these exploratory roots may be reused as locked confirmation data.
 
 | Milestone / size | Depends on | Deliverables and acceptance | Status |
 | --- | --- | --- | --- |

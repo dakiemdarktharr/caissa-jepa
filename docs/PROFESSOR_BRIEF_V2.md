@@ -227,3 +227,12 @@ không-terminal trong ngân sách100k nodes/1s. Đây là mẫu nhỏ, không ư
 tỷ lệ tổng thể, nhưng cho thấy không thể âm thầm bỏ root khó sau khi thấy chi
 phí oracle; timeout phải được tính vào gate coverage đã định trước. Receipt:
 `validation/V26_ORACLE_FEASIBILITY_01.json`.
+Một alpha-beta reference solver do dự án viết tiếp theo giải được4/5 root trên
+cùng mẫu thay vì2/5 của negamax thuần trong1 giây/root. Các giá trị exact đã
+đối chiếu trên root giải xong; tuy vậy một root vẫn timeout và mẫu nhỏ chưa
+đạt gate coverage. Đây là tiến bộ engineering cho oracle, không phải kết quả
+JEPA.
+Một survey tái lập bằng seed cố định cho thấy Connect4-4x5 exact-label được
+17/24 root, trong đó13 root có action outcome khác nhau; Reversi6/8 endgame
+được giải8/8 nhưng exact search rẻ, nên không phải benchmark planning chính
+tốt. Chưa có training V2.6 hay kết quả model nào.

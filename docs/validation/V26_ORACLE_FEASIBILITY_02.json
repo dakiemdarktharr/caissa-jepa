@@ -1,0 +1,44 @@
+{
+  "id": "V26_ORACLE_FEASIBILITY_02",
+  "date": "2026-09-29",
+  "stage": "exploratory exact-oracle optimization feasibility",
+  "result": "alpha-beta raises completion on this tiny paired sample; root-bank gate remains open",
+  "source_commit": "d8d5327efcde0b8607867085b5db2780635d2c56",
+  "source_sha256": {
+    "benchmarks/alpha_beta_reference.py": "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c",
+    "test_alpha_beta_reference.py": "bb27abad89a8d32040d4b086dd6cddcb1fdaca132ec9158ece7e44276ce7e879",
+    "benchmarks/reference_rules.py": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e"
+  },
+  "variant": "project-owned Connect4-4x5, connect 4, no gravity",
+  "root_generation": "fixed Python random.Random seeds 261001..261006; one nonterminal trajectory state at a seeded target ply chosen from 7..12; no root replaced based on solve time or value",
+  "budget_per_root": {"nodes": 100000, "seconds": 1.0, "cache_entries": 100000},
+  "comparisons": [
+    {
+      "solver": "ReferenceSolver: plain exact negamax",
+      "complete_nonterminal_roots": 2,
+      "attempted_nonterminal_roots": 5,
+      "results": [
+        {"seed": 261002, "ply": 9, "complete": true, "nodes": 26049, "seconds": 0.4513},
+        {"seed": 261003, "ply": 7, "complete": false, "nodes": 59443, "seconds": 1.0001},
+        {"seed": 261004, "ply": 7, "complete": false, "nodes": 60427, "seconds": 1.0002},
+        {"seed": 261005, "ply": 11, "complete": true, "nodes": 2255, "seconds": 0.0295},
+        {"seed": 261006, "ply": 8, "complete": false, "nodes": 61726, "seconds": 1.0001}
+      ]
+    },
+    {
+      "solver": "AlphaBetaReferenceSolver: bound-aware alpha-beta and transposition table",
+      "complete_nonterminal_roots": 4,
+      "attempted_nonterminal_roots": 5,
+      "results": [
+        {"seed": 261002, "ply": 9, "complete": true, "nodes": 7499, "seconds": 0.1451, "transitions": 16813},
+        {"seed": 261003, "ply": 7, "complete": false, "nodes": 48471, "seconds": 1.0000, "transitions": 119748},
+        {"seed": 261004, "ply": 7, "complete": true, "nodes": 39729, "seconds": 0.8297, "transitions": 101549},
+        {"seed": 261005, "ply": 11, "complete": true, "nodes": 2652, "seconds": 0.0504, "transitions": 6522},
+        {"seed": 261006, "ply": 8, "complete": true, "nodes": 21485, "seconds": 0.4299, "transitions": 51415}
+      ]
+    }
+  ],
+  "correctness_checks": "Five focused unit tests passed: alpha-beta values match the plain exact solver on all 5,478 reachable 3x3 Tic-Tac-Toe states; action values match on sampled 4x4 gravity Connect3 and Reversi states; two sampled Connect4-4x5 roots solved by both implementations have identical action-value labels; narrow-window bounds do not corrupt later full-window exact values; forced pass, terminal signs and fail-closed budget are checked. The adjacent rules suites add 15 passing tests over generated transitions and pinned Reversi source.",
+  "interpretation": "On the identical five nonterminal seeds, the optimized exact solver completed 4/5 versus 2/5 for plain negamax. This small convenience sample is not a general speedup claim or a solvability estimate. One difficult root still timed out. No selected labels were stored, and no JEPA/planner/model was fit.",
+  "decision": "Alpha-beta is a promising project-owned oracle optimization to enable further cost-gate feasibility, after its tests and full differential audit. Continue to count every timeout against the frozen root quota. Do not start production labels or fitting on the basis of this sample."
+}

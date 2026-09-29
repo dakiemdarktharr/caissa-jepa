@@ -1,0 +1,134 @@
+{
+  "stage": "exploratory model-blind oracle cost; exact action values are not retained",
+  "game": "reversi6",
+  "schedule_seed": null,
+  "candidate_count": 8,
+  "budget": {
+    "nodes": 100000,
+    "seconds": 1.0
+  },
+  "summary": {
+    "nonterminal_candidates": 8,
+    "completed": 8,
+    "timeouts": 0,
+    "informative_completed": 4
+  },
+  "roots": [
+    {
+      "index": 0,
+      "seed": 280600,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 6,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 1,
+      "informative": false,
+      "nodes": 1279,
+      "seconds": 0.059029
+    },
+    {
+      "index": 1,
+      "seed": 280601,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 4,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 2,
+      "informative": true,
+      "nodes": 630,
+      "seconds": 0.02934
+    },
+    {
+      "index": 2,
+      "seed": 280602,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 6,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 1,
+      "informative": false,
+      "nodes": 1081,
+      "seconds": 0.060803
+    },
+    {
+      "index": 3,
+      "seed": 280603,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 6,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 1,
+      "informative": false,
+      "nodes": 993,
+      "seconds": 0.04289
+    },
+    {
+      "index": 4,
+      "seed": 280604,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 6,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 1,
+      "informative": false,
+      "nodes": 726,
+      "seconds": 0.0309
+    },
+    {
+      "index": 5,
+      "seed": 280605,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 4,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 2,
+      "informative": true,
+      "nodes": 880,
+      "seconds": 0.037468
+    },
+    {
+      "index": 6,
+      "seed": 280606,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 5,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 2,
+      "informative": true,
+      "nodes": 1447,
+      "seconds": 0.067493
+    },
+    {
+      "index": 7,
+      "seed": 280607,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 2,
+      "empty_cells": 8,
+      "complete": true,
+      "distinct_action_outcomes": 2,
+      "informative": true,
+      "nodes": 532,
+      "seconds": 0.025613
+    }
+  ],
+  "source_commit": "d8d5327efcde0b8607867085b5db2780635d2c56",
+  "source_sha256": {
+    "probe": "58a494643e8f9981d6b20c413a7e16069b33228a0f6b1c9431146234b636b2ae",
+    "adapter": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "reference_rules": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+    "alpha_beta": "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_limit": "A tiny exploratory sample is not a solvability estimate, benchmark, or learned-model result."
+}

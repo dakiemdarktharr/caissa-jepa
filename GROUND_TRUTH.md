@@ -64,9 +64,26 @@ model training has begun. Separate exact-oracle cost probe
 `docs/validation/V26_ORACLE_FEASIBILITY_01.json` found 3/3 late sampled
 Connect4-4x5 roots solved at 50k nodes/0.75s but only 2/5 nonterminal
 Connect4-4x5 roots solved at 100k nodes/1s; this small exploratory sample is
-not a solvability estimate. Its consequence is a stricter gate: do not select
-or replace roots based on observed oracle completion; timeouts count against
-predeclared coverage. Production labels remain blocked. Read `ROADMAP.md`,
+not a solvability estimate. A new exact alpha-beta implementation passed five
+focused solver tests, including value agreement on all5,478 reachable
+Tic-Tac-Toe states, and 15 existing rules/reference tests; its five-root
+paired probe solved 4/5 within 100k nodes/1s versus 2/5 for plain negamax,
+while preserving exact action values on solved roots. Receipt:
+`docs/validation/V26_ORACLE_FEASIBILITY_02.json`. This is an oracle-tooling
+improvement only, not a broader solvability estimate. A reproducible
+model-blind oracle-cost script then surveyed 24 Connect4-4x5 roots (17 solved,
+13 with unequal exact action outcomes), plus8 Reversi6 and8 Reversi8 endgame
+roots (all solved;4 and5 were outcome-informative). Reversi candidates are
+near-terminal and exact search is cheap, so they do not alone establish a hard
+planning regime. Receipts:
+`docs/validation/V26_ORACLE_FEASIBILITY_03_CONNECT4.json`,
+`docs/validation/V26_ORACLE_FEASIBILITY_03_REVERSI6.json`, and
+`docs/validation/V26_ORACLE_FEASIBILITY_03_REVERSI8.json`. This remains
+development feasibility, not a locked or balanced root-bank audit. The V2.6 root gate still
+forbids selecting/replacing roots by observed solver completion; timeouts count
+against predeclared coverage. Full repository unittest now passes322 tests in
+115.2s, including oracle correctness/budget checks. No V2.6 data labels or model
+training have been produced. Read `ROADMAP.md`,
 `docs/V25_POSTRUN_RESEARCH_UPDATE.md`, and the method proposal for gates,
 controls and kill criteria. Official OpenSpiel sources offer Apache-2.0
 procedural game implementations, but the reviewed game index did not resolve a
