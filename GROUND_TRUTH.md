@@ -177,6 +177,40 @@ additional failure-path tests). These are engineering checks, not research resul
 The source milestone must be committed/pushed before `chess_data/v23-fit-01`
 is generated. No V2.3 fit has yet run at this prefit documentation update.
 
+Subsequent V2.3 execution completed18/18 at source20f457c63bf07b2dd7f1a9eb9d5528d5d93cbc37.
+All160epoch runs and72snapshots passed strict report and independent audit.
+All6family/capacity groups still improve S80→S160 by median11.27–22.29%; larger
+capacity helps every family/all3seeds (median20.75–26.03%). Direct meanS160
+0.408437/0.305494 (small/large), rawJEPA0.436337/0.339782. This is training fit,
+not a JEPA win or development evidence. No new development/selection/final
+predictions. Actual cell work1627.083500s,62.842–127.134s/cell,137,879,552bytes
+lifetime RSS,142,867,189bytes artifacts. Independent audit verified480 paired
+plans,2880 histories,72snapshots/4248tensors,9 exact Grid03 replays and36,648root
+metadata records against the standalone train payload and17 committed source
+blobs. Read docs/V23_FIT_DIAGNOSTIC.md and V23_INDEPENDENT_RESULTS_REVIEW.md.
+
+New mathematical critiques reject generic random minimum-probe fitting without
+a concrete representation-reuse question (finite-probe and convex-hull
+counterexamples). docs/V24_ADDITIVE_DYNAMICS_LIMIT.md derives an action-independent
+coordinate-ordering restriction of the current additive transition. Its relevance
+to actual target embeddings and planning remains unmeasured; gated/MLP mechanisms
+have prior art and must strengthen non-JEPA controls too. Next budget/probe
+decision must be frozen before measurement. No architecture is promoted.
+External reference feasibility: OpenSpiel ConnectFour supports size parameters;
+its inspected Othello is fixed8x8, so not an unmodified Reversi6 reference.
+Only public source/docs were read; no external package/data acquired.
+
+Next frozen decision is docs/METHOD_V24_ORDER_PROBE.md: common future128/64×160
+budget for all controls, and one no-fit H1-only order probe over all18 final
+V2.3 checkpoints. Deterministic disjoint state/action blocks are saved before
+checkpoint loading; both online/EMA targets are measured, direct random
+dynamics are never scored. Bounds are uniform-edge latent SSE, not planning
+loss. A heuristic10% residual-floor/25% coverage screen is evaluated separately
+by game/capacity, with nonterminal sensitivity and allnegative outcomes kept.
+Independent spec reviews found denominator/perspective/tolerance/packing-order
+ambiguities; these were clarified before implementation. No probe measurement
+has yet been made. Runtime/tests/independent review and source push remain gates.
+
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.

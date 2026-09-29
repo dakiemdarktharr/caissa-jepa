@@ -1,0 +1,3609 @@
+{
+  "version": "v23-training-diagnostic-report01",
+  "stage": "training-only diagnostic",
+  "input_directory": "C:\\Users\\ANHKHOI\\Documents\\ChatGPT\\caissa-jepa\\chess_data\\v23-fit-01",
+  "status": "verified_diagnostic",
+  "verification_errors": [],
+  "runs": [
+    {
+      "id": "direct-h64-z32-s17",
+      "config": {
+        "variant": "direct",
+        "seed": 17,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 66.27352289998089,
+      "receipt_seconds": 66.2509779999964,
+      "receipt_sha256": "198644441041d1fabd15422a89f5ace41b4e8340a66dc306e347cc46c57e54e5",
+      "snapshots": {
+        "0": {
+          "S": 0.798577361281833,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5889426123138497,
+              "2": 0.5361412868606575
+            },
+            "reversi6": {
+              "1": 0.9148876259347196,
+              "2": 1.154337920018105
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.812313019442769,
+              "mean_std": 0.1580205946270107,
+              "median_std": 0.16052971561672724,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.68084182950655,
+              "mean_std": 0.1899950041774435,
+              "median_std": 0.19023601956748162,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "e38586c79d077b4d27c1235884938a732c898f40cae9414d3b74d44f698bdac1",
+          "metrics_sha256": "7fe49fc51ec20e837004b216e1cfffe994a1938941701e70436b46f4a5bbabee",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5304299101328003,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.40656129028213595,
+              "2": 0.3342148124863642
+            },
+            "reversi6": {
+              "1": 0.8715224776035042,
+              "2": 0.5094210601591967
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.697274754370694,
+              "mean_std": 0.4165281634897855,
+              "median_std": 0.4191363238390375,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.168699846181042,
+              "mean_std": 0.4448484077105782,
+              "median_std": 0.45179357268897086,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "5af0f749a6b6063b211eace476b802e98b0db5c27cc12430e8495600c96802d7",
+          "metrics_sha256": "2a4d16500c8fd9d443bac07fe83fe2e8245d63e81d855cfc0b88c8e1c193ca69",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.46916069780136144,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3217556335914947,
+              "2": 0.2787597237883727
+            },
+            "reversi6": {
+              "1": 0.7798350007810708,
+              "2": 0.4962924330445075
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 16.95477397830465,
+              "mean_std": 0.49011884372226144,
+              "median_std": 0.4986658573320377,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 18.259737518503584,
+              "mean_std": 0.44244514887594566,
+              "median_std": 0.4281442960379901,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "b52ee13bec9d4537e2ab3c7a8b7530ea5de9871da3ec75b725a12f5d48aa0448",
+          "metrics_sha256": "961984ba59a99c51701bec8101fdf4ec3eaf8ae14223835129a9d3f31e893070",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.3996941705436312,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.22713799717959035,
+              "2": 0.22660269111876954
+            },
+            "reversi6": {
+              "1": 0.6597799671954065,
+              "2": 0.48525602668075835
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 19.024729001578283,
+              "mean_std": 0.5213603276116981,
+              "median_std": 0.5154080498639954,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 18.71625766098091,
+              "mean_std": 0.4395403581098418,
+              "median_std": 0.42571860951580887,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "f9bbb54c83b82c8e04b67d2fb2f023454fb4337187572507208f18fab35a1c80",
+          "metrics_sha256": "69e58fa90a2959e0a451107dee5cd0491ac2d973c7c992dabe29fc35b1982241",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "direct-h64-z32-s29",
+      "config": {
+        "variant": "direct",
+        "seed": 29,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 62.841865499998676,
+      "receipt_seconds": 62.805642300023464,
+      "receipt_sha256": "92156758700ae0c643939e8838a2af751886b995c56ce0ef402502fc6ba38d75",
+      "snapshots": {
+        "0": {
+          "S": 0.7462663895081366,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5623656807937846,
+              "2": 0.42285618102777756
+            },
+            "reversi6": {
+              "1": 0.9148762838507938,
+              "2": 1.0849674123601905
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.05205641286292,
+              "mean_std": 0.16331647272999716,
+              "median_std": 0.16273515362588747,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.864907702279357,
+              "mean_std": 0.1960763992058283,
+              "median_std": 0.20276700721748286,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "0b58e9dd43e8ceb096b562d23a57f21b444a3adccab0139f964e9480227b66fe",
+          "metrics_sha256": "11f924fe41f69758818d9dff617710a92b33779072c0d333d4a19dbcc350b857",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5171511356860817,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.4248700275738853,
+              "2": 0.3267306863721247
+            },
+            "reversi6": {
+              "1": 0.7941880365221131,
+              "2": 0.5228157922762038
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 16.273940894590165,
+              "mean_std": 0.434478706086982,
+              "median_std": 0.4284562297450633,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.240275679679574,
+              "mean_std": 0.4582375228725633,
+              "median_std": 0.4481919075227028,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "d120a3ab3dc5e840825774d4820eee872547327aa98f8a288b5d874a50d9777f",
+          "metrics_sha256": "8c11cfad08c0a074b308246a81ed149e25ae65770febd769b1c223bb79db00b0",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.47278603488877413,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3286771283941797,
+              "2": 0.2763573630467212
+            },
+            "reversi6": {
+              "1": 0.7817437720525379,
+              "2": 0.5043658760616578
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.877801273350762,
+              "mean_std": 0.5103352862849727,
+              "median_std": 0.5112797881677187,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.38176106486321,
+              "mean_std": 0.4533055758053771,
+              "median_std": 0.4543613973287296,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "f8ee7489bc8d87b9fa92dd6ef0ce5841b9d4b4b04b81c87b66b682a374e79158",
+          "metrics_sha256": "10e8a2d67014a872aa0f6137172a1a400bc7041e717ffd754d7ae2ed6819d928",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.41675241364906324,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.22241365528335216,
+              "2": 0.2469545350576926
+            },
+            "reversi6": {
+              "1": 0.6946180383370444,
+              "2": 0.5030234259181638
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 19.238465117328246,
+              "mean_std": 0.5410620227383849,
+              "median_std": 0.5413456715674705,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 18.67294506366273,
+              "mean_std": 0.4478360094921986,
+              "median_std": 0.4646773690816539,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "ce7907603fa8cb50fb0f424b0c2b428f8eddf11ca4fd2864391806b97ebde16c",
+          "metrics_sha256": "108cf4e8db1154326b20385cb4f3faff06d1d6039285d06684c87feae2fb4a0b",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "direct-h64-z32-s43",
+      "config": {
+        "variant": "direct",
+        "seed": 43,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 77.88274540001294,
+      "receipt_seconds": 77.85323760000756,
+      "receipt_sha256": "8899573ab13e4496a5909118ac5bc8a5e4644b705a2934eaa91b089178485a5e",
+      "snapshots": {
+        "0": {
+          "S": 0.7571465790444937,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.6958285198386174,
+              "2": 0.46613384890749676
+            },
+            "reversi6": {
+              "1": 1.1216253473048448,
+              "2": 0.7449986001270158
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 14.608122987474982,
+              "mean_std": 0.15871843201665317,
+              "median_std": 0.15336220981322843,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.125932164954182,
+              "mean_std": 0.19975507423451794,
+              "median_std": 0.18972633939634453,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "dae2274e0b213fe57c132c8a9328dd492cdc6eae58c9452049a450a9b48c08f3",
+          "metrics_sha256": "59f08aa34dd169bdbfd6f04ce2f72c88bea93e54d3454b35165ce9a0af4a8e86",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5190691379369203,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.4196991166433071,
+              "2": 0.34661030141312205
+            },
+            "reversi6": {
+              "1": 0.7911446889609013,
+              "2": 0.5188224447303508
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 15.667218807220598,
+              "mean_std": 0.38105679586584784,
+              "median_std": 0.37137386491290447,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.12345996039062,
+              "mean_std": 0.37587329947377984,
+              "median_std": 0.3820066677089723,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "eef858778214b61d608d4339fc4cc133902dca381a0048d0263811311d98a7e0",
+          "metrics_sha256": "f309fb25c3b0a1973f6b6a9e953914c4532b0ed8eeb6ce9281c1e8b30bf11bcb",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.47258313922092643,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.31522912946276754,
+              "2": 0.28997098364472856
+            },
+            "reversi6": {
+              "1": 0.7837011813612897,
+              "2": 0.5014312624149198
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.064078843133313,
+              "mean_std": 0.45865027423069027,
+              "median_std": 0.48073330429381933,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.03358702936453,
+              "mean_std": 0.3877954909287381,
+              "median_std": 0.40563753069029423,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c039aeaaf33c4b8241ae7d56f59f932cd34db8991f79e2be2ad1f6c8fc82333e",
+          "metrics_sha256": "9aadd09c56290bf226b8337a7fcf10cd2edf0d74db423bac8f2d80b1d8f956ec",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.4088631630690717,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.23401086515556924,
+              "2": 0.23950136475230258
+            },
+            "reversi6": {
+              "1": 0.6424690157200215,
+              "2": 0.5194714066483935
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.96816573481936,
+              "mean_std": 0.49960586573952637,
+              "median_std": 0.5282953644168944,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.94623484641682,
+              "mean_std": 0.3900230192204685,
+              "median_std": 0.39684362396828105,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "49547f7bd0ccc263437b6939af1ac6c3d7acd0e529104d72f4dffb40dd4fff19",
+          "metrics_sha256": "0ba364147ca331b55de74b6d48893d3bd0f2c752452a9b713206d500de14fb82",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h64-z32-s17",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 17,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 71.79308400000446,
+      "receipt_seconds": 71.76310779998312,
+      "receipt_sha256": "2c02427d33acae0cca557f772c1aacad8dbcb3190777efdd9c0663ddbd539c68",
+      "snapshots": {
+        "0": {
+          "S": 0.798577361281833,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5889426123138497,
+              "2": 0.5361412868606575
+            },
+            "reversi6": {
+              "1": 0.9148876259347196,
+              "2": 1.154337920018105
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.812313019442769,
+              "mean_std": 0.1580205946270107,
+              "median_std": 0.16052971561672724,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.68084182950655,
+              "mean_std": 0.1899950041774435,
+              "median_std": 0.19023601956748162,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "7c174ac14e617a5f1b835e06d6e76015991a54e37ab6304b0ea2ef90e020e14a",
+          "metrics_sha256": "495997c3b0972e11951c7cf6c281554b0bd20b95cb82728695d69eac24e19034",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.555571131551002,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.4309464009003977,
+              "2": 0.34399480353251627
+            },
+            "reversi6": {
+              "1": 0.9366838952616949,
+              "2": 0.5106594265093992
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.211592765147913,
+              "mean_std": 0.4010117853529641,
+              "median_std": 0.38104587459439976,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.464142424671326,
+              "mean_std": 0.41225901616929794,
+              "median_std": 0.4144347052229794,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "f0e765f1621e31e8993321b90cf69ee72f1397401ba86e35d6c4bd04db7e54e6",
+          "metrics_sha256": "e40ad203b9af84bbf50eea388de4d7ab8e4dc84b96a4f743b97274fce7ef55dd",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.48645570744505906,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3509727230043099,
+              "2": 0.2969340320056172
+            },
+            "reversi6": {
+              "1": 0.7991395234621965,
+              "2": 0.4987765513081127
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 15.351077091461402,
+              "mean_std": 0.4751142166247572,
+              "median_std": 0.46290561457955004,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.38264757991125,
+              "mean_std": 0.4297021522366091,
+              "median_std": 0.4634716334412118,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "4e46f648efcef0a97dc7eaf67587f677219bc2311919a86c4eb89f510f78a4e3",
+          "metrics_sha256": "673ca4a4338c95bde268737f2eaa2bfc08adeff8e71b337119cdca5715f7301d",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.4271483678477513,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.26722045624710494,
+              "2": 0.2453929587572498
+            },
+            "reversi6": {
+              "1": 0.7062550696412325,
+              "2": 0.4897249867454178
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.38760977900891,
+              "mean_std": 0.5098872123134401,
+              "median_std": 0.5117285779996317,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 18.00274008804373,
+              "mean_std": 0.42919171942038514,
+              "median_std": 0.44614585715774824,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "dfb4c8b500cc7d8c340d71d4f8b90a73ea294044d380e4a29d085a96addeb248",
+          "metrics_sha256": "6f85783192ae0aa82b6260d4483902a4a3c26e7e0a0e89b71d492211f8c45444",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h64-z32-s29",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 29,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 62.991887099982705,
+      "receipt_seconds": 62.96233129999018,
+      "receipt_sha256": "a1c29e3d99229e7142f9dcdd42e21deaf9404b2a5a171255138460c54083869d",
+      "snapshots": {
+        "0": {
+          "S": 0.7462663895081366,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5623656807937846,
+              "2": 0.42285618102777756
+            },
+            "reversi6": {
+              "1": 0.9148762838507938,
+              "2": 1.0849674123601905
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.05205641286292,
+              "mean_std": 0.16331647272999716,
+              "median_std": 0.16273515362588747,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.864907702279357,
+              "mean_std": 0.1960763992058283,
+              "median_std": 0.20276700721748286,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "760b969b4e771286a89aa0ebad334b52af35358424f832c62856befcab82d9ef",
+          "metrics_sha256": "ba5c9b83583b473f855e835a4712c07df22c778b5ad3bc3d2b7c93593c1c47a1",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5429217030765251,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.46050114473307824,
+              "2": 0.3423541733706307
+            },
+            "reversi6": {
+              "1": 0.8565588375526122,
+              "2": 0.5122726566497794
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.625309759666186,
+              "mean_std": 0.3927750235119384,
+              "median_std": 0.37669197467103605,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 15.02149339993383,
+              "mean_std": 0.4266183382417623,
+              "median_std": 0.4320860143221542,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "74af08eaaea163c0f2a87426bb82dcdc6f86772e7d8fbafdda6b9ba4ef9c163e",
+          "metrics_sha256": "0e41136e714dd02bfbf6cc7356186c5fc6ef4c4f9afd45b1e83c0c4cf8ddaa98",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.5067174820693517,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.37399448080340825,
+              "2": 0.28828983964343596
+            },
+            "reversi6": {
+              "1": 0.8669530610978345,
+              "2": 0.49763254673272805
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 16.567077608544622,
+              "mean_std": 0.48475228709736,
+              "median_std": 0.489380185318703,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.013734397643514,
+              "mean_std": 0.43926848903619226,
+              "median_std": 0.45949701086014594,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "664ffc7dcd5db634684d93e2937da89a9cccff64f362c9b494ae4a39ecd1d8b9",
+          "metrics_sha256": "1b689abacaa11dff0261a37d01f6b2eed04c1bec12b57880df83cd15cd0f002e",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.4304884313255642,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.25999880530900205,
+              "2": 0.25237439212275325
+            },
+            "reversi6": {
+              "1": 0.7109833611076523,
+              "2": 0.4985971667628492
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 18.56216202042541,
+              "mean_std": 0.5154395165493819,
+              "median_std": 0.5209988278864275,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.637182703314203,
+              "mean_std": 0.442433589152732,
+              "median_std": 0.47065187629690153,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "03c9b76f6935ae5ffb8aca9f5824793209f3c1360cb3de59960902bed5f27e8f",
+          "metrics_sha256": "daf1f8556d8ee03a4442e5646beaca501376296a683b87a3a3633217035fc6a2",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h64-z32-s43",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 43,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 63.964791400008835,
+      "receipt_seconds": 63.93767100002151,
+      "receipt_sha256": "761a4462c2516d040ababf574591a5a00474ae7dcf6c5b411ea82c830fa36c6b",
+      "snapshots": {
+        "0": {
+          "S": 0.7571465790444937,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.6958285198386174,
+              "2": 0.46613384890749676
+            },
+            "reversi6": {
+              "1": 1.1216253473048448,
+              "2": 0.7449986001270158
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 14.608122987474982,
+              "mean_std": 0.15871843201665317,
+              "median_std": 0.15336220981322843,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.125932164954182,
+              "mean_std": 0.19975507423451794,
+              "median_std": 0.18972633939634453,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "2351a2d7fec7bd14ba35f1c5c4fafcbe7378799fe2670dc3eb00e29699498e06",
+          "metrics_sha256": "9ac499bbdb135e314d29cae1868a316318b27c4cb9784998d3e2d49dd0781f0f",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5316590431725977,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.44496474930804847,
+              "2": 0.32753786578268823
+            },
+            "reversi6": {
+              "1": 0.8439469695135376,
+              "2": 0.5101865880861166
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 15.425244582366402,
+              "mean_std": 0.36351245726647285,
+              "median_std": 0.3369760034773608,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.627320341588163,
+              "mean_std": 0.35919992972993103,
+              "median_std": 0.3583114638134667,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "d9172fd4ef8d650bd003c677f44ecb62a11b7b9b95f35816e9c9852d1c938cc8",
+          "metrics_sha256": "3a7db9c78371cbdde6c821cd290d633c1088c135a8ce9fed7634ceb45544eb43",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.4801690365637,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.34534077344063063,
+              "2": 0.3241046541294748
+            },
+            "reversi6": {
+              "1": 0.7573750216535852,
+              "2": 0.49385569703110954
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.613680784263448,
+              "mean_std": 0.4466861331322496,
+              "median_std": 0.43402521827734913,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 18.131438903434372,
+              "mean_std": 0.3642240926324352,
+              "median_std": 0.39371422283894697,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "fb7b5d4e3ab7388f1a83dedaceed72bc3cba07d6872085ea82616b0f6705e42a",
+          "metrics_sha256": "36b50c9ecab71b3e5515664baf5b39016c7f64eb3394964d71d341ffff18b374",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.41961305455166953,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.25688153440151534,
+              "2": 0.2662467298595429
+            },
+            "reversi6": {
+              "1": 0.6653004166134203,
+              "2": 0.49002353733219944
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 19.452237307339907,
+              "mean_std": 0.4934457115518531,
+              "median_std": 0.48465596071708283,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 18.158867242839605,
+              "mean_std": 0.3671262529432726,
+              "median_std": 0.3803008259622255,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c273ebd11fcc0a66e53bedff126994c28b886165de42af0ad5231850c921461c",
+          "metrics_sha256": "a24abf81da3072fb68f467cab1b4a3febc7e2af30af612d715b73926424e8223",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h64-z32-s17",
+      "config": {
+        "variant": "raw-jepa",
+        "seed": 17,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 0.1,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 66.86446510002133,
+      "receipt_seconds": 66.83787229997688,
+      "receipt_sha256": "daa22ac229eef808f2bbd75cdbb1b6060a754448d7e2db431c67f0ed265f5bf4",
+      "snapshots": {
+        "0": {
+          "S": 0.798577361281833,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5889426123138497,
+              "2": 0.5361412868606575
+            },
+            "reversi6": {
+              "1": 0.9148876259347196,
+              "2": 1.154337920018105
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.812313019442769,
+              "mean_std": 0.1580205946270107,
+              "median_std": 0.16052971561672724,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.68084182950655,
+              "mean_std": 0.1899950041774435,
+              "median_std": 0.19023601956748162,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "01107cbcbd33f966103f4722b4965546f7d6ab873c8187683bb0cde22b26a6e8",
+          "metrics_sha256": "495997c3b0972e11951c7cf6c281554b0bd20b95cb82728695d69eac24e19034",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.559465520995017,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.4343700852488547,
+              "2": 0.34416173379197657
+            },
+            "reversi6": {
+              "1": 0.9495500906052241,
+              "2": 0.5097801743340128
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 12.827916671650204,
+              "mean_std": 0.3822252808181988,
+              "median_std": 0.3870137515153402,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 15.826167895701955,
+              "mean_std": 0.36808927100686584,
+              "median_std": 0.3559208053920878,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "4c9973a45655480021a21831c7e124425ea5836082ca2b39988d9f94cf02032d",
+          "metrics_sha256": "65bc7a7037eb38b0524d41bb58f2118749d5236aa0f3095e1daff854c03d0d9d",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.48696978645507727,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.34970553048260333,
+              "2": 0.3119656957682077
+            },
+            "reversi6": {
+              "1": 0.7911286389130263,
+              "2": 0.4950792806564718
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 15.538085236154524,
+              "mean_std": 0.4537340807095033,
+              "median_std": 0.4369438076568592,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.864915648729916,
+              "mean_std": 0.3517697043259852,
+              "median_std": 0.35220850291046546,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "28566e0d82f4322ddd805504b6593ef7bb27fe4daa1010ebe239ea708c6f0066",
+          "metrics_sha256": "9bfec6e74bae1899cf32f8caab8d972f6330efa502884942cf4b725f90a4ae72",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.44124436545705936,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.2851753447437104,
+              "2": 0.2509715150516587
+            },
+            "reversi6": {
+              "1": 0.7379897556480675,
+              "2": 0.4908408463848009
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.597890414464434,
+              "mean_std": 0.4802066513893038,
+              "median_std": 0.4678346040591297,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.50711752329506,
+              "mean_std": 0.3431971597361982,
+              "median_std": 0.3310047204294554,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "3aff9743fd4477a4203b8f02b2830c5ce1bbd89817dae1c9abc38f9448454a06",
+          "metrics_sha256": "ac3358abc4829666fdebc4244868f082e90eef849fe185e3a217780337579c27",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h64-z32-s29",
+      "config": {
+        "variant": "raw-jepa",
+        "seed": 29,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 0.1,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 74.37300680001499,
+      "receipt_seconds": 74.3389138999919,
+      "receipt_sha256": "d57301739c38c151f6b9cc47246d8d83553e3e4b0d120577beb03c6cca43c688",
+      "snapshots": {
+        "0": {
+          "S": 0.7462663895081366,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5623656807937846,
+              "2": 0.42285618102777756
+            },
+            "reversi6": {
+              "1": 0.9148762838507938,
+              "2": 1.0849674123601905
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 13.05205641286292,
+              "mean_std": 0.16331647272999716,
+              "median_std": 0.16273515362588747,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.864907702279357,
+              "mean_std": 0.1960763992058283,
+              "median_std": 0.20276700721748286,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "92cfeee133ed96ca85b9aeba2894c82f7d432b98247544846b8d57de361646e2",
+          "metrics_sha256": "ba5c9b83583b473f855e835a4712c07df22c778b5ad3bc3d2b7c93593c1c47a1",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5486678922362205,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.4603588854914089,
+              "2": 0.35107165957037223
+            },
+            "reversi6": {
+              "1": 0.8618551794299415,
+              "2": 0.521385844453159
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 14.066991391029543,
+              "mean_std": 0.36423677596835385,
+              "median_std": 0.3569479219998296,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 14.426830365461843,
+              "mean_std": 0.37591311067674893,
+              "median_std": 0.3594011172492766,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "285c6330315ae353627cfec3c3acc341708587c4135bd2fd3dd98f50f02af85f",
+          "metrics_sha256": "da4973f180ad1b5a57cc614c3ee741f850bd3a2dd08fdebece2057615f09cbb0",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.4983626205623658,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3829152408061486,
+              "2": 0.30024055163783503
+            },
+            "reversi6": {
+              "1": 0.8081935710602898,
+              "2": 0.5021011187451898
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 17.173201076249118,
+              "mean_std": 0.45152631582085523,
+              "median_std": 0.44165207412186236,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 15.691018714871406,
+              "mean_std": 0.39745827712018844,
+              "median_std": 0.4172393753288942,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "6f94a860a72f15a1d320af8c9d7d465de0ff77fa5500b7d3f5e6c715b6752629",
+          "metrics_sha256": "331d5da4b639f3c6948aeba81aece76141639bd3bfcb82801dd313ecd9e644d7",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.4341070622335693,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.26757985247605254,
+              "2": 0.2479803178212993
+            },
+            "reversi6": {
+              "1": 0.7228644803213135,
+              "2": 0.498003598315612
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 18.759112949577048,
+              "mean_std": 0.47963164959423266,
+              "median_std": 0.4546815447091359,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.051820542570265,
+              "mean_std": 0.3959478393983701,
+              "median_std": 0.4150035369628504,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "024ac9a7124b919cd184cd75b18deaa42b89779fef0dead01d32d69c475f79d4",
+          "metrics_sha256": "d397363425d93ca4bebf08765e50c5394283d8861f49a704a1e93ecca2b64963",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h64-z32-s43",
+      "config": {
+        "variant": "raw-jepa",
+        "seed": 43,
+        "hidden": 64,
+        "latent": 32,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 0.1,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 89.17995150000206,
+      "receipt_seconds": 89.14455140000791,
+      "receipt_sha256": "045a4990f9a09971c7353fe2a36d2300f00ed2dc8fb639ba86b2cd49322957c0",
+      "snapshots": {
+        "0": {
+          "S": 0.7571465790444937,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.6958285198386174,
+              "2": 0.46613384890749676
+            },
+            "reversi6": {
+              "1": 1.1216253473048448,
+              "2": 0.7449986001270158
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 14.608122987474982,
+              "mean_std": 0.15871843201665317,
+              "median_std": 0.15336220981322843,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 17.125932164954182,
+              "mean_std": 0.19975507423451794,
+              "median_std": 0.18972633939634453,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "9a5d0a00a5c06ade335d6a54aa6ff9799ed3b2d940dd9f890e9ec43506ba33a8",
+          "metrics_sha256": "9ac499bbdb135e314d29cae1868a316318b27c4cb9784998d3e2d49dd0781f0f",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5383237859423107,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.4609085831694102,
+              "2": 0.33765894750935377
+            },
+            "reversi6": {
+              "1": 0.8394438007845182,
+              "2": 0.5152838123059607
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 15.119222614905837,
+              "mean_std": 0.3285528425739197,
+              "median_std": 0.3417140292230296,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 16.85339943093584,
+              "mean_std": 0.33671643495677933,
+              "median_std": 0.34193301769701034,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "1b157034d095968525ec5254bc46d2c8cc56b06cf7c46ab1880c0806ec9eb2e1",
+          "metrics_sha256": "8bf47dc027ffd6d9744412e8592e99abb4e01ecfa6666c2194fd5db629155df8",
+          "reference_match": "verified"
+        },
+        "80": {
+          "S": 0.4887238332719853,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.36009560140335906,
+              "2": 0.312357192934104
+            },
+            "reversi6": {
+              "1": 0.7815776768949182,
+              "2": 0.50086486185556
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 16.494733969061553,
+              "mean_std": 0.41349948778746637,
+              "median_std": 0.39634423278267167,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 19.15446631956163,
+              "mean_std": 0.34408892400420493,
+              "median_std": 0.3681947702149598,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "5b0a602f235c4274569536b9c0c0baa0014d2d1b78c9a4bcdc544835596b3c05",
+          "metrics_sha256": "b3cbaf8729a75fb11147e628ed82c7631d99950034e5d1ceae1ae0f447a5871e",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.43365968630649804,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.25070058331640277,
+              "2": 0.257926159530186
+            },
+            "reversi6": {
+              "1": 0.7248800660261089,
+              "2": 0.5011319363532946
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 32,
+              "effective_rank": 19.16679237545735,
+              "mean_std": 0.4582484996669838,
+              "median_std": 0.44385022849539646,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 32,
+              "effective_rank": 20.277183561148117,
+              "mean_std": 0.3392983101751129,
+              "median_std": 0.3634933559254898,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c1e579e6e6d791ce0d6ba8119e09c1532d18c21573597249aca4892de244b7f8",
+          "metrics_sha256": "a3862a7a27ebf0ebb440837290653231c7fd1558aab5e289f2c08a1040ee4c92",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "direct-h128-z64-s17",
+      "config": {
+        "variant": "direct",
+        "seed": 17,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 107.21370220000972,
+      "receipt_seconds": 107.15365100000054,
+      "receipt_sha256": "958c106d6447ec359ad965fb63572d77b9a9709f7f467fd6874433efda952d1f",
+      "snapshots": {
+        "0": {
+          "S": 0.7767519013522809,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.6608112851992518,
+              "2": 0.6812283776780096
+            },
+            "reversi6": {
+              "1": 1.050299462952314,
+              "2": 0.7146684795795483
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 19.277165028146232,
+              "mean_std": 0.14819525121928162,
+              "median_std": 0.1512396154741183,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.28540528983856,
+              "mean_std": 0.19882677088896475,
+              "median_std": 0.20480497214274995,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "cfa4833b7db7aefa13b200de4eaa9ee633e69d3acf737ec3aab7b54ba0e2af3c",
+          "metrics_sha256": "414205cd4295ba62040e88604cb057ccb2c071faff769feaeb8717c36a995cd4",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.47995599905320707,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.34990172511609846,
+              "2": 0.30145093753359314
+            },
+            "reversi6": {
+              "1": 0.7569165282346246,
+              "2": 0.5115548053285122
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 21.57478409492096,
+              "mean_std": 0.5084720600296448,
+              "median_std": 0.5185356189614138,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 23.91232515614795,
+              "mean_std": 0.4893230483518998,
+              "median_std": 0.5079065630225545,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "fb2100b3cc94969e05b7a9d43b9f18789a9d1f9d365cabba89b1813b14106e1c",
+          "metrics_sha256": "69abbbe6a2859d95a32a939b94f1b1f9eb1ec771223cefd870025f870df3bb39",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.40069511488251947,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.21793833348734698,
+              "2": 0.2219543038634006
+            },
+            "reversi6": {
+              "1": 0.6952904904008957,
+              "2": 0.4675973317784346
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 25.50508758452918,
+              "mean_std": 0.5706739466185954,
+              "median_std": 0.586964856235247,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 28.164846578486816,
+              "mean_std": 0.509388584336915,
+              "median_std": 0.5458151369111397,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "4da0ea6f3de423c9853581ca4d3a1b656ba8b870373b5f3b168faeb2f7528b13",
+          "metrics_sha256": "db5539973388be3544d24ad4296e4d32fc8bcf8f460ea2497f4ba7d2d8f207f0",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.31137258901077713,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.11045125032928732,
+              "2": 0.1675067135556487
+            },
+            "reversi6": {
+              "1": 0.49497465091351245,
+              "2": 0.47255774124466
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 28.49770635864284,
+              "mean_std": 0.6007538786502236,
+              "median_std": 0.6152206533062727,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 31.982899317395972,
+              "mean_std": 0.5413748960056384,
+              "median_std": 0.5853771287746364,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "07ad8e8a4d69bb0153aab0a9cc7e0a5eadfa7460e88b5d3d8e9a61d841621c10",
+          "metrics_sha256": "2d996283d6c56009a6607bf6a128ab1e05f11e444514e865b4cea9e808ddfeef",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "direct-h128-z64-s29",
+      "config": {
+        "variant": "direct",
+        "seed": 29,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 109.98668689999613,
+      "receipt_seconds": 109.94448969999212,
+      "receipt_sha256": "37b977e659d94a9167a00e4b4f7f44f88dd2406077824071d2234673d253ba2a",
+      "snapshots": {
+        "0": {
+          "S": 0.6973801837163234,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5577813614821497,
+              "2": 0.46972814804536184
+            },
+            "reversi6": {
+              "1": 0.9892229553283703,
+              "2": 0.7727882700094117
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 19.43146644373454,
+              "mean_std": 0.16861086809693165,
+              "median_std": 0.16730831537468854,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.34500481184338,
+              "mean_std": 0.20964030005194045,
+              "median_std": 0.20830704673909928,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "1740feb0254fd9d75795a8d11218cfd894e550f1ac8f5a541339549f44958eec",
+          "metrics_sha256": "4b1551330d63d2292b64259793c0599a8ce27ca4eb499c721e34c31497e7085f",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.48085563152467986,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.34024281644788135,
+              "2": 0.31678261973618443
+            },
+            "reversi6": {
+              "1": 0.7524037056370732,
+              "2": 0.5139933842775806
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 23.59796059392011,
+              "mean_std": 0.5214758684594339,
+              "median_std": 0.509158442779533,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.558047687654536,
+              "mean_std": 0.4911318771757295,
+              "median_std": 0.49802863770346195,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "27f421769ce4decf17a2c1957b2decbcc07f0d3d3a9f9d5f4a0329221befb2fd",
+          "metrics_sha256": "caf0d249895aca5bf5642df1015575b3b1329c9552c1abda37f4ea0452920545",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.3866463957890495,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.19359024071385794,
+              "2": 0.20868826757460265
+            },
+            "reversi6": {
+              "1": 0.6631249623323957,
+              "2": 0.4811821125353417
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 27.102560900466205,
+              "mean_std": 0.5820578346487886,
+              "median_std": 0.5730796428903784,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 28.42239759293438,
+              "mean_std": 0.5180846465627094,
+              "median_std": 0.5313241862820879,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "950720acc8a800c0df286089d88a21e1a4322c03025dff1579a947fe68c37e6d",
+          "metrics_sha256": "76f7a8c318dc9a0cc84ca51a844179e6f1d30ecf820ea5fa4716013f146a9681",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.3082814400320313,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.10263307784978518,
+              "2": 0.1676750220848892
+            },
+            "reversi6": {
+              "1": 0.5069672025946167,
+              "2": 0.4558504575988341
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 30.057162962177916,
+              "mean_std": 0.6054619308558844,
+              "median_std": 0.6031837244674061,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 31.633483172883473,
+              "mean_std": 0.5393950296232035,
+              "median_std": 0.5687858957086124,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "331f3252f4715dc886d7ccaf9e1e5a772614d430006c781efa04ac3327247d40",
+          "metrics_sha256": "5b63f234a975307b1bc2d7a7bba7bb8a2874fc0965a2d44dab8897af53bda222",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "direct-h128-z64-s43",
+      "config": {
+        "variant": "direct",
+        "seed": 43,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 91.93381479999516,
+      "receipt_seconds": 91.89424140000483,
+      "receipt_sha256": "faf2aada9951145256655365785c8c252a7659127bf823c8894adfcc9731e587",
+      "snapshots": {
+        "0": {
+          "S": 0.8467598620323785,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.7145292651421572,
+              "2": 0.7306092292836319
+            },
+            "reversi6": {
+              "1": 0.9398795327362692,
+              "2": 1.0020214209674558
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 17.725617649615614,
+              "mean_std": 0.16160271295482917,
+              "median_std": 0.15896236831897873,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.070656577334518,
+              "mean_std": 0.20575710511577391,
+              "median_std": 0.2006573207478978,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c4c55f8119245c6da015e7f5fab93d5d8aa9a4e018ef5902572b0fda8ea5faf4",
+          "metrics_sha256": "07e3332730758a9f82b2ff81096893b9525a9de90f796736b3f57e80a7cd103e",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.4771323268382782,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3380314908187771,
+              "2": 0.31191244360840537
+            },
+            "reversi6": {
+              "1": 0.751075618638684,
+              "2": 0.5075097542872463
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 22.90202409411588,
+              "mean_std": 0.52935136275967,
+              "median_std": 0.5243533337641318,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.697690891217388,
+              "mean_std": 0.5008518788737075,
+              "median_std": 0.503963391153803,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "68554a21ea62c59f23c5a4a8fa04ceb589b6ae42573da80213980973879a0d65",
+          "metrics_sha256": "f75929df46eda598a8d0ebb7fd944536ca19680cf90935638bbf158872e18e0f",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.39798709794502846,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.22658459287601904,
+              "2": 0.27339610695846733
+            },
+            "reversi6": {
+              "1": 0.6150747038142315,
+              "2": 0.47689298813139597
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 26.277537289813694,
+              "mean_std": 0.5896494749565728,
+              "median_std": 0.5971579441428743,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 29.094387878612004,
+              "mean_std": 0.5343738764067217,
+              "median_std": 0.5555406124687103,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "60bb82e617948731008185eb88431af7e6bf83c367b57df4abcbc64ce3ef96a1",
+          "metrics_sha256": "4e5ed640f5a61d3f3c389d2ea717c9c91116de6ee48bdefb4fa5567ed4d3d91a",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.29682833851552715,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.11336926936741683,
+              "2": 0.1641848580957402
+            },
+            "reversi6": {
+              "1": 0.4907165703445365,
+              "2": 0.419042656254415
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 28.9158736485007,
+              "mean_std": 0.6190145706570491,
+              "median_std": 0.6460208408806087,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 32.605246147887776,
+              "mean_std": 0.5574965441982784,
+              "median_std": 0.5880167002720869,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c01a09dc457b7b5713d352a3938413ed84dccb5cf3c40a290fd2f8f7cbfac5c5",
+          "metrics_sha256": "4c29240b065e15f8d3957047149d698d0bc67e66d94cc43b7e374110f6d11061",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h128-z64-s17",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 17,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 108.40582719998201,
+      "receipt_seconds": 108.35594370000763,
+      "receipt_sha256": "78ddf1b5ae2eba1fe959de1d85f02fe49739b50193c5d9db4a156d197b5c91ec",
+      "snapshots": {
+        "0": {
+          "S": 0.7767519013522809,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.6608112851992518,
+              "2": 0.6812283776780096
+            },
+            "reversi6": {
+              "1": 1.050299462952314,
+              "2": 0.7146684795795483
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 19.277165028146232,
+              "mean_std": 0.14819525121928162,
+              "median_std": 0.1512396154741183,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.28540528983856,
+              "mean_std": 0.19882677088896475,
+              "median_std": 0.20480497214274995,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "11887c6939eee6779c4564180b4385cb09c081a32d140680458fdb8940589586",
+          "metrics_sha256": "db5669e21a9e1a2b8c4aa1d0e03f6cbf63827b0c4ab6af018d1d03ff35fa5c56",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.49843360466869796,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.39302090804981427,
+              "2": 0.29617634275913457
+            },
+            "reversi6": {
+              "1": 0.8137112127992286,
+              "2": 0.49082595506661436
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 21.337067395344718,
+              "mean_std": 0.48724074371075693,
+              "median_std": 0.48960141592604545,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.64638744243489,
+              "mean_std": 0.4879147610012555,
+              "median_std": 0.49444856802875936,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "2f82608cee059619ba1797fbde9b0a6938d6c80197d316fb24cddf3507cf1c40",
+          "metrics_sha256": "9f84b89868b04c7e72d132bf00c7c88db8e12955094f3887c9ee042cbc568817",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.41780475343318224,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.2452595825465763,
+              "2": 0.23507993878141728
+            },
+            "reversi6": {
+              "1": 0.721859734457188,
+              "2": 0.46901975794754736
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 25.060202351404573,
+              "mean_std": 0.5547432549994256,
+              "median_std": 0.5593121323929375,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 27.10073437908694,
+              "mean_std": 0.5226841806993981,
+              "median_std": 0.5518544815703419,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "7c12ed7bcfc6de37a1953135695f0c7270411ce320d8d6956eb2c82ef28344e9",
+          "metrics_sha256": "f9b798ced94b07f414fbeb70a1039510ec6e5909181a76f6315a8e2519d9e9fb",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.32490858936060346,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.13657309679752713,
+              "2": 0.17514261375750137
+            },
+            "reversi6": {
+              "1": 0.5280847071958057,
+              "2": 0.4598339396915797
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 27.95060008489503,
+              "mean_std": 0.586723804462185,
+              "median_std": 0.5895883129002331,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 30.142069853672435,
+              "mean_std": 0.5541310937894686,
+              "median_std": 0.5793409458933176,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "f90bf5cc325147139a0a96ef5e746b26135e6e4134b7a90453662d29668b4833",
+          "metrics_sha256": "7bba296235816f61603a6d46dc922c6708c28a6d4477ce1ad37565da0c348603",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h128-z64-s29",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 29,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 113.98246329999529,
+      "receipt_seconds": 113.90746409998974,
+      "receipt_sha256": "89a93656c416d188e76e4425abd50b90afc0e8480ac149a50ab549740ac80bd6",
+      "snapshots": {
+        "0": {
+          "S": 0.6973801837163234,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5577813614821497,
+              "2": 0.46972814804536184
+            },
+            "reversi6": {
+              "1": 0.9892229553283703,
+              "2": 0.7727882700094117
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 19.43146644373454,
+              "mean_std": 0.16861086809693165,
+              "median_std": 0.16730831537468854,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.34500481184338,
+              "mean_std": 0.20964030005194045,
+              "median_std": 0.20830704673909928,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "df6420ac39b9ba980b8d6ce1bc4e99d761d14a75b9a25e1d55e33733402040c5",
+          "metrics_sha256": "98ad4fde10f133bb1631976f29d9dd3da7bed92a2bd5721febb6206f8efa3875",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.4861606601897036,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.36777747767085955,
+              "2": 0.30720102068315613
+            },
+            "reversi6": {
+              "1": 0.761278496852543,
+              "2": 0.5083856455522558
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 21.989736269351614,
+              "mean_std": 0.5393747509281582,
+              "median_std": 0.5478048489495738,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 23.763052371585424,
+              "mean_std": 0.4901035323728032,
+              "median_std": 0.5049301952500185,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "2b322ea0a11b93b41deec53f3ac2ff0f206c65f0686a3cfb34f9442c615ffa29",
+          "metrics_sha256": "2544d17fa1a7944d92f0fa8520912bc86eb63c9f651b5ce1a29d5acc757ab55a",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.4222672853301204,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.24292340493559944,
+              "2": 0.22538019697678222
+            },
+            "reversi6": {
+              "1": 0.7352382068646766,
+              "2": 0.48552733254342345
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 25.442516572902964,
+              "mean_std": 0.5983520654744336,
+              "median_std": 0.6123392808430406,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 27.59038486911013,
+              "mean_std": 0.5200490926000173,
+              "median_std": 0.5519743924587952,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "86cda10b7c666303f7f484da1c3f7f538e27aedae0a3e9ee3a4dd6eaff4ec8e7",
+          "metrics_sha256": "1772338a42d902ed5fc31f84f4d147ae732ccb417646886e0de51af319812f20",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.3435092911425729,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.13903434694063058,
+              "2": 0.18009346760472578
+            },
+            "reversi6": {
+              "1": 0.5999181747084766,
+              "2": 0.4549911753164585
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 28.291237550800936,
+              "mean_std": 0.6201953105983444,
+              "median_std": 0.6365629479745876,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 31.145124675503016,
+              "mean_std": 0.5461371779926745,
+              "median_std": 0.591201539280744,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "73bcb4432f4d3cbc6a23822e9c9c306b89751a1e3e156987da8a409b94158a85",
+          "metrics_sha256": "911a573f47ee1aa4c9aeea54d27710139b75994f45d27f85f605a0bb29dec9a6",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h128-z64-s43",
+      "config": {
+        "variant": "value-dynamics",
+        "seed": 43,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 1.0,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 103.50082699998165,
+      "receipt_seconds": 103.44980539998505,
+      "receipt_sha256": "4a8ca9ce78a2942e73bcd0195e41f48e1303a2685001b1a2c390d97bac63d492",
+      "snapshots": {
+        "0": {
+          "S": 0.8467598620323785,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.7145292651421572,
+              "2": 0.7306092292836319
+            },
+            "reversi6": {
+              "1": 0.9398795327362692,
+              "2": 1.0020214209674558
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 17.725617649615614,
+              "mean_std": 0.16160271295482917,
+              "median_std": 0.15896236831897873,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.070656577334518,
+              "mean_std": 0.20575710511577391,
+              "median_std": 0.2006573207478978,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "33c0e9cc90630eb6bff4cb4c18992465038be0fdb03f24fb59a130118a852fb2",
+          "metrics_sha256": "1dd2cfc467e7544f3f9ea382bdf7dbd39c0a4f69e4af666b643ffdee71a8aa31",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.4960699221319871,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3666691823204878,
+              "2": 0.3116534657550815
+            },
+            "reversi6": {
+              "1": 0.8051057105199781,
+              "2": 0.5008513299324009
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 20.876727253154083,
+              "mean_std": 0.5041945858720288,
+              "median_std": 0.5011503612933796,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.742214987800885,
+              "mean_std": 0.467571110695845,
+              "median_std": 0.47602234332633186,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "7a26885fa4bec686774626315353fc4fcd0ccba8f6c11af855325f0be8e2f6e0",
+          "metrics_sha256": "e14541ccf6f1c3656d3007f8acf04bc0e17fd75ee5d451a73dc327f3932005ec",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.42412592858302717,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.23728529324483408,
+              "2": 0.25307045913694937
+            },
+            "reversi6": {
+              "1": 0.7140379366844458,
+              "2": 0.49211002526587944
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 25.21470514422116,
+              "mean_std": 0.5722378639714767,
+              "median_std": 0.5702457793302738,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 28.164900536863822,
+              "mean_std": 0.525310515454326,
+              "median_std": 0.5402110162568171,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "837049ef4a1d878a8fc58d9dc39369ef432ec95ea4ef62f7e627a588ccc7ae01",
+          "metrics_sha256": "dd45fed43ab858444d4446f2955342a0d6218a0043356ec6128e0a98b2a27428",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.3179969418856349,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.12611740520536602,
+              "2": 0.17782330672283833
+            },
+            "reversi6": {
+              "1": 0.5098376435284423,
+              "2": 0.4582094120858928
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 27.632095161747664,
+              "mean_std": 0.6095115297805273,
+              "median_std": 0.6080591755941372,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 32.15022166521992,
+              "mean_std": 0.5460843757559597,
+              "median_std": 0.5637349776006941,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "7b2cc2dc113b4cae68b914bb1bc1dcd668a5bcedf0aed7f0d59a6e4b52d6dfaa",
+          "metrics_sha256": "2ddb9c04302a06cba307a8c3debf113bd1e095d4b26b1f5ec76333eb96436459",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h128-z64-s17",
+      "config": {
+        "variant": "raw-jepa",
+        "seed": 17,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 0.1,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 127.13356029998977,
+      "receipt_seconds": 127.09133019999717,
+      "receipt_sha256": "ec53b6504e8ad7939c010cdc065d6dc669e6438e99d5e12bfd17ac367a52f4da",
+      "snapshots": {
+        "0": {
+          "S": 0.7767519013522809,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.6608112851992518,
+              "2": 0.6812283776780096
+            },
+            "reversi6": {
+              "1": 1.050299462952314,
+              "2": 0.7146684795795483
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 19.277165028146232,
+              "mean_std": 0.14819525121928162,
+              "median_std": 0.1512396154741183,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 24.28540528983856,
+              "mean_std": 0.19882677088896475,
+              "median_std": 0.20480497214274995,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "4db3f7013cb832c8ce69d9c3052560916f13515e5b1c6e0f822c4d2bb10afc61",
+          "metrics_sha256": "db5669e21a9e1a2b8c4aa1d0e03f6cbf63827b0c4ab6af018d1d03ff35fa5c56",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.5131391870906775,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.39338015171542967,
+              "2": 0.3072948480854708
+            },
+            "reversi6": {
+              "1": 0.8528004634816478,
+              "2": 0.49908128508016186
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 20.396755149718675,
+              "mean_std": 0.4610609061525325,
+              "median_std": 0.4520077957386261,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 23.686458888292584,
+              "mean_std": 0.4363702941740278,
+              "median_std": 0.4423867930694485,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "47ba3866ffe01d139fa1be1f48f5b2d73951cba2c3aa660564d3312e233db51f",
+          "metrics_sha256": "64c3591cf1ee9a916bba143991d10f6f84990c98358837822153825e87d2c2e3",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.431745464795983,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.2608534716461244,
+              "2": 0.23361385494567197
+            },
+            "reversi6": {
+              "1": 0.7475466372633957,
+              "2": 0.48496789532874013
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 24.982479412427598,
+              "mean_std": 0.5319925280315247,
+              "median_std": 0.5472962842628413,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 27.893513909046398,
+              "mean_std": 0.4514874027886907,
+              "median_std": 0.47607353778731093,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c53982764951a865491be0e1f34294b678d5992a6b52d680d971c4941282d001",
+          "metrics_sha256": "47bf668a5fc65219f36d82ebdbe876f83475658d707d70519538730087465fd4",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.3496783673835754,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.15056869988936125,
+              "2": 0.1861563775840618
+            },
+            "reversi6": {
+              "1": 0.5842589478954929,
+              "2": 0.47772944416538543
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 27.74734787896045,
+              "mean_std": 0.5661379292668218,
+              "median_std": 0.5950129431146047,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 30.70201545936721,
+              "mean_std": 0.4782389129291892,
+              "median_std": 0.48906469565850824,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "c74831ba196ae39d193aa8faade7d1f3a28cd9a99c7c4b755342b0791ba5c86d",
+          "metrics_sha256": "da354f4e10e2f930daae63c9616eefb4ab40ee1d6b22f77dcad066904a9ba621",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h128-z64-s29",
+      "config": {
+        "variant": "raw-jepa",
+        "seed": 29,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 0.1,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 119.94689940000535,
+      "receipt_seconds": 119.90669820000767,
+      "receipt_sha256": "ebe0e3e7a48d437f7c8a9c1f16d4b3eecdca903624c2bc0c58751e95615cf15b",
+      "snapshots": {
+        "0": {
+          "S": 0.6973801837163234,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.5577813614821497,
+              "2": 0.46972814804536184
+            },
+            "reversi6": {
+              "1": 0.9892229553283703,
+              "2": 0.7727882700094117
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 19.43146644373454,
+              "mean_std": 0.16861086809693165,
+              "median_std": 0.16730831537468854,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.34500481184338,
+              "mean_std": 0.20964030005194045,
+              "median_std": 0.20830704673909928,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "87694576f150a69cf154dec795a20410c04e7accae9e691c0ceb271aa82c954b",
+          "metrics_sha256": "98ad4fde10f133bb1631976f29d9dd3da7bed92a2bd5721febb6206f8efa3875",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.49588826688464305,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.3712429118433476,
+              "2": 0.32164303449494297
+            },
+            "reversi6": {
+              "1": 0.7833969736203268,
+              "2": 0.5072701475799548
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 21.35342339527773,
+              "mean_std": 0.4917050320303731,
+              "median_std": 0.4939225938683624,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 22.971810109402767,
+              "mean_std": 0.45445059846949065,
+              "median_std": 0.44022561322369125,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "b116294e581a23465a03cac2a18b1891a9372b3025dc0c3a8a2e9abc7a9f6e51",
+          "metrics_sha256": "7cabda9fe16a4a6e6718407d8f371c89e249f80d71f83d337fa7d2efb796221b",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.4239466946353894,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.2563494815027719,
+              "2": 0.23758084132777046
+            },
+            "reversi6": {
+              "1": 0.7150037723265737,
+              "2": 0.4868526833844415
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 25.189752022585406,
+              "mean_std": 0.565361004820071,
+              "median_std": 0.5714524896869005,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 26.59399911303934,
+              "mean_std": 0.4725275418732232,
+              "median_std": 0.4827315642498934,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "24e8fa73209164fda42c9cda9728094f47c8627f09a323f159440a4575fcdd31",
+          "metrics_sha256": "567c9c32ce2ec67fbc8e6e7d6aab99a7b7df48dc1a6316aa83784d35d888e026",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.34676227664869513,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.15236451298749007,
+              "2": 0.18512017317288532
+            },
+            "reversi6": {
+              "1": 0.5949215374475942,
+              "2": 0.45464288298681094
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 28.103319109085017,
+              "mean_std": 0.5915374769564761,
+              "median_std": 0.6087808542653085,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 30.870546017145983,
+              "mean_std": 0.4985116570043103,
+              "median_std": 0.5239216361856396,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "3bdf952623439771017486970f4ca904567bd1b7b05ddee1b1e5c598f80203be",
+          "metrics_sha256": "b5392cd40d47b3715f6c677924232e7314100724918551a5789118410a0f2ffc",
+          "reference_match": "not_applicable"
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h128-z64-s43",
+      "config": {
+        "variant": "raw-jepa",
+        "seed": 43,
+        "hidden": 128,
+        "latent": 64,
+        "projection": 16,
+        "learning_rate": 0.001,
+        "jepa_weight": 0.1,
+        "ema": 0.99,
+        "batch_size": 128
+      },
+      "status": "complete",
+      "seconds": 108.81439939999836,
+      "receipt_seconds": 108.77816450002138,
+      "receipt_sha256": "5087c767c1dce50bb3a185ac2676eddf41154db29e3b41323d297daeef238c5b",
+      "snapshots": {
+        "0": {
+          "S": 0.8467598620323785,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.7145292651421572,
+              "2": 0.7306092292836319
+            },
+            "reversi6": {
+              "1": 0.9398795327362692,
+              "2": 1.0020214209674558
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 17.725617649615614,
+              "mean_std": 0.16160271295482917,
+              "median_std": 0.15896236831897873,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.070656577334518,
+              "mean_std": 0.20575710511577391,
+              "median_std": 0.2006573207478978,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "2cb5fbe23d41b5b426d4d1caf6b294e682cc84060ec6313d933e84c240490013",
+          "metrics_sha256": "1dd2cfc467e7544f3f9ea382bdf7dbd39c0a4f69e4af666b643ffdee71a8aa31",
+          "reference_match": "not_applicable"
+        },
+        "40": {
+          "S": 0.4962548683430358,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.36948526432558626,
+              "2": 0.31704476944880267
+            },
+            "reversi6": {
+              "1": 0.7963753746167548,
+              "2": 0.5021140649809993
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 21.562541854892835,
+              "mean_std": 0.4911136601837801,
+              "median_std": 0.47096286692829853,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 25.4616733735144,
+              "mean_std": 0.4425019664964981,
+              "median_std": 0.4327639708959097,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "0e575062fbf933aaa9e3230f8a78201aefb35ce4046506b177cc8a522f898966",
+          "metrics_sha256": "7aa82d1c7ddd0745bdeda129961fd05c67262a79bb28eea9db085642e0145f08",
+          "reference_match": "not_applicable"
+        },
+        "80": {
+          "S": 0.42115340122656403,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.2521108737566949,
+              "2": 0.2644334253437254
+            },
+            "reversi6": {
+              "1": 0.6897036089302898,
+              "2": 0.4783656968755461
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 25.884909580856856,
+              "mean_std": 0.5577087692294023,
+              "median_std": 0.5565344034461253,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 29.989588223331165,
+              "mean_std": 0.4847380833778203,
+              "median_std": 0.4760337545026766,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "53dcf98c6cd4791c138e37762099f846b3223276795dfb66a5167129bff4dd8b",
+          "metrics_sha256": "2c32d44268a0190e648d663541a221d50ea5091559e7cdbbe9606a17f04f28e8",
+          "reference_match": "not_applicable"
+        },
+        "160": {
+          "S": 0.322905160620279,
+          "components": {
+            "connect4-4x5": {
+              "1": 0.1451412587569766,
+              "2": 0.1850461707370744
+            },
+            "reversi6": {
+              "1": 0.5044837876807506,
+              "2": 0.4569494253063145
+            }
+          },
+          "geometry": {
+            "connect4-4x5": {
+              "samples": 3792,
+              "dimensions": 64,
+              "effective_rank": 29.129020858406363,
+              "mean_std": 0.58857779026782,
+              "median_std": 0.6005894149903358,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 321,
+              "nonterminal_nodes": 3471
+            },
+            "reversi6": {
+              "samples": 5445,
+              "dimensions": 64,
+              "effective_rank": 33.112343489713695,
+              "mean_std": 0.49653722561526237,
+              "median_std": 0.48895309509548507,
+              "weighting": "Every unique raw training node once; no canonical-orbit or fork weighting",
+              "terminal_nodes": 1,
+              "nonterminal_nodes": 5444
+            }
+          },
+          "checkpoint_sha256": "9500aa8a26063af8a9fe88780b7d1d5058d924590b7ce993a39ba3ac02b20aee",
+          "metrics_sha256": "2bad4f98f7ecb52a63e638a522350b80db6b1596e615e6109ddbb263395cd660",
+          "reference_match": "not_applicable"
+        }
+      }
+    }
+  ],
+  "decisions": {
+    "progress": [
+      {
+        "family": "direct",
+        "hidden": 64,
+        "latent": 32,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.14806552974976978,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.2940667591605628,
+                "2": 0.18710390425411477
+              },
+              "reversi6": {
+                "1": 0.15394927576400005,
+                "2": 0.02223770831250896
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.11851792799441116,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.3233065641956888,
+                "2": 0.10639422689837193
+              },
+              "reversi6": {
+                "1": 0.1114504992943367,
+                "2": 0.0026616593374169458
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.13483336764172293,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.25764834755473065,
+                "2": 0.1740505834689349
+              },
+              "reversi6": {
+                "1": 0.180211755449887,
+                "2": -0.03597730254510155
+              }
+            }
+          }
+        ],
+        "median_r": 0.13483336764172293,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "direct",
+        "hidden": 128,
+        "latent": 64,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.2229189290164692,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4931995277659592,
+                "2": 0.24530991001310382
+              },
+              "reversi6": {
+                "1": 0.2881038102101522,
+                "2": -0.010608292924511
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.20267861438898138,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.46984374072097373,
+                "2": 0.1965287553841611
+              },
+              "reversi6": {
+                "1": 0.23548768121852712,
+                "2": 0.052644631370512715
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.25417597693951816,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.49966029054124866,
+                "2": 0.39946160930271707
+              },
+              "reversi6": {
+                "1": 0.20218378791798658,
+                "2": 0.12130673613729408
+              }
+            }
+          }
+        ],
+        "median_r": 0.2229189290164692,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "value-dynamics",
+        "hidden": 64,
+        "latent": 32,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.12191724485832253,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.23862899099476886,
+                "2": 0.17357752124348064
+              },
+              "reversi6": {
+                "1": 0.11623058438975821,
+                "2": 0.018147534279540373
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.15043698597585486,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.3048057694582089,
+                "2": 0.12458103818401588
+              },
+              "reversi6": {
+                "1": 0.17990558772890855,
+                "2": -0.0019384182896687418
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.12611388365521364,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.2561505789131001,
+                "2": 0.17851617844037057
+              },
+              "reversi6": {
+                "1": 0.12157069141141909,
+                "2": 0.007759674985927515
+              }
+            }
+          }
+        ],
+        "median_r": 0.12611388365521364,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "value-dynamics",
+        "hidden": 128,
+        "latent": 64,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.22234348295282205,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.44314878391513585,
+                "2": 0.25496571649036803
+              },
+              "reversi6": {
+                "1": 0.26843861488838133,
+                "2": 0.019585141351326486
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.1865121853471932,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.42766178920681,
+                "2": 0.20093482027048587
+              },
+              "reversi6": {
+                "1": 0.1840492385906519,
+                "2": 0.06289276664817615
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.250229895285962,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4684988543506722,
+                "2": 0.2973367680713416
+              },
+              "reversi6": {
+                "1": 0.28597961349810685,
+                "2": 0.06888827993632254
+              }
+            }
+          }
+        ],
+        "median_r": 0.22234348295282205,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "raw-jepa",
+        "hidden": 64,
+        "latent": 32,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.09389786033930066,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.18452720964932828,
+                "2": 0.19551566580534555
+              },
+              "reversi6": {
+                "1": 0.06716844853192168,
+                "2": 0.008561122303584853
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.12893334226449163,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.30120344149081485,
+                "2": 0.17406121035766878
+              },
+              "reversi6": {
+                "1": 0.10558001671187622,
+                "2": 0.008160747460228783
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.11266924839092694,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.3037943747733205,
+                "2": 0.17425894019799631
+              },
+              "reversi6": {
+                "1": 0.07254251566403452,
+                "2": -0.0005332266606707446
+              }
+            }
+          }
+        ],
+        "median_r": 0.11266924839092694,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "raw-jepa",
+        "hidden": 128,
+        "latent": 64,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.19008212964364923,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4227843741576735,
+                "2": 0.20314496061308787
+              },
+              "reversi6": {
+                "1": 0.21843144123510896,
+                "2": 0.014925629578939538
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.18206161048873343,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.40563752228286626,
+                "2": 0.22081186286612034
+              },
+              "reversi6": {
+                "1": 0.16794629556742066,
+                "2": 0.06615923357702067
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.23328374012924402,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.42429591951258583,
+                "2": 0.3002164136529222
+              },
+              "reversi6": {
+                "1": 0.26854987976184397,
+                "2": 0.04476966410658696
+              }
+            }
+          }
+        ],
+        "median_r": 0.19008212964364923,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      }
+    ],
+    "capacity": [
+      {
+        "family": "direct",
+        "seeds": [
+          {
+            "seed": 17,
+            "c": 0.2209729038898073,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.5137262294253777,
+                "2": 0.2607911550889164
+              },
+              "reversi6": {
+                "1": 0.24978829985161374,
+                "2": 0.026168217884808137
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "c": 0.2602767736058576,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.5385486663620903,
+                "2": 0.3210287794645375
+              },
+              "reversi6": {
+                "1": 0.2701496727491768,
+                "2": 0.09377886970815603
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "c": 0.27401545229110763,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.5155384375334474,
+                "2": 0.31447213979117117
+              },
+              "reversi6": {
+                "1": 0.2362019671959036,
+                "2": 0.19332873592011612
+              }
+            }
+          }
+        ],
+        "median_c": 0.2602767736058576,
+        "favorable_seeds": 3,
+        "material_capacity_response": true
+      },
+      {
+        "family": "value-dynamics",
+        "seeds": [
+          {
+            "seed": 17,
+            "c": 0.23935425295500415,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4889122684857823,
+                "2": 0.2862769386518634
+              },
+              "reversi6": {
+                "1": 0.25227480849933553,
+                "2": 0.06103639361447751
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "c": 0.20204756702790894,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4652500546093212,
+                "2": 0.28640356063887223
+              },
+              "reversi6": {
+                "1": 0.15621348188253717,
+                "2": 0.08745735907306368
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "c": 0.24216623282753955,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.509044488156008,
+                "2": 0.33211083262262747
+              },
+              "reversi6": {
+                "1": 0.23367304333932393,
+                "2": 0.06492366758443903
+              }
+            }
+          }
+        ],
+        "median_c": 0.23935425295500415,
+        "favorable_seeds": 3,
+        "material_capacity_response": true
+      },
+      {
+        "family": "raw-jepa",
+        "seeds": [
+          {
+            "seed": 17,
+            "c": 0.2075176596955206,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.47201361315201124,
+                "2": 0.25825694782236813
+              },
+              "reversi6": {
+                "1": 0.20831021918126147,
+                "2": 0.026712125357914143
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "c": 0.2012056314759485,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4305830144624728,
+                "2": 0.2534884429566404
+              },
+              "reversi6": {
+                "1": 0.17699436942433322,
+                "2": 0.08706908037503977
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "c": 0.25539502329469693,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.421057355204485,
+                "2": 0.2825614467561682
+              },
+              "reversi6": {
+                "1": 0.30404516371046125,
+                "2": 0.08816542679058414
+              }
+            }
+          }
+        ],
+        "median_c": 0.2075176596955206,
+        "favorable_seeds": 3,
+        "material_capacity_response": true
+      }
+    ],
+    "branch": "Budget may be limiting; separately freeze a budget decision before another development grid.",
+    "candidate": null
+  },
+  "limitations": [
+    "Training fit does not establish generalization, playing strength or JEPA superiority.",
+    "No candidate is promoted; no development, selection or final data is read.",
+    "Capacity changes several components and compute; this is not an isolated encoder intervention.",
+    "A threshold flag is not proof of convergence. No inferential bootstrap is computed.",
+    "Saved diagnostics are checked for integrity and arithmetic, not recomputed model predictions."
+  ],
+  "ledger_sha256": "77f0dd686e820715f4e608176449ad32852d1c2604d0ce556b7edcf2c190a63c",
+  "total_cell_seconds": 1627.0835001999803,
+  "actual_artifact_bytes": 142867189,
+  "ledger_artifact_bytes": 142809101,
+  "code_commit": "20f457c63bf07b2dd7f1a9eb9d5528d5d93cbc37",
+  "dataset_fingerprint": "73acd3d11c3a30fa56703d19768d899dff51c6af6ccf2afddc0f5f007d46cc18",
+  "source": {
+    "benchmarks/reference_rules.py": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+    "docs/METHOD_V22.md": "322239a442fd75c5c96982dce4ac1e6e34652f425ad3e3eca552a0f265ed1028",
+    "docs/METHOD_V23_DIAGNOSTIC.md": "ed451043a602b7e88432acd8cb4e105e94aa6be16d18fa6696564c06827b9148",
+    "docs/validation/V23_EPOCH40_REFERENCES.json": "9d582ff6ed3744d0682782ea6bea649e249d0ab6785021864fec671eb44e26e0",
+    "tools/diagnose_v21_value_alignment.py": "92d3735949a14429b13f741cde4348ad1163048409df3d7df71314784e223df7",
+    "two_player/data.py": "7025e9ee790ed9310fe3288f2b3fec67eb6158e6eda83c9549689e5108a41538",
+    "two_player/games.py": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "two_player_v2/__init__.py": "0df8921ce2fd6bed7152440f8240096ae0255023b2354dbe31ce4c6b216bd98b",
+    "two_player_v2/data.py": "a267963799a8f209c450d58d3044c0216054fc78d1377d20888040658699c778",
+    "two_player_v21/augmentation.py": "bae1a948a63974e92559ee9d4754ebae289807a069d02ec1ab9fd95a2b117a39",
+    "two_player_v22/__init__.py": "14d3d67cb2a7bebf679d053e572a097297c26754735464804142e44124c58366",
+    "two_player_v22/data.py": "9483e5066e9b20ddb30b93650c30bd0eac6fda44a31be3614705e4c475122cf6",
+    "two_player_v22/model.py": "31698e1f083799d37164157e58918518f959439f45bf6826f39c49af954dade8",
+    "two_player_v23_diagnostic/__init__.py": "5c8eb7cf00649e79b9d9cac1c9c0b56d6305fcfcbeb86c3335bc27c9154c2ab7",
+    "two_player_v23_diagnostic/metrics.py": "df323280186cea65ffccfd5734cf1806a28e9bcbf96d8b262c84266ef7138980",
+    "two_player_v23_diagnostic/report.py": "791804e2146c0b6fbd8020127bd0e26ffa6d19269ae4ae891ae34601026aef38",
+    "two_player_v23_diagnostic/runtime.py": "4ef3a9c7443a385039cc7a1d2d06f99f895a84af55a90b202618115a3b92e884"
+  },
+  "root_schedule_sha256": "4fcea396118f6c123dca377f3b4f1d79209b2f1a072f347995fde84c591170b2",
+  "process_peak_rss_bytes": 137879552
+}

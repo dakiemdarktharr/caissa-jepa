@@ -38,6 +38,14 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/V21_VALUE_ALIGNMENT_DIAGNOSIS.md` | Post-hoc value/latent error diagnosis of 18 selected Grid02 checkpoints |
 | `docs/METHOD_V23_DIAGNOSTIC.md` | Frozen 18-run training-only convergence/capacity protocol; not a superiority study |
 | `docs/V23_PREFIT_REVIEW.md` | Independent runtime/metrics/failure-path review before the training-only diagnostic |
+| `docs/V23_FIT_DIAGNOSTIC.md` | Executed 18-run training-fit diagnosis; common budget/capacity effects, no JEPA promotion |
+| `docs/V23_INDEPENDENT_RESULTS_REVIEW.md` | Actual source/checkpoint/schedule/root-metadata audit of all 18 runs |
+| `docs/METHOD_V24_ORDER_PROBE.md` | Frozen single training-only H1 ordering probe and common future budget decision |
+| `docs/V24_ORDER_PREFIT_REVIEW.md` | Independent mathematical/specification review; implementation not yet reviewed |
+| `docs/V24_DESIGN_CONSTRAINTS.md` | Prospective controls and claim boundaries for future development |
+| `docs/V24_MECHANISM_CRITIQUE.md` | Random minimum-probe proposal deferred after mathematical counterexamples |
+| `docs/V24_ADDITIVE_DYNAMICS_LIMIT.md` | Conditional additive-transition order restriction; relevance awaits measurement |
+| `docs/EXTERNAL_REFERENCE_FEASIBILITY.md` | Official OpenSpiel compatibility/license/source inspection; no engine acquired |
 | `docs/V23_RESEARCH_OPTIONS.md` | Conditional action-dependent dynamics proposals and verified prior-art limits; not an implemented method |
 | `docs/PROFESSOR_BRIEF_V2.md` | Vietnamese discussion brief; separates evidence from missing publication requirements |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |

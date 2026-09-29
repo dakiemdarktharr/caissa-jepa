@@ -1,0 +1,3022 @@
+{
+  "version": "v23-independent-postrun-audit01",
+  "status": "verified",
+  "script_sha256": "3f93d16e2c9444167813b92d025e63e8d68be799440f3b6dff94e2c548c15b2f",
+  "grid": "C:\\Users\\ANHKHOI\\Documents\\ChatGPT\\caissa-jepa\\chess_data\\v23-fit-01",
+  "full_training": "C:\\Users\\ANHKHOI\\Documents\\ChatGPT\\caissa-jepa\\chess_data\\v22-full-01",
+  "errors": [],
+  "source_verification": {
+    "commit": "20f457c63bf07b2dd7f1a9eb9d5528d5d93cbc37",
+    "files_checked": 17,
+    "inventory_sha256": "e648907051ae10e5ca379dc891ff2bbe3237cf72106c3171c02bf1617ed62940"
+  },
+  "ledger_sha256": "77f0dd686e820715f4e608176449ad32852d1c2604d0ce556b7edcf2c190a63c",
+  "training": {
+    "dataset_fingerprint": "73acd3d11c3a30fa56703d19768d899dff51c6af6ccf2afddc0f5f007d46cc18",
+    "manifest_sha256": "a93187a6c66978e0f0a2f1108bc9a50ccdc974c7900ed9cb78cf7e383718c5b5",
+    "payload_sha256": "674ac6003b0f02b7c550a32d01bb58354adcbd3a0695fb493af5f235ec7e4740",
+    "roots": 509,
+    "nodes": 9237,
+    "forks": 6750,
+    "legal_root_signature_sha256": "4fcea396118f6c123dca377f3b4f1d79209b2f1a072f347995fde84c591170b2",
+    "geometry_inventory": {
+      "connect4-4x5": {
+        "samples": 3792,
+        "terminal_nodes": 321,
+        "nonterminal_nodes": 3471
+      },
+      "reversi6": {
+        "samples": 5445,
+        "terminal_nodes": 1,
+        "nonterminal_nodes": 5444
+      }
+    }
+  },
+  "counts": {
+    "cells": 18,
+    "plans_replayed": 480,
+    "unique_replayed_fork_draws": 4008960,
+    "epoch_receipts_checked": 2880,
+    "snapshots_checked": 72,
+    "tensor_arrays_checked": 4248,
+    "historical_replays": 9,
+    "snapshot_root_records_checked": 36648
+  },
+  "plan_hashes_by_seed": {
+    "17": "95c96fe49f77ee81376ec6d6d9529ef2e50856e429eca7c3ced9437b42a5d042",
+    "29": "1b4c159b6e25aa4720ebda8aa365a85e2bebbe6943524340d96323fd38aaee48",
+    "43": "4002da8fed376a2c50d5d7b737739f2078bc119e3e5977febef8a5bbfc551251"
+  },
+  "strict_report_status": "verified_diagnostic",
+  "strict_report_sha256": "1eaa5dfbf020c87f82c60a79792a225950c8c48a362148cfe9eab9f20c356fa2",
+  "decisions": {
+    "progress": [
+      {
+        "family": "direct",
+        "hidden": 64,
+        "latent": 32,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.14806552974976978,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.2940667591605628,
+                "2": 0.18710390425411477
+              },
+              "reversi6": {
+                "1": 0.15394927576400005,
+                "2": 0.02223770831250896
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.11851792799441116,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.3233065641956888,
+                "2": 0.10639422689837193
+              },
+              "reversi6": {
+                "1": 0.1114504992943367,
+                "2": 0.0026616593374169458
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.13483336764172293,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.25764834755473065,
+                "2": 0.1740505834689349
+              },
+              "reversi6": {
+                "1": 0.180211755449887,
+                "2": -0.03597730254510155
+              }
+            }
+          }
+        ],
+        "median_r": 0.13483336764172293,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "direct",
+        "hidden": 128,
+        "latent": 64,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.2229189290164692,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4931995277659592,
+                "2": 0.24530991001310382
+              },
+              "reversi6": {
+                "1": 0.2881038102101522,
+                "2": -0.010608292924511
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.20267861438898138,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.46984374072097373,
+                "2": 0.1965287553841611
+              },
+              "reversi6": {
+                "1": 0.23548768121852712,
+                "2": 0.052644631370512715
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.25417597693951816,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.49966029054124866,
+                "2": 0.39946160930271707
+              },
+              "reversi6": {
+                "1": 0.20218378791798658,
+                "2": 0.12130673613729408
+              }
+            }
+          }
+        ],
+        "median_r": 0.2229189290164692,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "value-dynamics",
+        "hidden": 64,
+        "latent": 32,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.12191724485832253,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.23862899099476886,
+                "2": 0.17357752124348064
+              },
+              "reversi6": {
+                "1": 0.11623058438975821,
+                "2": 0.018147534279540373
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.15043698597585486,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.3048057694582089,
+                "2": 0.12458103818401588
+              },
+              "reversi6": {
+                "1": 0.17990558772890855,
+                "2": -0.0019384182896687418
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.12611388365521364,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.2561505789131001,
+                "2": 0.17851617844037057
+              },
+              "reversi6": {
+                "1": 0.12157069141141909,
+                "2": 0.007759674985927515
+              }
+            }
+          }
+        ],
+        "median_r": 0.12611388365521364,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "value-dynamics",
+        "hidden": 128,
+        "latent": 64,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.22234348295282205,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.44314878391513585,
+                "2": 0.25496571649036803
+              },
+              "reversi6": {
+                "1": 0.26843861488838133,
+                "2": 0.019585141351326486
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.1865121853471932,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.42766178920681,
+                "2": 0.20093482027048587
+              },
+              "reversi6": {
+                "1": 0.1840492385906519,
+                "2": 0.06289276664817615
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.250229895285962,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4684988543506722,
+                "2": 0.2973367680713416
+              },
+              "reversi6": {
+                "1": 0.28597961349810685,
+                "2": 0.06888827993632254
+              }
+            }
+          }
+        ],
+        "median_r": 0.22234348295282205,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "raw-jepa",
+        "hidden": 64,
+        "latent": 32,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.09389786033930066,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.18452720964932828,
+                "2": 0.19551566580534555
+              },
+              "reversi6": {
+                "1": 0.06716844853192168,
+                "2": 0.008561122303584853
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.12893334226449163,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.30120344149081485,
+                "2": 0.17406121035766878
+              },
+              "reversi6": {
+                "1": 0.10558001671187622,
+                "2": 0.008160747460228783
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.11266924839092694,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.3037943747733205,
+                "2": 0.17425894019799631
+              },
+              "reversi6": {
+                "1": 0.07254251566403452,
+                "2": -0.0005332266606707446
+              }
+            }
+          }
+        ],
+        "median_r": 0.11266924839092694,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      },
+      {
+        "family": "raw-jepa",
+        "hidden": 128,
+        "latent": 64,
+        "seeds": [
+          {
+            "seed": 17,
+            "r": 0.19008212964364923,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4227843741576735,
+                "2": 0.20314496061308787
+              },
+              "reversi6": {
+                "1": 0.21843144123510896,
+                "2": 0.014925629578939538
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "r": 0.18206161048873343,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.40563752228286626,
+                "2": 0.22081186286612034
+              },
+              "reversi6": {
+                "1": 0.16794629556742066,
+                "2": 0.06615923357702067
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "r": 0.23328374012924402,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.42429591951258583,
+                "2": 0.3002164136529222
+              },
+              "reversi6": {
+                "1": 0.26854987976184397,
+                "2": 0.04476966410658696
+              }
+            }
+          }
+        ],
+        "median_r": 0.19008212964364923,
+        "material_progress": true,
+        "interpretation": "still making material fit progress"
+      }
+    ],
+    "capacity": [
+      {
+        "family": "direct",
+        "seeds": [
+          {
+            "seed": 17,
+            "c": 0.2209729038898073,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.5137262294253777,
+                "2": 0.2607911550889164
+              },
+              "reversi6": {
+                "1": 0.24978829985161374,
+                "2": 0.026168217884808137
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "c": 0.2602767736058576,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.5385486663620903,
+                "2": 0.3210287794645375
+              },
+              "reversi6": {
+                "1": 0.2701496727491768,
+                "2": 0.09377886970815603
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "c": 0.27401545229110763,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.5155384375334474,
+                "2": 0.31447213979117117
+              },
+              "reversi6": {
+                "1": 0.2362019671959036,
+                "2": 0.19332873592011612
+              }
+            }
+          }
+        ],
+        "median_c": 0.2602767736058576,
+        "favorable_seeds": 3,
+        "material_capacity_response": true
+      },
+      {
+        "family": "value-dynamics",
+        "seeds": [
+          {
+            "seed": 17,
+            "c": 0.23935425295500415,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4889122684857823,
+                "2": 0.2862769386518634
+              },
+              "reversi6": {
+                "1": 0.25227480849933553,
+                "2": 0.06103639361447751
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "c": 0.20204756702790894,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4652500546093212,
+                "2": 0.28640356063887223
+              },
+              "reversi6": {
+                "1": 0.15621348188253717,
+                "2": 0.08745735907306368
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "c": 0.24216623282753955,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.509044488156008,
+                "2": 0.33211083262262747
+              },
+              "reversi6": {
+                "1": 0.23367304333932393,
+                "2": 0.06492366758443903
+              }
+            }
+          }
+        ],
+        "median_c": 0.23935425295500415,
+        "favorable_seeds": 3,
+        "material_capacity_response": true
+      },
+      {
+        "family": "raw-jepa",
+        "seeds": [
+          {
+            "seed": 17,
+            "c": 0.2075176596955206,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.47201361315201124,
+                "2": 0.25825694782236813
+              },
+              "reversi6": {
+                "1": 0.20831021918126147,
+                "2": 0.026712125357914143
+              }
+            }
+          },
+          {
+            "seed": 29,
+            "c": 0.2012056314759485,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.4305830144624728,
+                "2": 0.2534884429566404
+              },
+              "reversi6": {
+                "1": 0.17699436942433322,
+                "2": 0.08706908037503977
+              }
+            }
+          },
+          {
+            "seed": 43,
+            "c": 0.25539502329469693,
+            "per_game_horizon": {
+              "connect4-4x5": {
+                "1": 0.421057355204485,
+                "2": 0.2825614467561682
+              },
+              "reversi6": {
+                "1": 0.30404516371046125,
+                "2": 0.08816542679058414
+              }
+            }
+          }
+        ],
+        "median_c": 0.2075176596955206,
+        "favorable_seeds": 3,
+        "material_capacity_response": true
+      }
+    ],
+    "branch": "Budget may be limiting; separately freeze a budget decision before another development grid.",
+    "candidate": null
+  },
+  "cells": [
+    {
+      "id": "direct-h64-z32-s17",
+      "seconds": 66.27352289998089,
+      "snapshots": {
+        "0": {
+          "S": 0.798577361281833,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5889426123138497,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5361412868606575,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9148876259347196,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.154337920018105,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5304299101328003,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.40656129028213595,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3342148124863642,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8715224776035042,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5094210601591967,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.46916069780136144,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3217556335914947,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2787597237883727,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7798350007810708,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4962924330445075,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.3996941705436312,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.22713799717959035,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.22660269111876954,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6597799671954065,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.48525602668075835,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-h64-z32-s29",
+      "seconds": 62.841865499998676,
+      "snapshots": {
+        "0": {
+          "S": 0.7462663895081365,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5623656807937846,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.42285618102777756,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9148762838507938,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.0849674123601905,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5171511356860817,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.4248700275738853,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3267306863721247,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7941880365221131,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5228157922762038,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.47278603488877413,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3286771283941797,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2763573630467212,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7817437720525379,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5043658760616578,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.41675241364906324,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.22241365528335216,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2469545350576926,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6946180383370444,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5030234259181638,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-h64-z32-s43",
+      "seconds": 77.88274540001294,
+      "snapshots": {
+        "0": {
+          "S": 0.7571465790444937,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.6958285198386174,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46613384890749676,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 1.1216253473048448,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7449986001270158,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5190691379369203,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.4196991166433071,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.34661030141312205,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7911446889609013,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5188224447303508,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.47258313922092643,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.31522912946276754,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.28997098364472856,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7837011813612897,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5014312624149198,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.40886316306907167,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.23401086515556924,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.23950136475230258,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6424690157200215,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5194714066483935,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h64-z32-s17",
+      "seconds": 71.79308400000446,
+      "snapshots": {
+        "0": {
+          "S": 0.798577361281833,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5889426123138497,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5361412868606575,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9148876259347196,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.154337920018105,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.555571131551002,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.4309464009003977,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.34399480353251627,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9366838952616949,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5106594265093992,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.48645570744505906,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3509727230043099,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2969340320056172,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7991395234621965,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4987765513081127,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.4271483678477513,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.26722045624710494,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2453929587572498,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7062550696412325,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4897249867454178,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h64-z32-s29",
+      "seconds": 62.991887099982705,
+      "snapshots": {
+        "0": {
+          "S": 0.7462663895081365,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5623656807937846,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.42285618102777756,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9148762838507938,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.0849674123601905,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5429217030765251,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.46050114473307824,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3423541733706307,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8565588375526122,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5122726566497794,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.5067174820693516,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.37399448080340825,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.28828983964343596,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8669530610978345,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.49763254673272805,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.4304884313255642,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.25999880530900205,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.25237439212275325,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7109833611076523,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4985971667628492,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h64-z32-s43",
+      "seconds": 63.964791400008835,
+      "snapshots": {
+        "0": {
+          "S": 0.7571465790444937,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.6958285198386174,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46613384890749676,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 1.1216253473048448,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7449986001270158,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5316590431725977,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.44496474930804847,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.32753786578268823,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8439469695135376,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5101865880861166,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.4801690365637,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.34534077344063063,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3241046541294748,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7573750216535852,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.49385569703110954,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.41961305455166953,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.25688153440151534,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2662467298595429,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6653004166134203,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.49002353733219944,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h64-z32-s17",
+      "seconds": 66.86446510002133,
+      "snapshots": {
+        "0": {
+          "S": 0.798577361281833,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5889426123138497,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5361412868606575,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9148876259347196,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.154337920018105,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.559465520995017,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.4343700852488547,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.34416173379197657,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9495500906052241,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5097801743340128,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.48696978645507727,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.34970553048260333,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3119656957682077,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7911286389130263,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4950792806564718,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.44124436545705936,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.2851753447437104,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2509715150516587,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7379897556480675,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4908408463848009,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h64-z32-s29",
+      "seconds": 74.37300680001499,
+      "snapshots": {
+        "0": {
+          "S": 0.7462663895081365,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5623656807937846,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.42285618102777756,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9148762838507938,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.0849674123601905,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5486678922362204,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.4603588854914089,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.35107165957037223,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8618551794299415,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.521385844453159,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.4983626205623658,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3829152408061486,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.30024055163783503,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8081935710602898,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5021011187451898,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.4341070622335693,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.26757985247605254,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2479803178212993,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7228644803213135,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.498003598315612,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h64-z32-s43",
+      "seconds": 89.17995150000206,
+      "snapshots": {
+        "0": {
+          "S": 0.7571465790444937,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.6958285198386174,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46613384890749676,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 1.1216253473048448,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7449986001270158,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5383237859423107,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.4609085831694102,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.33765894750935377,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8394438007845182,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5152838123059607,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.4887238332719853,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.36009560140335906,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.312357192934104,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7815776768949182,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.50086486185556,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.433659686306498,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.25070058331640277,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.257926159530186,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7248800660261089,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5011319363532946,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-h128-z64-s17",
+      "seconds": 107.21370220000972,
+      "snapshots": {
+        "0": {
+          "S": 0.7767519013522808,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.6608112851992518,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.6812283776780096,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 1.050299462952314,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7146684795795483,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.47995599905320707,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.34990172511609846,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.30145093753359314,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7569165282346246,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5115548053285122,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.40069511488251947,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.21793833348734698,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2219543038634006,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6952904904008957,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4675973317784346,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.31137258901077713,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.11045125032928732,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.1675067135556487,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.49497465091351245,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.47255774124466,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-h128-z64-s29",
+      "seconds": 109.98668689999613,
+      "snapshots": {
+        "0": {
+          "S": 0.6973801837163234,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5577813614821497,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46972814804536184,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9892229553283703,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7727882700094117,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.48085563152467986,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.34024281644788135,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.31678261973618443,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7524037056370732,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5139933842775806,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.3866463957890495,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.19359024071385794,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.20868826757460265,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6631249623323957,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4811821125353417,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.3082814400320313,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.10263307784978518,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.1676750220848892,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5069672025946167,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4558504575988341,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-h128-z64-s43",
+      "seconds": 91.93381479999516,
+      "snapshots": {
+        "0": {
+          "S": 0.8467598620323786,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.7145292651421572,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7306092292836319,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9398795327362692,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.0020214209674558,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.4771323268382782,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3380314908187771,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.31191244360840537,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.751075618638684,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5075097542872463,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.39798709794502846,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.22658459287601904,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.27339610695846733,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6150747038142315,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.47689298813139597,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.29682833851552715,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.11336926936741683,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.1641848580957402,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.4907165703445365,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.419042656254415,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h128-z64-s17",
+      "seconds": 108.40582719998201,
+      "snapshots": {
+        "0": {
+          "S": 0.7767519013522808,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.6608112851992518,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.6812283776780096,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 1.050299462952314,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7146684795795483,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.4984336046686979,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.39302090804981427,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.29617634275913457,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8137112127992286,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.49082595506661436,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.41780475343318224,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.2452595825465763,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.23507993878141728,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.721859734457188,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46901975794754736,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.3249085893606035,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.13657309679752713,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.17514261375750137,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5280847071958057,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4598339396915797,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h128-z64-s29",
+      "seconds": 113.98246329999529,
+      "snapshots": {
+        "0": {
+          "S": 0.6973801837163234,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5577813614821497,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46972814804536184,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9892229553283703,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7727882700094117,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.4861606601897036,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.36777747767085955,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.30720102068315613,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.761278496852543,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5083856455522558,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.4222672853301204,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.24292340493559944,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.22538019697678222,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7352382068646766,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.48552733254342345,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.3435092911425729,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.13903434694063058,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.18009346760472578,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5999181747084766,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4549911753164585,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "value-dynamics-h128-z64-s43",
+      "seconds": 103.50082699998165,
+      "snapshots": {
+        "0": {
+          "S": 0.8467598620323786,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.7145292651421572,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7306092292836319,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9398795327362692,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.0020214209674558,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.4960699221319871,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3666691823204878,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3116534657550815,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8051057105199781,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5008513299324009,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.42412592858302717,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.23728529324483408,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.25307045913694937,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7140379366844458,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.49211002526587944,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.3179969418856349,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.12611740520536602,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.17782330672283833,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5098376435284423,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4582094120858928,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h128-z64-s17",
+      "seconds": 127.13356029998977,
+      "snapshots": {
+        "0": {
+          "S": 0.7767519013522808,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.6608112851992518,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.6812283776780096,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 1.050299462952314,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7146684795795483,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.5131391870906776,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.39338015171542967,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.3072948480854708,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.8528004634816478,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.49908128508016186,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.4317454647959831,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.2608534716461244,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.23361385494567197,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7475466372633957,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.48496789532874013,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.3496783673835754,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.15056869988936125,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.1861563775840618,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5842589478954929,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.47772944416538543,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h128-z64-s29",
+      "seconds": 119.94689940000535,
+      "snapshots": {
+        "0": {
+          "S": 0.6973801837163234,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.5577813614821497,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.46972814804536184,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9892229553283703,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7727882700094117,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.49588826688464305,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.3712429118433476,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.32164303449494297,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7833969736203268,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5072701475799548,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.4239466946353894,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.2563494815027719,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.23758084132777046,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7150037723265737,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4868526833844415,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.34676227664869513,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.15236451298749007,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.18512017317288532,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5949215374475942,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.45464288298681094,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "raw-jepa-h128-z64-s43",
+      "seconds": 108.81439939999836,
+      "snapshots": {
+        "0": {
+          "S": 0.8467598620323786,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.7145292651421572,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.7306092292836319,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.9398795327362692,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 1.0020214209674558,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "40": {
+          "S": 0.4962548683430358,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.36948526432558626,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.31704476944880267,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.7963753746167548,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.5021140649809993,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "80": {
+          "S": 0.42115340122656403,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.2521108737566949,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.2644334253437254,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.6897036089302898,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4783656968755461,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        },
+        "160": {
+          "S": 0.322905160620279,
+          "components": {
+            "connect4-4x5": {
+              "1": {
+                "encoded_oracle_mse": 0.1451412587569766,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 804
+              },
+              "2": {
+                "encoded_oracle_mse": 0.1850461707370744,
+                "root_count": 248,
+                "roots_with_targets": 248,
+                "transition_targets": 2425
+              }
+            },
+            "reversi6": {
+              "1": {
+                "encoded_oracle_mse": 0.5044837876807506,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 1180
+              },
+              "2": {
+                "encoded_oracle_mse": 0.4569494253063145,
+                "root_count": 261,
+                "roots_with_targets": 261,
+                "transition_targets": 4003
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "resource": {
+    "total_cell_seconds": 1627.0835001999803,
+    "actual_artifact_bytes": 142867189,
+    "process_peak_rss_bytes": 137879552
+  },
+  "new_predictions": 0,
+  "optimizer_updates": 0,
+  "protected_artifacts_opened": 0,
+  "limitations": [
+    "Internal independent replay using the same NumPy RNG and audited game adapters.",
+    "Checkpoint identity and saved metric arithmetic checked; no model predictions recomputed.",
+    "Training-only descriptive evidence; no generalization or JEPA superiority claim."
+  ],
+  "audit_seconds": 26.10325179999927
+}

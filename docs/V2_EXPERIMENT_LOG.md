@@ -154,3 +154,16 @@ python -B -m two_player_v23_diagnostic.report chess_data/v23-fit-01 chess_data/v
 
 The report output must be outside the immutable run directory. This is a
 training-fit diagnostic, not a replacement development strength evaluation.
+
+V2.3 subsequently executed at20f457c63bf07b2dd7f1a9eb9d5528d5d93cbc37:
+18/18 complete,160epochs each,72snapshots, no failure/collapse/protected scoring.
+Strict report and independent audit PASSED. Total cellwork1627.083500s, maximum
+lifetime RSS137,879,552bytes,142,867,189bytes local outputs. All6family/capacity
+groups still make material training progress; larger capacity helps3/3seeds
+for eachfamily. Direct fits train labels better thanrawJEPA in every paired
+seed/capacity. Read V23_FIT_DIAGNOSTIC and V23_INDEPENDENT_RESULTS_REVIEW.
+
+Prospective decision: common128/64×160 operating point for a future development
+comparison, no convergence claim or candidate-only extension. METHOD_V24_ORDER_PROBE
+freezes one training-only fixed-target H1 restriction probe before any broad
+architecture grid. No new development score or JEPA promotion follows from it.

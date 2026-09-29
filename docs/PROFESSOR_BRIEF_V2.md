@@ -28,6 +28,7 @@ Xem [benchmark](BENCHMARK_V2_SPEC.md) và [phương pháp V2](METHOD_V2.md).
 | [Grid01](V2_GRID01_RESULTS.md) | 36 lần chạy; 209 vị trí development. Projected JEPA: regret 0.249145; value-dynamics: 0.247664. Chênh lệch có lợi cho JEPA là −0.001481; khoảng bootstrap 95% [−0.049433, 0.048714]. | JEPA không hơn baseline mạnh nhất; không vượt cổng đề cử. |
 | [Grid02](V21_GRID02_RESULTS.md) | 60 lần chạy, cùng 209 vị trí; mọi nhóm nhận augmentation đối xứng hợp lệ. Raw JEPA: 0.207425; value-dynamics: 0.212250. Lợi ích +0.004826; khoảng 95% [−0.039003, 0.044845]. | Tín hiệu nhỏ, chưa đủ: dưới ngưỡng 0.05, không hơn decoded ở cả hai game, khoảng chứa 0. |
 | [Grid03 / V2.2](V22_GRID03_RESULTS.md) | 72 lần chạy. Nhánh ít nhãn: raw JEPA 0.293339, direct 0.283917. Lợi ích −0.009422; khoảng 95% [−0.075730, 0.047922]. | JEPA kém direct ở cả hai game; giả thuyết lợi thế khi hạn chế nhãn chưa được hỗ trợ. |
+| [Chẩn đoán train V2.3](V23_FIT_DIAGNOSTIC.md) | 18 lần chạy, 160 epoch, hai dung lượng, 72 checkpoint được kiểm chứng. Mọi nhóm còn cải thiện từ80→160; tăng dung lượng giúp cả3 nhóm/all3 seed. | Ngân sách và dung lượng ảnh hưởng rõ. Direct có train S thấp hơn JEPA ở mọi cặp seed/dung lượng; đây không phải đánh giá sức chơi mới. |
 
 Các khoảng trên là mô tả development sau điều chỉnh phương pháp, không hiệu
 chỉnh cho quá trình thử nhiều thiết kế. Ba seed không biến hàng trăm vị trí thành
@@ -98,3 +99,15 @@ Một bài báo mạnh cần bổ sung các bằng chứng đó, kiểm tra lu�
 độc lập phù hợp, phân tích compute và một claim mới hẹp nhưng có thể bảo vệ.
 Nếu lợi ích biến mất trước EMA-value/decoded hoặc khi đổi mask, cần bác bỏ
 giải thích JEPA-specific và giữ kết quả âm trong hồ sơ nghiên cứu.
+
+## Quyết định sau chẩn đoán mới
+
+Vòng so sánh tiếp theo sẽ dùng mức hidden/latent128/64 và160 epoch chung cho
+mọi nhóm liên quan; đây là điểm vận hành hữu hạn, không phải tuyên bố hội tụ.
+Trước khi chạy grid kiến trúc, một phép đo train đã được định trước sẽ kiểm tra
+giới hạn của transition cộng tuyến tính: nó không thể đảo thứ tự hai latent
+ở từng tọa độ khi thay hành động. Có phản ví dụ và cận sai số, nhưng mức liên
+quan trên các biểu diễn đã học vẫn chưa đo. [Protocol probe](METHOD_V24_ORDER_PROBE.md)
+giữ các checkpoint cố định và không đọc development/final. Ý tưởng dùng vài
+minimum-probe ngẫu nhiên đã bị hoãn sau phản ví dụ; không đưa tên mới cho loss
+đó rồi coi là đóng góp. Nếu đổi transition, baseline phải được tăng cường tương ứng.

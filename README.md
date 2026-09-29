@@ -64,6 +64,14 @@ replace the predeclared primary arm. All three development grids are preserved.
 The [Vietnamese professor brief](docs/PROFESSOR_BRIEF_V2.md) separates completed
 evidence from the still-unproven model and publication claims.
 
+The [18-run training diagnostic](docs/V23_FIT_DIAGNOSTIC.md) then found that
+longer training and larger capacity help all tested families. Direct fits the
+training labels better than raw JEPA; no new strength comparison was made.
+All72 snapshots passed [independent audit](docs/V23_INDEPENDENT_RESULTS_REVIEW.md).
+The [next fixed-target order probe](docs/METHOD_V24_ORDER_PROBE.md) tests a
+specific restriction of additive action conditioning before another model grid.
+It cannot promote a JEPA candidate or establish novelty.
+
 ![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
 ![V2.2 restricted-label development](docs/figures/v22-grid03.png)
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the

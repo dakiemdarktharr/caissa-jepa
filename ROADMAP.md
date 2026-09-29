@@ -45,6 +45,17 @@ training-only convergence/capacity check, before selecting an architecture
 amendment. `docs/V23_RESEARCH_OPTIONS.md` is a proposal, not an executed method.
 Final/selection remain closed; none of these grids is a promoted candidate.
 
+V2.3 training-only diagnosis completed18/18 with72 verified snapshots. Both
+additional epochs and larger total capacity improve training fit across all
+families; direct remains better than rawJEPA on final mean training S. There is
+no demonstrated plateau or superiority. Before another M7 development grid,
+freeze a finite common training-budget decision and strengthen all relevant
+controls equally. An optional bounded additive-order feasibility probe can test
+whether the current transition conflicts with fixed EMA targets; mathematical
+restrictions alone do not establish a planning bottleneck. Generic random
+minimum-probe fitting is deferred after counterexamples, not scheduled for a
+blind grid. See V23_FIT_DIAGNOSTIC and the conditional V24 critique notes.
+
 ## Experiment stages and budgets
 
 Exploratory pilot: generated tiny games and fixed small configurations, single CPU BLAS thread, no paid/GPU resources. Record time, peak memory where measurable, sample exclusions, per-seed metrics. These data can diagnose implementation/feasibility and inform development; they cannot become confirmatory by relabeling. Start with a bounded run (minutes, small tens of MB model/data target), measure actual resource cost, and stop on numerical/audit failure. Increase only if the measured pilot supports a useful question within local resources.
