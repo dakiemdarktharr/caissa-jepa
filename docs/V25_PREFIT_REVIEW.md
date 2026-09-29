@@ -78,3 +78,18 @@ The hash-only four-checkpoint reference file SHA-256 is
 `e6d7a27624cc864fe6edcd8c0b21c9f93e7b239781729684bfc3bafe8a8b5b3c`.
 Root also ran the original strict reporter on failed grid04; it returned
 inconclusive with `Grid failed or incomplete`, without comparative scoring.
+
+## Independent post-run tooling prepared while grid05 is active
+
+The completed-grid audit tool independently checks exact source Git blobs,
+standalone legal closures,480 sampling/symmetry plans,6720 histories,2016 tensors,
+all saved decisions and the192 preregistered repair-reference hashes. It must
+not execute until all42 cells finish. No audit pass is claimed in advance.
+
+Aggregate export and plotting helpers received separate review. Findings repaired:
+unknown nested fields could bypass the initial public-data allowlist; checkpoint
+hashes were not cross-bound to run IDs; the600-second boundary was inclusive.
+Strict nested schemas, matching receipts and the original strict boundary now
+apply. Nine persisted synthetic-only public-report tests PASS in0.472s, including
+all42-cell preservation, exact-only tuning and pure saved-value plot extraction.
+The independently reviewed tools have not read partial results or rendered figures.

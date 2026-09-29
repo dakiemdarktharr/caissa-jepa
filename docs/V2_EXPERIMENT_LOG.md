@@ -209,3 +209,11 @@ is preserved. Its ledger counts1254 saved learned decisions, but source/trace
 prove an additional418 computed and unsaved; controls836. No partial outcome
 scores used for adaptation. V25_RUNTIME_AMENDMENT prescribes only monitor and
 provenance repair, followed after gates by one fresh42-cell grid05 from seeds.
+
+Repair launch sourcef7a90a76c497becaff8356e030ecbef1d114697e was committed,
+pushed and remote-hash verified.58 targeted tests and independent9-test rerun
+pass; source review has no blocker.72 Markdown files mirrored with SHA equality.
+Grid05 then started fresh exactly once with `two_player_v25r.runtime` and the
+same standalone train/development arguments. All42 cells are planned anew;
+post-run report must use `two_player_v25r.report` to verify augmented provenance.
+The grid04 cost remains separately retained and must be added to retry costs.

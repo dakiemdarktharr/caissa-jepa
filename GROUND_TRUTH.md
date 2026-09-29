@@ -3,10 +3,16 @@
 Updated: 2026-09-29. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
 **Current operational entry:** V2.5 grid04 is inconclusive after a diagnosed
-memory-monitor leak. No fit is active during repair. Read
+memory-monitor leak. Fresh grid05 is now ACTIVE at source
+`f7a90a76c497becaff8356e030ecbef1d114697e`, pushed and remote-hash verified.
+Process session1569 runs `two_player_v25r.runtime` on the same standalone
+train/development exports. Do not restart it, inspect partial outcomes, or edit
+frozen packages, METHOD_V25, V25_RUNTIME_AMENDMENT or two_player_v25r. Read
 `docs/V25_GRID04_FAILURE_AUDIT.md` and `docs/V25_RUNTIME_AMENDMENT.md` first;
 old source/artifacts remain frozen. New `two_player_v25r` has58 passing targeted
-tests; independent source review/push/vault gates precede one fresh grid05.
+tests plus an independent9-test rerun/source review. All launch gates passed;
+72 Markdown files were copied with SHA equality to the verified vault. Obsidian
+Ground Truth is open; an unrelated system antivirus popup obscures part of it.
 No JEPA-superiority result exists. The paragraphs below retain the full history.
 
 ## Identity, authority and hypothesis
@@ -273,6 +279,11 @@ Read docs/V25_GRID04_FAILURE_AUDIT.md and prospective V25_RUNTIME_AMENDMENT.md.
 Only the monitor/provenance bindings may change in a new two_player_v25r package;
 all42 cells must restart fresh in grid05 after review/test/push/vault gates,
 same scientific design and limits. No fit is active during this repair update.
+
+Those repair gates subsequently passed and grid05 started once atf7a90a76.
+Every scientific setting is unchanged. Four grid04 final optimizer states have
+192 tensor hashes recorded prospectively for post-run numerical equivalence.
+The new run is not complete and no comparative result has been inspected.
 
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
