@@ -135,3 +135,22 @@ with snapshots0/40/80/160 and no development inputs. Independent prefit review
 passed, including all531tensor hashes in9epoch40 reference checkpoints from
 Grid03 FULL. Implementation and validation precede fitting. No new architecture
 or JEPA improvement is established by this diagnostic protocol.
+
+V2.3 implementation gate: standalone `two_player_v23_diagnostic` runtime, metrics
+and artifact-only report implemented. Full regression210 PASS in124.519s and
+final targeted27 PASS in13.952s. Independent review caught and repaired the
+post-ledger byte-cap boundary. Four snapshot files, all online/EMA/Adam tensors,
+fresh-only execution, failed-cell budget accounting and no development inputs
+are verified. No new fitting yet; next action is source commit/push then the
+frozen18-run grid. Local generated output remains excluded from Git and Obsidian.
+
+Reproduction commands (PowerShell; after setting both OPENBLAS_NUM_THREADS and
+OMP_NUM_THREADS to1, with the verified Python3.11.9 environment):
+
+```text
+python -B -m two_player_v23_diagnostic.runtime chess_data/v22-full-01 chess_data/v23-fit-01
+python -B -m two_player_v23_diagnostic.report chess_data/v23-fit-01 chess_data/v23-fit-01-report
+```
+
+The report output must be outside the immutable run directory. This is a
+training-fit diagnostic, not a replacement development strength evaluation.

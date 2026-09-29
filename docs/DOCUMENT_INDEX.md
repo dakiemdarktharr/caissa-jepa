@@ -37,6 +37,7 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/V22_INDEPENDENT_RESULTS_REVIEW.md` | Independent decisions, tensor equivalence and all schedule/count checks |
 | `docs/V21_VALUE_ALIGNMENT_DIAGNOSIS.md` | Post-hoc value/latent error diagnosis of 18 selected Grid02 checkpoints |
 | `docs/METHOD_V23_DIAGNOSTIC.md` | Frozen 18-run training-only convergence/capacity protocol; not a superiority study |
+| `docs/V23_PREFIT_REVIEW.md` | Independent runtime/metrics/failure-path review before the training-only diagnostic |
 | `docs/V23_RESEARCH_OPTIONS.md` | Conditional action-dependent dynamics proposals and verified prior-art limits; not an implemented method |
 | `docs/PROFESSOR_BRIEF_V2.md` | Vietnamese discussion brief; separates evidence from missing publication requirements |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |

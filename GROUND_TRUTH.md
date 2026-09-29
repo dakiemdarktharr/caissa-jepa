@@ -166,6 +166,17 @@ docs/validation/V23_EPOCH40_REFERENCES.json. New runs initialize from seed, neve
 from those checkpoints. This diagnostic cannot nominate a JEPA model; it informs
 a future separately frozen, fairly controlled development comparison.
 
+V2.3 implementation is now separate in `two_player_v23_diagnostic/`; it accepts
+only the frozen standalone FULL training artifact, saves four verified snapshots
+per cell, and stops the grid on any failed/time-limited/collapsed cell. Independent
+reviews covered training access, nonmutation, all59 checkpoint tensors, descriptive
+report arithmetic and resource accounting. A final-ledger storage-limit gap was
+fixed before fitting. Full regression passed210 tests in124.519s; subsequent final
+targeted metrics/runtime/report checks passed27 tests in13.952s (including three
+additional failure-path tests). These are engineering checks, not research results.
+The source milestone must be committed/pushed before `chess_data/v23-fit-01`
+is generated. No V2.3 fit has yet run at this prefit documentation update.
+
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
