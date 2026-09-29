@@ -153,4 +153,3 @@ whole-game strength, held-out-family transfer, novelty or publication readiness.
 Keep grid01 and grid02 intact as negative development outcomes. A further cycle
 needs a separately frozen decision-relevant hypothesis and equally informative
 controls; selection/final prediction access remains unjustified by this screen.
-

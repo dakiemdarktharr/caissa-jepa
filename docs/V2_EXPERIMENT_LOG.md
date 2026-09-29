@@ -99,3 +99,10 @@ METHOD_V22 changes the question explicitly to restricted label access. It freeze
 development export, real canonical-label accounting and the unchanged promotion
 margin. Data/model review and a scarce-label readiness audit must pass first.
 No v2.2 results exist yet. Mean-residual reweighting is not implemented in it.
+
+Prefit gate:186 regression tests passed120.105s. Separate redacted artifacts
+retain509roots/6750forks, standalone development209roots/2735forks. Scarce masks
+leave2620/3468 Connect4 and4058/5444 Reversi canonical nonterminal states unknown,
+passing the50% floor. Root selection62/248 and66/261 is not a state-label rate.
+Full byte/source/mask identities are in validation/V22_LABEL_ACCESS_AUDIT.json.
+Independent model/runtime/data reviews passed. No production fitting yet.

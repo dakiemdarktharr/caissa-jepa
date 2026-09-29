@@ -135,4 +135,3 @@ References and complete outcomes: [v2 report](V2_GRID01_RESULTS.md),
 [training-only diagnosis](V2_GRID01_DIAGNOSIS.md). A restricted-label experiment
 is prospectively specified in METHOD_V22; it has no results and changes the
 scientific regime rather than erasing these negative full-label findings.
-

@@ -32,6 +32,7 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/V22_MECHANISM_ANALYSIS.md` | Unimplemented sibling-loss proposal, bounds and counterexample |
 | `docs/V22_LABEL_BUDGET_OPTION.md` | Exploratory design options, superseded for execution by METHOD_V22 |
 | `docs/METHOD_V22.md` | Frozen restricted-label development specification; no results yet |
+| `docs/V22_PREFIT_REVIEW.md` | Independent masked-model/runtime/data and actual-artifact review |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |

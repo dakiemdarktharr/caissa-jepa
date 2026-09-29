@@ -57,7 +57,7 @@ Its [60-run result](docs/V21_GRID02_RESULTS.md) has a small raw-JEPA improvement
 over value dynamics(0.004826 regret), but the interval crosses zero and the
 predeclared promotion gates fail. [Independent review](docs/V21_INDEPENDENT_RESULTS_REVIEW.md)
 replayed every sampling/augmentation plan and verified saved decisions. The
-next [v2.2 label-access study](docs/METHOD_V22.md) is under implementation;
+next [v2.2 label-access study](docs/METHOD_V22.md) passes its data-readiness gate;
 it explicitly narrows the question and has no results yet.
 
 ![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
@@ -78,6 +78,12 @@ $env:OMP_NUM_THREADS='1'
 # Separate adaptive follow-up, after its source/test gate:
 & $py -B -m two_player_v21.runtime chess_data/my-v2-forks chess_data/my-v21-grid
 & $py -B -m two_player_v21.report chess_data/my-v21-grid chess_data/my-v21-report
+# Restricted-label study: trainer receives only three standalone exports.
+& $py -B -m two_player_v22.data chess_data/my-v2-forks chess_data/my-v22-scarce --fraction 0.25
+& $py -B -m two_player_v22.data chess_data/my-v2-forks chess_data/my-v22-full --fraction 1
+& $py -B -m two_player_v22.data chess_data/my-v2-forks chess_data/my-v22-development --development
+& $py -B -m two_player_v22.runtime chess_data/my-v22-scarce chess_data/my-v22-full chess_data/my-v22-development chess_data/my-v22-grid
+& $py -B -m two_player_v22.report chess_data/my-v22-grid chess_data/my-v22-report
 ```
 
 The prior v1.2 dataset is required to audit its training-state exclusion; use

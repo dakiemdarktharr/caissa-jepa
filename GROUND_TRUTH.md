@@ -116,6 +116,18 @@ full parent artifact. Root IDs must not retain hidden-label-derived hashes.
 No oracle-compute saving claim on this already solved/admitted bank. Selection/
 final remain unscored. Original v2/v21 source stays unchanged.
 
+V2.2 prefit implementation now passes186 full-regression tests in120.105s.
+Independent masked-model/runtime/data reviews found no blocking issue. Fresh
+standalone artifacts pass readiness: Connect4 has2620/3468(75.55%) and Reversi
+4058/5444(74.54%) canonical nonterminal states unlabeled. Selected roots62/248
+and66/261; all509 training roots and6750forks remain available to every family.
+Scarce fingerprint dc81db9ab2d67d2905156fb328fe80369eb76bb4d5b140ebe041e68a578ebfab;
+full73acd3d11c3a30fa56703d19768d899dff51c6af6ccf2afddc0f5f007d46cc18;
+development bbfc41fc34e1e346a9dc5905f9f686bb61582e4a63f363d76ea2406088235617.
+Paths are chess_data/v22-scarce-01, v22-full-01 and v22-development-01.
+Aggregate audit: docs/validation/V22_LABEL_ACCESS_AUDIT.json. No v2.2 fitting yet;
+freeze and push verified source before grid03. Keep all previous negative grids.
+
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
 - Copy all project Markdown to a dedicated vault folder; do not move/delete originals. Ground Truth must exist in both places, and UI readability must be verified before code changes.
