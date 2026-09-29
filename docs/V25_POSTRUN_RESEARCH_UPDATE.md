@@ -214,3 +214,23 @@ win.
   Offline Reinforcement Learning*, arXiv:2204.12581.
 - Lu et al. (2020), *A Game Theoretic Framework for Model Based Reinforcement
   Learning*, arXiv:2004.07804.
+
+### External engine and exact-solver feasibility
+
+The official [OpenSpiel repository](https://github.com/google-deepmind/open_spiel)
+is an Apache-2.0 framework with procedural game implementations and algorithms;
+its official game index includes Connect Four, Go, Gomoku and other perfect-
+information games. It is a possible source for an independently maintained
+rule cross-check only when the exact game configuration and state/action
+semantics match. The surveyed index does not list Reversi/Othello, and this
+review did not verify a parameterized 4x5 connect-four variant. No source was
+downloaded or integrated.
+
+Pascal Pons's official Connect4 solver source exposes exact alpha-beta/negamax
+analysis and states its code is under AGPL-3.0-or-later. It targets standard
+Connect Four; license and geometry make it a poor default dependency for this
+custom-variant study. It was not downloaded or used. The license finding is
+about software, not training-data rights. Together with
+`V26_ORACLE_FEASIBILITY_01.json`, this leaves external exact-label sourcing
+unresolved; an engine must be selected and pinned only after configuration,
+license, attribution, and redistribution effects are checked.

@@ -68,7 +68,12 @@ not a solvability estimate. Its consequence is a stricter gate: do not select
 or replace roots based on observed oracle completion; timeouts count against
 predeclared coverage. Production labels remain blocked. Read `ROADMAP.md`,
 `docs/V25_POSTRUN_RESEARCH_UPDATE.md`, and the method proposal for gates,
-controls and kill criteria.
+controls and kill criteria. Official OpenSpiel sources offer Apache-2.0
+procedural game implementations, but the reviewed game index did not resolve a
+matching Reversi/custom-variant exact oracle; the surveyed Pascal Pons solver
+is AGPL-3.0-or-later and targets standard Connect Four. No external code was
+downloaded or used. The license/source findings and limits are recorded in
+`docs/V25_POSTRUN_RESEARCH_UPDATE.md`; external oracle selection remains open.
 Source inspection confirms `two_player/games.py` encodes a padded 8x8 board
 into 198 features and uses a 65-slot action mask; V2.5 each-run training mixes
 Connect4-4x5 and Reversi6 data through a shared model. This finite supported
