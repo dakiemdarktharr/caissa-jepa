@@ -79,3 +79,9 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   specification and independent method review; not an executed result.
 - `V25_ROBUST_PREDICTION_RESEARCH.md`: primary-source follow-up and explicit
   novelty limits for robust complete-reply consistency.
+- `V25_RESEARCH_POSITIONING.md`: professor-facing conditional argument and
+  claim boundaries, prepared without partial outcome inspection.
+- `V25_GRID04_FAILURE_AUDIT.md`: first attempt's resource failure, monitor-only
+  causal reproduction and explicit unsaved-prediction accounting.
+- `V25_RUNTIME_AMENDMENT.md`: prospective minimal engineering repair; original
+  scientific method/source retained and all42 cells must restart fresh.

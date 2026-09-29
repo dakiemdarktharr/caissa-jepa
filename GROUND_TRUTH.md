@@ -2,6 +2,13 @@
 
 Updated: 2026-09-29. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
+**Current operational entry:** V2.5 grid04 is inconclusive after a diagnosed
+memory-monitor leak. No fit is active during repair. Read
+`docs/V25_GRID04_FAILURE_AUDIT.md` and `docs/V25_RUNTIME_AMENDMENT.md` first;
+old source/artifacts remain frozen. New `two_player_v25r` has58 passing targeted
+tests; independent source review/push/vault gates precede one fresh grid05.
+No JEPA-superiority result exists. The paragraphs below retain the full history.
+
 ## Identity, authority and hypothesis
 
 Repository: `C:/Users/ANHKHOI/Documents/ChatGPT/caissa-jepa`.
@@ -250,6 +257,22 @@ implemented in two_player_v25; terminal-oracle and failed-budget journaling
 findings were repaired before fitting. Existing source/checkpoints unchanged.
 Next is commit/push, vault sync and one fresh bounded42-cell v25-grid04 attempt.
 No V2.5 result exists at this prelaunch checkpoint. Data/checkpoints remain local.
+
+Subsequent V2.5 grid04 at5102ea0588198f993874a495d18bfef1e868e2ec stopped
+INCONCLUSIVE: three completed direct cells, fourth failed during diagnostics,
+38 unstarted. Peak1,004,228,608 bytes exceeded1GB. Total cellcost496.259139s
+includes136.737907 failed-cell seconds; wall503.946364s. The inherited Windows
+monitor creates a new ctypes structure/pointer type every call; independent
+monitor-only2000-call reproduction retained2000 cached types and15,859,712
+additional bytes despite garbage collection. This is an engineering failure,
+not a JEPA comparison. All old source/artifacts remain unchanged. Saved learned
+decisions1254 undercount actual exposure: traceback proves another418 completed
+but unsaved decisions, at least1672 total, plus836 controls. No partial outcome
+scores were used for method selection; protected predictions remain0.
+Read docs/V25_GRID04_FAILURE_AUDIT.md and prospective V25_RUNTIME_AMENDMENT.md.
+Only the monitor/provenance bindings may change in a new two_player_v25r package;
+all42 cells must restart fresh in grid05 after review/test/push/vault gates,
+same scientific design and limits. No fit is active during this repair update.
 
 
 - The current user request supersedes earlier prompt files and older research scope decisions.

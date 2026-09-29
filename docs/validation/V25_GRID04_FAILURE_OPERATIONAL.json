@@ -1,0 +1,80 @@
+{
+  "version": "v25-grid04-operational-failure-receipt01",
+  "code_commit": "5102ea0588198f993874a495d18bfef1e868e2ec",
+  "ledger_sha256": "f60386efffe3a5de03ee22075b1af4418768944ddab98b4a2f864b05a6a2f0e5",
+  "status": "inconclusive",
+  "error": "MemoryError: Frozen peak RSS limit exceeded",
+  "limits": {
+    "cell_seconds": 600.0,
+    "total_cell_seconds": 25200.0,
+    "bytes": 3000000000,
+    "rss": 1000000000
+  },
+  "completed": 3,
+  "failed": 1,
+  "planned": 38,
+  "total_cell_seconds": 496.25913929991657,
+  "total_wall_seconds": 503.9463644999778,
+  "preparation_seconds": 7.607825600018259,
+  "process_peak_rss_bytes": 1004228608,
+  "array_bytes": 71896300,
+  "development_decisions_recorded": 1254,
+  "development_decisions_inferred_executed": 1672,
+  "control_decisions": 836,
+  "selection_predictions": 0,
+  "final_predictions": 0,
+  "artifact_bytes": 17456603,
+  "cells": [
+    {
+      "id": "direct-lr0.001-s17",
+      "status": "complete",
+      "seconds": 125.2624886999838,
+      "epoch": 160,
+      "step": 10560,
+      "files": {
+        "budget.json": "d67404cf0e1b84702991d22b4d38865281d28ae0fd898a6b2fdf1fd67dde2c28",
+        "checkpoint.npz": "539d5429edba8c9a8f1842866152905942ad37c800f8c75e15bbd5edc113e205",
+        "history.json": "dca1d110c0ddb455369ad07dabe61a36ef46b25cea996a8a72eedd8d3068e663",
+        "receipt.json": "5a55d93eabfaa12630aaf7371c5f2b6bcf82a0073da838a1b7d0ad4bf09587cb"
+      }
+    },
+    {
+      "id": "direct-lr0.001-s29",
+      "status": "complete",
+      "seconds": 126.4377449999447,
+      "epoch": 160,
+      "step": 10560,
+      "files": {
+        "budget.json": "e8a053b2df1f330d4257dde619e3d16cdf05325206bd03fd729a9ad618bd10a5",
+        "checkpoint.npz": "e25e9d18331306d86c7c340fe988dfba2d96e410b523c704e1ea3aa82daeab26",
+        "history.json": "80b60ecda4a404cb4060a6e896a45a51edfd44b44c390dafe9abbd0bd44dcc40",
+        "receipt.json": "78afa8aa250522d35c344b3833b5a1da782ba5c9b584c5b8011cada3da6f2640"
+      }
+    },
+    {
+      "id": "direct-lr0.001-s43",
+      "status": "complete",
+      "seconds": 107.82099859998561,
+      "epoch": 160,
+      "step": 10560,
+      "files": {
+        "budget.json": "c91f7f813a07129b46f7850abd896dbe5087c426e818ff3251b36b5339f615ce",
+        "checkpoint.npz": "6621a0753f7a1d40aade7f5e329e2e9b63db1cc9c0687dfb465051f00ba3a4a8",
+        "history.json": "cb6b9508ec65a0c6b5bd9e3f55021120180ff2354269c3017678a70348b933b8",
+        "receipt.json": "3ae1bb3947467803250a842733e51fd68b2ea3e68f241e454ad7ce9c7db92eb2"
+      }
+    },
+    {
+      "id": "direct-lr0.0003-s17",
+      "status": "failed",
+      "seconds": 136.73790700000245,
+      "epoch": 160,
+      "step": 10560,
+      "files": {
+        "budget.json": "c3d76691cea45e583b8af6cf51864d054c0fc6582c04b97237d5ba24ba5bab19",
+        "checkpoint.npz": "1996d8f35e9509aa3b3ca890827c22236a76047bd58526c9a25292112d75c9cd",
+        "history.json": "c23af570027bd6039721b1ff96835448fb932ebab9c386becd1287c78d925328"
+      }
+    }
+  ]
+}

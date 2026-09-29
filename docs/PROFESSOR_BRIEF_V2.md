@@ -123,3 +123,13 @@ và một control phân bổ gradient. Cùng kiến trúc/compute opportunity,42
 hữu hạn. [Method](METHOD_V25.md) đã được phản biện trước code; chưa có kết quả
 V2.5. WAKER, VAML, TD-JEPA và EfficientZero là prior art quan trọng, nên chưa
 được gọi hướng này là nguyên lý mới hoặc kết quả triển vọng đã xác nhận.
+
+Lần chạy V2.5 đầu tiên dừng do lỗi kỹ thuật: hàm giám sát RAM tự giữ lại kiểu
+ctypes sau mỗi lần gọi, vượt giới hạn1 GB ở diagnostics của cell4. Ba cell
+hoàn tất;38 cell chưa bắt đầu. Đợt này **chưa thể kết luận**, không phải kết
+quả so sánh JEPA. Phép thử độc lập không train tái hiện tăng2.000 kiểu và
+khoảng15,86 MB sau2.000 lần đo. [Amendment runtime](V25_RUNTIME_AMENDMENT.md)
+chỉ sửa monitor và fingerprint, giữ nguyên mọi thiết lập nghiên cứu và giới
+hạn tài nguyên, yêu cầu chạy lại toàn bộ42 cell từ seed sau review. Kết quả
+âm trước đó và chi phí đợt lỗi vẫn được lưu. [Bản định vị phương pháp](V25_RESEARCH_POSITIONING.md)
+tách cận minimax có điều kiện khỏi những claim còn cần thực nghiệm.

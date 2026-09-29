@@ -8,7 +8,14 @@ Keep its negative result; further architecture/objective work needs a separately
 frozen matched-baseline design, not a claim that this probe justified a fix.
 That next finite design is METHOD_V25:42 grouped robust-consistency cells with
 strong recurrent/scalar/decoded and gradient-allocation controls. Method reviews
-pass; implementation/source/test gates precede fitting. Scope remains M7.
+pass; implementation/source/test gates preceded fitting. Scope remains M7.
+Grid04 then stopped inconclusive after3 completed cells: the memory monitor
+itself retains a ctypes pointer type on every guard call and exceeded the1GB
+cap during cell4 diagnostics. V25_RUNTIME_AMENDMENT freezes a minimal monitor
+repair and one fresh all42-cell grid05 attempt, with original science/budgets.
+Failure audit, repaired-monitor regression, independent review, source push and
+vault sync are dependencies before restarting. No JEPA result can be selected
+from this incomplete attempt; its496.259139s cost and unsaved exposure remain.
 
 | Milestone / size | Depends on | Deliverables and acceptance | Status |
 | --- | --- | --- | --- |

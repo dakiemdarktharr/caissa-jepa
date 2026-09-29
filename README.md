@@ -80,6 +80,13 @@ policy/value, scalar, decoded and gradient-allocation controls. Its42-cell
 development design is frozen; implementation verification precedes training.
 This is not a demonstrated model improvement or a novel-principle claim.
 
+The first V2.5 attempt then stopped **inconclusive** at cell4 because its Windows
+memory observer leaked retained ctypes types. Three cells completed; the failed
+attempt and costs are preserved. A [prospective runtime repair](docs/V25_RUNTIME_AMENDMENT.md)
+keeps all scientific settings and budgets unchanged and requires a fresh42-cell
+attempt after verification. The [positioning note](docs/V25_RESEARCH_POSITIONING.md)
+explains the intended contribution and its boundaries for professor discussion.
+
 ![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
 ![V2.2 restricted-label development](docs/figures/v22-grid03.png)
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
@@ -109,9 +116,9 @@ $env:OMP_NUM_THREADS='1'
 & $py -B -m two_player_v23_diagnostic.runtime chess_data/v22-full-01 chess_data/my-v23-fit
 & $py -B -m two_player_v23_diagnostic.report chess_data/my-v23-fit chess_data/my-v23-report
 & $py -B -m two_player_v24_probe.runtime chess_data/v23-fit-01 chess_data/v22-full-01 chess_data/my-v24-order
-# Frozen grouped development study after its independent source/test gate:
-& $py -B -m two_player_v25.runtime chess_data/v22-full-01 chess_data/v22-development-01 chess_data/my-v25-grid
-& $py -B -m two_player_v25.report chess_data/my-v25-grid chess_data/my-v25-report
+# Same frozen study with the audited constant-memory monitor amendment:
+& $py -B -m two_player_v25r.runtime chess_data/v22-full-01 chess_data/v22-development-01 chess_data/my-v25-grid
+& $py -B -m two_player_v25r.report chess_data/my-v25-grid chess_data/my-v25-report
 ```
 
 The V24 probe accepts the pinned audited V23 ledger, not an arbitrary rerun with

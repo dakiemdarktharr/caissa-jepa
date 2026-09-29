@@ -199,3 +199,13 @@ python -B -m two_player_v25.report chess_data/v25-grid04 chess_data/v25-grid04-r
 
 One CPU/BLAS thread,42 cells,160 epochs,600s/cell,25200s cumulative cell cap,
 3GB local-output and1GB lifetime RSS cap. Protected splits stay closed.
+
+Grid04 executed at5102ea0588198f993874a495d18bfef1e868e2ec but stopped
+INCONCLUSIVE after3 direct cells completed and cell4 failed its1GB peak-RSS
+guard (1,004,228,608 bytes);38 cells never started. Cellwork496.259139s includes
+failed136.737907s; wall503.946364s. Independent monitor-only reproduction proves
+unbounded ctypes type retention in the inherited RSS helper. The failed attempt
+is preserved. Its ledger counts1254 saved learned decisions, but source/trace
+prove an additional418 computed and unsaved; controls836. No partial outcome
+scores used for adaptation. V25_RUNTIME_AMENDMENT prescribes only monitor and
+provenance repair, followed after gates by one fresh42-cell grid05 from seeds.

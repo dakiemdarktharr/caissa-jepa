@@ -53,3 +53,28 @@ The scalar/model and runtime/metrics reviewers were distinct from their authors.
 
 Next gate is source commit/push and vault mirror, followed by one fresh bounded
 attempt at `chess_data/v25-grid04`. No V2.5 research fit exists at this update.
+
+## Prospective monitor repair after grid04 failure
+
+The subsequent attempt failed its memory cap because the inherited monitor
+retains ctypes pointer types on every call. V25_GRID04_FAILURE_AUDIT preserves
+its costs/exposure and identifies the defect with an independent no-model probe.
+V25_RUNTIME_AMENDMENT freezes only a constant-type monitor and scoped source
+inventory bindings; two_player_v25r delegates the unchanged model/runtime/report.
+Original packages and scientific method hashes remain unchanged.
+
+Verification:58 targeted tests PASS in11.713s (49 original V2.5,9 repair checks).
+The new checks cover10,000 measurements without pointer-cache growth, peak field
+and Windows ABI, API error propagation, restoration even on BaseException,
+non-reentrant/concurrent-use rejection, and exact two-binding source identity.
+Four old final checkpoints have192 tensor hashes pinned before any new fit for
+a later numerical-neutrality comparison. These are engineering checks, not
+comparative research evidence. Independent review/push/vault gates precede the
+fresh42-cell grid05; no completed cell from the failed attempt may be reused.
+
+Independent repair review subsequently found no blocker. A separate reviewer
+reran all9 repair tests:PASS in0.069s, including10,000 actual Windows measurements.
+The hash-only four-checkpoint reference file SHA-256 is
+`e6d7a27624cc864fe6edcd8c0b21c9f93e7b239781729684bfc3bafe8a8b5b3c`.
+Root also ran the original strict reporter on failed grid04; it returned
+inconclusive with `Grid failed or incomplete`, without comparative scoring.
