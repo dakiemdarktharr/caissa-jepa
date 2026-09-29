@@ -184,3 +184,18 @@ bytes peak RSS; no fits or new evaluation decisions. Allfour primary screens
 and their nonterminal sensitivities fail. Read V24_ORDER_RESULTS; retain the
 negative finding and do not attribute prior JEPA errors to a demonstrated
 additive-order floor. Independent artifact audit is a separate gate.
+
+V2.4 actual-artifact audit subsequently PASSED, preserving all negative screens.
+V2.5 frozen method16c4428 implements complete-reply consistency and strong
+contemporaneous controls. Independent source review passed after repaired
+terminal-perspective, inter-cell resource-journaling and metric-schema issues.
+Full290 tests pass106.256s; final49 V2.5 tests pass10.385s. No research fitting
+in these checks. After source push/vault sync, launch exactly once:
+
+```text
+python -B -m two_player_v25.runtime chess_data/v22-full-01 chess_data/v22-development-01 chess_data/v25-grid04
+python -B -m two_player_v25.report chess_data/v25-grid04 chess_data/v25-grid04-report
+```
+
+One CPU/BLAS thread,42 cells,160 epochs,600s/cell,25200s cumulative cell cap,
+3GB local-output and1GB lifetime RSS cap. Protected splits stay closed.

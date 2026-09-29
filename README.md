@@ -72,6 +72,14 @@ The [next fixed-target order probe](docs/METHOD_V24_ORDER_PROBE.md) tests a
 specific restriction of additive action conditioning before another model grid.
 It cannot promote a JEPA candidate or establish novelty.
 
+The [completed order probe](docs/V24_ORDER_RESULTS.md) failed its materiality
+screen in every game/capacity group and passed independent artifact audit.
+The [V2.5 method](docs/METHOD_V25.md) therefore tests a separate hypothesis:
+complete-reply mean/max latent consistency, compared with strong recurrent
+policy/value, scalar, decoded and gradient-allocation controls. Its42-cell
+development design is frozen; implementation verification precedes training.
+This is not a demonstrated model improvement or a novel-principle claim.
+
 ![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
 ![V2.2 restricted-label development](docs/figures/v22-grid03.png)
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
@@ -101,6 +109,9 @@ $env:OMP_NUM_THREADS='1'
 & $py -B -m two_player_v23_diagnostic.runtime chess_data/v22-full-01 chess_data/my-v23-fit
 & $py -B -m two_player_v23_diagnostic.report chess_data/my-v23-fit chess_data/my-v23-report
 & $py -B -m two_player_v24_probe.runtime chess_data/v23-fit-01 chess_data/v22-full-01 chess_data/my-v24-order
+# Frozen grouped development study after its independent source/test gate:
+& $py -B -m two_player_v25.runtime chess_data/v22-full-01 chess_data/v22-development-01 chess_data/my-v25-grid
+& $py -B -m two_player_v25.report chess_data/my-v25-grid chess_data/my-v25-report
 ```
 
 The V24 probe accepts the pinned audited V23 ledger, not an arbitrary rerun with

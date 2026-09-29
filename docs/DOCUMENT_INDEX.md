@@ -73,3 +73,9 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `V24_ORDER_RESULTS.md`: executed training-only order probe; no material
   obstruction established. It supersedes prospective no-result statements in
   the frozen protocol/review for status only, not their unchanged definitions.
+- `V24_INDEPENDENT_RESULTS_REVIEW.md`: verified actual packing, artifacts and
+  negative-screen arithmetic, without new fitting or encodings.
+- `METHOD_V25.md`, `V25_PREFIT_REVIEW.md`: active frozen42-cell development
+  specification and independent method review; not an executed result.
+- `V25_ROBUST_PREDICTION_RESEARCH.md`: primary-source follow-up and explicit
+  novelty limits for robust complete-reply consistency.

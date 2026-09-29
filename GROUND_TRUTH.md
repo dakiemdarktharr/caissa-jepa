@@ -243,6 +243,14 @@ Additional primary search includes TD-JEPA/VaGraM/TEMPO/WAKER/MML; see
 docs/V25_ROBUST_PREDICTION_RESEARCH.md and V25_PREFIT_REVIEW.md. Implementation
 and source-validation gates remain before any V2.5 fit.
 
+V2.5 implementation then passed independent source reviews and290 full regression
+tests (106.256s), plus49 final targeted tests (10.385s). Allseven manual-gradient
+objectives, legal complete-group sampler and strict artifact-only report are
+implemented in two_player_v25; terminal-oracle and failed-budget journaling
+findings were repaired before fitting. Existing source/checkpoints unchanged.
+Next is commit/push, vault sync and one fresh bounded42-cell v25-grid04 attempt.
+No V2.5 result exists at this prelaunch checkpoint. Data/checkpoints remain local.
+
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
