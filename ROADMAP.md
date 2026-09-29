@@ -12,17 +12,59 @@ failed against uniform/scaled latent and scalar-tail controls. Close this recipe
 as a valid negative development screen. Keep grid04 as an inconclusive runtime
 failure and preserve both attempts. See `docs/V25_GRID05_RESULTS.md`.
 
-The next milestone is **not** another latent-loss sweep. First finish the
-predeclared independent Reversi4/6 rule audit and document its limits; it does
-not validate minimax labels. Then conduct design-only deep research on concrete
-representation reuse that an optimized rule-aware/value-aware baseline cannot
-achieve more cheaply. Any successor must be a new frozen method/data version,
-give every baseline equal development and tuning opportunity, preserve an
-untouched confirmatory split, and include measured active compute. If no
-falsifiable advantage and fair baseline are identified, pivot the paper goal to
-a rigorous negative-results/benchmark contribution rather than keep tuning
-against reused roots. The user approved gpt-6-luna/high only for the current
-review; ask before creating another self-initiated agent with any configuration.
+V2.5 is closed as a valid negative development screen; its external Reversi
+rules audit is complete and limited to tested rules compatibility. The next
+milestone is V2.6 **research/design feasibility**, not another loss sweep. New
+primary-source review and two independent gpt-6-luna/high reviews found that
+game-variant transfer, predictive board-game consistency, JEPA visual OOD, and
+adversarial simulator learning all have relevant prior art. In a fully observed
+Markov game, predicting the sequential moves of both players is not itself
+opponent-behavior modeling: minimax already searches both actions. Keep those
+research questions separate.
+
+V2.6 candidate: test whether a shared action-conditioned JEPA representation
+improves sample efficiency of minimax decision quality on complete held-out
+deterministic rule variants. This is an unverified hypothesis, not a novelty
+claim. A bounded first step uses project-owned procedural rules and local data
+to validate split hygiene, hard-root coverage and oracle cost, reusing the
+existing padded 198-feature/65-action interface only within its 8x8 board and
+known-rule limits. No fitting until the gate passes. Cross-game claims require
+at least two distinct held-out rule families; a board-size-only split supports
+only within-family variant transfer.
+
+Before freezing `METHOD_V26`: independently verify source-level novelty scope;
+include an equal-update/equal-data track to isolate objective effects and a
+separate equal-measured-compute track for bounded planning; include direct
+and recurrent policy/value, MuZero-style task-prediction/recurrent, explicit
+feature-transition, JEPA, and a separate exact-rule system baseline. The
+candidate primary metric is held-out equal-variant macro AULC of exact minimax
+regret versus measured training compute with fixed matched inference search/time;
+equal-transition AULC is secondary for sample efficiency.
+Opponent policy behavior, when studied, gets a separate opponent model and
+metric, never a minimax label. Freeze practical margin/sample size using
+development variance before selection. If no fair, feasible test distinguishes
+JEPA from the controls, pivot to a benchmark/negative-results paper instead of
+reusing exposed roots. User approved gpt-6-luna/high for the current independent
+reviews; ask again for any other self-created agent configuration.
+
+V2.6 source-novelty and protocol reviews are complete for this draft. The
+protocol reviewer found no conceptual blocker and required an explicit AULC
+terminal interval and frozen update-plus-checkpoint/log reserve; both are now
+specified in `docs/METHOD_V26.md`. The bounded interface smoke passed on one
+Connect4-5x5 and one Reversi8 sample set against the project-owned reference
+rules, with receipt `docs/validation/V26_INTERFACE_SMOKE_01.json`. This only
+supports feasibility of the current encoded adapter and sampled two-ply
+closure. Next gates remain: a reproducible source-level novelty disposition,
+independent/admissible rule and oracle cost review for candidate variants, and a
+frozen split/data/selection/compute protocol. No V2.6 labels or training have
+been produced; the method is still a proposal and cannot yet support a JEPA-win
+or Q1-readiness claim.
+The exploratory exact-oracle probe in `docs/validation/V26_ORACLE_FEASIBILITY_01.json`
+solved only2/5 nonterminal Connect4-4x5 roots within 100k nodes/1s. This small
+sample is a warning about variable label cost, not a population estimate. Root
+admission cannot depend on oracle completion: predeclared solver timeouts count
+against coverage, and failing that gate forces a narrower domain or a new
+method version before labels/training.
 
 | Milestone / size | Depends on | Deliverables and acceptance | Status |
 | --- | --- | --- | --- |
@@ -44,8 +86,18 @@ from strict report; results and limits recorded in Ground Truth, this roadmap,
 professor dossier and Obsidian. The third-party Reversi4/6 differential audit
 now also passes (100 seeded trajectories/size; 183,612 trajectory comparisons;
 zero mismatches), within its explicitly limited rules-compatibility claim.
-Remaining closure work is vault synchronization, dossier/editor verification,
-tests and commit/push.
+Closure work passed: result, reviewer limits and vault sync are recorded;
+targeted tests passed; milestone is committed and remote-verified. The built-in
+LaTeX compiler remains unavailable on this platform, and current Computer Use
+cannot reopen Obsidian for a new visual check; neither limitation changes the
+hash-verified file-copy evidence.
+
+| V2.6 gate / relative size | Deliverables and acceptance | Stop condition | Status |
+| --- | --- | --- | --- |
+| Related-work and hypothesis audit / small | Primary-source matrix; distinguish task-prediction, JEPA state prediction, minimax, and opponent behavior; state only a testable incremental claim | Same sequential objective/evaluation already established, or no defensible difference | Primary-source matrix and two reviews complete; method proposal revised and undergoing final read-only audit |
+| Procedural benchmark feasibility / medium | Reuse/test padded <=8x8 state/action interface on held-out project-owned deterministic variants; independent rule checks; oracle-cost and hard-root coverage; grouped splits before labels | Oracle cheaper at target quality, insufficient hard roots, or any split/label leakage | Not started; design gate must pass before training |
+| Matched development comparison / large | Frozen method/config and finite runs; shared capacity/data/schedules; direct+recurrent PV, MuZero-style task prediction, feature transition, JEPA; exact solver separately; paired seeds and full resource curves | JEPA fails predeclared per-family AULC margin/replication or fails compute comparison | Not started |
+| Locked confirmation / large | Untouched variants; power/multiplicity/censor protocol; independent artifact audit | Development gate fails or test access/compute integrity fails | Not started |
 
 V2 M7 progress: preserved failed survey01/02, passed prospective survey03 on
 Connect4 4x5/Reversi6; full fork audit passes509 training/209 development roots.

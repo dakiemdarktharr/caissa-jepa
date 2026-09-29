@@ -38,6 +38,15 @@ variant bị giữ nguyên cả luật**, với policy/value-only, MuZero-style,
 và JEPA baselines được tuning công bằng. Chưa có V2.6 được khóa hay bằng chứng
 JEPA tốt hơn.
 
+Nghiên cứu transfer gần nhất đã thử nhiều game/variant bằng mạng policy-value,
+nên chuyển game không tự nó là claim mới. Một công trình ECAI mới dùng JEPA để
+cải thiện zero-shot generalization trong ProcGen và visual control; domain đó là
+single-agent, luật cố định, không phải đối kháng hai người với luật biến thể.
+Bộ Ludii được bài transfer kia dùng có license CC BY-NC-ND 4.0 ở repository
+chính thức; dự án chưa tải hay dùng Ludii. Nếu
+tiếp tục, ưu tiên luật procedural do dự án tự triển khai hoặc nguồn có quyền
+train và chia sẻ rõ ràng.
+
 ## Hồ sơ nghiên cứu trước đó (lịch sử)
 
 Các mục dưới đây giữ lại quá trình V2 trước V2.5; chúng không thay cho kết quả
@@ -138,6 +147,31 @@ Một bài báo mạnh cần bổ sung các bằng chứng đó, kiểm tra lu�
 Nếu lợi ích biến mất trước EMA-value/decoded hoặc khi đổi mask, cần bác bỏ
 giải thích JEPA-specific và giữ kết quả âm trong hồ sơ nghiên cứu.
 
+## Hướng V2.6 đang nghiên cứu, chưa khóa protocol
+
+Deep search cho thấy transfer policy/value giữa board-game variants, JEPA
+visual OOD trong RL, predictive state consistency trong board games và
+adversarial simulator learning đều có prior art. Hai review độc lập cũng nhắc
+rằng trong game Markov đầy đủ trạng thái, minimax đã xét nước đi nối tiếp của
+cả hai bên; điều đó không đồng nghĩa học hành vi của một đối thủ cụ thể.
+
+V2.6 sẽ chỉ tiếp tục nếu có thể kiểm tra công bằng câu hỏi hẹp hơn: liệu
+action-conditioned JEPA trên chuyển tiếp luân phiên giúp giảm regret minimax
+trên luật held-out theo số transition đã thấy, so với cùng encoder được huấn
+luyện bằng policy/value, MuZero-style task prediction và dự đoán đặc trưng trạng
+thái. Metric chính dự kiến là AULC regret trên variant held-out theo measured
+training compute, với search/inference budget ghép cặp; AULC theo transition
+exposure là phụ để phân tích sample efficiency. Chưa khóa margin, cỡ mẫu hay
+model. Variant-size holdout chỉ
+hỗ trợ claim within-family, không phải cross-game transfer. Trước fitting phải
+đạt gate về luật procedural tự sở hữu, split theo variant/trajectory/symmetry,
+root khó, oracle cost và cân bằng ngân sách baseline. Mã hiện có dùng input đã
+padding 198 đặc trưng/65 action slots cho board đến8×8, và mỗi fit V2.5 đã thấy
+cả Connect4-4×5 lẫn Reversi6; điều này cho phép thử bounded trên variant trong
+giới hạn đó, nhưng chưa chứng minh held-out transfer. Nếu exact solver rẻ hơn
+hoặc JEPA không thắng các learned control
+đã tuning công bằng, sẽ dừng claim phương pháp tích cực; mọi kết quả âm vẫn giữ.
+
 ## Quyết định sau chẩn đoán mới
 
 Vòng so sánh tiếp theo sẽ dùng mức hidden/latent128/64 và160 epoch chung cho
@@ -175,3 +209,21 @@ khoa học, và nhóm nào là baseline công bằng nhất. Nếu nghiên cứu
 tìm thấy một claim hẹp có novelty bảo vệ được, dự án nên chuyển sang bài
 benchmark/phân tích negative results thay vì tiếp tục đổi loss đến khi có một
 điểm thắng development.
+
+## Cập nhật feasibility V2.6 — 2026-09-29
+
+Định vị sâu hơn cho thấy chuyển giao giữa board-game variants, planning với
+latent dynamics và action-conditioned prediction đều có prior art đáng kể; do
+đó V2.6 chỉ là giả thuyết kiểm định JEPA có tăng chất lượng quyết định trên
+variant luật held-out dưới ngân sách đo được hay không. Phản biện protocol độc
+lập không tìm thấy blocker khái niệm sau khi bổ sung công thức AULC đầy đủ và
+reserve cho optimizer/checkpoint. Smoke test interface cho Connect4-5x5 và
+Reversi8 đạt trên tập mẫu nhỏ đối chiếu với reference rules do dự án tự viết;
+đây không phải kiểm định độc lập bên ngoài. Chưa tạo V2.6 labels, chưa huấn
+luyện, và chưa có bằng chứng JEPA thắng. Chi tiết cùng giới hạn nằm trong
+`METHOD_V26.md` và receipt `validation/V26_INTERFACE_SMOKE_01.json`.
+Đo cost sơ bộ cho exact minimax trên Connect4-4x5 chỉ giải được2/5 root
+không-terminal trong ngân sách100k nodes/1s. Đây là mẫu nhỏ, không ước lượng
+tỷ lệ tổng thể, nhưng cho thấy không thể âm thầm bỏ root khó sau khi thấy chi
+phí oracle; timeout phải được tính vào gate coverage đã định trước. Receipt:
+`validation/V26_ORACLE_FEASIBILITY_01.json`.

@@ -16,18 +16,19 @@ Do not edit frozen V25 source/method/report code. Source launch was
 `f7a90a76c497becaff8356e030ecbef1d114697e`; audit/tooling changes are at current
 main commit `1cfe93e85f3f3fd6ff084176f7ab7ec163924852`. The user-approved
 `gpt-6-luna`/`high` reviewer found no source-binding or reference-wrapper blocker
-and did not inspect results. Earlier 72-file vault mirroring predates these new
-notes and must be synchronized before ending this work period. No JEPA
+and did not inspect results. The live vault was resynchronized and fully
+hash-verified below. No JEPA
 superiority or Q1 claim has been established.
 
-Latest documentation mirror: copied82 project Markdown files, preserving
-relative paths, into the previously discovered `D:/notes/vault_1/Caissa-JEPA`;
-all82 source/destination SHA-256 pairs matched. This includes updated Ground
-Truth, roadmap, professor brief, V2.5 result and post-run research update. The
-previous checkpoint had visually opened Ground Truth in Obsidian, but the
-current Computer Use session exposes no native app inventory/controls, so I
-could not reopen the refreshed page for a new visual check. Do not treat the
-copy hashes as an Obsidian UI verification.
+Latest documentation mirror on 2026-09-29: all76 project Markdown files in the
+current repository were checked at their relative paths in
+`D:/notes/vault_1/Caissa-JEPA`; all76 SHA-256 pairs matched. Six changed/new
+pages were recopied, including this page, roadmap, document index, professor
+brief, post-run research update, and V2.6 method proposal. Existing extra vault
+files were preserved and not deleted. The previous checkpoint visually opened
+Ground Truth in Obsidian; current Computer Use exposes no native app inventory,
+so refreshed-page UI display was not reverified. Hash checks verify file bytes,
+not Obsidian rendering.
 
 Separate Reversi rules-reference audit passed after grid completion: pinned
 upstream MIT source `y-tetsu/reversi` commit
@@ -40,17 +41,54 @@ hashes remain in ignored `chess_data/reversi-ref-audit01/`.
 
 Post-run research update `docs/V25_POSTRUN_RESEARCH_UPDATE.md` records new
 overlap with MuZero board-game state-consistency analysis, cross-variant
-AlphaZero transfer, and 2026 policy-aware simulator learning. It proposes
-held-out-variant predictive-transfer as a candidate question only; no V2.6
-method is frozen, and new training remains gated on a fully researched protocol.
-Exact method uniqueness and JEPA advantage remain unestablished.
+AlphaZero transfer, the ECAI Dr. Abs JEPA zero-shot RL study, policy-aware
+simulator learning, and sequential-game opponent modeling. Dr. Abs studies
+single-agent visual-control OOD, not adversarial board-game planning. Two
+independent gpt-6-luna/high reviews concluded that visual OOD plus opponent
+conditioning does not establish method novelty; moreover, full Markov state
+plus minimax already represents both players' successive moves, which is not
+the same as learning a particular opponent's behavior. The V2.6 candidate is
+now a held-out-rule-variant transfer test for sequential action-conditioned
+JEPA versus matched task/feature prediction and policy-value baselines. Its
+primary endpoint is still only a candidate (held-out macro AULC exact minimax
+regret versus measured training compute, with fixed inference search/time);
+equal-transition AULC is secondary. `docs/METHOD_V26.md` is a revised design
+proposal; its independent protocol audit found no conceptual blocker and the
+AULC interval/reserve wording has been made explicit. It remains unfrozen and
+unimplemented. An exploratory adapter-interface smoke is recorded in
+`docs/validation/V26_INTERFACE_SMOKE_01.json`: Connect4-5x5 and Reversi8
+features/transitions/complete sampled two-ply closures passed against a
+project-owned reference implementation. This is not a third-party rules audit,
+oracle/data audit, training result, transfer result, or JEPA advantage. No V2.6
+model training has begun. Separate exact-oracle cost probe
+`docs/validation/V26_ORACLE_FEASIBILITY_01.json` found 3/3 late sampled
+Connect4-4x5 roots solved at 50k nodes/0.75s but only 2/5 nonterminal
+Connect4-4x5 roots solved at 100k nodes/1s; this small exploratory sample is
+not a solvability estimate. Its consequence is a stricter gate: do not select
+or replace roots based on observed oracle completion; timeouts count against
+predeclared coverage. Production labels remain blocked. Read `ROADMAP.md`,
+`docs/V25_POSTRUN_RESEARCH_UPDATE.md`, and the method proposal for gates,
+controls and kill criteria.
+Source inspection confirms `two_player/games.py` encodes a padded 8x8 board
+into 198 features and uses a 65-slot action mask; V2.5 each-run training mixes
+Connect4-4x5 and Reversi6 data through a shared model. This finite supported
+interface may be reused for variants within its board/rule representation, but
+V2.5 did not hold out a complete rule variant. The previous review's broader
+statement that no usable variable-size interface exists was therefore too
+strong; only generalization beyond the padded board and encoded rules remains
+unsupported.
+The closest cross-variant transfer preprint uses Ludii; its official source
+license is CC BY-NC-ND 4.0, so no Ludii code/data were downloaded or used. Prefer
+project-owned procedural games or a source with clear training/redistribution
+rights. Exact method uniqueness and JEPA advantage remain unestablished.
 
 **Agent approval rule (2026-09-29):** only the user may create/configure exempt
 workers directly. Before I create any agent/subagent, ask the user to approve
 its exact model and reasoning effort. The user approved `gpt-6-luna` / `high`
-for new independent reviews in this continuation. This is not blanket approval
-for other models; ask again before any different configuration. If approved
-workers are unavailable, continue directly or report the blocker.
+for exactly two independent reviews in this continuation; both completed
+read-only without fitting or edits. This is not blanket approval for other
+models; ask again before any different configuration. If approved workers are
+unavailable, continue directly or report the blocker.
 
 ## Identity, authority and hypothesis
 

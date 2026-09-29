@@ -85,3 +85,14 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   causal reproduction and explicit unsaved-prediction accounting.
 - `V25_RUNTIME_AMENDMENT.md`: prospective minimal engineering repair; original
   scientific method/source retained and all42 cells must restart fresh.
+
+## V2.6 current development
+
+- `V25_POSTRUN_RESEARCH_UPDATE.md`: post-grid05 primary-source update and
+  candidate question; focused review, not an exhaustive systematic review.
+- `METHOD_V26.md`: revised, unfrozen proposal for held-out-variant sequential
+  JEPA; no labels, model fitting, or performance result yet.
+- `validation/V26_INTERFACE_SMOKE_01.json`: exploratory feature/action and
+  sampled two-ply closure receipt against project-owned reference rules.
+- `validation/V26_ORACLE_FEASIBILITY_01.json`: exploratory exact solver cost
+  receipt; timeout/coverage gate currently blocks production labels.

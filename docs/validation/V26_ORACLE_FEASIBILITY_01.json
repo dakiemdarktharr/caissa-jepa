@@ -1,0 +1,45 @@
+{
+  "id": "V26_ORACLE_FEASIBILITY_01",
+  "date": "2026-09-29",
+  "stage": "exploratory exact-oracle cost probe",
+  "result": "inconclusive for a balanced root bank; do not generate production labels",
+  "source_commit": "572f1fc0d475042d468d143a38dfbad213802612",
+  "source_sha256": {
+    "two_player/games.py": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "benchmarks/reference_rules.py": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e"
+  },
+  "solver": "project-owned ReferenceSolver, exact negamax, fresh budget per root, no approximate return",
+  "queries": [
+    {
+      "variant": "connect4-4x5",
+      "plie_targets": [5, 7, 9],
+      "budget": {"nodes": 50000, "seconds": 0.75},
+      "results": [
+        {"ply": 5, "legal_actions": 15, "complete": false, "nodes": 43291, "seconds": 0.7501},
+        {"ply": 7, "legal_actions": 13, "complete": false, "nodes": 39389, "seconds": 0.7501},
+        {"ply": 9, "legal_actions": 11, "complete": true, "nodes": 13621, "seconds": 0.2378}
+      ]
+    },
+    {
+      "variant": "connect4-4x5",
+      "seeds": [261001, 261002, 261003, 261004, 261005, 261006],
+      "budget": {"nodes": 100000, "seconds": 1.0},
+      "results": [
+        {"seed": 261001, "target_ply": 12, "terminal": true},
+        {"seed": 261002, "target_ply": 9, "legal_actions": 11, "complete": true, "nodes": 26049, "seconds": 0.4513},
+        {"seed": 261003, "target_ply": 7, "legal_actions": 13, "complete": false, "nodes": 59443, "seconds": 1.0001},
+        {"seed": 261004, "target_ply": 7, "legal_actions": 13, "complete": false, "nodes": 60427, "seconds": 1.0002},
+        {"seed": 261005, "target_ply": 11, "legal_actions": 9, "complete": true, "nodes": 2255, "seconds": 0.0295},
+        {"seed": 261006, "target_ply": 8, "legal_actions": 12, "complete": false, "nodes": 61726, "seconds": 1.0001}
+      ]
+    }
+  ],
+  "interpretation": "The sampled nonterminal roots show substantial cost variability and several exact-query failures. The sample is small and stochastic; it is not a solvability-rate estimate. Filtering to roots that solve exactly after inspection could bias the benchmark and is not approved by this receipt.",
+  "not_checked": [
+    "oracle costs on other candidate variants",
+    "independent third-party agreement",
+    "dataset coverage, split leakage, or hard-root balance",
+    "training feasibility, JEPA representation, planning advantage, or strength"
+  ],
+  "decision": "Production root generation and model fitting remain blocked until a predeclared, balanced, cost-feasible oracle protocol is shown without selecting on oracle completion or performance."
+}

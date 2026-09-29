@@ -1,0 +1,39 @@
+{
+  "id": "V26_INTERFACE_SMOKE_01",
+  "date": "2026-09-29",
+  "stage": "exploratory interface feasibility",
+  "result": "pass for the checks listed; no research claim",
+  "source_commit": "572f1fc0d475042d468d143a38dfbad213802612",
+  "source_sha256": {
+    "two_player/games.py": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "benchmarks/reference_rules.py": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e"
+  },
+  "checks": [
+    "198-dimensional padded features are finite and have expected shape",
+    "legal actions map to the separately implemented project reference rules",
+    "all tested legal transitions agree with reference state and player-to-move",
+    "complete legal own-action by legal-reply closure was enumerated at sampled roots",
+    "terminal and pass behavior was checked; all tested H2 leaves were terminal"
+  ],
+  "games": [
+    {
+      "variant": "Connect4 5x5, connect target 4, gravity",
+      "sampled_states": 14,
+      "two_ply_roots": 13,
+      "legal_reply_pairs_and_leaf_transitions": 315
+    },
+    {
+      "variant": "Reversi 8x8",
+      "sampled_states": 24,
+      "two_ply_roots": 24,
+      "legal_reply_pairs_and_leaf_transitions": 2189
+    }
+  ],
+  "not_checked": [
+    "independent third-party engine agreement",
+    "minimax label correctness or oracle feasibility/cost",
+    "data split/leakage protocol",
+    "training, representation quality, planning benefit, transfer, or strength"
+  ],
+  "interpretation": "This checks that two encodable variants can produce finite features and complete two-ply legal transition closures through the existing adapter/reference pair. The reference implementation is project-owned. It does not establish a dataset pass, held-out transfer, or a JEPA advantage."
+}
