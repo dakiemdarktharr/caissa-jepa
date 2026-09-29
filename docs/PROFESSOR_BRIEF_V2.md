@@ -111,3 +111,15 @@ quan trên các biểu diễn đã học vẫn chưa đo. [Protocol probe](METHO
 giữ các checkpoint cố định và không đọc development/final. Ý tưởng dùng vài
 minimum-probe ngẫu nhiên đã bị hoãn sau phản ví dụ; không đưa tên mới cho loss
 đó rồi coi là đóng góp. Nếu đổi transition, baseline phải được tăng cường tương ứng.
+
+Phép đo V2.4 sau đó đã hoàn tất và qua audit độc lập: cả4 ngưỡng chính và4
+ngưỡng nonterminal đều không đạt. Cận sai số chỉ bằng khoảng0,02–0,28% sai số
+H1 ở các nhóm chính, dù coverage68–72%. Chưa chứng minh được giới hạn này là
+nút thắt; lower bound nhỏ cũng không chứng minh predictor hiện tại đủ tốt.
+
+Thiết kế V2.5 mới tập trung vào sai số lớn nhất trong một tập phản hồi hợp lệ
+đầy đủ, so sánh với mean-only, scalar-tail, decoded-tail, recurrent policy/value
+và một control phân bổ gradient. Cùng kiến trúc/compute opportunity,42cell
+hữu hạn. [Method](METHOD_V25.md) đã được phản biện trước code; chưa có kết quả
+V2.5. WAKER, VAML, TD-JEPA và EfficientZero là prior art quan trọng, nên chưa
+được gọi hướng này là nguyên lý mới hoặc kết quả triển vọng đã xác nhận.

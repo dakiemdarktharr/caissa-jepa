@@ -178,3 +178,9 @@ Launch only after commit/push and vault sync:
 ```text
 python -B -m two_player_v24_probe.runtime chess_data/v23-fit-01 chess_data/v22-full-01 chess_data/v24-order-01
 ```
+
+Executed once at0a7edef:18/18 complete,72 contextual rows,12.875268s,103,759,872
+bytes peak RSS; no fits or new evaluation decisions. Allfour primary screens
+and their nonterminal sensitivities fail. Read V24_ORDER_RESULTS; retain the
+negative finding and do not attribute prior JEPA errors to a demonstrated
+additive-order floor. Independent artifact audit is a separate gate.

@@ -68,3 +68,8 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/research-internal/report-source.md` | Explicitly superseded historical research handoff |
 
 Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Truth and this index bring the first snapshot to 22. Later research documents must be added to the mirror too. Non-Markdown screenshots/JSON receipts stay in the repository and are not part of the requested Markdown mirror.
+# Latest V2.4 result
+
+- `V24_ORDER_RESULTS.md`: executed training-only order probe; no material
+  obstruction established. It supersedes prospective no-result statements in
+  the frozen protocol/review for status only, not their unchanged definitions.

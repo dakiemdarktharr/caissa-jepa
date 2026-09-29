@@ -218,6 +218,31 @@ core-to-report tests cover all18 configurations/72 rows without fitting. Direct
 prediction metrics remain unavailable. Source commit/push and vault sync precede
 the single fresh `chess_data/v24-order-01` probe; no result exists at this update.
 
+Subsequent V2.4 probe completed18/18 at0a7edef6bf5a651c37ca4c23186dbbf472ea2b26
+in12.875268s,103,759,872bytes lifetime RSS,1,875,856bytes excluding journal.
+All72 contexts verified internally, no errors/mutations/protected predictions.
+The prespecified obstruction screen failed allfour groups: median bound/full SSE
+0.000326/0.000174 for Connect4 small/large and0.001933/0.002787 for Reversi,
+with71.689%/68.136% H1 coverage. Nonterminal sensitivity also fails. The bound
+does not establish a material bottleneck or prove adequacy; no JEPA advantage.
+Read docs/V24_ORDER_RESULTS.md. Independent actual-artifact audit follows.
+
+V2.4 independent audit subsequently PASSED:23 committed source files,22 outputs,
+18checkpoints/1062tensors/72rows,2056 independently rebuilt H1edges and358packed
+blocks. Source/schedule/hash/arithmetic all match. No new encodings or fits.
+Read docs/V24_INDEPENDENT_RESULTS_REVIEW.md; allprimary/sensitivity screens fail.
+
+Next frozen development protocol: docs/METHOD_V25.md, complete-reply half-mean/
+half-max latent residual.42 cells,7 equally exposed families,2rates,3seeds,
+128/64×160, shared standard MLP and recurrent policy/value supervision. Strong
+scalar/decoded tail and scaled-uniform controls test whether latent allocation
+adds anything. Exact-selected rates stay fixed for hybrid; both gates retained.
+Independent method reviews resolved scalar-head lag, denominators, bound maxima
+and tie-gradient issues before code. No uniqueness or positive outcome claim.
+Additional primary search includes TD-JEPA/VaGraM/TEMPO/WAKER/MML; see
+docs/V25_ROBUST_PREDICTION_RESEARCH.md and V25_PREFIT_REVIEW.md. Implementation
+and source-validation gates remain before any V2.5 fit.
+
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.

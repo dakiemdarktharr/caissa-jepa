@@ -1,0 +1,194 @@
+{
+  "version": "v24-independent-order-audit01",
+  "status": "verified",
+  "script_sha256": "31dd0f76cc6231ecea1dcf14678484b342595f3d5193a2de9f84c60ef6a8a2a3",
+  "errors": [],
+  "probe_commit": "0a7edef6bf5a651c37ca4c23186dbbf472ea2b26",
+  "source_files_verified": 23,
+  "source_inventory_digest": "c5fd637a9f9d351d0c0ce3068aea52e603f5d2449ad2e17bc4824ed9bd5b47d1",
+  "journal_sha256": "528c66f0137af1a5eade8694e408ddd6e215fb6dbfae048a9b4871eda3a41e08",
+  "report_sha256": "19523d039427fb4521e69dfe9c65103d24caa29e633515e28ff424820cc4ada4",
+  "schedule_file_sha256": "c47a5f8ee2a8d95ab435ae0a3575c009a038de5bfc0a1d1022e98249abf5d658",
+  "schedule_canonical_digest": "07bf87c7e9d6e95c399fb5b11a1cc6a4c025ec27ad6ccc5b05596563976ed09a",
+  "prerequisite_audit_sha256": "e5f7d6df255699ea0f5684f215546f72dd48368f70e6c4c2ad1c478199ce8ced",
+  "dataset_fingerprint": "73acd3d11c3a30fa56703d19768d899dff51c6af6ccf2afddc0f5f007d46cc18",
+  "training_payload_sha256": "674ac6003b0f02b7c550a32d01bb58354adcbd3a0695fb493af5f235ec7e4740",
+  "grid_ledger_sha256": "77f0dd686e820715f4e608176449ad32852d1c2604d0ce556b7edcf2c190a63c",
+  "counts": {
+    "cells": 18,
+    "rows": 72,
+    "checkpoints": 18,
+    "checkpoint_tensor_arrays": 1062,
+    "primary_screens": 4,
+    "nonterminal_screens": 4,
+    "h1_edges": 2056,
+    "packed_blocks": 358
+  },
+  "packing": {
+    "connect4-4x5": {
+      "roots": 248,
+      "eligible_root_pairs": 2825,
+      "candidate_blocks": 4001,
+      "selected_blocks": 157,
+      "total_h1_edges": 876,
+      "used_edges": 628,
+      "used_fraction": 0.7168949771689498,
+      "terminal_block_counts": {
+        "0": 111,
+        "1": 39,
+        "2": 7,
+        "3": 0,
+        "4": 0
+      },
+      "nonterminal_blocks": 111,
+      "all_nonterminal_edges": 804,
+      "used_nonterminal_edges": 444,
+      "nonterminal_used_fraction": 0.5522388059701493
+    },
+    "reversi6": {
+      "roots": 261,
+      "eligible_root_pairs": 2988,
+      "candidate_blocks": 4480,
+      "selected_blocks": 201,
+      "total_h1_edges": 1180,
+      "used_edges": 804,
+      "used_fraction": 0.6813559322033899,
+      "terminal_block_counts": {
+        "0": 201,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "nonterminal_blocks": 201,
+      "all_nonterminal_edges": 1180,
+      "used_nonterminal_edges": 804,
+      "nonterminal_used_fraction": 0.6813559322033899
+    }
+  },
+  "screens": [
+    {
+      "game": "connect4-4x5",
+      "hidden": 64,
+      "latent": 32,
+      "primary": {
+        "coverage": 0.7168949771689498,
+        "ratios_by_seed": {
+          "17": 0.00029941457544316476,
+          "29": 0.00032568912869617957,
+          "43": 0.0003507973593125222
+        },
+        "median": 0.00032568912869617957,
+        "favorable_seeds": 0,
+        "passed": false
+      },
+      "nonterminal": {
+        "coverage": 0.5522388059701493,
+        "ratios_by_seed": {
+          "17": 0.00024320589278658324,
+          "29": 0.0002408781854439212,
+          "43": 0.000255272210256906
+        },
+        "median": 0.00024320589278658324,
+        "favorable_seeds": 0,
+        "passed": false
+      }
+    },
+    {
+      "game": "connect4-4x5",
+      "hidden": 128,
+      "latent": 64,
+      "primary": {
+        "coverage": 0.7168949771689498,
+        "ratios_by_seed": {
+          "17": 0.00017410402300691147,
+          "29": 0.000142827264294564,
+          "43": 0.00018983334644840264
+        },
+        "median": 0.00017410402300691147,
+        "favorable_seeds": 0,
+        "passed": false
+      },
+      "nonterminal": {
+        "coverage": 0.5522388059701493,
+        "ratios_by_seed": {
+          "17": 0.00011923372699952939,
+          "29": 0.00011120889627683908,
+          "43": 0.00014159170711100717
+        },
+        "median": 0.00011923372699952939,
+        "favorable_seeds": 0,
+        "passed": false
+      }
+    },
+    {
+      "game": "reversi6",
+      "hidden": 64,
+      "latent": 32,
+      "primary": {
+        "coverage": 0.6813559322033899,
+        "ratios_by_seed": {
+          "17": 0.002310939695044736,
+          "29": 0.0019326244440916864,
+          "43": 0.0017717991845556836
+        },
+        "median": 0.0019326244440916864,
+        "favorable_seeds": 0,
+        "passed": false
+      },
+      "nonterminal": {
+        "coverage": 0.6813559322033899,
+        "ratios_by_seed": {
+          "17": 0.002310939695044736,
+          "29": 0.0019326244440916864,
+          "43": 0.0017717991845556836
+        },
+        "median": 0.0019326244440916864,
+        "favorable_seeds": 0,
+        "passed": false
+      }
+    },
+    {
+      "game": "reversi6",
+      "hidden": 128,
+      "latent": 64,
+      "primary": {
+        "coverage": 0.6813559322033899,
+        "ratios_by_seed": {
+          "17": 0.0027866176775516996,
+          "29": 0.0029840682311778805,
+          "43": 0.002307853895369883
+        },
+        "median": 0.0027866176775516996,
+        "favorable_seeds": 0,
+        "passed": false
+      },
+      "nonterminal": {
+        "coverage": 0.6813559322033899,
+        "ratios_by_seed": {
+          "17": 0.0027866176775516996,
+          "29": 0.0029840682311778805,
+          "43": 0.002307853895369883
+        },
+        "median": 0.0027866176775516996,
+        "favorable_seeds": 0,
+        "passed": false
+      }
+    }
+  ],
+  "resource": {
+    "probe_seconds": 12.875268100004178,
+    "process_peak_rss_bytes": 103759872,
+    "actual_artifact_bytes": 1889925
+  },
+  "optimizer_updates": 0,
+  "new_model_encodings": 0,
+  "new_model_predictions": 0,
+  "protected_artifacts_opened": 0,
+  "limitations": [
+    "Internal independent packing implementation shares audited game adapters.",
+    "Saved bounds, reversal counts and SSEs not remeasured; arithmetic/provenance checked without encoding.",
+    "Conservative fixed-target H1 diagnostic; no generalization, additive adequacy or JEPA superiority claim."
+  ],
+  "audit_seconds": 7.400646300025983
+}

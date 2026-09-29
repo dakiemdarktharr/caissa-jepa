@@ -2,6 +2,14 @@
 
 Version 1 — 2026-09-29. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
 
+Latest M7 evidence: the completed V2.4 order probe fails all four materiality
+screens despite sufficient coverage. This proposed bottleneck is not established.
+Keep its negative result; further architecture/objective work needs a separately
+frozen matched-baseline design, not a claim that this probe justified a fix.
+That next finite design is METHOD_V25:42 grouped robust-consistency cells with
+strong recurrent/scalar/decoded and gradient-allocation controls. Method reviews
+pass; implementation/source/test gates precede fitting. Scope remains M7.
+
 | Milestone / size | Depends on | Deliverables and acceptance | Status |
 | --- | --- | --- | --- |
 | M0 memory and inventory / small | None | Preserve all branch commits/prompts; classify all Markdown; copy with SHA checks; open Ground Truth in existing Obsidian | PASS: 22 initial documents at `D:/notes/vault_1/Caissa-JEPA`; source baseline 70 tests pass |
