@@ -211,6 +211,13 @@ Independent spec reviews found denominator/perspective/tolerance/packing-order
 ambiguities; these were clarified before implementation. No probe measurement
 has yet been made. Runtime/tests/independent review and source push remain gates.
 
+V2.4 implementation subsequently passed independent source review and the full
+239-test regression (133.537s). Final output-hash rereading and failure-path
+regressions were added before launch (11 runtime tests pass). Synthetic actual
+core-to-report tests cover all18 configurations/72 rows without fitting. Direct
+prediction metrics remain unavailable. Source commit/push and vault sync precede
+the single fresh `chess_data/v24-order-01` probe; no result exists at this update.
+
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.

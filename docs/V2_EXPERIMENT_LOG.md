@@ -167,3 +167,14 @@ Prospective decision: common128/64×160 operating point for a future development
 comparison, no convergence claim or candidate-only extension. METHOD_V24_ORDER_PROBE
 freezes one training-only fixed-target H1 restriction probe before any broad
 architecture grid. No new development score or JEPA promotion follows from it.
+
+V2.4 prelaunch: separate read-only probe implementation reviewed independently;
+239 full-regression tests passed133.537s, final output-hash guard regression suite
+11 passed4.852s. Saved disjoint packing precedes model-loading verification;
+direct never invokes its unused dynamics. Positive provisional reports are
+invalidated if any final guard fails. No real measurement at this source update.
+Launch only after commit/push and vault sync:
+
+```text
+python -B -m two_player_v24_probe.runtime chess_data/v23-fit-01 chess_data/v22-full-01 chess_data/v24-order-01
+```

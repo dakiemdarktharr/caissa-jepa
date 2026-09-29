@@ -91,3 +91,19 @@ tolerance, save packing before checkpoint-loading verification, bind the exact
 independent-audit hash, and include enumeration/sorting in resource checks.
 These clarify the prospective measurement; no checkpoint was measured during
 review. The second independent reviewer supplied these implementation boundaries.
+
+## Implementation review before launch
+
+The separate `two_player_v24_probe` implementation received independent source
+review and synthetic legal-fixture integration tests. Review found and repaired
+three issues before any research measurement: a report-verification failure could
+otherwise be marked complete; a late resource failure could leave a provisional
+positive report; and direct-model ordering diagnostics used incompatible null/zero
+conventions across modules. Final saved schedule and all measurement hashes are
+also reread before completion, with tamper regressions. No blocking source finding
+remained at launch review. Artifact audit remains necessary after execution.
+
+Full regression passed239 tests in133.537s before the final output-hash guard;
+the final runtime suite passed11 tests in4.852s after that guard. Tests use small
+synthetic fixtures or mocked cells, not the research checkpoints, and are not
+evidence for JEPA. All frozen legacy source remains unchanged.

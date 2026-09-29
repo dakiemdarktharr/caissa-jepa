@@ -97,7 +97,14 @@ $env:OMP_NUM_THREADS='1'
 & $py -B -m two_player_v22.data chess_data/my-v2-forks chess_data/my-v22-development --development
 & $py -B -m two_player_v22.runtime chess_data/my-v22-scarce chess_data/my-v22-full chess_data/my-v22-development chess_data/my-v22-grid
 & $py -B -m two_player_v22.report chess_data/my-v22-grid chess_data/my-v22-report
+# Training-only diagnostics; V24 requires the exact independently audited V23 inputs.
+& $py -B -m two_player_v23_diagnostic.runtime chess_data/v22-full-01 chess_data/my-v23-fit
+& $py -B -m two_player_v23_diagnostic.report chess_data/my-v23-fit chess_data/my-v23-report
+& $py -B -m two_player_v24_probe.runtime chess_data/v23-fit-01 chess_data/v22-full-01 chess_data/my-v24-order
 ```
+
+The V24 probe accepts the pinned audited V23 ledger, not an arbitrary rerun with
+different checkpoint bytes. It performs no training or development evaluation.
 
 The prior v1.2 dataset is required to audit its training-state exclusion; use
 the original v1 generation command above with its frozen seed and parameters.
