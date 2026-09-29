@@ -232,6 +232,11 @@ cùng mẫu thay vì2/5 của negamax thuần trong1 giây/root. Các giá trị
 đối chiếu trên root giải xong; tuy vậy một root vẫn timeout và mẫu nhỏ chưa
 đạt gate coverage. Đây là tiến bộ engineering cho oracle, không phải kết quả
 JEPA.
+Feasibility hiện có khoảng trống giữa hai regime: Connect4-4x5 dễ gán nhãn
+nhưng exact search giải hầu hết root; Connect4 8x8 khó hơn nhưng exact oracle
+chỉ giải được1/10 root trong1 giây. Do đó phương pháp V2.6 chưa vào training;
+cần tìm oracle/metric khả thi không loại root khó, hoặc pivot sang self-play với
+match evaluation paired và cùng compute.
 Một survey tái lập bằng seed cố định cho thấy Connect4-4x5 exact-label được
 17/24 root, trong đó13 root có action outcome khác nhau; Reversi6/8 endgame
 được giải8/8 nhưng exact search rẻ, nên không phải benchmark planning chính

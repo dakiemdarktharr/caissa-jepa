@@ -83,9 +83,25 @@ development feasibility, not a locked or balanced root-bank audit. The V2.6 root
 forbids selecting/replacing roots by observed solver completion; timeouts count
 against predeclared coverage. Full repository unittest now passes322 tests in
 115.2s, including oracle correctness/budget checks. No V2.6 data labels or model
-training have been produced. Read `ROADMAP.md`,
-`docs/V25_POSTRUN_RESEARCH_UPDATE.md`, and the method proposal for gates,
-controls and kill criteria. Official OpenSpiel sources offer Apache-2.0
+training have been produced.
+More cost probes sharpened the feasibility tradeoff: gravity Connect4-4x5
+solved22/22 sampled roots at target plies5-11 within1s, with17 informative;
+an early-ply1-4 probe solved only4/12, with1 informative on the reproducible
+script rerun (a prior inline screen solved5/12,2 informative, showing cost
+threshold variability). For gravity
+Connect4-8x8, only1/10 nonterminal roots solved in1s and1/3 fixed early roots
+solved in5s. These are small seeded feasibility samples, not rates. A larger
+variant looks like a meaningful search challenge but exact labels are too costly
+for this solver; the easy variant is unlikely to establish a meaningful
+planning advantage. Receipts are
+`docs/validation/V26_ORACLE_FEASIBILITY_04_CONNECT4_GRAVITY.json`,
+`docs/validation/V26_ORACLE_FEASIBILITY_04_CONNECT4_GRAVITY_EARLY.json`, and
+`docs/validation/V26_ORACLE_FEASIBILITY_05_CONNECT4_8X8*.json`.
+This gap weakens exact-minimax supervised V2.6 as a route to a multi-game
+positive result; the next design decision is whether to pivot to self-play
+outcomes and fixed-compute match evaluation rather than filtering out hard roots.
+Read `ROADMAP.md`, `docs/V25_POSTRUN_RESEARCH_UPDATE.md`, and the method
+proposal for gates, controls and kill criteria. Official OpenSpiel sources offer Apache-2.0
 procedural game implementations, but the reviewed game index did not resolve a
 matching Reversi/custom-variant exact oracle; the surveyed Pascal Pons solver
 is AGPL-3.0-or-later and targets standard Connect Four. No external code was

@@ -1,0 +1,186 @@
+{
+  "stage": "exploratory model-blind oracle cost; exact action values are not retained",
+  "game": "connect4-gravity-8x8",
+  "schedule_seed": 26092927,
+  "target_ply_range": [
+    10,
+    25
+  ],
+  "candidate_count": 12,
+  "budget": {
+    "nodes": 100000,
+    "seconds": 1.0
+  },
+  "summary": {
+    "nonterminal_candidates": 10,
+    "completed": 1,
+    "timeouts": 9,
+    "informative_completed": 1
+  },
+  "roots": [
+    {
+      "index": 0,
+      "seed": 281000,
+      "target_ply": 20,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 44,
+      "nonterminal_h2_pairs": 63,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 13047,
+      "seconds": 1.000124
+    },
+    {
+      "index": 1,
+      "seed": 281001,
+      "target_ply": 21,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 43,
+      "nonterminal_h2_pairs": 37,
+      "complete": true,
+      "distinct_action_outcomes": 2,
+      "informative": true,
+      "nodes": 44,
+      "seconds": 0.004031
+    },
+    {
+      "index": 2,
+      "seed": 281002,
+      "target_ply": 14,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 50,
+      "nonterminal_h2_pairs": 64,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 11545,
+      "seconds": 1.000053
+    },
+    {
+      "index": 3,
+      "seed": 281003,
+      "target_ply": 23,
+      "terminal": true
+    },
+    {
+      "index": 4,
+      "seed": 281004,
+      "target_ply": 15,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 49,
+      "nonterminal_h2_pairs": 44,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 14935,
+      "seconds": 1.000075
+    },
+    {
+      "index": 5,
+      "seed": 281005,
+      "target_ply": 18,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 46,
+      "nonterminal_h2_pairs": 48,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 13587,
+      "seconds": 1.000082
+    },
+    {
+      "index": 6,
+      "seed": 281006,
+      "target_ply": 14,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 50,
+      "nonterminal_h2_pairs": 64,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 13071,
+      "seconds": 1.000092
+    },
+    {
+      "index": 7,
+      "seed": 281007,
+      "target_ply": 18,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 46,
+      "nonterminal_h2_pairs": 57,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 13213,
+      "seconds": 1.000084
+    },
+    {
+      "index": 8,
+      "seed": 281008,
+      "target_ply": 24,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 40,
+      "nonterminal_h2_pairs": 44,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 13046,
+      "seconds": 1.00006
+    },
+    {
+      "index": 9,
+      "seed": 281009,
+      "target_ply": 11,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 53,
+      "nonterminal_h2_pairs": 57,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 14451,
+      "seconds": 1.000052
+    },
+    {
+      "index": 10,
+      "seed": 281010,
+      "target_ply": 10,
+      "terminal": false,
+      "legal_actions": 8,
+      "empty_cells": 54,
+      "nonterminal_h2_pairs": 50,
+      "complete": false,
+      "distinct_action_outcomes": null,
+      "informative": null,
+      "nodes": 14086,
+      "seconds": 1.000051
+    },
+    {
+      "index": 11,
+      "seed": 281011,
+      "target_ply": 20,
+      "terminal": true
+    }
+  ],
+  "source_commit": "9f035d4aeeb3e75d2eff3bab299cc4a8d57e62b8",
+  "source_sha256": {
+    "probe": "79f79f5fa4ef96b87bb8f2cd65ed1b62a440c812fb65c395af13ff4c5883a09a",
+    "adapter": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "reference_rules": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+    "alpha_beta": "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_limit": "A tiny exploratory sample is not a solvability estimate, benchmark, or learned-model result."
+}

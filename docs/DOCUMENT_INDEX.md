@@ -100,7 +100,12 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   exact bounded alpha-beta oracle and value/budget regression tests.
 - `validation/V26_ORACLE_FEASIBILITY_02.json`: same-seed comparison showing
   improved feasibility over plain negamax, still below a root-bank pass gate.
-- `tools/v26_oracle_cost_probe.py`: fixed-seed, label-free oracle-cost probe for
-  Connect4-4x5 and Reversi6/8; it records outcomes/counts, not Q-value labels.
+- `tools/v26_oracle_cost_probe.py`: fixed-seed oracle-cost probe for
+  Connect4 variants and Reversi6/8; it records outcome-count diagnostics, not
+  exact action-value labels.
 - `validation/V26_ORACLE_FEASIBILITY_03_*.json`: exploratory per-root probe
   receipts; none is eligible for locked confirmation reuse.
+- `validation/V26_ORACLE_FEASIBILITY_04_*.json`: gravity Connect4-4x5 easier and
+  early-ply cost strata; coverage remains exploratory.
+- `validation/V26_ORACLE_FEASIBILITY_05_CONNECT4_8X8*.json`: larger-board exact
+  label-cost samples; a useful search challenge currently exceeds solver caps.

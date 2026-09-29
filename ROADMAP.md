@@ -81,6 +81,18 @@ are mostly cheap for exact search. This suggests Reversi endgames are a weak
 primary planning challenge, while Connect4 midgame still has costly roots.
 Full per-root cost receipts are under `docs/validation/V26_ORACLE_FEASIBILITY_03_*`;
 none of these exploratory roots may be reused as locked confirmation data.
+The gravity variant sharpens the tradeoff: Connect4-4x5 solved22/22 roots at
+plies5-11 within1s (17 informative), but only4/12 early-ply1-4 roots (1
+informative) on the reproducible script rerun; a prior inline probe solved5/12,
+showing threshold variability. On Connect4-gravity-8x8 only1/10 sampled nonterminal roots solved
+within1s, and only1/3 fixed roots within5s. The larger domain is more search-
+challenging but this exact-label pipeline is too costly at current limits; the
+small domain is cheap enough for exact search to dominate. V2.6 exact-supervised
+work must either find a model-independent oracle/compute protocol between those
+extremes or pivot to outcome/self-play evaluation with paired fixed-budget
+matches. Do not filter hard roots post hoc. See
+`docs/validation/V26_ORACLE_FEASIBILITY_04_*` and
+`docs/validation/V26_ORACLE_FEASIBILITY_05_CONNECT4_8X8*.json`.
 
 | Milestone / size | Depends on | Deliverables and acceptance | Status |
 | --- | --- | --- | --- |

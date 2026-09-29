@@ -5,6 +5,15 @@ result.** This document is a gate for a bounded feasibility implementation. A
 reviewed/frozen version and immutable data plan must precede any predictive-model
 training. V2.5 remains immutable and negative.
 
+**Current feasibility disposition (2026-09-29): not cleared for fitting.** Small
+Connect4-4x5 roots are often exactly solvable but early-ply coverage is weak;
+late Reversi roots are cheap for exact search; Connect4-gravity-8x8 roots are
+meaningfully harder but exact labels time out under the measured local budget.
+See the `V26_ORACLE_FEASIBILITY_01` through `_05` receipts. No model-independent
+balanced root bank has passed the pre-fit gate. Any shift to self-play/outcome
+training and paired match evaluation requires a separately versioned method and
+cannot be called a completion of this exact-minimax-regret proposal.
+
 ## Question and scope
 
 Test whether action-conditioned latent prediction helps a shared model transfer

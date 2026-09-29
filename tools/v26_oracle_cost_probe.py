@@ -25,12 +25,17 @@ def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def connect4_roots(count=24, schedule_seed=26092926):
-    game = BoardGame("connect4-4x5", 4, 5, 4)
+def connect4_roots(count=24, schedule_seed=26092926, gravity=False,
+                   min_ply=5, max_ply=11, rows=4, cols=5, k=4,
+                   base_seed=270000):
+    name = f"connect4-{rows}x{cols}"
+    if gravity:
+        name += "-gravity"
+    game = BoardGame(name, rows, cols, k, gravity=gravity)
     schedule_rng = random.Random(schedule_seed)
     for index in range(count):
-        seed = 270000 + index
-        target_ply = schedule_rng.randint(5, 11)
+        seed = base_seed + index
+        target_ply = schedule_rng.randint(min_ply, max_ply)
         rng = random.Random(seed)
         state = game.initial()
         for ply in range(target_ply):
@@ -95,11 +100,23 @@ def inspect_root(adapter, reference, index, seed, ply, state, nodes, seconds):
     return row
 
 
-def run(game_name, count, schedule_seed, nodes, seconds):
+def run(game_name, count, schedule_seed, nodes, seconds, min_ply, max_ply):
     if game_name == "connect4-4x5":
         adapter = BoardGame(game_name, 4, 5, 4)
         reference = ReferenceGame(4, 5, 4)
-        roots = connect4_roots(count, schedule_seed)
+        roots = connect4_roots(count, schedule_seed, min_ply=min_ply,
+                               max_ply=max_ply)
+    elif game_name == "connect4-gravity-4x5":
+        adapter = BoardGame(game_name, 4, 5, 4, gravity=True)
+        reference = ReferenceGame(4, 5, 4, gravity=True)
+        roots = connect4_roots(count, schedule_seed, gravity=True,
+                               min_ply=min_ply, max_ply=max_ply)
+    elif game_name == "connect4-gravity-8x8":
+        adapter = BoardGame(game_name, 8, 8, 4, gravity=True)
+        reference = ReferenceGame(8, 8, 4, gravity=True)
+        roots = connect4_roots(count, schedule_seed, gravity=True,
+                               min_ply=min_ply, max_ply=max_ply,
+                               rows=8, cols=8, base_seed=281000)
     elif game_name in ("reversi6", "reversi8"):
         size = int(game_name[-1])
         adapter = BoardGame(game_name, size, size, 0, reversi=True)
@@ -113,7 +130,8 @@ def run(game_name, count, schedule_seed, nodes, seconds):
     return {
         "stage": "exploratory model-blind oracle cost; exact action values are not retained",
         "game": game_name,
-        "schedule_seed": schedule_seed if game_name == "connect4-4x5" else None,
+        "schedule_seed": schedule_seed if game_name.startswith("connect4") else None,
+        "target_ply_range": [min_ply, max_ply] if game_name.startswith("connect4") else None,
         "candidate_count": count,
         "budget": {"nodes": nodes, "seconds": seconds},
         "summary": {
@@ -138,16 +156,22 @@ def run(game_name, count, schedule_seed, nodes, seconds):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("game", choices=("connect4-4x5", "reversi6", "reversi8"))
+    parser.add_argument("game", choices=("connect4-4x5", "connect4-gravity-4x5",
+                                         "connect4-gravity-8x8",
+                                         "reversi6", "reversi8"))
     parser.add_argument("--count", type=int, default=24)
     parser.add_argument("--schedule-seed", type=int, default=26092926)
+    parser.add_argument("--min-ply", type=int, default=5)
+    parser.add_argument("--max-ply", type=int, default=11)
     parser.add_argument("--nodes", type=int, default=100_000)
     parser.add_argument("--seconds", type=float, default=1.0)
     args = parser.parse_args()
-    if args.count < 1 or args.nodes < 1 or not 0 < args.seconds <= 60:
-        parser.error("count/nodes must be positive and seconds must be in (0,60]")
+    if (args.count < 1 or args.nodes < 1 or not 0 < args.seconds <= 60
+            or args.min_ply < 0 or args.max_ply < args.min_ply):
+        parser.error("count/nodes must be positive, plies ordered, and seconds in (0,60]")
     print(json.dumps(run(args.game, args.count, args.schedule_seed,
-                         args.nodes, args.seconds), indent=2, allow_nan=False))
+                         args.nodes, args.seconds, args.min_ply, args.max_ply),
+                     indent=2, allow_nan=False))
 
 
 if __name__ == "__main__":
