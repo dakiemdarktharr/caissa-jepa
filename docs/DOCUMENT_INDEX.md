@@ -27,6 +27,11 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/V2_INDEPENDENT_RESULTS_REVIEW.md` | Independent action/hash/schedule audit of completed v2 grid |
 | `docs/METHOD_V21.md` | Prospective symmetry/auxiliary-weight amendment; no change to original v2 |
 | `docs/V2_GRID01_DIAGNOSIS.md` | Read-only training probes motivating finite follow-up; exploratory |
+| `docs/V21_GRID02_RESULTS.md` | Executed60-run augmentation/weight study; not promoted |
+| `docs/V21_INDEPENDENT_RESULTS_REVIEW.md` | Independent decisions/hashes/RNG schedule replay |
+| `docs/V22_MECHANISM_ANALYSIS.md` | Unimplemented sibling-loss proposal, bounds and counterexample |
+| `docs/V22_LABEL_BUDGET_OPTION.md` | Exploratory design options, superseded for execution by METHOD_V22 |
+| `docs/METHOD_V22.md` | Frozen restricted-label development specification; no results yet |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |

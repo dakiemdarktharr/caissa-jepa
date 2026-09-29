@@ -107,3 +107,32 @@ Only subsequent validated evidence can justify power analysis, a locked
 confirmatory study and a publication claim. Negative results remain publishable
 evidence in principle, but the present limited study is not asserted to meet
 Q1 novelty or methodological standards.
+# Versioned evidence update: v2 and v2.1
+
+This research note remains exploratory and not submission-ready. The frozen
+v1 pilot below is historical evidence. Subsequent independent-rule datasets and
+development grids are documented separately in METHOD_V2, METHOD_V21 and their
+complete reports; they do not retroactively validate the v1 hypothesis.
+
+The36-cell v2 study found projected JEPA regret0.249145 versus strongest tuned
+value-dynamics0.247664. The60-cell coherent-symmetry/weight follow-up found raw
+JEPA0.207425 versus value-dynamics0.212250, improvement0.004826 with descriptive
+paired95% interval[-0.039003,0.044845]. Both failed their prospective0.05 and
+per-game promotion requirements. All reported decisions/artifact identities
+were independently checked. No selection/final predictions have occurred.
+
+The full-label evidence therefore does not establish incremental JEPA planning
+superiority. Exact-state changes can reflect encoder regularization; hybrid
+rollouts still substantially degrade Reversi decisions. No-response's strong
+exact-state score also limits opponent-action attribution. All controls received
+the same labels, states and sampling; augmentation improved several families.
+
+![V2.1 development results](figures/v21-grid02.png)
+
+References and complete outcomes: [v2 report](V2_GRID01_RESULTS.md),
+[v2.1 report](V21_GRID02_RESULTS.md),
+[independent review](V21_INDEPENDENT_RESULTS_REVIEW.md), and
+[training-only diagnosis](V2_GRID01_DIAGNOSIS.md). A restricted-label experiment
+is prospectively specified in METHOD_V22; it has no results and changes the
+scientific regime rather than erasing these negative full-label findings.
+

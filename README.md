@@ -49,10 +49,18 @@ and no-response comparisons. This is development work; improvement is unproven.
 The [36-run v2 grid](docs/V2_GRID01_RESULTS.md) completed without errors, but
 JEPA did not beat the strongest tuned value-dynamics baseline (regret0.249145
 versus0.247664). Development continues; selection/final predictions remain closed.
-The next [v2.1 amendment](docs/METHOD_V21.md) preserves that source and uses
+The [v2.1 amendment](docs/METHOD_V21.md) preserves that source and uses
 `two_player_v21/` for coherent legal-symmetry augmentation and a finite auxiliary
 weight grid. [Training-only diagnosis](docs/V2_GRID01_DIAGNOSIS.md) motivates the
 change; it does not establish a positive outcome or a new objective.
+Its [60-run result](docs/V21_GRID02_RESULTS.md) has a small raw-JEPA improvement
+over value dynamics(0.004826 regret), but the interval crosses zero and the
+predeclared promotion gates fail. [Independent review](docs/V21_INDEPENDENT_RESULTS_REVIEW.md)
+replayed every sampling/augmentation plan and verified saved decisions. The
+next [v2.2 label-access study](docs/METHOD_V22.md) is under implementation;
+it explicitly narrows the question and has no results yet.
+
+![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
 [novelty-risk follow-up](docs/V2_FORK_GEOMETRY_NOVELTY.md) before interpreting it.
 

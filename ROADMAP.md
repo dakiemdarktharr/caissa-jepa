@@ -31,6 +31,10 @@ V2.1 next finite cycle uses coherent legal-symmetry augmentation for all control
 and a small equally offered latent/reconstruction weight grid (60cells). Capacity,
 labels and original v2 code remain unchanged. See METHOD_V21; group-relative
 decision geometry remains a separately declared later hypothesis if warranted.
+Grid02 completed60/60 but failed promotion: +0.004826 against strongest control,
+interval includes0 and one per-game gate fails. M7 now tests the explicitly
+narrower label-access hypothesis in METHOD_V22;72cells after redaction/mask audits.
+This does not erase the full-label negative findings or establish any superiority.
 
 ## Experiment stages and budgets
 

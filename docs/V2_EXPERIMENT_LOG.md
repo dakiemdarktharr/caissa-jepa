@@ -83,3 +83,19 @@ Prefit augmentation/runtime tests:13 passed1.791s.100 augmentation-only calls
 on128 training fork feature rows took0.190875s; no optimizer steps or development
 predictions were made. This timing is a feasibility check, not an efficiency
 comparison. Report verification and source freeze precede any grid02 fitting.
+
+Grid02 completed60/60 at086e839. All25,080 learned decisions and836 fixed
+controls independently verified, including replay of120 seed/epoch augmentation
+plans. No failures/censors/collapse. Raw JEPA0.207425 versus value-dynamics0.212250
+gives0.004826 improvement, descriptive95% interval[-0.039003,0.044845]; below the
+0.05 gate, with a failed Connect4 comparison against decoded. **Not promoted.**
+Totaltraining916.427s; lifetime RSS215,351,296bytes; artifacts63,086,469bytes.
+Full results: V21_GRID02_RESULTS and V21_INDEPENDENT_RESULTS_REVIEW.
+
+## Grid03 prospective label-access study
+
+METHOD_V22 changes the question explicitly to restricted label access. It freezes
+72 cells, strong EMA-value consistency control, redacted artifacts, separate
+development export, real canonical-label accounting and the unchanged promotion
+margin. Data/model review and a scarce-label readiness audit must pass first.
+No v2.2 results exist yet. Mean-residual reweighting is not implemented in it.

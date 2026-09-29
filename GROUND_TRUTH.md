@@ -81,11 +81,40 @@ V2.1 amendment now frozen in `docs/METHOD_V21.md` before fitting: coherent legal
 symmetry augmentation for every control, auxiliary weights0.1/1 for decoded/
 rjepa/raw/no-response, two rates andthree seeds =60 cells. Same model/data/labels,
 40epochs and promotion threshold. New package `two_player_v21/` keeps original
-v2 source immutable. Implementation/review complete; source freeze and grid02
-launch next.21 v2.1 augmentation/runtime/report tests passed, and independent
-review found no blocking fairness/identity/augmentation issue. No v2.1 fit yet. Training-only
+v2 source immutable. Grid02 COMPLETED60/60 at source
+`086e839d5f9ed1559cce16a9f8ff9fdd6b843191`, pushed and verified on main.
+Local artifacts: `chess_data/v21-grid-02/`; preserve both frozen packages/methods.
+21 v2.1 augmentation/runtime/report tests passed10.858s; independent
+review found no blocking fairness/identity/augmentation issue. Training-only
 gradient/group probes and limits are recorded in `docs/V2_GRID01_DIAGNOSIS.md`.
 They do not establish causality or novelty. V2.1 may still fail; all attempts stay.
+Two later options are research proposals only, NOT frozen or implemented:
+`docs/V22_MECHANISM_ANALYSIS.md` shows common sibling offsets can change minimax
+actions; projected JEPA error alone does not bound value error. Reducing mean
+residual weight weakens the worst-case bound. `docs/V22_LABEL_BUDGET_OPTION.md`
+proposes a carefully masked label-efficiency study with strong EMA value controls.
+These notes are proposals only; the subsequent selected design is METHOD_V22.
+
+**Grid02 outcome: not promoted.** All25,080 learned decisions+836 controls
+verified, all120 seed/epoch sampling AND augmentation schedules independently
+replayed. No errors/censors/collapse. Raw JEPA(lr0.001,weight0.1) regret0.2074247144
+versus strongest value-dynamics0.2122503207: improvement0.0048256063, descriptive
+95% interval[-0.039003,0.044845], below0.05. Connect4 comparison with decoded
+also fails. No-response exact0.201912 further limits action-conditioning claims;
+raw JEPA Reversi hybrid0.496732 is worse than direct0.290850. No latent-planning
+benefit established. Totaltraining916.427s; per-cell12.138–24.121s; peak RSS
+215,351,296bytes; artifacts63,086,469bytes. See V21_GRID02_RESULTS and independent
+review. Figures in docs/figures are rendered from verified aggregate JSON only.
+
+**Next v2.2:** METHOD_V22 freezes a72-cell restricted-label study (25%/100%
+training-root closure, six families including strong EMA-value and raw-no-response,
+two rates, three seeds). Raw JEPA was chosen adaptively from grid02. Model/data
+implementation underway; no v2.2 fitting. Require at least50% genuinely unlabeled
+nonterminal canonical training states in each scarce game before fitting. Create
+redacted train AND separate development exports so the trainer never reads the
+full parent artifact. Root IDs must not retain hidden-label-derived hashes.
+No oracle-compute saving claim on this already solved/admitted bank. Selection/
+final remain unscored. Original v2/v21 source stays unchanged.
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.
