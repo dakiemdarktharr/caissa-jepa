@@ -106,3 +106,32 @@ leave2620/3468 Connect4 and4058/5444 Reversi canonical nonterminal states unknow
 passing the50% floor. Root selection62/248 and66/261 is not a state-label rate.
 Full byte/source/mask identities are in validation/V22_LABEL_ACCESS_AUDIT.json.
 Independent model/runtime/data reviews passed. No production fitting yet.
+
+Grid03 subsequently completed all 72 cells at source
+`9e3d10bb3d01f4761db552ec6b2d7241957cf2e0`, with 30,096 learned decisions and
+836 fixed controls, no errors/censors/collapse and no selection/final scoring.
+Scarce raw JEPA 0.293339 loses to direct 0.283917: improvement -0.009422,
+descriptive 95% interval [-0.075730, 0.047922]. **Not promoted.** Full-label
+sensitivity retains scarce-selected rates and is not a replacement primary
+comparison or evidence against fully tuned controls. Total training 1102.611s,
+range 11.930–23.861s, process-lifetime RSS 251,486,208 bytes, artifacts 78,628,950
+bytes. All six full-label EMA-value/value-dynamics tensor pairs are identical.
+Results and independent review are in V22_GRID03_RESULTS and
+V22_INDEPENDENT_RESULTS_REVIEW. Preserve frozen code and all failed hypotheses.
+
+After Grid03 ended, a read-only diagnostic examined all 18 globally selected
+Grid02 checkpoints in 15.876s using only standalone full training/development
+exports. It performs no new optimization or search. H1 duplicates are removed
+per root/action; H2 includes complete legal forks; equal-root and transition
+weighting are explicitly separated. Full local output:
+`chess_data/v21-value-alignment-01.json`; small aggregate receipt:
+`validation/V21_VALUE_ALIGNMENT_DIAGNOSIS.json`. Interpretation follows a separate
+review of target distributions and existing learning histories before any new fit.
+
+That review finds real learning beyond some label priors and continued epoch20–40
+improvement, not a demonstrated plateau or a proven encoder/dynamics bottleneck.
+METHOD_V23_DIAGNOSTIC therefore freezes18 training-only budget/capacity runs,
+with snapshots0/40/80/160 and no development inputs. Independent prefit review
+passed, including all531tensor hashes in9epoch40 reference checkpoints from
+Grid03 FULL. Implementation and validation precede fitting. No new architecture
+or JEPA improvement is established by this diagnostic protocol.

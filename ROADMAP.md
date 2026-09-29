@@ -36,6 +36,15 @@ interval includes0 and one per-game gate fails. M7 now tests the explicitly
 narrower label-access hypothesis in METHOD_V22;72cells after redaction/mask audits.
 This does not erase the full-label negative findings or establish any superiority.
 
+Grid03 completed all 72 cells and also failed: scarce raw JEPA regret 0.293339
+versus direct 0.283917, improvement -0.009422 with descriptive 95% interval
+[-0.075730, 0.047922]. All 30,096 learned decisions and 836 controls passed
+verification. Do not continue blind weight searches on the same affine recipe.
+Next dependency is the train/development value-alignment diagnosis and a finite
+training-only convergence/capacity check, before selecting an architecture
+amendment. `docs/V23_RESEARCH_OPTIONS.md` is a proposal, not an executed method.
+Final/selection remain closed; none of these grids is a promoted candidate.
+
 ## Experiment stages and budgets
 
 Exploratory pilot: generated tiny games and fixed small configurations, single CPU BLAS thread, no paid/GPU resources. Record time, peak memory where measurable, sample exclusions, per-seed metrics. These data can diagnose implementation/feasibility and inform development; they cannot become confirmatory by relabeling. Start with a bounded run (minutes, small tens of MB model/data target), measure actual resource cost, and stop on numerical/audit failure. Increase only if the measured pilot supports a useful question within local resources.

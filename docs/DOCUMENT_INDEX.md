@@ -31,8 +31,14 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/V21_INDEPENDENT_RESULTS_REVIEW.md` | Independent decisions/hashes/RNG schedule replay |
 | `docs/V22_MECHANISM_ANALYSIS.md` | Unimplemented sibling-loss proposal, bounds and counterexample |
 | `docs/V22_LABEL_BUDGET_OPTION.md` | Exploratory design options, superseded for execution by METHOD_V22 |
-| `docs/METHOD_V22.md` | Frozen restricted-label development specification; no results yet |
+| `docs/METHOD_V22.md` | Frozen restricted-label development specification; executed in Grid03 |
 | `docs/V22_PREFIT_REVIEW.md` | Independent masked-model/runtime/data and actual-artifact review |
+| `docs/V22_GRID03_RESULTS.md` | Executed 72-run restricted-label study; not promoted |
+| `docs/V22_INDEPENDENT_RESULTS_REVIEW.md` | Independent decisions, tensor equivalence and all schedule/count checks |
+| `docs/V21_VALUE_ALIGNMENT_DIAGNOSIS.md` | Post-hoc value/latent error diagnosis of 18 selected Grid02 checkpoints |
+| `docs/METHOD_V23_DIAGNOSTIC.md` | Frozen 18-run training-only convergence/capacity protocol; not a superiority study |
+| `docs/V23_RESEARCH_OPTIONS.md` | Conditional action-dependent dynamics proposals and verified prior-art limits; not an implemented method |
+| `docs/PROFESSOR_BRIEF_V2.md` | Vietnamese discussion brief; separates evidence from missing publication requirements |
 | `V7_RESEARCH_PROTOCOL.md` | Current implemented chess v3 protocol; separate from multi-game protocol |
 | `docs/RESEARCH_IDENTITY.md` | Current implemented MARS-JEPA Chess identity |
 | `docs/MARS_JEPA_RESEARCH_IDENTITY.md` | Duplicate current chess identity detail |

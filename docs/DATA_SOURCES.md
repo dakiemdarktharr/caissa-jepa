@@ -20,3 +20,28 @@ Audit reconstructs every transition and outcome using exact rules, validates act
 No production training until audit passes. Training never consumes selection/final rows. Development may inspect validation; model-selection is a separately recorded stage. Locked final predictions remain unopened until method/budget/sample-size freeze. Dataset audit may inspect identity/legality without using final performance for selection.
 
 Generated data, caches, checkpoints and detailed logs stay under ignored `chess_data/` or `build/`; do not add binary artifacts to Git or Obsidian. Publish only source, configurations, small aggregate receipts, hashes and reproducibility instructions until a separate storage/license plan exists.
+
+## Executed V2 data lineage
+
+The later V2 studies use project-owned procedural Connect4 4x5 and Reversi6
+positions with complete legal two-ply forks, not human trajectories. A separate
+same-project bitboard implementation supplies exact minimax labels; this is not
+a third-party engine. `V2_SURVEY_RESULTS.md` and `validation/V2_FORK_AUDIT.json`
+record generation, exclusions, oracle costs and source hashes. The immutable
+bank has 984 roots: 509 training, 209 development, 131 selection and 135 final.
+No selection/final predictions have been made.
+
+V2.2 derives standalone training exports with identical 509 roots, 9,237 raw
+nodes and 6,750 forks at two label-access levels, plus a separate development
+export with 209 roots, 3,756 nodes and 2,735 forks. The scarce export selects
+62/248 Connect4 and 66/261 Reversi root closures. Canonical nonterminal labels
+are retained for 848/3,468 and 1,386/5,444 states respectively; terminal utility
+is free from the rules. Hidden nonterminal values/policies are removed before
+the trainer receives the artifact. See `V22_PREFIT_REVIEW.md` and
+`validation/V22_LABEL_ACCESS_AUDIT.json` for byte, mask and parent fingerprints.
+
+These exports inherit the same locally authorized procedural provenance and
+unassigned public artifact license. Restricting access to previously computed
+labels does not save their original computation cost. No external corpus,
+licensed engine package or checkpoint was acquired for these studies. None of
+the generated datasets/checkpoints is included in Git or the Obsidian mirror.

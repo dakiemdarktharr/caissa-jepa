@@ -37,7 +37,7 @@ third-party engine. Source/version hashes are pinned in survey receipts.
 V2 survey01 failed connect3 difficulty support (500admitted but26beyond-depth);
 survey02 expanded to connect4 4x5 and passed difficulty support (500/191 and
 Reversi4 356/352). Artifacts are `chess_data/v2-survey-01` and `v2-survey-02`.
-No v2 model fitted/scored. Further root/target split analysis found only13
+At that survey stage no v2 model had been fitted/scored. Further root/target split analysis found only13
 Reversi4 validation roots after old-training and cross-split exclusion; this
 cannot support a credible second-family comparison. Prospective survey03 therefore
 uses Reversi6 and Connect4, passing with500/499 and500/195 admitted/beyond-depth
@@ -108,9 +108,8 @@ review. Figures in docs/figures are rendered from verified aggregate JSON only.
 
 **Next v2.2:** METHOD_V22 freezes a72-cell restricted-label study (25%/100%
 training-root closure, six families including strong EMA-value and raw-no-response,
-two rates, three seeds). Raw JEPA was chosen adaptively from grid02. Model/data
-implementation underway; no v2.2 fitting. Require at least50% genuinely unlabeled
-nonterminal canonical training states in each scarce game before fitting. Create
+two rates, three seeds). Raw JEPA was chosen adaptively from grid02. The prefit design required at least50% genuinely unlabeled
+nonterminal canonical training states in each scarce game before fitting. It required
 redacted train AND separate development exports so the trainer never reads the
 full parent artifact. Root IDs must not retain hidden-label-derived hashes.
 No oracle-compute saving claim on this already solved/admitted bank. Selection/
@@ -125,8 +124,48 @@ Scarce fingerprint dc81db9ab2d67d2905156fb328fe80369eb76bb4d5b140ebe041e68a578eb
 full73acd3d11c3a30fa56703d19768d899dff51c6af6ccf2afddc0f5f007d46cc18;
 development bbfc41fc34e1e346a9dc5905f9f686bb61582e4a63f363d76ea2406088235617.
 Paths are chess_data/v22-scarce-01, v22-full-01 and v22-development-01.
-Aggregate audit: docs/validation/V22_LABEL_ACCESS_AUDIT.json. No v2.2 fitting yet;
-freeze and push verified source before grid03. Keep all previous negative grids.
+Aggregate audit: docs/validation/V22_LABEL_ACCESS_AUDIT.json. Grid03 COMPLETED all72declared cells at source
+9e3d10bb3d01f4761db552ec6b2d7241957cf2e0, pushed/remote-verified on main.
+Artifacts: chess_data/v22-grid-03. Do not edit frozen v2/v21/v22 packages or
+method specifications: completed artifacts remain bound to their hashes. No final/selection predictions.
+Keep all previous negative grids. The prefit review and later50 Markdown files
+were mirrored to the discovered Obsidian vault; Ground Truth and the Vietnamese
+professor brief were visibly opened and readable.
+
+**Grid03 outcome: not promoted.** Scarce raw JEPA regret0.2933388309 versus direct
+0.2839166819, improvement-0.0094221489, descriptive95% interval
+[-0.0757303311,0.0479220115]. Allfour control intervals include0. The full-label
+sensitivity reuses scarce-selected rates; it is not superiority against fully
+retuned controls (the disclosed full direct0.001 cell mean0.196598 is better than
+raw0.205867). Independent review verified72runs,30,096learned+836control decisions,
+120sample/augmentation plans andall2880epoch label-count records. Allsix full-label
+EMA/value-dynamics pairs have59bitwise-identical tensors andidentical decisions.
+No failure/censor/collapse or selection/final prediction. Totaltraining1102.611s,
+range11.930–23.861s; lifetime RSS251,486,208bytes; artifacts78,628,950bytes.
+See docs/V22_GRID03_RESULTS.md and V22_INDEPENDENT_RESULTS_REVIEW.md.
+
+Afterward, tools/diagnose_v21_value_alignment.py examined18selected Grid02 models
+using only standalone full training/development exports in15.876s, with no new
+optimization/search. It separates actual-encoded and recurrent-predicted value
+errors, latent errors, weighting and strata. Raw Reversi H2 training encoded MSE
+0.511297 is below a fitted constant0.663673, so absolute error alone does not
+establish underfitting. Existing40epoch histories still improve. Before any new
+architecture grid, freeze a finite training-only convergence/capacity diagnostic.
+docs/V23_RESEARCH_OPTIONS.md is a conditional proposal, not an implemented model.
+Recent primary research includes RePAIR, MuZero interpretation and action-factored
+prediction; uniqueness remains unestablished. No further blind loss-weight search.
+
+Next frozen protocol: docs/METHOD_V23_DIAGNOSTIC.md, independently reviewed before
+implementation. It prescribes18 training-only runs (three unchanged families,
+two total-model capacities, three seeds),160epochs with0/40/80/160 snapshots,
+single learning rate0.001 and no development path or planner calls. Bound300s/cell,
+5400cumulative seconds and3GB local output; measured overruns remain failures.
+The9small-model epoch40 tensor references were independently checked against all
+531saved tensor hashes from Grid03 FULL. Hash-only receipt:
+docs/validation/V23_EPOCH40_REFERENCES.json. New runs initialize from seed, never
+from those checkpoints. This diagnostic cannot nominate a JEPA model; it informs
+a future separately frozen, fairly controlled development comparison.
+
 
 - The current user request supersedes earlier prompt files and older research scope decisions.
 - Computer Use is authorized for public research, GitHub and discovering/using the existing Obsidian vault.

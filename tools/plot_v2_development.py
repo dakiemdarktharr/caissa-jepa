@@ -1,4 +1,4 @@
-"""Plot a verified v2/v2.1 aggregate report without fitting or model scoring.
+"""Plot a verified v2/v2.1/v2.2 report without fitting or model scoring.
 
 Usage: python tools/plot_v2_development.py REPORT.json OUTPUT_BASENAME
 Writes OUTPUT_BASENAME.png and OUTPUT_BASENAME.pdf; existing outputs are refused.
@@ -14,11 +14,15 @@ import textwrap
 
 FAMILIES = ("direct", "value-dynamics", "decoded", "rjepa", "raw-jepa", "no-response")
 CONTROLS = ("direct", "decoded", "value-dynamics")
+V22_FAMILIES = ("direct", "value-dynamics", "decoded", "raw-jepa", "ema-value", "raw-no-response")
+V22_CONTROLS = ("direct", "decoded", "value-dynamics", "ema-value")
 LABELS = {"direct": "Direct policy/value", "value-dynamics": "Value dynamics",
           "decoded": "Decoded dynamics", "rjepa": "Projected JEPA",
-          "raw-jepa": "Raw JEPA", "no-response": "No-response ablation"}
+          "raw-jepa": "Raw JEPA", "no-response": "No-response ablation",
+          "ema-value": "EMA-value dynamics", "raw-no-response": "Raw no-response ablation"}
 VERSIONS = {"v2-development-report01": "Development study (v2, grid 01)",
-            "v21-development-report02": "Symmetry-augmented development (v2.1, grid 02)"}
+            "v21-development-report02": "Symmetry-augmented development (v2.1, grid 02)",
+            "v22-development-report03": "Restricted-label development (v2.2, grid 03)"}
 GAMES = {"connect4-4x5", "reversi6"}
 
 
@@ -41,6 +45,9 @@ def extract(report):
     plotting does not re-run that verifier or recompute statistical intervals.
     """
     _require(report.get("version") in VERSIONS, "Unsupported report version")
+    restricted = report["version"] == "v22-development-report03"
+    families = V22_FAMILIES if restricted else FAMILIES
+    controls = V22_CONTROLS if restricted else CONTROLS
     _require(report.get("stage") == "development", "Only development reports are supported")
     _require(report.get("verification_errors") == [], "Report has missing/failed verification")
     _require(report.get("status") in ("not_promoted", "development_screen_passed"),
@@ -49,11 +56,18 @@ def extract(report):
     _require(isinstance(commit, str) and re.fullmatch(r"[0-9a-f]{40}", commit),
              "Missing full source commit")
     runs = report.get("runs")
-    expected_cells = 36 if report["version"] == "v2-development-report01" else 60
+    expected_cells = {"v2-development-report01": 36, "v21-development-report02": 60,
+                      "v22-development-report03": 72}[report["version"]]
     _require(isinstance(runs, list) and len(runs) == expected_cells, "Incomplete frozen run inventory")
     _require(len({run["id"] for run in runs}) == len(runs), "Duplicate run identifiers")
     seeds = sorted({run["config"]["seed"] for run in runs})
     _require(seeds == [17, 29, 43], "Unexpected training seed inventory")
+    if restricted:
+        expected = {(f, v, rate, seed) for f in (.25, 1.) for v in families
+                    for rate in (.001, .0003) for seed in seeds}
+        observed = {(r.get("fraction"), r["config"]["variant"], r["config"]["learning_rate"],
+                     r["config"]["seed"]) for r in runs}
+        _require(observed == expected, "Incomplete restricted-label cell inventory")
     cohort_counts = None
     for run in runs:
         _require(run.get("status") == "complete" and not run.get("verification_error"),
@@ -80,15 +94,20 @@ def extract(report):
     promotion = report.get("promotion")
     _require(isinstance(promotion, dict) and promotion.get("status") == report["status"],
              "Missing or inconsistent promotion report")
+    if restricted:
+        _require(promotion.get("primary_fraction") == .25, "Primary regime must select 25% of roots")
     selected = promotion.get("selected", {})
-    _require(set(selected) == set(FAMILIES), "Missing tuned family")
+    _require(set(selected) == set(families), "Missing tuned family")
     candidate = promotion.get("candidate")
-    _require(isinstance(candidate, dict) and candidate.get("variant") in ("rjepa", "raw-jepa")
+    eligible = ("raw-jepa",) if restricted else ("rjepa", "raw-jepa")
+    _require(isinstance(candidate, dict) and candidate.get("variant") in eligible
              and candidate.get("collapse") == [], "No eligible JEPA candidate")
     bars = []
-    for family in FAMILIES:
+    for family in families:
         row = selected[family]
         _require(row.get("variant") == family, "Family identity mismatch")
+        if restricted:
+            _require(row.get("fraction") == .25, "A plotted family uses a nonprimary regime")
         value = _number(row["mean_regret"], "mean regret", 0, 2)
         rate = _number(row["learning_rate"], "learning rate", 1e-12, 1)
         weight = row.get("jepa_weight")
@@ -98,12 +117,13 @@ def extract(report):
         bars.append({"family": family, "regret": value, "learning_rate": rate,
                      "jepa_weight": weight, "collapsed": bool(row["collapse"])})
     candidate_family = candidate["variant"]
-    for key in ("mean_regret", "learning_rate", "jepa_weight"):
+    for key in (("mean_regret", "learning_rate", "jepa_weight", "fraction") if restricted
+                else ("mean_regret", "learning_rate", "jepa_weight")):
         _require(candidate.get(key) == selected[candidate_family].get(key), "Candidate differs from tuned family")
     comparisons = promotion.get("comparisons", {})
-    _require(set(comparisons) == set(CONTROLS), "Missing paired control comparison")
+    _require(set(comparisons) == set(controls), "Missing paired control comparison")
     intervals = []
-    for family in CONTROLS:
+    for family in controls:
         row = comparisons[family]
         bootstrap = row.get("bootstrap", {})
         bounds = bootstrap.get("aggregate_ci95")
@@ -115,9 +135,14 @@ def extract(report):
                  "Missing paired seed effects")
         _require(bootstrap.get("replicates") == 2000 and bootstrap.get("seed") == 901,
                  "Unexpected bootstrap protocol")
+        if restricted:
+            _require(bootstrap.get("label_mask_scope") ==
+                     "One fixed label mask; no resampling of label-selection seeds",
+                     "Missing fixed-label-mask interval scope")
         intervals.append({"family": family, "improvement": improvement, "low": low, "high": high})
     return {"title": VERSIONS[report["version"]], "status": report["status"],
             "candidate": candidate_family, "bars": bars, "intervals": intervals,
+            "restricted_labels": restricted,
             "seeds": seeds, "source_commit": commit,
             "game_counts": {game: cohort_counts[game, "exact"] for game in sorted(GAMES)}}
 
@@ -144,6 +169,9 @@ def render(report_path, output_basename):
     figure.suptitle("CAISSA-JEPA | " + data["title"], x=.055, y=.965, ha="left", fontsize=16, fontweight="semibold")
     status_label = "Development screen passed" if data["status"] == "development_screen_passed" else "Development screen not passed"
     figure.text(.055, .914, status_label + "  |  Candidate: " + LABELS[data["candidate"]], fontsize=11, color="#414B55")
+    if data["restricted_labels"]:
+        figure.text(.055, .874, "Primary: 25% of training roots selected | One fixed label mask",
+                    fontsize=10, color="#414B55")
 
     bar_values = [row["regret"] for row in data["bars"]]
     colors = ["#176B87" if row["family"] == data["candidate"] else "#A9B5C1" for row in data["bars"]]
@@ -151,7 +179,7 @@ def render(report_path, output_basename):
     labels = []
     for row in data["bars"]:
         settings = "lr=" + format(row["learning_rate"], "g")
-        if row["jepa_weight"] is not None and row["family"] not in ("direct", "value-dynamics"):
+        if row["jepa_weight"] is not None and row["family"] not in ("direct", "value-dynamics", "ema-value"):
             settings += ", weight=" + format(row["jepa_weight"], "g")
         labels.append(LABELS[row["family"]]+(" [collapse]" if row["collapsed"] else "")+"\n"+settings)
     left.set_yticks(range(len(labels)), labels, fontsize=9)
@@ -176,21 +204,29 @@ def render(report_path, output_basename):
         all_bounds.extend((row["low"], row["high"], row["improvement"]))
     span = max(.04, max(all_bounds)-min(all_bounds))
     right.set_xlim(min(all_bounds)-.10*span, max(all_bounds)+.10*span)
-    right.set_ylim(2.6, -.6)
-    right.set_yticks(range(3), ["vs "+LABELS[row["family"]] for row in data["intervals"]], fontsize=9)
-    right.set_title("B  Paired candidate improvements", loc="left", pad=13)
+    right.set_ylim(len(data["intervals"])-.4, -.6)
+    right.set_yticks(range(len(data["intervals"])), ["vs "+LABELS[row["family"]] for row in data["intervals"]], fontsize=9)
+    right.set_title("B  Paired effects (95% intervals)" if data["restricted_labels"]
+                    else "B  Paired candidate improvements", loc="left", pad=13)
     right.set_xlabel("Control regret minus candidate regret\n(positive favors candidate)", labelpad=10)
     right.grid(axis="x", color="#E9EDF0", linewidth=.7)
     right.set_axisbelow(True)
-    right.text(.5, -.21, "Saved hierarchical bootstrap 95% intervals", transform=right.transAxes,
-               ha="center", fontsize=9, color="#414B55")
+    if data["restricted_labels"]:
+        from matplotlib.ticker import MaxNLocator
+        right.xaxis.set_major_locator(MaxNLocator(nbins=5))
+    else:
+        right.text(.5, -.21, "Saved hierarchical bootstrap 95% intervals", transform=right.transAxes,
+                   ha="center", fontsize=9, color="#414B55")
 
     counts = data["game_counts"]
     caption = (f"Adaptive development; three training seeds ({', '.join(map(str, data['seeds']))}). "
                f"Fixed development roots: Connect4 {counts['connect4-4x5']}, Reversi {counts['reversi6']}. "
                "Intervals describe this development cohort, do not correct adaptive selection, and do not establish confirmation. "
                "All plotted estimates and intervals are read from the verified aggregate report.")
-    figure.text(.055, .127, textwrap.fill(caption, width=153), ha="left", va="top", fontsize=8.4,
+    if data["restricted_labels"]:
+        caption += (" Primary regime selects 25% of roots, not 25% of state labels. Intervals condition on one fixed "
+                    "label mask. Full-label sensitivity is not plotted. This simulates label access; no oracle-compute saving is established.")
+    figure.text(.055, .155 if data["restricted_labels"] else .127, textwrap.fill(caption, width=153), ha="left", va="top", fontsize=8.4,
                 color="#414B55", linespacing=1.55)
     figure.text(.055, .027, "Source commit: "+data["source_commit"], fontsize=8, family="monospace", color="#58646F")
     base.parent.mkdir(parents=True, exist_ok=True)

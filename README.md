@@ -57,10 +57,15 @@ Its [60-run result](docs/V21_GRID02_RESULTS.md) has a small raw-JEPA improvement
 over value dynamics(0.004826 regret), but the interval crosses zero and the
 predeclared promotion gates fail. [Independent review](docs/V21_INDEPENDENT_RESULTS_REVIEW.md)
 replayed every sampling/augmentation plan and verified saved decisions. The
-next [v2.2 label-access study](docs/METHOD_V22.md) passes its data-readiness gate;
-it explicitly narrows the question and has no results yet.
+next [v2.2 label-access study](docs/METHOD_V22.md) completed all 72 runs.
+Its [results](docs/V22_GRID03_RESULTS.md) also fail promotion: scarce-label raw
+JEPA regret 0.293339 versus direct 0.283917. The full-label sensitivity arm cannot
+replace the predeclared primary arm. All three development grids are preserved.
+The [Vietnamese professor brief](docs/PROFESSOR_BRIEF_V2.md) separates completed
+evidence from the still-unproven model and publication claims.
 
 ![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
+![V2.2 restricted-label development](docs/figures/v22-grid03.png)
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
 [novelty-risk follow-up](docs/V2_FORK_GEOMETRY_NOVELTY.md) before interpreting it.
 
