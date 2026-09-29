@@ -1,9 +1,47 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
-**Cập nhật: 29/09/2026.** V1 và ba grid V2–V2.2 đã hoàn tất; cả ba grid không
-vượt cổng đề cử. Dự án đã có nền tảng kiểm chứng và bằng chứng âm
-có thể thảo luận nghiêm túc. **Chưa chứng minh JEPA tốt hơn baseline, chưa sẵn
-sàng gửi bài Q1.** Q1 là mục tiêu chất lượng nghiên cứu, không phải cam kết được nhận.
+**Cập nhật: 29/09/2026 — bản trao đổi với giáo sư.** V1 và các grid V2–V2.5
+đều chưa vượt cổng đề cử. V2.5 là so sánh đầy đủ, đã audit độc lập, nhưng
+không cho thấy JEPA vượt baseline: mức exact gần như bằng không và planner
+hybrid dùng latent kém hơn. **Chưa chứng minh JEPA tốt hơn baseline; tài liệu
+này phù hợp để xin góp ý về pivot nghiên cứu, chưa phải bản thảo Q1.** Q1 là
+mục tiêu chất lượng, không phải cam kết được nhận.
+
+## Kết quả V2.5 mới nhất
+
+| Đánh giá development | Raw-tail JEPA | Baseline mạnh nhất | Chênh lệch regret (dương có lợi JEPA) | Kết luận |
+| --- | ---: | ---: | ---: | --- |
+| Exact-state | 0.202446 | Direct 0.203775 | +0.001329; bootstrap mô tả 95% [−0.023899, 0.026938] | Dưới cổng +0.05; Connect4 tốt hơn nhưng Reversi kém hơn; chỉ1/3 seed ủng hộ |
+| Hybrid latent planning | 0.268340 | Direct 0.203775 | −0.064565; 95% [−0.126889, −0.005814] | JEPA hybrid kém hơn direct; cũng kém recurrent policy/value (0.250596) |
+
+Cổng cơ chế cũng thất bại: raw-tail không cải thiện đồng thời hai game và ít
+nhất hai seed so với raw-mean/raw-scaled; scalar-tail đạt backed-up oracle MSE
+0.529363, tốt hơn raw-tail 0.545679. Vì vậy chênh lệch exact nhỏ không thể
+được quy cho phần JEPA-tail. Các khoảng là mô tả adaptive development trên209
+root tái sử dụng và3 seed, không phải khoảng xác nhận đã hiệu chỉnh cho việc
+thử nhiều thiết kế.
+
+Grid hoàn tất42/42 cell:17.556 quyết định learned,836 control, không lỗi/censor/
+collapse. Audit độc lập kiểm tra2.016 tensor,480 plan và toàn bộ source/data/hash;
+không thấy overlap train-development. Reversi được so với mã nguồn độc lập MIT
+trên100 trajectory cho mỗi cỡ4×4 và6×6:183.612 so sánh trajectory,392 fixture,
+0 sai khác. Điều này chỉ xác nhận luật ở trạng thái kiểm tra, không xác thực
+nhãn minimax. Tổng thời gian cell4.899 giây và peak RSS200.802.304 byte.
+
+Kết quả chi tiết: [V2.5 report](V25_GRID05_RESULTS.md); protocol đóng băng:
+[METHOD_V25](METHOD_V25.md). Post-run search cho thấy prior art trực tiếp về
+consistency trên Go/Gomoku, transfer giữa board-game variants, và simulator
+learning theo game-theoretic robustness; xem
+[research update](V25_POSTRUN_RESEARCH_UPDATE.md). Hướng tiếp theo chỉ là giả
+thuyết thiết kế: kiểm tra lợi ích sample-efficiency/transfer trên **game
+variant bị giữ nguyên cả luật**, với policy/value-only, MuZero-style, rule-aware
+và JEPA baselines được tuning công bằng. Chưa có V2.6 được khóa hay bằng chứng
+JEPA tốt hơn.
+
+## Hồ sơ nghiên cứu trước đó (lịch sử)
+
+Các mục dưới đây giữ lại quá trình V2 trước V2.5; chúng không thay cho kết quả
+mới nhất ở trên.
 
 ## Câu hỏi và đóng góp cần chứng minh
 
@@ -124,12 +162,16 @@ hữu hạn. [Method](METHOD_V25.md) đã được phản biện trước code; 
 V2.5. WAKER, VAML, TD-JEPA và EfficientZero là prior art quan trọng, nên chưa
 được gọi hướng này là nguyên lý mới hoặc kết quả triển vọng đã xác nhận.
 
-Lần chạy V2.5 đầu tiên dừng do lỗi kỹ thuật: hàm giám sát RAM tự giữ lại kiểu
-ctypes sau mỗi lần gọi, vượt giới hạn1 GB ở diagnostics của cell4. Ba cell
-hoàn tất;38 cell chưa bắt đầu. Đợt này **chưa thể kết luận**, không phải kết
-quả so sánh JEPA. Phép thử độc lập không train tái hiện tăng2.000 kiểu và
-khoảng15,86 MB sau2.000 lần đo. [Amendment runtime](V25_RUNTIME_AMENDMENT.md)
-chỉ sửa monitor và fingerprint, giữ nguyên mọi thiết lập nghiên cứu và giới
-hạn tài nguyên, yêu cầu chạy lại toàn bộ42 cell từ seed sau review. Kết quả
-âm trước đó và chi phí đợt lỗi vẫn được lưu. [Bản định vị phương pháp](V25_RESEARCH_POSITIONING.md)
-tách cận minimax có điều kiện khỏi những claim còn cần thực nghiệm.
+Lần chạy V2.5 đầu tiên dừng vì lỗi kỹ thuật ở bộ giám sát RAM: ba cell hoàn
+thành, cell4 bị lỗi và38 cell chưa chạy. Nguyên nhân được tái hiện độc lập;
+đây vẫn là lần chạy không kết luận. Amendment chỉ sửa monitor, sau đó lần
+retry mới đã hoàn tất42 cell và cho kết quả âm nêu ở đầu tài liệu. Cả hai lần
+chạy và chi phí đều được giữ lại. [Bản định vị phương pháp](V25_RESEARCH_POSITIONING.md)
+tách cận minimax có điều kiện khỏi các claim cần chứng minh.
+
+**Đề nghị thảo luận với giáo sư:** liệu pivot sang câu hỏi JEPA có giúp tăng
+sample efficiency khi chuyển sang game variant hoàn toàn held-out có giá trị
+khoa học, và nhóm nào là baseline công bằng nhất. Nếu nghiên cứu sâu hơn không
+tìm thấy một claim hẹp có novelty bảo vệ được, dự án nên chuyển sang bài
+benchmark/phân tích negative results thay vì tiếp tục đổi loss đến khi có một
+điểm thắng development.

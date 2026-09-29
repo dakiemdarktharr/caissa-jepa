@@ -1,0 +1,47 @@
+{
+  "acquired_utc": "2026-09-29T03:32:01.998267+00:00",
+  "commit": "60b386dd16fb9d753e50736443a600cae24a5170",
+  "files": [
+    {
+      "bytes": 1064,
+      "git_blob_sha1": "25f8c51833edf4da3778bc4e9c638b57e9b0e0b2",
+      "path": "LICENSE",
+      "sha256": "5de191a966494aa3957761952b669caa9f7ca95ce7b374da62bc50e2362b6a93",
+      "url": "https://raw.githubusercontent.com/y-tetsu/reversi/60b386dd16fb9d753e50736443a600cae24a5170/LICENSE"
+    },
+    {
+      "bytes": 1262,
+      "git_blob_sha1": "a76272d98cc71481a64b42fd247fd57f49d18884",
+      "path": "reversi/color.py",
+      "sha256": "97718f6240a5f18532f22d9c16d4e4d49e6e046588bb3c18bce1cc12f54effa0",
+      "url": "https://raw.githubusercontent.com/y-tetsu/reversi/60b386dd16fb9d753e50736443a600cae24a5170/reversi/color.py"
+    },
+    {
+      "bytes": 1576,
+      "git_blob_sha1": "88c57617defbbe5c522e6aa4ec4ca3982a5008e4",
+      "path": "reversi/disc.py",
+      "sha256": "be424290fec94eaf7a4eac804f7a1d6004be79534f3ffdf3c59016a919581b83",
+      "url": "https://raw.githubusercontent.com/y-tetsu/reversi/60b386dd16fb9d753e50736443a600cae24a5170/reversi/disc.py"
+    },
+    {
+      "bytes": 19958,
+      "git_blob_sha1": "35aaade5cd62d47516d223dca25b2aa60f083d3c",
+      "path": "reversi/board.py",
+      "sha256": "61782c1147a1af909f8c87a1ce87feb454cc91454bc0fb9e5bf52040b0df2259",
+      "url": "https://raw.githubusercontent.com/y-tetsu/reversi/60b386dd16fb9d753e50736443a600cae24a5170/reversi/board.py"
+    },
+    {
+      "bytes": 3692,
+      "git_blob_sha1": "61eebcb31f2e335bd022122f22447aec46d80fcb",
+      "path": "reversi/game.py",
+      "sha256": "99b6c43f82a159cca521cf880eaed5db7752c83e44abbc046efc4df43499fee5",
+      "url": "https://raw.githubusercontent.com/y-tetsu/reversi/60b386dd16fb9d753e50736443a600cae24a5170/reversi/game.py"
+    }
+  ],
+  "license": "MIT",
+  "license_path": "LICENSE",
+  "license_sha256": "5de191a966494aa3957761952b669caa9f7ca95ce7b374da62bc50e2362b6a93",
+  "repository": "https://github.com/y-tetsu/reversi",
+  "tree": "a8b01cfbea84be41fbde7c33dd78cdcbe706d554",
+  "version": "reversi-reference-audit01"
+}

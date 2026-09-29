@@ -2,18 +2,55 @@
 
 Updated: 2026-09-29. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
-**Current operational entry:** V2.5 grid04 is inconclusive after a diagnosed
-memory-monitor leak. Fresh grid05 is now ACTIVE at source
-`f7a90a76c497becaff8356e030ecbef1d114697e`, pushed and remote-hash verified.
-Process session1569 runs `two_player_v25r.runtime` on the same standalone
-train/development exports. Do not restart it, inspect partial outcomes, or edit
-frozen packages, METHOD_V25, V25_RUNTIME_AMENDMENT or two_player_v25r. Read
-`docs/V25_GRID04_FAILURE_AUDIT.md` and `docs/V25_RUNTIME_AMENDMENT.md` first;
-old source/artifacts remain frozen. New `two_player_v25r` has58 passing targeted
-tests plus an independent9-test rerun/source review. All launch gates passed;
-72 Markdown files were copied with SHA equality to the verified vault. Obsidian
-Ground Truth is open; an unrelated system antivirus popup obscures part of it.
-No JEPA-superiority result exists. The paragraphs below retain the full history.
+**Current operational entry (2026-09-29):** V2.5 grid05 completed 42/42 cells
+and its independent artifact audit passed. The strict report says
+`not_promoted`: raw-tail's exact-state advantage over direct is only 0.001329
+(paired-root descriptive 95% interval [-0.023899, 0.026938]), with opposite
+effects by game and one favorable seed. In hybrid planning it loses to direct
+by 0.064565 regret (improvement CI [-0.126889, -0.005814]); the tail-mechanism
+gate also fails. See `docs/V25_GRID05_RESULTS.md` for complete numbers and
+limits. Run used 4,899.264 cell seconds, 4,909.031 wall seconds, 200,802,304 B
+peak RSS and 180,542,007 B local artifacts. No selection/final data were opened.
+Grid04 remains an inconclusive engineering attempt; preserve both attempts.
+Do not edit frozen V25 source/method/report code. Source launch was
+`f7a90a76c497becaff8356e030ecbef1d114697e`; audit/tooling changes are at current
+main commit `1cfe93e85f3f3fd6ff084176f7ab7ec163924852`. The user-approved
+`gpt-6-luna`/`high` reviewer found no source-binding or reference-wrapper blocker
+and did not inspect results. Earlier 72-file vault mirroring predates these new
+notes and must be synchronized before ending this work period. No JEPA
+superiority or Q1 claim has been established.
+
+Latest documentation mirror: copied82 project Markdown files, preserving
+relative paths, into the previously discovered `D:/notes/vault_1/Caissa-JEPA`;
+all82 source/destination SHA-256 pairs matched. This includes updated Ground
+Truth, roadmap, professor brief, V2.5 result and post-run research update. The
+previous checkpoint had visually opened Ground Truth in Obsidian, but the
+current Computer Use session exposes no native app inventory/controls, so I
+could not reopen the refreshed page for a new visual check. Do not treat the
+copy hashes as an Obsidian UI verification.
+
+Separate Reversi rules-reference audit passed after grid completion: pinned
+upstream MIT source `y-tetsu/reversi` commit
+`60b386dd16fb9d753e50736443a600cae24a5170`, 100 seeded trajectories each on
+4x4 and6x6, 4,684 states, 183,612 trajectory state/action comparisons and392
+fixture comparisons, zero mismatches, 75.375s. This checks tested rules only,
+not minimax labels or strength. Public aggregate receipt:
+`docs/validation/REVERSI_REFERENCE_AUDIT01.json`; full receipt and 200 trajectory
+hashes remain in ignored `chess_data/reversi-ref-audit01/`.
+
+Post-run research update `docs/V25_POSTRUN_RESEARCH_UPDATE.md` records new
+overlap with MuZero board-game state-consistency analysis, cross-variant
+AlphaZero transfer, and 2026 policy-aware simulator learning. It proposes
+held-out-variant predictive-transfer as a candidate question only; no V2.6
+method is frozen, and new training remains gated on a fully researched protocol.
+Exact method uniqueness and JEPA advantage remain unestablished.
+
+**Agent approval rule (2026-09-29):** only the user may create/configure exempt
+workers directly. Before I create any agent/subagent, ask the user to approve
+its exact model and reasoning effort. The user approved `gpt-6-luna` / `high`
+for new independent reviews in this continuation. This is not blanket approval
+for other models; ask again before any different configuration. If approved
+workers are unavailable, continue directly or report the blocker.
 
 ## Identity, authority and hypothesis
 

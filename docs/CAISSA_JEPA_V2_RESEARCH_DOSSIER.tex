@@ -1,0 +1,281 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,array,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\title{Complete-Reply Latent Consistency for Bounded Adversarial Planning\\
+\large CAISSA-JEPA V2 research dossier}
+\author{Development draft for discussion with the supervising professor}
+\date{29 September 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We test whether action-conditioned predictive representations improve bounded
+decisions in deterministic, alternating, fully observed, zero-sum two-player
+games. Earlier controlled development studies did not establish a JEPA
+advantage. The current V2.5 study tests a narrower mechanism: allocating half
+of latent prediction loss to the largest error in a complete legal opponent
+reply group. Strong task, scalar-consistency, reconstruction and latent
+allocation controls receive matched data, architecture and tuning opportunity.
+A finite-tree error bound motivates diagnostics but does not prove that the
+learning procedure improves planning. This dossier separates established
+engineering evidence, previous negative results, the frozen current protocol
+and requirements for an independently confirmed contribution.
+\end{abstract}
+
+\textbf{Status.} Exploratory development. This is neither a submission-ready
+manuscript nor a claim that the method is novel or superior. Authorship and a
+publication venue have not been assigned. A Q1 venue is a quality target, not
+an acceptance prediction.
+
+\section{Question and scope}
+The falsifiable project hypothesis is that predicting future latent states
+conditioned on both players' actions improves planning under limited computation,
+and that the benefit persists across multiple games in a defined class.
+The current class has two players, alternating turns, full observation,
+deterministic transitions, zero-sum utility, explicit legal actions and exact
+terminal rules. Hidden information, chance, simultaneous actions and general-sum
+rewards require different models and evaluation and are outside this study.
+
+The present adapters are Connect4 on a $4\times5$ board and Reversi on a
+$6\times6$ board. A single network within each run is jointly trained on both
+games through common features and action conventions. This is not a held-out-game
+transfer experiment. The benchmark consists of near-terminal local situations;
+it is not a complete-game strength, Elo or exploitability benchmark.
+
+The transition model receives supplied actions. It does not predict the
+behavior of a named opponent. The planner minimizes over legal replies in a
+finite tree; it neither averages over an uncalibrated opponent policy nor
+computes a game-wide equilibrium. These objectives must remain distinct.
+
+\section{Prior art and proposed incremental contribution}
+MuZero already combines action-conditioned latent dynamics, recurrent task
+predictions and planning across board games and Atari~\cite{muzero}.
+SPR and EfficientZero establish predictive consistency and its use with
+planning~\cite{spr,efficientzero}. TD-JEPA connects latent prediction to
+temporal-difference learning and successor representations~\cite{tdjepa}.
+Value-aware model learning, VaGraM and robust world-model approaches invalidate
+broad novelty claims for decision-sensitive or worst-error weighting
+alone~\cite{vagram,waker}. The related-work documents additionally examine
+TEMPO, Minimax Model Learning, RePAIR and other board-game representations.
+
+The distinction under investigation is the \emph{complete legal reply set for
+one own action} as the unit of a fixed mean/max latent residual, together with
+controls that separate latent targets from scalar targets, reconstruction and
+uniform gradient scaling. The scoped search has not established exact priority.
+Failure to find an identical method is not proof of uniqueness. A positive
+development result would still require a defensible incremental contribution
+and independent evidence; a new model name would add neither.
+
+\section{Formal setting and conditional error bound}
+Let $s$ be a complete rule state, $p(s)\in\{-1,+1\}$ the player to move,
+$A(s)$ its legal actions, $T(s,a)$ the deterministic transition, and $u(s)$
+terminal utility in the absolute $+1$ perspective. The encoder $e_\theta(s)$
+and recurrent predictor $g_\theta(z,a)$ produce latents in $\mathbb R^d$.
+For root action $a$ and legal reply $b$, define
+\[
+ z_s=e_\theta(s),\qquad
+ u_{ab}=g_\theta(g_\theta(z_s,a),b),\qquad
+ t_{ab}=e_{\bar\theta}(T(T(s,a),b)).
+\]
+The target encoder is an exponential moving average with coefficient $0.99$;
+target branches are detached. Values use the current player-to-move perspective.
+H1 therefore has the opponent's perspective; H2 returns to the root perspective.
+Exact terminal overrides use the appropriate sign, including terminal H1.
+
+For the nonterminal replies to an own action, let
+\[
+ \ell_{ab}=\frac{\|u_{ab}-t_{ab}\|_2^2}{d},\qquad
+ J_a=\tfrac12\operatorname{mean}_b\ell_{ab}
+       +\tfrac12\max_b\ell_{ab}.
+\]
+Use the same value head $v$ for predictions and targets. If it is
+$L_v$-Lipschitz, and
+$\epsilon_a=\max_b|v(t_{ab})-V^*(s_{ab})|$, then
+\[
+ |\widehat Q(s,a)-Q^*(s,a)|
+ \le L_v\sqrt{2dJ_a}+\epsilon_a=\delta_a.
+\]
+The reason is that minimum is nonexpansive in the maximum norm, while
+$\max_b\|u_{ab}-t_{ab}\|_2^2\le2dJ_a$. Exact terminal values enter both
+backups identically. An empty nonterminal subset has zero prediction error.
+Selecting the largest predicted action backup then gives
+\[
+ V^*(s)-Q^*(s,\widehat a)\le2\max_a\delta_a.
+\]
+These elementary inequalities apply to a fixed, identical, complete two-ply
+tree and fixed evaluated parameters. They do not certify unseen positions,
+jointly optimized encoders, equilibrium or useful learning from an average
+training loss. For the tanh linear head, $L_v\le\|w_v\|_2$. Head norm and
+target/oracle error are therefore measured; small latent error alone is
+insufficient and the bound may be loose.
+
+\section{Frozen V2.5 comparison}
+All families use features of dimension198, a tanh encoder $198\to128\to64$,
+a65-action masked policy head and a tanh scalar value head. Recurrent families
+share a standard predictor $[z,a]_{129}\to50\to64$, with9764 parameters.
+This architecture is a common strengthened comparator, not a novelty claim.
+
+Each complete own-action group is sampled intact. A row receives weight $1/K$
+for a group with $K$ replies, so repeated root/H1 supervision counts once per
+group. Encoded policy/value supervision is shared. Recurrent families also
+receive policy/value supervision at each horizon and a variance penalty.
+Auxiliary losses exclude exact-terminal targets; common supervised terms retain
+their original complete-group denominators. All H2 gradients propagate through
+H1 and the shared predictor. Exact maximum ties share their subgradient equally.
+
+\begin{center}\small
+\begin{tabular}{p{31mm}p{112mm}}
+\toprule Family & Role in the comparison\\\midrule
+Direct & Encoded policy/value; no recurrent auxiliary.\\
+Recurrent P/V & Recurrent policy/value; no consistency auxiliary.\\
+Decoded tail & Mean/max residual on reconstructed observed features.\\
+Scalar tail & Mean/max value consistency with the same online head on detached EMA targets.\\
+JEPA mean & Uniform latent consistency.\\
+JEPA tail & Sole prespecified candidate: half mean, half maximum latent residual.\\
+JEPA scaled & Uniform gradients scaled by detached $J/\operatorname{mean}(\ell)$;
+same forward loss at identical parameters, different allocation.\\\bottomrule
+\end{tabular}\end{center}
+
+There are42 fresh cells: seven families, two learning rates $(10^{-3},3\times10^{-4})$
+and seeds17,29,43. All run160 epochs and10560 updates with float64 NumPy Adam,
+gradient clipping and no warm start or early stopping. Every epoch contains2088
+complete-group draws in66 batches. Sampling, legal symmetry transforms and
+initializations are paired. Equal updates and allocated parameters do not imply
+equal active FLOPs, memory or wall time.
+
+\section{Data, evaluation and decision rules}
+Training uses509 roots,9237 nodes and6750 forks. Development uses209 roots
+(107 Connect4,102 Reversi),3756 nodes and2735 forks. These are standalone,
+fingerprinted exports from the audited self-generated bank. Original audits
+check transitions, symmetry-canonical isolation and feature-byte overlap.
+No external game corpus was used. Generated datasets and checkpoints remain
+local; their public artifact license and large-artifact storage are unassigned.
+
+The exact track encodes actual nonterminal H2 successors. The hybrid track uses
+predicted H2 latents while retaining the same exact legal tree and terminal
+overrides. Both have a4096-transition cap and one-second cooperative limit per
+root. A direct model uses real successor encodings in both tracks. The primary
+metric is equal-game mean action regret relative to an exact oracle, not match
+win rate. Terminal overrides and rule enumeration assist every family.
+
+One global learning rate per family is selected using three-seed mean
+\emph{exact} regret; ties prefer the smaller rate. This rate is retained for
+hybrid evaluation. Each track requires the candidate to improve by at least0.05
+against the strongest tuned non-JEPA control, improve in both games against
+every control, and improve in at least two of three paired seeds. The mechanism
+also requires hybrid gains over mean/scaled latent controls and lower backed-up
+oracle MSE than all non-JEPA recurrent controls. No ablation can replace the
+prespecified candidate after results are seen.
+
+Intervals use10000 paired-root bootstrap draws, stratified by game and shared
+across the three fixed seeds. They do not bootstrap training seeds or correct
+for adaptive reuse of development. Selection and final evaluation are separate,
+unopened stages. A passed development screen is eligibility for independent
+evaluation, not confirmatory significance or a publication claim.
+
+\section{Evidence and operational history}
+\begin{center}\small
+\begin{tabular}{lrrp{63mm}}
+\toprule Study & JEPA regret & Control regret & Interpretation\\\midrule
+V2 grid01 &0.249145&0.247664&Projected JEPA did not beat value dynamics.\\
+V2.1 grid02 &0.207425&0.212250&Small raw-JEPA gain; interval crosses zero and gates fail.\\
+V2.2 scarce &0.293339&0.283917&Raw JEPA loses to direct; no label-access advantage.\\\bottomrule
+\end{tabular}\end{center}
+These studies have different objectives and access regimes; rows are not a
+cross-study leaderboard. All negative results are retained. A subsequent
+training-only18-run study found larger capacity and longer training helpful
+for all families; direct still fit the labels better. A no-fit additive-order
+probe did not establish the proposed representation bottleneck.
+
+The first V2.5 attempt stopped after three completed cells and a failed fourth
+diagnostic because its Windows RSS observer retained a new ctypes pointer type
+on every call. A no-model reproduction confirmed the defect. It is an
+\emph{inconclusive engineering attempt}, not a JEPA loss. Its496.259139 cell
+seconds and computed-but-unsaved418 decisions remain in the ledger discussion.
+An independently reviewed singleton monitor is the sole runtime repair; all
+scientific source and budgets remain unchanged. The fresh retry must reproduce
+192 preregistered tensor hashes across four previous optimizer states.
+
+% BEGIN_V25_RESULTS
+\textbf{V2.5 result: not promoted.} The fresh42-cell development grid completed
+without failed/censored cells or detected collapse. Its independent audit
+verified all42 checkpoints, 2,016 tensor arrays, 480 replayed plans, 17,556
+learned decisions, 836 controls, source/data/artifact hashes and zero train/
+development or trajectory overlap. The exact-state raw-tail candidate had
+regret0.202446 versus0.203775 for direct (improvement0.001329; descriptive
+paired-root95\% interval[-0.023899,0.026938]); effects disagreed by game and
+only one of three seeds favored it. In hybrid planning raw-tail regret was
+0.268340 versus0.203775 for direct (improvement-0.064565; interval
+[-0.126889,-0.005814]). The tail-mechanism gate failed against the uniform and
+scaled latent controls, and scalar-tail had lower backed-up oracle MSE. Thus
+the prespecified candidate failed both project and mechanism gates. These
+adaptive intervals condition on three seeds and reused roots; this is not
+confirmation or evidence of a Q1, transfer, full-game-strength or exploitability
+claim. See \path{docs/V25_GRID05_RESULTS.md}. The 4,899.264 cell seconds and
+200,802,304-byte process-lifetime peak RSS are run accounting, not compute
+advantage. No selection/final data were opened.
+% END_V25_RESULTS
+
+\section{Compute interpretation and threats to validity}
+Let $n$ be the number of nonterminal H2 leaves, and let $E,P,F,V$ denote batched
+encoder, one-step predictor, feature and value costs. The present evaluator has
+\[
+ T_{\rm exact}=C_{\rm rules}+F(n)+E(n)+V(n)+H_{\rm exact},
+\]
+\[
+ T_{\rm hybrid}=C_{\rm rules}+F(1)+E(1)+2P(n)+V(n)+H_{\rm hybrid}.
+\]
+The rule cost remains; H1 prediction is repeated per reply. An affine-operation
+count suggests a possible crossover at $n\ge3$, but this omits batching,
+allocation, nonlinearities and caching and is not a measured speedup. Actual
+latency and quality must be compared against an optimized exact baseline.
+
+Principal threats are adaptive development over the same209 roots, only three
+training seeds, a narrow full-oracle endgame distribution, assistance from exact
+rules, nonidentical active compute, shared project assumptions in existing
+oracle implementations, and unverified unseen-game generalization. A third-party
+rules compatibility audit is being prepared; it cannot establish optimal labels
+or playing strength by itself. The target representation and value head jointly
+evolve, so the conditional fixed-parameter bound is not a convergence theorem.
+
+\section{Requirements for a credible next-stage contribution}
+A surviving candidate needs an independently frozen selection and confirmation
+protocol, replication seeds and a power-supported sample size. Held-out variants
+or games, broader positions and independent reference opponents must test the
+claimed scope. Same-tree comparisons and matched measured compute should be
+reported separately. If scalar, decoded or scaled-uniform controls explain any
+gain, the proposed latent-tail mechanism is unsupported. Negative findings and
+operational failures remain visible; a final-set failure cannot be relabelled
+as development without new independent data.
+
+\section{Reproducibility entry points}
+The repository is \url{https://github.com/dakiemdarktharr/caissa-jepa}.
+Read \path{GROUND_TRUTH.md}, \path{ROADMAP.md}, \path{docs/METHOD_V25.md} and
+\path{docs/V25_RUNTIME_AMENDMENT.md}. The verified environment uses Python3.11.9
+and NumPy2.4.6 with one BLAS/OMP thread on local CPU. No GPU/cloud services or
+paid data were used. Runtime outputs bind code, configuration, data, group
+schedules and checkpoint tensors by hashes. Public reports contain aggregates;
+raw datasets, checkpoints, caches and logs are excluded from Git.
+
+\begin{thebibliography}{9}\small
+\bibitem{muzero} Schrittwieser et al. Mastering Atari, Go, chess and shogi by
+planning with a learned model. \emph{Nature},2020.
+\url{https://arxiv.org/abs/1911.08265}.
+\bibitem{spr} Schwarzer et al. Data-Efficient Reinforcement Learning with
+Self-Predictive Representations. \emph{ICLR},2021.
+\url{https://arxiv.org/abs/2007.05929}.
+\bibitem{efficientzero} Ye et al. Mastering Atari Games with Limited Data.
+\emph{NeurIPS},2021. \url{https://arxiv.org/abs/2111.00210}.
+\bibitem{tdjepa} TD-JEPA: Latent-predictive Representations for Zero-Shot
+Reinforcement Learning. \emph{ICLR},2026.
+\url{https://arxiv.org/abs/2510.00739}.
+\bibitem{vagram} Voelcker et al. Value Gradient weighted Model-Based
+Reinforcement Learning. \emph{ICLR},2022.
+\url{https://arxiv.org/abs/2204.01464}.
+\bibitem{waker} WAKER. Primary paper and robust world-model learning formulation.
+\url{https://arxiv.org/abs/2306.09205}.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,53 @@
+{
+  "version": "reversi-reference-audit01",
+  "status": "passed",
+  "scope": "Rule compatibility on tested states only; no oracle-label validation or strength evidence.",
+  "source": {
+    "repository": "https://github.com/y-tetsu/reversi",
+    "commit": "60b386dd16fb9d753e50736443a600cae24a5170",
+    "license": "MIT",
+    "source_manifest_sha256": "aca1d3a2104ab236b0b19ce6eea89240d1ba67a54995f515e1ac7624175970a3",
+    "wrapper_sha256": "41014459b79e10d1a4fc16b424be4fd6ebc73e11e4af3119a1c59284c1b9162c",
+    "project_rules_sha256": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "protocol_sha256": "5dac89c5b9d09df2cf8135268c9a42b0d9e45d2eeb59457c6c5c251db8dcc9dc"
+  },
+  "protocol": {
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "seed_sequence": "SeedSequence([2601, size, trajectory]); sorted reference legal-action order",
+    "sizes": [4, 6],
+    "trajectories_per_size": 100,
+    "fixtures_per_size": 14,
+    "elapsed_seconds": 75.375,
+    "worker_returncode": 0,
+    "receipt_sha256": "171aef4e4a387a76c012c4ee572b0c69cab61893bc168d90b7b84d4e65bca531"
+  },
+  "counts": {
+    "size4": {
+      "trajectory_states": 1332,
+      "trajectory_comparisons": 32660,
+      "trajectory_legal_branches": 6167,
+      "trajectory_pass_branches": 291,
+      "trajectory_corner_capture_branches": 1729,
+      "fixture_comparisons": 196,
+      "fixture_invalid_action_rejections": 282
+    },
+    "size6": {
+      "trajectory_states": 3352,
+      "trajectory_comparisons": 150952,
+      "trajectory_legal_branches": 32710,
+      "trajectory_pass_branches": 208,
+      "trajectory_corner_capture_branches": 3683,
+      "fixture_comparisons": 196,
+      "fixture_invalid_action_rejections": 562
+    },
+    "total_trajectory_states": 4684,
+    "total_trajectory_comparisons": 183612,
+    "total_trajectory_legal_branches": 38877,
+    "total_trajectory_pass_branches": 499,
+    "total_fixture_comparisons": 392,
+    "mismatches": 0
+  },
+  "full_hash_bound_receipt_local_path": "chess_data/reversi-ref-audit01/receipt.json",
+  "full_trajectory_receipts_retained_locally": true
+}

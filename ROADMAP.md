@@ -2,20 +2,27 @@
 
 Version 1 — 2026-09-29. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
 
-Latest M7 evidence: the completed V2.4 order probe fails all four materiality
-screens despite sufficient coverage. This proposed bottleneck is not established.
-Keep its negative result; further architecture/objective work needs a separately
-frozen matched-baseline design, not a claim that this probe justified a fix.
-That next finite design is METHOD_V25:42 grouped robust-consistency cells with
-strong recurrent/scalar/decoded and gradient-allocation controls. Method reviews
-pass; implementation/source/test gates preceded fitting. Scope remains M7.
-Grid04 then stopped inconclusive after3 completed cells: the memory monitor
-itself retains a ctypes pointer type on every guard call and exceeded the1GB
-cap during cell4 diagnostics. V25_RUNTIME_AMENDMENT freezes a minimal monitor
-repair and one fresh all42-cell grid05 attempt, with original science/budgets.
-Failure audit, repaired-monitor regression, independent review, source push and
-vault sync are dependencies before restarting. No JEPA result can be selected
-from this incomplete attempt; its496.259139s cost and unsaved exposure remain.
+Latest M7 evidence: V2.5 grid05 completed all42 cells and independently passed
+its artifact/source/data/schedule audit. It was **not promoted**: raw-tail's
+exact-state improvement over direct was only0.001329 (paired-root descriptive
+95% interval[-0.023899,0.026938]); it regressed Reversi6, favored only one seed,
+and failed the required0.05 margin. Hybrid raw-tail lost to direct by0.064565
+regret (improvement interval[-0.126889,-0.005814]); its mechanism gate also
+failed against uniform/scaled latent and scalar-tail controls. Close this recipe
+as a valid negative development screen. Keep grid04 as an inconclusive runtime
+failure and preserve both attempts. See `docs/V25_GRID05_RESULTS.md`.
+
+The next milestone is **not** another latent-loss sweep. First finish the
+predeclared independent Reversi4/6 rule audit and document its limits; it does
+not validate minimax labels. Then conduct design-only deep research on concrete
+representation reuse that an optimized rule-aware/value-aware baseline cannot
+achieve more cheaply. Any successor must be a new frozen method/data version,
+give every baseline equal development and tuning opportunity, preserve an
+untouched confirmatory split, and include measured active compute. If no
+falsifiable advantage and fair baseline are identified, pivot the paper goal to
+a rigorous negative-results/benchmark contribution rather than keep tuning
+against reused roots. The user approved gpt-6-luna/high only for the current
+review; ask before creating another self-initiated agent with any configuration.
 
 | Milestone / size | Depends on | Deliverables and acceptance | Status |
 | --- | --- | --- | --- |
@@ -29,6 +36,16 @@ from this incomplete attempt; its496.259139s cost and unsaved exposure remain.
 | M7 development and model selection / large | M6 evidence | Fix weaknesses using development data; extend heterogeneous games/chess adapter; opponent pool/random/reference/self-play; independent rule validation; held-out whole game and few-shot comparison; matched wall-time and active compute tracks | PIVOT: benchmark redesign first; scaling current training is stopped by the benefit/coverage gates; selection remains unopened |
 | M8 locked confirmatory study / large | M7 pass | Freeze independent referee/teacher identity, dataset/checkpoint/config/source hashes, primary metric, paired schedule/seeds/sample size/CI/multiplicity/censor/stopping rules; complete uncensored planned set | BLOCKED until readiness review; no fabricated protocol values chosen after outcomes |
 | M9 paper and reproducibility release / large | M8 or documented negative pivot | Systematic review updated; method/ablations/negative findings/limitations/threats/license/reproduction statements; independent review; artifacts storage plan; no Q1 guarantee | Exploratory working paper and reproducibility report drafted; submission-quality study remains incomplete |
+
+V2.5 closure criteria: all42 planned cells complete; strict result is
+`not_promoted`; independent audit is `verified`; all192 prior-attempt tensor
+references pass; no selection/final inputs opened; public aggregate/plots derived
+from strict report; results and limits recorded in Ground Truth, this roadmap,
+professor dossier and Obsidian. The third-party Reversi4/6 differential audit
+now also passes (100 seeded trajectories/size; 183,612 trajectory comparisons;
+zero mismatches), within its explicitly limited rules-compatibility claim.
+Remaining closure work is vault synchronization, dossier/editor verification,
+tests and commit/push.
 
 V2 M7 progress: preserved failed survey01/02, passed prospective survey03 on
 Connect4 4x5/Reversi6; full fork audit passes509 training/209 development roots.
