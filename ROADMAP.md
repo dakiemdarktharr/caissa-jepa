@@ -378,3 +378,19 @@ an independent rules/runtime gate for a harder game before using it as a
 scientific game. These are proposals pending a frozen protocol and receipt, not
 completed acceptance results. No V2.8 training or confirmation is authorized by
 the current evidence; all JEPA advantage and novelty claims remain unproven.
+
+### Corrected V2.8 primary estimand (2026-09-30)
+
+Independent methods review found that the original KLENT+JEPA proposal used
+prediction only as an auxiliary loss while its primary endpoint was fixed-suite
+policy score. That would not test whether JEPA improves planning. The proposal
+now marks that question secondary and records
+`docs/V28_PLANNER_DESIGN_AMENDMENT.md`: the primary candidate must use
+EMA-target predictions of complete own-action/opponent-reply latent branches
+inside a fixed-depth max-min planner; the primary endpoint is exact regret on a
+frozen model-blind root bank. Required controls include direct encoded-leaf
+minimax value, matched decoded/task dynamics, a MuZero-style latent planner,
+and JEPA trained but unused at inference; KLENT remains a distinct no-search
+direct policy/Q control. This fixes the estimand mismatch only. The design is
+still tentative, requires prior-art review and power-gated data before freeze,
+and has no implementation or result.

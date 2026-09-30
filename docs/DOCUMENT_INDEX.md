@@ -159,6 +159,10 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `V28_SPLIT_PROTOCOL_REVIEW_01.md`: independent audit of dataset/split,
   situation-bank, opponent-power, and confirmation gaps. It recommends the
   next model-blind gate and does not support training or a JEPA claim yet.
+- `V28_PLANNER_DESIGN_AMENDMENT.md`: proposed correction that makes learned
+  latent rollouts drive a fixed-depth max-min planner and exact-root regret the
+  primary endpoint. It supersedes the auxiliary-only JEPA comparison as the
+  primary V2.8 question; it is not frozen or implemented.
 - `../tools/v28_reversi4_rules_gate.py` and
   `../test_v28_reversi4_rules_gate.py`: independent coordinate-ray rules
   comparator, exhaustive gate runner, and bounded regression tests; no

@@ -1,13 +1,15 @@
 # V2.8 candidate experiment: JEPA auxiliary versus direct policy/Q
 
-**Status: design proposal; not frozen; no implementation or experiment yet.**
-This note responds to the KLENT prior-art review and is intended to prevent an
-unfair comparison that uses only search-heavy baselines. It is not a novelty
-claim and does not replace the separate minimax-planning question.
+**Status: proposal; not frozen; no implementation or experiment yet.** The
+fixed-opponent auxiliary-loss endpoint below is superseded as the primary test
+by `docs/V28_PLANNER_DESIGN_AMENDMENT.md`, because an auxiliary-only win does
+not establish that JEPA latent prediction improves planning. This note remains
+the secondary learner/compute design and records its original purpose. Neither
+document makes a novelty claim.
 
 ## Question and permitted claim
 
-Primary question: under an identical self-play experience stream, network
+Secondary mechanism question: under an identical self-play experience stream, network
 capacity, optimizer schedule, training-data access, measured CPU budget and
 test-time action-selection budget, does an action-conditioned latent-prediction
 auxiliary improve decision performance of a regularized direct policy/Q learner
@@ -94,11 +96,11 @@ training samples, outcome evidence, or fresh confirmatory positions.
 
 ## Evaluation protocol
 
-Primary development estimand: paired score difference of JEPA-augmented
-policy/Q versus KLENT-style direct policy/Q over the predeclared opponent suite,
-with role/color swaps paired within situation and seed. Choose the smallest
-meaningful effect and sample size from a model-blind power simulation before
-opening development outcomes. Report all opponent strata separately and as a
+Original learner estimand (now secondary): paired score difference of
+JEPA-augmented policy/Q versus KLENT-style direct policy/Q over the predeclared
+opponent suite, with role/color swaps paired within situation and seed. It does
+not measure planning benefit; the primary planner-level estimand is defined in
+`V28_PLANNER_DESIGN_AMENDMENT.md`. Report all opponent strata separately and as a
 preweighted macro-average; report game-family results separately. Do not pool
 duplicate seat-swapped trajectories as independent games.
 

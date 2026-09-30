@@ -943,3 +943,35 @@ Truth file opens as readable UTF-8 text. Latest completed code/test milestone re
 `6c14cd40040ea5b48007e99f9d42f47a7b616419` is ahead of `origin/main` and still
 needs push/hash verification. The prior vault sync copied 85 Markdown files
 with zero missing files or hash mismatches; rerun after this review addition.
+
+### Planner-estimand correction (2026-09-30)
+
+An independent method review found the original V2.8 KLENT+JEPA proposal only
+used JEPA as an auxiliary training loss while measuring fixed-opponent policy
+score. A win there would not establish the stated planning hypothesis. The new
+`docs/V28_PLANNER_DESIGN_AMENDMENT.md` makes use of the predicted latent branch
+an explicit part of a two-ply max-min planner and sets exact regret on a frozen
+root bank as primary; fixed-suite match score is secondary. Controls include
+direct encoded-leaf minimax value, matched decoded/task dynamics, MuZero-style
+latent planning, JEPA disabled at inference, and a separate no-search KLENT
+learner. This is a proposal only: no prior-art certification, bank/power pass,
+implementation, training, or JEPA advantage exists. Reversi4 is a pipeline
+fixture, not a scientific strength game.
+
+Two V2.8 documentation milestones have now been pushed normally to
+`origin/main`: `6c14cd40040ea5b48007e99f9d42f47a7b616419` (rules receipt) and
+`a7535f4b21c0bc885b262533a6e73657f67343a6` (split/power review). Remote
+`refs/heads/main` matched `a7535f4b21c0bc885b262533a6e73657f67343a6`; local
+branch inventory had only `main`; working tree was clean apart from temporary
+command-output files subsequently removed. Next mirror all newly added/updated
+Markdown to the active vault, verify path/hash equality, then commit and push
+the planner-estimand correction. The Obsidian UI stays closed to keep the
+ desktop free; the vault markdown is checked by direct UTF-8 read and hashes.
+
+Final mirror pass after this correction copied 87 project Markdown files with
+zero missing files and zero SHA-256 mismatches to
+`D:/notes/vault_1/Caissa-JEPA/`; `GROUND_TRUTH.md` is readable UTF-8 there. The
+new planner-estimand amendment is still uncommitted at this checkpoint and
+requires commit/push and remote SHA verification. Do not begin model fitting;
+the next evidence-bearing task is an independently reviewed, model-blind
+harder-game rules/runtime plus data/split/support/power gate.
