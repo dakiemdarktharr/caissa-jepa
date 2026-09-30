@@ -975,3 +975,46 @@ new planner-estimand amendment is still uncommitted at this checkpoint and
 requires commit/push and remote SHA verification. Do not begin model fitting;
 the next evidence-bearing task is an independently reviewed, model-blind
 harder-game rules/runtime plus data/split/support/power gate.
+
+### Method candidate and game feasibility checkpoint (2026-09-30)
+
+`docs/METHOD_V28_PLANNER_V01.md` now specifies a frozen development candidate:
+shared game encoder; ordered own-action/opponent-reply two-ply predictor;
+EMA-target latent loss with explicit anti-collapse diagnostics; exact legal
+max-min closure; side-to-move value perspective; finite KLENT policy/Q targets;
+matched direct encoded-leaf, decoded dynamics, task-value/MuZero-style and
+JEPA-disabled planner controls; exact-root regret as the primary metric. This
+is a candidate spec, not evidence of novelty or superiority. Earlier V28 docs
+now clearly subordinate auxiliary-only fixed-suite policy comparisons to the
+planner-level test.
+
+The targeted primary-source refresh added LeJEPA/SIGReg in
+`docs/V28_PRIOR_ART_DELTA_20260930.md`; its theory/experiments cover general SSL
+representations but not alternating minimax planning, and no trajectory-game
+guarantee is assumed. A bounded model-blind exact-oracle probe of no-gravity
+Connect4 4x5 (source commit `609031e57cd1079ca326f105146a5bc61757a2f2`) solved
+12/23 nonterminal roots within 100,000 nodes/1s; 11 timed out; 11/12 solved
+roots had varying terminal labels. It is recorded in
+`docs/V28_GAME_FEASIBILITY_01.md` and
+`docs/validation/V28_GAME_FEASIBILITY_01.json`, with raw non-training output
+ignored at `chess_data/two-player-klent-toy/v28_connect4_4x5_feas_dev01.json`
+(SHA-256 `8cef23ba553943d4fc998aec9d9ccce449fab181f96475cc39fef215452c5234`).
+This small probe defers that no-gravity variant from the primary exact-regret
+bank under its current cap; it is not a solvability estimate. Previous model-
+blind evidence favors gravity Connect4 4x5 and Reversi6, but those old banks
+were used in earlier V2 development and cannot be V2.8 locked confirmation.
+Next: fresh model-blind rule/runtime, exact-root support, split/leakage, opponent
+calibration, power and compute audits for candidate games. No new dataset or
+training was started.
+
+The LeJEPA full text was reviewed at
+`https://arxiv.org/html/2511.08544v3`; other updated sources and scope
+boundaries are linked from the prior-art delta. The method and feasibility
+documents, roadmap/index, and Ground Truth need vault sync, independent diff
+check, commit and push. Training remains gated.
+
+Latest full project Markdown copy to the active Obsidian vault preserved
+repository-relative paths for 89 files; SHA-256 verification found zero missing
+files and zero mismatches. Ground Truth was readable in UTF-8. This count
+excludes `.git`, caches, environments, build output, generated data, checkpoints,
+and logs. The Obsidian UI was not opened to preserve the user's desktop.

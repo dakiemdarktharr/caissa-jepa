@@ -163,6 +163,13 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   latent rollouts drive a fixed-depth max-min planner and exact-root regret the
   primary endpoint. It supersedes the auxiliary-only JEPA comparison as the
   primary V2.8 question; it is not frozen or implemented.
+- `METHOD_V28_PLANNER_V01.md`: frozen development-candidate algorithm and
+  losses/controls for reply-set latent max-min planning; model fitting remains
+  gated on fresh data/power and independent review.
+- `V28_GAME_FEASIBILITY_01.md` and `validation/V28_GAME_FEASIBILITY_01.json`:
+  24-root no-gravity Connect4 4x5 exact-oracle cost probe (12/23 complete).
+  It rejects that tiny sample as a production bank and does not select a
+  scientific V2.8 game.
 - `../tools/v28_reversi4_rules_gate.py` and
   `../test_v28_reversi4_rules_gate.py`: independent coordinate-ray rules
   comparator, exhaustive gate runner, and bounded regression tests; no

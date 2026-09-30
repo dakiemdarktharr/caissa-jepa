@@ -1,0 +1,37 @@
+{
+  "schema": "caissa-v28-game-feasibility-01",
+  "stage": "exploratory model-blind exact-oracle feasibility; no training data",
+  "source_commit": "609031e57cd1079ca326f105146a5bc61757a2f2",
+  "raw_receipt_path": "chess_data/two-player-klent-toy/v28_connect4_4x5_feas_dev01.json",
+  "raw_receipt_sha256": "8cef23ba553943d4fc998aec9d9ccce449fab181f96475cc39fef215452c5234",
+  "source_sha256": {
+    "probe": "79f79f5fa4ef96b87bb8f2cd65ed1b62a440c812fb65c395af13ff4c5883a09a",
+    "adapter": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf",
+    "reference_rules": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+    "alpha_beta": "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c"
+  },
+  "game": "connect4-4x5-no-gravity",
+  "schedule": {
+    "count": 24,
+    "base_seed": 270000,
+    "schedule_seed": 28093001,
+    "target_ply_range": [5, 11],
+    "solver_node_cap": 100000,
+    "solver_time_cap_seconds": 1.0
+  },
+  "environment": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "compute": "local CPU"
+  },
+  "summary": {
+    "nonterminal_candidates": 23,
+    "completed_exact_action_value_maps": 12,
+    "solver_timeouts": 11,
+    "completed_roots_with_multiple_outcome_labels": 11,
+    "complete_values_retained": false,
+    "training_started": false,
+    "dataset_generated": false
+  },
+  "claim_limit": "The small convenience sample is not a solvability estimate, rules certification, benchmark result, model comparison, JEPA benefit, or evidence about other games."
+}
