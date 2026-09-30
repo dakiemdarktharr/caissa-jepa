@@ -125,9 +125,14 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `KLENT_CLEANROOM_BASELINE_SPEC.md`: equation-level K0.1 clean-room baseline
   spec and synthetic fidelity gates; a documented CAISSA adaptation, not a
   reproduction of upstream code or paper-scale results.
-- `../two_player/klent_baseline.py` and `../test_klent_baseline.py`: K0.1
-  masked policy-target and signed lambda-return utilities; 10 synthetic unit
-  tests pass, with no self-play fitting or game-strength result.
+- `../two_player/klent_baseline.py`, `../two_player/klent_model.py`, and
+  `../test_klent_baseline.py` / `../test_klent_model.py`: K0.1 target/return
+  utilities, shared-backbone policy/Q learner and self-play collection/fitting;
+  focused synthetic correctness tests, not game-strength evidence.
+- `../tools/v28_klent_countup_probe.py`: source-hashed exploratory convergence
+  probe on a seven-state synthetic game; its generated raw receipt stays under
+  the excluded `chess_data/` tree, with only a small aggregate receipt eligible
+  for source control.
 - `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
   deterministic project-owned match-schedule feasibility helper and its tests;
   not a strength benchmark.

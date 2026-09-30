@@ -792,17 +792,20 @@ fixed-opponent behavior estimand from a minimax/planning estimand and defines
 matched task-prediction controls, leakage/coverage/runtime gates, multiple
 compute axes and explicit kill criteria. This is not frozen, code, trained
 model, or evidence of superiority. The clean-room baseline specification is
-K0.1, and `two_player/klent_baseline.py` now implements its masked policy target
-and player-perspective alternating lambda-return utilities. Ten focused
-synthetic unit tests pass; two initial assertions failed and were corrected
-(one numerical tolerance, one validation order) before the passing run. These
-are code-correctness checks, not policy convergence, game results, or evidence
-of JEPA superiority. The complete repository suite then passed **340 tests in
-114.972 seconds**, including the new tests; Qt emitted existing missing-asset
-warnings during UI smoke coverage, but the suite exited successfully. Next is
-the direct policy/Q fitting loop and exact alternating-toy convergence test,
-followed by independent fidelity review and the model-blind data/compute audit;
-JEPA training remains gated. Added
+K0.1, and `two_player/klent_baseline.py` implements its masked policy target
+and player-perspective alternating lambda-return utilities.
+`two_player/klent_model.py` implements a small shared encoder with separate
+policy/Q heads, manually differentiated cross-entropy/MSE losses, Adam updates,
+online self-play target collection and phase-based fitting. Sixteen focused
+synthetic tests pass, including finite-difference gradient checks and an
+eight-episode toy fit; two initial utility-test assertions were corrected
+before the passing run. These are code-correctness checks, not policy
+convergence, game results, or evidence of JEPA superiority. The complete
+repository suite passed **346 tests in 125.103 seconds**, including the learner
+additions; Qt emitted existing temporary-asset warnings during release/UI
+smoke checks, but the suite exited successfully. Next is the source-hashed exact
+alternating-toy convergence probe, followed by independent fidelity review and
+the model-blind data/compute audit; JEPA training remains gated. Added
 `docs/KLENT_CLEANROOM_BASELINE_SPEC.md` as K0.1: it specifies the masked KLENT
 policy-improvement distribution, action-value loss, player-relative signs for
 alternating lambda returns, and six synthetic fidelity checks. It is an

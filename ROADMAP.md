@@ -239,12 +239,13 @@ or cross-game claim begins until the development gate passes.
 `docs/KLENT_CLEANROOM_BASELINE_SPEC.md` now freezes the equation-level K0.1
 adaptation for policy improvement, player-to-move perspective, signed lambda
 returns and synthetic fidelity checks; it is not an upstream code reproduction.
-K0.1 target/return utilities are implemented in `two_player/klent_baseline.py`;
-10 focused tests pass and full repository regression passes 340 tests in
-114.972 seconds. Next implement the direct policy/Q fitting loop and test its
-convergence on an exactly solvable alternating toy game. No JEPA arm or
-board-game training should start before those checks, independent fidelity
-review and the model-blind data/compute audit pass.
+K0.1 target/return utilities, a separate-head policy/Q model and on-policy
+self-play collect/fit loop are implemented in `two_player/klent_baseline.py`
+and `two_player/klent_model.py`. Sixteen focused tests pass, including
+finite-difference gradient checks; complete repository regression passes 346
+tests in 125.103 seconds. Next run the source-hashed exact count-up convergence
+probe, then obtain independent fidelity review. No JEPA arm or board-game
+training should start before the baseline/data/runtime gates pass.
 
 Relative effort: positioning (small), rule/runtime feasibility (medium), data
 and method implementation (medium-to-large), matched development (large),

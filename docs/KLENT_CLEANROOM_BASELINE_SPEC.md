@@ -63,8 +63,11 @@ identity. The policy loss is legal-action cross entropy
 \(L_\pi=-\sum_{a\in A(s)}\pi'(a\mid s)\log\pi_\theta(a\mid s)\).
 
 The paper's shared-backbone/separate-head design is the intended architecture.
-The local CPU implementation may use a smaller shared encoder, but this is a
-feasibility adaptation, and it must be matched across baseline and JEPA arms.
+The local CPU implementation uses a single affine-tanh shared encoder and
+separate linear policy/Q heads; this is a feasibility adaptation, and it must
+be matched across baseline and JEPA arms. The baseline code does not apply
+gradient clipping because the paper's published implementation description
+does not specify it; any later optimizer change requires a versioned amendment.
 The published 6-block 128-channel ResNet, batch size 4096, and learning rate
 0.001 are contextual target settings, not assumptions that local hardware can
 replicate its scale.
@@ -94,7 +97,9 @@ tests must compare it with explicit enumeration in small alternating trees.
 The sampled action-value loss is
 \(L_Q=(Q_\theta(s_t,a_t)-G_t^\lambda)^2\). Total fitting loss is
 \(L=L_\pi+L_Q\), averaged over replay positions with each loss's own valid
-count. There is no JEPA, state-transition predictor, minimax action-order loss,
+count. The K0.1 code uses Adam with \(\beta_1=.9,\beta_2=.999,\epsilon=10^{-8}\)
+and learning rate \(.001\), without gradient clipping. There is no JEPA,
+state-transition predictor, minimax action-order loss,
 search-generated target, or EMA in K0.1.
 
 ## Local implementation parameters and training exposure
