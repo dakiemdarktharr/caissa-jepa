@@ -1,0 +1,58 @@
+{
+  "schema": "caissa-v28-reversi4-rules-gate-01",
+  "stage": "model-blind exhaustive rules/runtime subgate",
+  "claim_status": "rules, legal-transition and two-ply coverage only; no data split, strength, or JEPA claim",
+  "source_commit": "5abbd777261c34228888ecbddd9924686b159b63",
+  "raw_receipt_path": "chess_data/two-player-klent-toy/v28_reversi4_rules_dev02.json",
+  "raw_receipt_sha256": "faeb7a3af54ee8f5829a918edb71435caf94f2e3b840482e997b745f40d386ed",
+  "source_sha256": {
+    "tools/v28_reversi4_rules_gate.py": "d70752f756260ac29f79f4b7c15d17c974321130b05b6daed3fcbd6a606336fe",
+    "two_player/games.py": "8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf"
+  },
+  "config_sha256": "1e6156ed51cb7b805d5fd4872d616034dd0e7bc16485dedb8a7cdbeb145a8ad4",
+  "game": {
+    "name": "reversi4-gate",
+    "rules_version": "tiny-rules-v1",
+    "rows": 4,
+    "cols": 4,
+    "players": 2,
+    "alternating": true,
+    "fully_observed": true,
+    "deterministic": true,
+    "zero_sum": true
+  },
+  "environment": {
+    "python": "3.11.9",
+    "compute": "local CPU; no paid/cloud hardware",
+    "cpu_seconds": 8.75,
+    "wall_seconds": 8.77728,
+    "peak_working_set_bytes": 92688384
+  },
+  "coverage": {
+    "reachable_states_including_terminal": 62789,
+    "terminal_states": 6168,
+    "nonterminal_states": 56621,
+    "legal_actions_checked": 89332,
+    "transitions_differentially_checked": 89332,
+    "forced_pass_states": 8988,
+    "complete_two_ply_reply_pairs": 113900,
+    "maximum_legal_branching": 6,
+    "max_absolute_feature": 1.0,
+    "reachable_state_set_sha256": "169059650195086ff8b4cb1e67dd69432e9f29c2c58af3ca94953fb46bf75bed",
+    "complete_enumeration": true
+  },
+  "checks": {
+    "terminal_outcome": "pass",
+    "legal_actions_and_forced_pass": "pass",
+    "all_reachable_legal_transitions": "pass",
+    "feature_shape_and_finiteness": "pass"
+  },
+  "training_started": false,
+  "data_generated": false,
+  "still_open": [
+    "trajectory/event split and leakage",
+    "opponent bank and evaluation power",
+    "JEPA versus direct-baseline compute parity",
+    "cross-game generalization"
+  ]
+}

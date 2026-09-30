@@ -878,3 +878,34 @@ working-tree source; rerun after commit to pin the final source hash and resourc
 receipt. Then sync the new audit note to Obsidian and push/verify the documentation
 milestone. Data split, opponent-power, model-compute and JEPA-superiority gates
 remain open.
+
+### Latest continuation checkpoint (2026-09-30)
+
+The post-commit Reversi4 audit is pinned in
+`docs/validation/V28_REVERSI4_RULES_GATE_01.json` and explained in
+`docs/V28_REVERSI4_RULES_GATE_01.md`. It used source commit
+`5abbd777261c34228888ecbddd9924686b159b63`, tool SHA-256
+`d70752f756260ac29f79f4b7c15d17c974321130b05b6daed3fcbd6a606336fe`, adapter
+SHA-256 `8acfc82a0a8ef9aecbe5f419bfb1c9d8433c4a3fa32c7c75418e17fa2ab477bf`,
+and config SHA-256 `1e6156ed51cb7b805d5fd4872d616034dd0e7bc16485dedb8a7cdbeb145a8ad4`.
+It exhaustively checked 62,789 reachable player-states (6,168 terminal),
+89,332 legal transitions, 8,988 forced passes and 113,900 two-ply reply pairs;
+complete enumeration was true. Runtime was 8.75 CPU / 8.77728 wall seconds,
+peak working set 92,688,384 bytes. Raw receipt is ignored at
+`chess_data/two-player-klent-toy/v28_reversi4_rules_dev02.json`, SHA-256
+`faeb7a3af54ee8f5829a918edb71435caf94f2e3b840482e997b745f40d386ed`. This
+passes rules/transition/two-ply coverage only. No data or training was created;
+data splits/leakage, opponent power, compute parity, JEPA benefit and cross-game
+transfer remain open. The existing full suite passed 348 tests in 127.285
+seconds. The primary-source literature delta is in
+`docs/V28_PRIOR_ART_DELTA_20260930.md`; targeted coverage narrows generic
+action-conditioned JEPA novelty but does not establish novelty.
+
+At this checkpoint `main` and `origin/main` were
+`5abbd777261c34228888ecbddd9924686b159b63`; report/receipt/document updates need
+Obsidian sync and commit/push. After updating Ground Truth, copy every project
+Markdown file to the same relative path in `D:/notes/vault_1/Caissa-JEPA/` and
+verify SHA-256 equality. Keep the Obsidian UI closed to leave the screen free.
+Next, independently audit a frozen, model-blind situation-bank, grouping/split
+and evaluation schedule. Training remains blocked until provenance, opponent-
+power and compute gates pass.

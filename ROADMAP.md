@@ -345,3 +345,18 @@ remain open. No trajectories or training data were produced. Full regression
 passes 348 tests in 127.285 seconds. Next: pin the post-commit exhaustive
 receipt, then independently audit the immutable schedule/split plan. Do not train
 until data/provenance and model-blind power gates pass.
+
+### Reversi4 rules gate receipt (2026-09-30)
+
+The post-commit exhaustive Reversi4 rules subgate passed against a separate
+project-owned coordinate-ray oracle: 62,789 reachable states (6,168 terminal),
+89,332 transitions, 8,988 pass states and 113,900 complete two-ply reply pairs
+in 8.77728 seconds wall / 8.75 seconds CPU; peak working set was 92,688,384
+bytes. Source/configuration hashes and complete enumeration are pinned in
+`docs/validation/V28_REVERSI4_RULES_GATE_01.json`; interpretation is in
+`docs/V28_REVERSI4_RULES_GATE_01.md`. This closes rules/transition/two-ply
+coverage only. Data leakage, opponent power, model-compute parity, locked
+sample-size/power and cross-game gates remain open. No trajectories or training
+data were produced. The existing full suite passed 348 tests in 127.285 seconds.
+Next: independently audit a frozen situation-generation, grouping/split and
+evaluation schedule, then assess opponent-bank power before board-game training.

@@ -153,8 +153,9 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   action-sensitivity and transfer novelty claims and records the remaining
   role-conditioned adversarial-game question as unverified.
 - `V28_REVERSI4_RULES_GATE_01.md` and `validation/V28_REVERSI4_RULES_GATE_01.json`:
-  model-blind exhaustive rules/transition subgate for project-owned Reversi4.
-  It is not a data-split/power pass or game-strength result.
+  completed, post-commit model-blind exhaustive rules/transition/two-ply
+  subgate for project-owned Reversi4. It is not a data-split/power pass or
+  game-strength result.
 - `../tools/v28_reversi4_rules_gate.py` and
   `../test_v28_reversi4_rules_gate.py`: independent coordinate-ray rules
   comparator, exhaustive gate runner, and bounded regression tests; no
