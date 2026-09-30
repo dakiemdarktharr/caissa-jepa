@@ -9,9 +9,10 @@ and initial novelty re-audit were committed on `main` as
 the latter matched the remote SHA at verification. Current working-tree changes
 extend the prior-art audit with Athénan, *Minimax Strikes Back*, AAAI-25
 Markov-game abstraction, board-game transfer, PCZero and ICML-26 regularized
-game learning, and revise the candidate's model-blind gate. The latest
-documentation copy was synced to Obsidian, but the repository changes are not
-yet committed/pushed. The focused search suite passes 5 tests; full
+game learning, and revise the candidate's model-blind gate. This documentation
+milestone was committed as `cfb709fd00612d02c3459252c508f5b7ea71ef52`, pushed
+normally to `origin/main`, and verified against the remote SHA. The latest
+documentation copy was synced to Obsidian. The focused search suite passes 5 tests; full
 regression passed **330 tests in 150.012 seconds**.
 An independent review using the user-approved gpt-6-luna/high configuration
 found no blocking finding. The previous Obsidian sync contained 78 Markdown
