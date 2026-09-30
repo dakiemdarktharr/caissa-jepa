@@ -10,6 +10,14 @@ now also records the distinction between learned opponent-behavior models
 `docs/V27_RESEARCH_POSITIONING.md`. This milestone still contains no trained
 JEPA or superiority evidence.
 
+The milestone is commit `c71d97a85d3218569f25e39cadfc7ccc410d9631`, pushed to
+`origin/main` and verified against the remote SHA. Branch inventory is only
+local `main` plus `origin/main`; working tree was clean after push. The
+Obsidian mirror was refreshed at `D:/notes/vault_1/Caissa-JEPA/`: 77 project
+Markdown files, preserved paths, zero SHA-256 mismatches. The vault copy is
+byte-verified, but the updated page has not yet been visually reopened in
+Obsidian during this continuation.
+
 **Latest continuation decision (2026-09-30):** V2.6 exact-minimax-supervised
 planning remains not cleared for fitting: the current exact solver is cheap on
 small/endgame positions but cannot cover sampled Connect4-8x8 midgame roots at
