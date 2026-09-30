@@ -8,7 +8,8 @@ canonicalization changes and research-document updates are under review on
 tests; full regression now passes **330 tests in 150.012 seconds**. An
 independent review using the user-approved gpt-6-luna/high configuration is
 complete with no blocking finding. Obsidian sync (78 Markdown files, all hashes
-matched) is complete; commit, push, and remote verification remain outstanding.
+matched) is complete. Commit `cc3cb127819ac8e9a24446f7a02fc748e6d4cb06` was
+pushed fast-forward to `origin/main` and remote SHA verification passed.
 The latest pilot is exploratory only: 32
 receipt rows over two seeds took 51.19 seconds; shallow search beat each sanity
 opponent 4/4 in sampled pairings. Identical-policy Reversi self-play has only
@@ -674,9 +675,10 @@ must be checked before implementation or training.
 
 At the start of this continuation, HEAD and `origin/main` were both
 `1f437db31e98e8b3905953a7cc222f9169f89d28`, branch inventory contained only
-`main` locally and remotely, and no tags were reported. The working tree has
-the files listed by `git status` for this continuation; no commit/push of these
-changes has happened yet. Re-run status and hashes before the next mutation.
+`main` locally and remotely, and no tags were reported. The continuation was
+committed as `cc3cb127819ac8e9a24446f7a02fc748e6d4cb06`; normal fast-forward
+push succeeded and `git ls-remote` returned the same SHA. The working tree was
+clean afterward; local/remote branch listing contains only `main`.
 
 Final Obsidian sync after the document corrections copied all **78 project
 Markdown files** to `D:/notes/vault_1/Caissa-JEPA/`, preserving relative paths;
