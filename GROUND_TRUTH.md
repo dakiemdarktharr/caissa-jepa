@@ -10,9 +10,11 @@ now also records the distinction between learned opponent-behavior models
 `docs/V27_RESEARCH_POSITIONING.md`. This milestone still contains no trained
 JEPA or superiority evidence.
 
-The milestone is commit `c71d97a85d3218569f25e39cadfc7ccc410d9631`, pushed to
-`origin/main` and verified against the remote SHA. Branch inventory is only
-local `main` plus `origin/main`; working tree was clean after push. The
+The V2.7 positioning and bounded-search feasibility milestones are commits
+`c71d97a85d3218569f25e39cadfc7ccc410d9631` and
+`59b7698093809f0e90934c4934975876842158dc`, respectively, both pushed to
+`origin/main` and verified against remote SHAs. Only local `main` and
+`origin/main` remain; the working tree was clean after the latest push. The
 Obsidian mirror was refreshed at `D:/notes/vault_1/Caissa-JEPA/`: 77 project
 Markdown files, preserved paths, zero SHA-256 mismatches. The vault copy is
 byte-verified, but the updated page has not yet been visually reopened in
