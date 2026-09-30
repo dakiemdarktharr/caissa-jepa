@@ -7,6 +7,28 @@ hybrid dùng latent kém hơn. **Chưa chứng minh JEPA tốt hơn baseline; t�
 này phù hợp để xin góp ý về pivot nghiên cứu, chưa phải bản thảo Q1.** Q1 là
 mục tiêu chất lượng, không phải cam kết được nhận.
 
+**Cập nhật hướng V2.7:** V2.6 không qua cổng chi phí/độ phủ của nhãn minimax:
+game nhỏ dễ giải chính xác, còn Connect4-8x8 giữa ván phần lớn hết ngân sách
+solver. Tôi đề xuất đánh giá một hướng riêng: dữ liệu self-play tự sinh và
+paired matches trên ít nhất hai họ game khó hơn, so sánh JEPA với direct
+policy/value, task-prediction và decoded-feature prediction dưới cùng dữ liệu,
+compute và planner. Chỉ số khi ấy là kết quả trước một opponent suite cố định;
+nó không đồng nghĩa minimax, exploitability hay Nash. TD-JEPA (ICLR 2026) đã có
+predictor latent đa bước có điều kiện theo policy, nên thêm action phản hồi của
+đối thủ chưa đủ tạo novelty. Hướng này hiện mới là proposal: chưa đóng băng
+method, chưa tạo dữ liệu, chưa train và chưa có kết quả dương. Xem
+[V2.7 research positioning](V27_RESEARCH_POSITIONING.md). Câu hỏi xin ý kiến
+giáo sư ở giai đoạn này là liệu estimand “bounded-budget performance against a
+fixed, held-out opponent suite” có giá trị nghiên cứu đủ rõ, và cần thêm prior
+art nào trước khi quyết định có triển khai không.
+
+Một pilot feasibility nhỏ chạy96 trận (8 seed × 3 cặp policy × 2 chỗ ngồi) trên
+Connect4 gravity 8×8 và Reversi8 trong5.207 giây. Heuristic tự viết thắng
+random cả16/16 trận trong mỗi game; đây là bằng chứng opponent bank hiện tại
+quá yếu, không phải bằng chứng model mạnh. Kết quả, seed, seat và hash bàn cờ:
+[receipt V2.7](validation/V27_MATCH_FEASIBILITY_01.json). Bước tiếp theo là
+opponent search độc lập và kiểm tra luật; chưa tạo self-play dataset hay train.
+
 ## Kết quả V2.5 mới nhất
 
 | Đánh giá development | Raw-tail JEPA | Baseline mạnh nhất | Chênh lệch regret (dương có lợi JEPA) | Kết luận |

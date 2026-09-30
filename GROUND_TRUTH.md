@@ -1,6 +1,53 @@
 # CAISSA-JEPA — Ground Truth
 
-Updated: 2026-09-29. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
+Updated: 2026-09-30. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
+
+Final regression for the V2.7 feasibility/documentation milestone passed **325
+tests in 128.753 seconds** on Python 3.11.9. The targeted primary-source review
+now also records the distinction between learned opponent-behavior models
+(He et al., ICML 2016), game-theoretic robust MBRL (Rajeswaran et al., ICML
+2020), fixed-suite match estimation, and worst-case/equilibrium planning. See
+`docs/V27_RESEARCH_POSITIONING.md`. This milestone still contains no trained
+JEPA or superiority evidence.
+
+**Latest continuation decision (2026-09-30):** V2.6 exact-minimax-supervised
+planning remains not cleared for fitting: the current exact solver is cheap on
+small/endgame positions but cannot cover sampled Connect4-8x8 midgame roots at
+the measured local budget. No roots were filtered into a dataset; no labels or
+fits were created. Targeted primary-source browsing further confirmed that
+multi-step policy-conditioned JEPA already exists in TD-JEPA (ICLR 2026), so
+sequential own-action/opponent-reply conditioning alone is not a novelty claim.
+See `docs/V27_RESEARCH_POSITIONING.md` and the updated roadmap. V2.7 is only a
+pivot proposal: self-play outcome data plus paired matches on harder games
+could avoid exact minimax labels, but it changes the estimand. Match win rate
+against a fixed opponent suite is not minimax regret, a behavioral model for a
+named opponent, exploitability, or Nash equilibrium. The proposed reply-
+conditioned JEPA family remains close prior art and has not passed a novelty
+gate. **No V2.7 model, dataset, training, checkpoint, or positive result exists.**
+The active environment is Python 3.11.9 with NumPy available and Torch absent;
+no package was installed. One V2.7 model-blind match-feasibility helper was
+implemented and tested: 96 sanity-policy matches across gravity Connect4-8x8
+and Reversi8 ran in5.207s; the simplistic heuristic beat random in all 16
+heuristic-vs-random matches per game, so this opponent set is too weak for model
+evaluation. This is only feasibility evidence. No self-play dataset, model,
+training, checkpoint, or positive JEPA result exists. Receipt:
+`docs/validation/V27_MATCH_FEASIBILITY_01.json`; source and three targeted tests:
+`tools/v27_match_feasibility.py`, `test_v27_match_feasibility.py`. Next, build
+and validate a stronger bounded-search opponent and differential rules check;
+OpenSpiel's official docs list MCTS and minimax/alpha-beta, its Connect Four
+source exposes rows/columns/connect-target parameters, and `pyspiel` is absent
+from the local environment. No third-party code was installed or run. Do not
+start training from this result. The Obsidian mirror at
+`D:/notes/vault_1/Caissa-JEPA/` was refreshed in a hidden process:77 project
+Markdown files copied with0 SHA-256 mismatches, preserving relative paths and
+leaving existing extra vault content intact. This confirms file bytes and paths;
+the updated page was not visually reopened in Obsidian during this refresh.
+Local and remote branch inventory is `main` only,
+working tree was clean at commit `e5436c23e722fb380bb283fb47ad60dbb801eb4b`
+before this documentation update. Next gates: targeted novelty search, rules/
+opponent-pool/runtime feasibility, then method freeze and data audit before
+implementation or training. Do not reuse exposed V2.5/V2.6 states as locked
+confirmation data.
 
 **Current operational entry (2026-09-29):** V2.5 grid05 completed 42/42 cells
 and its independent artifact audit passed. The strict report says

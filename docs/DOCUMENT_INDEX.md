@@ -109,3 +109,16 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   early-ply cost strata; coverage remains exploratory.
 - `validation/V26_ORACLE_FEASIBILITY_05_CONNECT4_8X8*.json`: larger-board exact
   label-cost samples; a useful search challenge currently exceeds solver caps.
+
+## V2.7 pivot feasibility (proposal only)
+
+- `V27_RESEARCH_POSITIONING.md`: targeted prior art, estimand change, provisional
+  method family, data/evaluation gates and stop criteria; not frozen and not a
+  novelty claim.
+- `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
+  deterministic project-owned match-schedule feasibility helper and its tests;
+  not a strength benchmark.
+- `validation/V27_MATCH_FEASIBILITY_01.json`: 96 game records across
+  Connect4-gravity-8x8 and Reversi8. Tiny random/sanity-heuristic pilot only;
+  unsuitable as the learned-model opponent bank. No self-play dataset or model
+  training has been produced.

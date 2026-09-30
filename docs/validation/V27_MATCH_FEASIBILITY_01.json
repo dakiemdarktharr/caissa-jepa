@@ -1,0 +1,923 @@
+{
+  "base_seeds": [
+    701,
+    702,
+    703,
+    704,
+    705,
+    706,
+    707,
+    708
+  ],
+  "claim_limit": "Small hand-coded sanity opponents and 8 seeds do not estimate strength, demonstrate JEPA benefit, or support a Q1 claim.",
+  "elapsed_seconds": 5.207314600003883,
+  "game_configs": [
+    "connect4-gravity-8x8",
+    "reversi8"
+  ],
+  "matches": [
+    {
+      "final_state_sha256": "b857fa9c3d4979a765e43831dc61ba4c3416a637a78891edf55a8fd3ae4bb377",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 14,
+      "seat_swap": false,
+      "seed": 701
+    },
+    {
+      "final_state_sha256": "53564f6ce0a07298419d6e6deeeff4be7392ba67c140a8505357254c32515006",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 23,
+      "seat_swap": true,
+      "seed": 100701
+    },
+    {
+      "final_state_sha256": "72c306b1815cfac82a6a0e38f235ee10fa125493fb304d47809071879fa54eb9",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 27,
+      "seat_swap": false,
+      "seed": 702
+    },
+    {
+      "final_state_sha256": "c6a0c87df3976ec6f502eb3fbc0391a29cd75861bc3341a3507380ea776c47b7",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 24,
+      "seat_swap": true,
+      "seed": 100702
+    },
+    {
+      "final_state_sha256": "60425713f36fdc18d428907f6aac64f92b4f582c543ca0f65d2dcf3b0d72cf1e",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 7,
+      "seat_swap": false,
+      "seed": 703
+    },
+    {
+      "final_state_sha256": "9f5b448f27884fa452d6f549403379aad8916ddfb206b9e6647764e9f36be76d",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 31,
+      "seat_swap": true,
+      "seed": 100703
+    },
+    {
+      "final_state_sha256": "0efd6c1cc8150792ee1cef0e8c1cdf5a00e420fa5a5172de57eaf5cfe16e1699",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 34,
+      "seat_swap": false,
+      "seed": 704
+    },
+    {
+      "final_state_sha256": "75da1c97b787cd57ae4a7e46d2cb2b8864e838a929fc015d26fe6e0610e7d0a0",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 27,
+      "seat_swap": true,
+      "seed": 100704
+    },
+    {
+      "final_state_sha256": "7e918f5f0574cc62877764460593f7f654aa75939b86d8cff84427c921ed8757",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 37,
+      "seat_swap": false,
+      "seed": 705
+    },
+    {
+      "final_state_sha256": "9985b4be5476c11ccbff7c65ccb1bb70d3b01aeaf9cfbb751dcc7e9ddcf69dfd",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 33,
+      "seat_swap": true,
+      "seed": 100705
+    },
+    {
+      "final_state_sha256": "5517924c71ce32836e29bad30e47d4c3ee530f126510f480df49bdfcef7cbf00",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 29,
+      "seat_swap": false,
+      "seed": 706
+    },
+    {
+      "final_state_sha256": "6bd02c41dc6df8d80914c4fe03bca431fb048a5adb5b5de8f4c865cfd47ad70e",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 27,
+      "seat_swap": true,
+      "seed": 100706
+    },
+    {
+      "final_state_sha256": "08419b85490c7cf102c1d46dffd26da8be34e0f74b03288f8346daf326464333",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 44,
+      "seat_swap": false,
+      "seed": 707
+    },
+    {
+      "final_state_sha256": "38393019bd1b32c14d73e2a6ca06344c7acb2ab611f227db81c67484d1f0c26a",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 46,
+      "seat_swap": true,
+      "seed": 100707
+    },
+    {
+      "final_state_sha256": "c04647dad6563b7ef71704e77605be354fad4ef5350c33c5746cae52773bfca5",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 19,
+      "seat_swap": false,
+      "seed": 708
+    },
+    {
+      "final_state_sha256": "0fb02c713a7f7634c060dfcbfa97d62e034750e5954ad365f7cc919843981f0d",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 22,
+      "seat_swap": true,
+      "seed": 100708
+    },
+    {
+      "final_state_sha256": "6c7ef3a151177ee97acc198818faf0f9f9398bc8f0d942b8202f19b7d3150299",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 33,
+      "seat_swap": false,
+      "seed": 10701
+    },
+    {
+      "final_state_sha256": "636e203551a455c540e94e190694484b1634f05cb242177dfd5a6b9ce0f3c740",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 27,
+      "seat_swap": true,
+      "seed": 110701
+    },
+    {
+      "final_state_sha256": "553574b06ee5086b0d751cc2cfa7dff7b59f332b7f8d191d1b28a3ee8ab60e48",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 39,
+      "seat_swap": false,
+      "seed": 10702
+    },
+    {
+      "final_state_sha256": "bb89b981ebeb8b00e5b5a07d22f8f6ec4625f49dc2aef55f4c62f52215995c7e",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 29,
+      "seat_swap": true,
+      "seed": 110702
+    },
+    {
+      "final_state_sha256": "335186b1dd9a093d9a48f93d8aedef004ec190bc990fd9889b20cb0057f7a762",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 26,
+      "seat_swap": false,
+      "seed": 10703
+    },
+    {
+      "final_state_sha256": "6dfa212fd2cdb81393a14af1c97c3eca1ed5c79ed7440e418a1a04378a5e7059",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 31,
+      "seat_swap": true,
+      "seed": 110703
+    },
+    {
+      "final_state_sha256": "6750e447e74ebc0d473ad72603aae50f7044ab1b1dfa8e540f627ba9239b0fad",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 38,
+      "seat_swap": false,
+      "seed": 10704
+    },
+    {
+      "final_state_sha256": "b736d3aab3d67eb83f655ed8df4ac855c930cd72df4fca0e21b8b8e4231e7ce4",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 24,
+      "seat_swap": true,
+      "seed": 110704
+    },
+    {
+      "final_state_sha256": "4943b1d1a8ab3ee9cfcd22fe4e6042f18b188f7a122f352f688dee06738aa72b",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10705
+    },
+    {
+      "final_state_sha256": "4eff79013dce161a0abb70199a0d2d8480bb45952e6ff50b8c9fc45a2bf7abf6",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 28,
+      "seat_swap": true,
+      "seed": 110705
+    },
+    {
+      "final_state_sha256": "fc5168556e6ae0b92465628f7aa41afbd5f181119a93f18eee74aaca57f25aea",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 44,
+      "seat_swap": false,
+      "seed": 10706
+    },
+    {
+      "final_state_sha256": "95b10ed36c655ba7f5cfea0cdde20e1e90d076f5636de3aff27f18f8ba21f7bd",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 38,
+      "seat_swap": true,
+      "seed": 110706
+    },
+    {
+      "final_state_sha256": "ac66350c450f66dab5e97d5f813cc14231bdc834049acd32e51a14b130f04a78",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 38,
+      "seat_swap": false,
+      "seed": 10707
+    },
+    {
+      "final_state_sha256": "d30e9dbd6d94500715a207dda851563f3eb98bd391a6af82e9c7bc3e63a11b90",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 47,
+      "seat_swap": true,
+      "seed": 110707
+    },
+    {
+      "final_state_sha256": "f3987560e3cf2c11875542aca54a655704482882ff25791bb8fc6f5ca5a8bc47",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 34,
+      "seat_swap": false,
+      "seed": 10708
+    },
+    {
+      "final_state_sha256": "ad2a7bc00c907c60fc9948ae06954ae6b6ab63ff21a51a35745b942307d0f9a0",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 25,
+      "seat_swap": true,
+      "seed": 110708
+    },
+    {
+      "final_state_sha256": "1920d59200176d225c5264d240fef73ac0c84dc5e177f1af15debb32d3a057a1",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 31,
+      "seat_swap": false,
+      "seed": 20701
+    },
+    {
+      "final_state_sha256": "28f290d8f20f642f53e6475351307179e564296bb12cdaba5ecfb91eaac85d00",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 12,
+      "seat_swap": true,
+      "seed": 120701
+    },
+    {
+      "final_state_sha256": "132f32a7f8bf8c05392f42fcec6a30d12092a7c493db9dcd464ef406d28dfbac",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 9,
+      "seat_swap": false,
+      "seed": 20702
+    },
+    {
+      "final_state_sha256": "acf1c2625e346a580edff9a1963fcf186ae7465f1f209c9208bd56dcd0fe8b26",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 28,
+      "seat_swap": true,
+      "seed": 120702
+    },
+    {
+      "final_state_sha256": "90a4bf36c51c1260e57a57abb4408096214ba52810c19e5dc7b5a0a8581c31f8",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 9,
+      "seat_swap": false,
+      "seed": 20703
+    },
+    {
+      "final_state_sha256": "9570b66066889fbdf37ca1dfaf44718ddd20d1c92736bfd2a27e214f6666cb04",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 10,
+      "seat_swap": true,
+      "seed": 120703
+    },
+    {
+      "final_state_sha256": "7bfe3e6cd66dd7b33561852e9fb47a272e4a622f2d4a3cfccf93c9c6667111c6",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 27,
+      "seat_swap": false,
+      "seed": 20704
+    },
+    {
+      "final_state_sha256": "63f4248f60fdc72b049d291478dd053dd19d3084310f6915aa20b52cde3f2a6c",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 14,
+      "seat_swap": true,
+      "seed": 120704
+    },
+    {
+      "final_state_sha256": "1b39e02840d2b89773c82d42960f6907822cd4da23d141b26bc39203fa6c2984",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 31,
+      "seat_swap": false,
+      "seed": 20705
+    },
+    {
+      "final_state_sha256": "b3b5b153ff80cddbbd3fdfb64ce1adeaccf0150c7ae0434d691106f0c6d6eba6",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 10,
+      "seat_swap": true,
+      "seed": 120705
+    },
+    {
+      "final_state_sha256": "0032fdd8fc477494189c812f5b7070ddbb7410370dc8f2460cfdc9613b2bc6ca",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 17,
+      "seat_swap": false,
+      "seed": 20706
+    },
+    {
+      "final_state_sha256": "4bc212814dc4cb56b24625dfd39d2187ee22954e1ca7a367460a6351d73478fb",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 22,
+      "seat_swap": true,
+      "seed": 120706
+    },
+    {
+      "final_state_sha256": "3f5c4345b9ac73a28a704e27c38c4aa85194d27d481d28e452fb9eb08cec9d25",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 12,
+      "seat_swap": false,
+      "seed": 20707
+    },
+    {
+      "final_state_sha256": "d37d3d190741ffae259299267026e5e7d899f084c2a5369da01597f32fa16322",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 14,
+      "seat_swap": true,
+      "seed": 120707
+    },
+    {
+      "final_state_sha256": "4f95f17b75219be907f2e54e3281e4a8c1ed126f67a72c3d2c4dfbb711ed8947",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 13,
+      "seat_swap": false,
+      "seed": 20708
+    },
+    {
+      "final_state_sha256": "f262881d7f083558fc3a9803509929e5ef91b7d87559701ed3ad47acae6341a7",
+      "game": "connect4-gravity-8x8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 24,
+      "seat_swap": true,
+      "seed": 120708
+    },
+    {
+      "final_state_sha256": "41ae18421b85bf600ab1175ae32232d6a72971101484ca28b466acb1571cb500",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 701
+    },
+    {
+      "final_state_sha256": "c3db413eec9f60ad1cb4155528d4aeb66c12774ed7e5080d9019996273228bbe",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 100701
+    },
+    {
+      "final_state_sha256": "5bc8c0ed4524bd54ffa685119d4dcca8d8c7f32c77f187dbd16e2204348d04f9",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 702
+    },
+    {
+      "final_state_sha256": "b4567715732528cca3ff37eebb5c9f59b8174a997205db43fbc7c651886872d6",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 100702
+    },
+    {
+      "final_state_sha256": "05097593ae486c5a8d1d295f4698f73b1a8fdf99d045ff79b18f019d6115215d",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 62,
+      "seat_swap": false,
+      "seed": 703
+    },
+    {
+      "final_state_sha256": "ee19fee5fa4ba73f0f735d9a297aefce4406d64fec2e25a1d7ded604d8150a6c",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 100703
+    },
+    {
+      "final_state_sha256": "4cadc688252923ab7c55d27247d1fbf51993b225fae0ce1a1f9948dfe38a4363",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 704
+    },
+    {
+      "final_state_sha256": "4f37b04995e7bbd9aca89381837aa3abb57fcbd7df9230b798fe4a1ebda05d66",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 100704
+    },
+    {
+      "final_state_sha256": "3c8c1986b156b62fcb20f3933b6f264b47dcb7f8afc14caa4393a17ce44e3cec",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 705
+    },
+    {
+      "final_state_sha256": "e32bfb3eb533428e454756e48426b8d56dbef32d2d91316c88d7b6ed994fb3cc",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 100705
+    },
+    {
+      "final_state_sha256": "658e6761e8a504afa49069d0d06f8fa6dff08dfe9f1f9aad18e4b02c0791f3be",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 706
+    },
+    {
+      "final_state_sha256": "007bdd2e75ae06c3015c4a27fb7b260edac87f3ed764548951582b0db019d476",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 62,
+      "seat_swap": true,
+      "seed": 100706
+    },
+    {
+      "final_state_sha256": "4c36440c306491726477e7e334998af7abf87aeb5d2308cfa1943eb6a02a5ce3",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 707
+    },
+    {
+      "final_state_sha256": "d02f86e0b8e9fc4ab69aec99fa952722e746ac376f2115d7992fc51f611ba77e",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 100707
+    },
+    {
+      "final_state_sha256": "11c0343c431159b3b228f1e28bac38924a9db3af6f52a0cbaa415a40954c6ba4",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 708
+    },
+    {
+      "final_state_sha256": "2dec274c1620c9b44412a1f50d78ff79d0f75590a8aa3665b8f96cd4f3a594a4",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "random-vs-random",
+      "plies": 61,
+      "seat_swap": true,
+      "seed": 100708
+    },
+    {
+      "final_state_sha256": "aa47f146cd8f6500f507856feed719b2bf162e09d6562420e8eb944698b1684a",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10701
+    },
+    {
+      "final_state_sha256": "6630cc67eadfbf92683c78857bd8bb056e3c47c641e66f4a200a10d9f9200804",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 110701
+    },
+    {
+      "final_state_sha256": "fd4c56b801d89707b8cfc9cecda9cd74e4347139fdf765be7cbee3919c9a1e99",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10702
+    },
+    {
+      "final_state_sha256": "ae09336b01b42f459d8face014a750f4826d3750d139d41c5b0e987f649be47d",
+      "game": "reversi8",
+      "outcome_plus_perspective": 0,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 110702
+    },
+    {
+      "final_state_sha256": "d34a5dd23b0c1f8ea4ce1bdd43978f7973ac437b007c1834fde88df0b5375203",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10703
+    },
+    {
+      "final_state_sha256": "cf64da2b6ac131fc94bd76154010aa98fbf0eea6d73587cdf4a070d45c631d63",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 59,
+      "seat_swap": true,
+      "seed": 110703
+    },
+    {
+      "final_state_sha256": "09668f0b40fca6526ad268e6fc126c005a9c20e19ba35ad4b0e37ab0cbaa0abf",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 62,
+      "seat_swap": false,
+      "seed": 10704
+    },
+    {
+      "final_state_sha256": "b40087cb7099109766fb6d48d22d23f4c421f18af1d6095ecfa0f3eb07958238",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 61,
+      "seat_swap": true,
+      "seed": 110704
+    },
+    {
+      "final_state_sha256": "ba3e16bec761bdb19192432daf13ae5ab30955b9b5d35a4e0254832bd30917b9",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10705
+    },
+    {
+      "final_state_sha256": "04fe7129b11305501f91f0979f6b7ccb24455c6bedd47e8c0955ca9fd8f61d57",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 61,
+      "seat_swap": true,
+      "seed": 110705
+    },
+    {
+      "final_state_sha256": "8126ea9d570024856345eadf5b7c6d1b62fc39999adcf59f0263753267e532cd",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 61,
+      "seat_swap": false,
+      "seed": 10706
+    },
+    {
+      "final_state_sha256": "d49b80fc0d98d5785971759a890a92728353ed4b71b3f0402fd378e5c1fab2d3",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 110706
+    },
+    {
+      "final_state_sha256": "5693b92b298bb2930173bd86ac91205d396276953a4c48e5edee9261f274937d",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10707
+    },
+    {
+      "final_state_sha256": "d684e908b8d511c8a94ae34eb3c7ff50429d6f218951c5ee6eb0d09bbebff47a",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 110707
+    },
+    {
+      "final_state_sha256": "7df1ee72149ab3882c5e5f31eb1e694e427ace973695eb0ea7cb97bc27c72c41",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 10708
+    },
+    {
+      "final_state_sha256": "c6fb7eaf9606572b8925c6a730107ba4e3be5817ee08c224c4811dc6ce37da6a",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-sanity-heuristic",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 110708
+    },
+    {
+      "final_state_sha256": "911b0cee9f85a9c1845270e1f58b5ec64c36ff263150873577dcaec62cb1a703",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 20701
+    },
+    {
+      "final_state_sha256": "47c765d03fad081515c078caf6227e4225a126372079f1fa57e09e08d0dfc784",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 61,
+      "seat_swap": true,
+      "seed": 120701
+    },
+    {
+      "final_state_sha256": "5f9f1cf53ed57fac9f58dc769d84c163121e9d00d12ca6dac4dcf5873da3eea5",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 61,
+      "seat_swap": false,
+      "seed": 20702
+    },
+    {
+      "final_state_sha256": "1bd8663d24cb6d9892a66aada71750dc9a4c4f7b8963e57de7f84aa773d3311c",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 120702
+    },
+    {
+      "final_state_sha256": "243daccd6440bbac60664c664dd060e9bf5e7d8f44afbdf1746bf27fd603e9f9",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 63,
+      "seat_swap": false,
+      "seed": 20703
+    },
+    {
+      "final_state_sha256": "3df0d0a2541f3f004fa1f4681517a0abf7817c29bf25e02cd73b7958153a8b98",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 56,
+      "seat_swap": true,
+      "seed": 120703
+    },
+    {
+      "final_state_sha256": "ef586c3154dbc61266268cef7b65888d223a015697824743e7bdaf1da4c9e250",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 20704
+    },
+    {
+      "final_state_sha256": "230631788d68b30a80ccb33c125f7f1da6eae4f71cb742af1197bb0fc1c32409",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 61,
+      "seat_swap": true,
+      "seed": 120704
+    },
+    {
+      "final_state_sha256": "cd01a7c6d1f093a3716f5254c9c328887c975084f96dfd6dc966edabc9da92d5",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 19,
+      "seat_swap": false,
+      "seed": 20705
+    },
+    {
+      "final_state_sha256": "e4d71205aef376c81359692991c5c60b67df1b8b89e059510aaef4e0ff7df1b6",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 120705
+    },
+    {
+      "final_state_sha256": "b385f76673e5f0cffb7e4a01dc704f03a13ded9dfda30754731f274b494b9c4f",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 20706
+    },
+    {
+      "final_state_sha256": "08e5fdbf48000d065dd9c53a031d2de17f1ea44780aaa878799c32fa9fc64ea9",
+      "game": "reversi8",
+      "outcome_plus_perspective": 1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 61,
+      "seat_swap": true,
+      "seed": 120706
+    },
+    {
+      "final_state_sha256": "77dad7350cf1e7b74879286ad22d8763787b986bab814ffe0ddd4d301ebb197a",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 62,
+      "seat_swap": false,
+      "seed": 20707
+    },
+    {
+      "final_state_sha256": "b30008c108c1fdf295408d6cf5ee29f9c082854ada639f1d45ffbeecf4239c8f",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 120707
+    },
+    {
+      "final_state_sha256": "4d064cbbd228b214bf2fbce630e2d5cd4cd84188dc4f5f8857321d2adb4fd111",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": false,
+      "seed": 20708
+    },
+    {
+      "final_state_sha256": "346accc7800ad9328638540c4507e3f393616cf84cfcbbbd5a1eabfdec6dce7a",
+      "game": "reversi8",
+      "outcome_plus_perspective": -1,
+      "pairing": "sanity-heuristic-vs-random",
+      "plies": 60,
+      "seat_swap": true,
+      "seed": 120708
+    }
+  ],
+  "pairings_per_game": [
+    [
+      "random",
+      "random"
+    ],
+    [
+      "sanity-heuristic",
+      "sanity-heuristic"
+    ],
+    [
+      "sanity-heuristic",
+      "random"
+    ]
+  ],
+  "platform": "Windows-10-10.0.26200-SP0",
+  "policies": [
+    "random",
+    "sanity-heuristic"
+  ],
+  "python": "3.11.9",
+  "rules_source": "project-owned two_player.games.BoardGame",
+  "seat_schedule": "both assignments for every pairing/seed; seat-swapped assignment uses a disjoint deterministic RNG stream",
+  "stage": "exploratory model-blind match feasibility; not a strength benchmark",
+  "summary": {
+    "connect4-gravity-8x8": {
+      "draws": 0,
+      "games": 48,
+      "mean_plies": 26.833333333333332,
+      "wins_minus": 24,
+      "wins_plus": 24
+    },
+    "reversi8": {
+      "draws": 1,
+      "games": 48,
+      "mean_plies": 59.4375,
+      "wins_minus": 27,
+      "wins_plus": 20
+    }
+  }
+}

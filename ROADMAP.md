@@ -170,6 +170,41 @@ blind grid. See V23_FIT_DIAGNOSTIC and the conditional V24 critique notes.
 
 ## Experiment stages and budgets
 
+## V2.7 pivot proposal (2026-09-29; not frozen)
+
+V2.6 exact-minimax-supervised work did not pass the oracle-feasibility gate:
+small roots are too easy for the intended bounded-search question and sampled
+Connect4-8x8 midgame roots mostly time out. Do not cherry-pick solved roots or
+fit on the exposed feasibility samples. A separate proposal,
+`docs/V27_RESEARCH_POSITIONING.md`, explores locally generated self-play outcome
+trajectories and paired match evaluation on harder variants. This avoids exact
+minimax training labels but changes the estimand to performance against a fixed
+opponent suite. It cannot support a worst-case, exploitability, or equilibrium
+claim without a separate validated estimator.
+
+| Workstream / size | Dependency | Deliverable and acceptance | Current status / kill gate |
+| --- | --- | --- | --- |
+| V2.7 positioning / small | V2.6 gate failure | Focused primary-source search on two-player/reply-conditioned JEPA, strategic representation objectives, and outcome-trained latent planners; identify an incremental question not already tested | Targeted review records I-JEPA, SPR, TD-JEPA, MuZero, value equivalence, opponent modeling, and game-theoretic MBRL; it is not systematic. Novelty risk remains high. Stop the novelty claim if the objective is only a domain replication. |
+| Rules and opponent feasibility / medium | Positioning | Project-owned rules for at least two game families; independently check transitions/terminal/role/symmetry; test opponent diversity, non-saturated match schedule, game length and CPU runtime | Sanity pilot:96 matches/5.207s on Connect4-8x8 and Reversi8; all 16 heuristic-vs-random matches per game favored heuristic. Too weak for evaluation. OpenSpiel documents MCTS/minimax and configurable Connect Four, but `pyspiel` is unavailable; implement and validate a bounded search reference locally. |
+| Data audit / medium | Rules pilot passes | Local self-play manifest with seeds, policy/opponent provenance, outcomes, hashes, trajectory-grouped splits and replay/duplicate/seat-balance audits | Not started; production data/training forbidden before pass. No third-party corpus or service needed. |
+| Method freeze and matched pilot / large | Positioning, feasibility, data audit | Freeze two-ply JEPA plus direct PV, task-prediction, decoded-feature and JEPA-ablation controls; identical trajectory labels, model budget, optimizer schedule and inference planner; at least three seeds; all censors retained | Not started. A match-score result is limited to the declared opponent suite; keep expected-opponent and minimax planners as separate studies. |
+| Development and selection / large | Pilot informative | Append-only adaptive development ledger; freeze finite shortlist before distinct opponent/variant selection; paired seats/color, clustered uncertainty and multiplicity/censor rules | Not started. A development improvement nominates a candidate only; no reuse of exposed opponents as confirmation. |
+| Locked confirmation and paper / large | Selection and independent review pass | Fresh trajectories/opponents/variants, preregistered primary metric and sample size; independent artifact/rule audit; negative results, novelty limits, license and reproducibility statement | Not started. No Q1 readiness or acceptance claim until evidence and independent review support it. |
+
+Relative effort: positioning (small), rule/runtime feasibility (medium), data
+and method implementation (medium-to-large), matched development (large),
+confirmation/paper (large). No calendar-duration estimate is asserted.
+
+V2.7 stop rules: stop/narrow if two game families cannot support non-saturated
+paired evaluation; if direct or non-JEPA predictive controls match the JEPA
+candidate; if benefits vanish against held-out opponents; if effects reverse
+by game or seat; if JEPA needs extra transitions/search/parameters; if any
+trajectory/symmetry leakage or opponent identity leaks across splits; or if
+related work contains the claimed mechanism. A negative controlled comparison
+may remain useful science, but does not satisfy the user’s JEPA-superiority
+target. All thresholds and sample sizes still need a model-blind pilot before
+method freeze; no post-result threshold adjustment is allowed.
+
 Exploratory pilot: generated tiny games and fixed small configurations, single CPU BLAS thread, no paid/GPU resources. Record time, peak memory where measurable, sample exclusions, per-seed metrics. These data can diagnose implementation/feasibility and inform development; they cannot become confirmatory by relabeling. Start with a bounded run (minutes, small tens of MB model/data target), measure actual resource cost, and stop on numerical/audit failure. Increase only if the measured pilot supports a useful question within local resources.
 
 Development: train and validation are available for debugging/hyperparameters. Model-selection: freeze a finite candidate/budget list first, compare using a distinct split, log every attempt and selection. Locked-final-test: no performance inspection until separate confirmatory manifest is complete. A dataset being marked locked is not technical access control; evaluator stage gates and an immutable run ledger are required.
