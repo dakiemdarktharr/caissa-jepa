@@ -19,8 +19,15 @@ coverage and a fair measured-compute comparison. If that design is infeasible or
 adds no decision quality at matched compute, pivot to a benchmark or
 negative-results paper rather than relaxing gates. The broader audit also found
 path-consistency AlphaZero (PCZero, ICML 2022) and regularized model-free
-two-player game learning (ICML 2026 accepted). The candidate must be
-distinguished from these compute-efficient controls; no training yet.
+two-player game learning (KLENT, ICML 2026 accepted). Full-text extraction shows
+KLENT's model-free policy/Q self-play reaches 50% mean win rate at 75M simulator
+evaluations versus 300M for Gumbel AlphaZero in its five-game study (3 seeds,
+6-block ResNet, fixed anchored opponents); a separate shared-800-rollout match
+protocol reports 77.2% mean versus its anchor at 800M training evaluations.
+These are source-paper figures, not CAISSA measurements, and simulator calls do
+not equal measured compute. Add a KLENT-style direct policy/Q arm, distinct from
+direct minimax-Q, to development/model-selection or document a faithful-port
+blocker. No V2.7 training yet.
 
 Latest M7 evidence: V2.5 grid05 completed all42 cells and independently passed
 its artifact/source/data/schedule audit. It was **not promoted**: raw-tail's
@@ -207,9 +214,27 @@ claim without a separate validated estimator.
 | V2.7 positioning / small | V2.6 gate failure | Focused primary-source review across competitive JEPA, minimax learning, Markov-game abstraction, and board-game transfer; define and test one incremental question | Search found Deep Latent Competition, MA-JEPA, Athénan, approximate Markov-game state abstraction (AAAI 2025), and direct policy-value transfer across games/variants (TMLR 2023). Novelty risk remains **critical**. Complete legal reply-set prediction plus minimax action-order preservation is only a candidate; it is not frozen or established as distinct. Next: finish source-level candidate audit and identify measurable separation versus Athénan, minimax-Q/abstraction, direct policy-value transfer, and task-prediction controls. No training until that test and model-blind coverage gate pass. |
 | Rules and opponent feasibility / medium | Positioning | Project-owned rules for at least two game families; independently check transitions/terminal/role/symmetry; test opponent diversity, non-saturated match schedule, game length and CPU runtime | Depth-3/500-node search agrees with the adapter on 12 seeded trajectories. After Reversi D4/color-role canonicalization, its capped pilot beats random/center controls in 4/4 samples per pairing/family, with 68 cap hits (down from 116 in the preceding two-seed run). Same-policy self-play favors plus/first on both unique seeds (four receipt rows include duplicate seat-swap records); the preceding version favored minus/second on both unique seeds. Seat/RNG effects are unresolved. An independent review found no blocker. Full regression passes 330 tests; receipt source hashes match. Do not generate research data yet; increase seed diversity and independently audit rules. OpenSpiel reference remains uninstalled. |
 | Data audit / medium | Rules pilot passes | Local self-play manifest with seeds, policy/opponent provenance, outcomes, hashes, trajectory-grouped splits and replay/duplicate/seat-balance audits | Not started; production data/training forbidden before pass. No third-party corpus or service needed. |
-| Method freeze and matched pilot / large | Positioning, feasibility, data audit | Freeze two-ply JEPA plus direct PV, task-prediction, decoded-feature and JEPA-ablation controls; identical trajectory labels, model budget, optimizer schedule and inference planner; at least three seeds; all censors retained | Not started. A match-score result is limited to the declared opponent suite; keep expected-opponent and minimax planners as separate studies. |
+| Method freeze and matched pilot / large | Positioning, feasibility, data audit | Freeze two-ply JEPA plus direct PV, KLENT-style regularized direct policy/Q, direct minimax-Q, task-prediction, decoded-feature and JEPA-ablation controls; identical trajectory labels where estimands match, model budget, optimizer schedule and inference planner; at least three seeds; all censors retained | Not started. A match-score result is limited to the declared opponent suite; keep expected-opponent and minimax planners as separate studies. Simulator calls are one compute axis, supplemented by CPU time and model-training cost. |
 | Development and selection / large | Pilot informative | Append-only adaptive development ledger; freeze finite shortlist before distinct opponent/variant selection; paired seats/color, clustered uncertainty and multiplicity/censor rules | Not started. A development improvement nominates a candidate only; no reuse of exposed opponents as confirmation. |
 | Locked confirmation and paper / large | Selection and independent review pass | Fresh trajectories/opponents/variants, preregistered primary metric and sample size; independent artifact/rule audit; negative results, novelty limits, license and reproducibility statement | Not started. No Q1 readiness or acceptance claim until evidence and independent review support it. |
+
+## V2.8 KLENT direct-baseline redesign (proposal; 2026-09-30)
+
+The required next experiment is a clean-room regularized direct policy/Q
+baseline based on the published KLENT equations, compared with that same learner
+plus one-/two-ply JEPA auxiliaries. The upstream KLENT repository was inspected
+read-only; no code license was evident, so no code was fetched or used. The
+complete proposed arms, fairness constraints, cost axes, data gates and kill
+criteria are in `docs/V28_KLENT_JEPA_COMPARISON_DESIGN.md`.
+
+Next acceptance sequence: (1) freeze a faithful baseline equation/config spec
+and validate it on small synthetic games; (2) complete the model-blind rule,
+counterfactual coverage, data-split and runtime/power receipt; (3) implement only
+the direct baseline and test its fidelity; (4) run bounded development pilots
+with matched task-prediction and JEPA arms. Stop a JEPA superiority claim if
+the incremental effect fails against KLENT-style direct policy/Q or survives
+only when simulator-call counts hide extra model compute. No locked confirmation
+or cross-game claim begins until the development gate passes.
 
 Relative effort: positioning (small), rule/runtime feasibility (medium), data
 and method implementation (medium-to-large), matched development (large),

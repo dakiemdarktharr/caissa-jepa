@@ -32,7 +32,51 @@ of novelty.
 | **Value Function Transfer for General Game Playing**, Banerjee & Stone, ICML 2007. [Author-hosted record](https://www.cs.utexas.edu/~pstone/Papers/bib2html/b2hd-ICML06-bikram.html). | Transfers learned value functions between related games using game-independent features of game-tree shape. | General game-playing tasks defined through a game description language; values from source games are reused in target games. The author-hosted record is bibliographic and does not expose sufficient experimental details here to quote data counts or results. | Value transfer in general games predates modern neural transfer. Verify the proceedings paper before any quantitative comparison; a JEPA cross-game value/latent transfer claim must benchmark this family of non-JEPA ideas. |
 | **Approximate State Abstraction for Markov Games**, Ishibashi, Abe & Iwasaki, AAAI 2025. [Official proceedings PDF](https://ojs.aaai.org/index.php/AAAI/article/download/33930/36085). | Extends approximate state abstraction from MDPs to two-player zero-sum Markov games, deriving duality-gap bounds for aggregation by optimal Q/minimax values and discussing model/distribution-based criteria. | The theory is for finite TZMGs. Experiments solve a 760-state Markov Soccer game, greedily aggregate states using the exact Q* criterion, then run minimax Q-learning for 1,000,000 iterations (discount 0.9) and approximate the ground-game duality gap. Abstraction reduces state count as tolerance grows; gaps remain close for small tolerance (<0.6 in their experiment) and degrade for larger tolerance. | Strongly overlaps any claim that a learned latent abstraction compresses zero-sum planning while preserving minimax behavior. The paper says efficient discovery of abstractions remains open, but it does not propose JEPA or a learned multi-step latent predictor. A candidate must test an actual representation-learning advantage beyond Q/minimax abstraction and measure search cost and ground-game duality gap. |
 | **Efficient Learning for AlphaZero via Path Consistency (PCZero)**, Zhao, Tu & Xu, ICML 2022. [PMLR proceedings](https://proceedings.mlr.press/v162/zhao22h.html). | Regularizes AlphaZero's search-path value estimates so values along an optimal searched path remain consistent; combines historical trajectories and MCTS-scouted paths to improve learning from limited self-play. | Evaluates Hex, Othello and Gomoku. The paper reports 94.1% win rate against the 2015 Hex Computer Olympiad champion on 13x13 Hex versus 84.3% for AlphaZero, using 900K self-play games, and reports generalization to Othello/Gomoku and offline-learning experiments. | Path consistency and multi-game compute-efficient value learning are strong non-JEPA controls. A latent consistency objective plus game play is not enough; any proposed JEPA advantage needs to beat this type of consistency-regularized policy/value learner under matched resources. |
-| **Revisiting Regularized Policy Optimization for Stable and Efficient Reinforcement Learning in Two-Player Games**, Ota et al., ICML 2026 (accepted; [arXiv record](https://arxiv.org/abs/2602.10894)). | Analyzes reverse-KL and entropy regularization in two-player zero-sum games, with convergence results for normal-form/finite-length games and a practical model-free policy-optimization method. | Reports training-efficiency experiments on Animal Shogi, Gardner Chess, Go, Hex and Othello, with better learning efficiency than existing methods in the authors' tested environments. This audit used the abstract; inspect the full paper for exact budgets, baselines and game-level results before quantitative comparison. | A current peer-reviewed multi-game, compute-efficiency result is a necessary model-free control/context. It does not use JEPA or a learned dynamics model, so it does not settle whether JEPA can help, but makes a generic “JEPA is more sample efficient for board games” claim particularly weak. |
+| **Revisiting Regularized Policy Optimization for Stable and Efficient Reinforcement Learning in Two-Player Games (KLENT)**, Ota et al., ICML 2026 (accepted; [arXiv record](https://arxiv.org/abs/2602.10894), [full text](https://arxiv.org/html/2602.10894)). | Analyzes reverse-KL and entropy regularization in two-player zero-sum games, with convergence results for normal-form/finite-length games. Its model-free self-play learner directly predicts policy and action value Q(s,a), uses lambda returns, and removes search during training. | Experiments cover Animal Shogi, Gardner Chess, 9x9 Go, Hex and Othello. The paper claims up to 4x higher training efficiency than existing methods without model-based search during training; exact game-level matched-budget baselines and curves are in sections/appendices and should be extracted before quantitative comparison. | This is a current peer-reviewed, multi-game, compute-conscious direct-Q baseline. It shows there is a strong no-search route to efficient two-player learning without JEPA. The V2 study must include or justify excluding KLENT-style regularized policy/Q learning, and cannot claim generic JEPA sample efficiency from comparison only to search-heavy baselines. |
+
+## KLENT source-level budget extraction (2026-09-30)
+
+The accepted ICML 2026 paper is stronger and more specific than the initial
+summary above. In its five-game comparison, all methods use a 6-block ResNet;
+KLENT fixes α=0.03, β=0.1, and λ=e^(-1/8) across games. The main learning
+curves use three random seeds, 1024 matches per checkpoint against a pretrained
+Pgx anchored opponent, deterministic no-search test policies, and simulator
+evaluations as the x-axis. Their mean curve reports Gumbel AlphaZero reaching
+50% average win rate at 300M simulator evaluations while KLENT reaches that
+threshold at 75M. This is a paper-reported result under its own implementation,
+opponent, accounting and game suite, not a result reproduced in CAISSA-JEPA.
+
+At 800M training simulator evaluations, a separate head-to-head protocol equips
+every agent, including the anchored baseline, with 800-rollout test-time MCTS;
+KLENT uses Gumbel AlphaZero MCTS. Reported KLENT win rates against the anchored
+baseline are 63% Animal Shogi, 81% Gardner Chess, 89% 9x9 Go, 98% Hex and 55%
+Othello (77.2% average), versus 53.6% average for Gumbel AlphaZero and 32.2% for
+AlphaZero. This is evidence for the learned policy/Q initialization under that
+shared search protocol, not an apples-to-apples minimax result. The authors'
+evaluation details specify three seeds for the learning curves; uncertainty in
+these match summaries is presented as standard error.
+
+The authors' public [supplementary repository](https://github.com/KazukiOhta/klent)
+contains a compact JAX/Pgx implementation and supports Connect Four plus the
+paper's five games. The repository root listing and README expose no LICENSE
+file or declared repository license, so its code is not cleared for reuse;
+the pinned requirements include JAX CUDA 12 and Pgx, which are not present in
+the validated CAISSA research lock. No code was cloned, downloaded, or run.
+A clean-room implementation from the published equations remains a possible
+baseline, subject to independent fidelity review and a frozen implementation
+spec.
+
+Therefore, V2's fair direct-learning control must include a KLENT-style
+regularized policy/Q self-play arm (implemented clean-room from the paper unless
+the authors' code license is clarified), as well as model-free direct minimax-Q. Do not conflate the two:
+KLENT optimizes regularized self-play returns and policy behavior, while the
+minimax-Q control targets worst-case action values. Match shared rules,
+trajectory/environment interactions, model capacity, optimizer updates, and
+measured wall-clock/accelerator-free CPU time where possible; report simulator
+calls separately because one call does not price JEPA encoder/predictor or
+backprop computation. If only one game can pass local engineering limits, use
+it as a development/pilot test and narrow the claim; it cannot support
+cross-game generality.
 
 ## Claim disposition
 

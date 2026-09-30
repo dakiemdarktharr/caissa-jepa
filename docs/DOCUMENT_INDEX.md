@@ -119,6 +119,9 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `V27_RESEARCH_POSITIONING.md`: targeted prior art, estimand change, provisional
   method family, data/evaluation gates and stop criteria; not frozen and not a
   novelty claim.
+- `V28_KLENT_JEPA_COMPARISON_DESIGN.md`: new V2.8 candidate design for a fair
+  direct policy/Q versus JEPA-augmented comparison; not frozen, implemented, or
+  evidence.
 - `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
   deterministic project-owned match-schedule feasibility helper and its tests;
   not a strength benchmark.
@@ -133,6 +136,9 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   opponent feasibility receipts. They expose Reversi seat bias and search node
   exhaustion; none is model-selection or confirmatory evidence.
 - The V2.7 prior-art review now includes Deep Latent Competition and the
-  2026-09-27 MA-JEPA preprint. Novelty risk is critical; no unique method claim
-  is frozen. See the candidate minimax-preservation question in
-  `V27_RESEARCH_POSITIONING.md`.
+  2026-09-27 MA-JEPA preprint. Subsequent full-text review of KLENT (ICML 2026
+  accepted) makes regularized direct policy/Q a required compute-conscious
+  baseline; the official code repository's license is not established and was
+  not downloaded or used. Novelty risk remains critical; no unique method claim
+  is frozen. See `V27_PRIOR_ART_REAUDIT_20260930.md` and the unimplemented
+  `V28_KLENT_JEPA_COMPARISON_DESIGN.md`.

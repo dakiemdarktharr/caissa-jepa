@@ -61,7 +61,6 @@ identified in both training and evaluation; it does not show worst-case play.
 | Cohen-Solal & Cazenave, *Minimax Strikes Back* (AAMAS 2023), [paper](https://www.lamsade.dauphine.fr/~cazenave/papers/MinimaxStrikesBack_AAMAS.pdf) | Direct Athénan-vs-Polygames/AlphaZero comparison; Athénan learns state evaluation using minimax/Descent and no policy. | Reports much lower training-state generation cost and competitive/superior game results under its own resource setup. Strong evidence that minimax value learning can be a powerful low-compute non-JEPA baseline. |
 | Ishibashi et al., *Approximate State Abstraction for Markov Games* (AAAI 2025), [official paper](https://ojs.aaai.org/index.php/AAAI/article/download/33930/36085) | Extends approximate state aggregation by optimal Q/minimax value to two-player zero-sum Markov games, proves a duality-gap bound, and evaluates exact-Q aggregation in a 760-state Markov Soccer game. | Any general “JEPA learns a compact minimax-sufficient state” claim overlaps this work. Its experiments rely on solving the small game and do not use JEPA or multi-step predictive representation; those gaps are only starting points for a measured increment. |
 | Zhao et al., PCZero (ICML 2022), [PMLR paper](https://proceedings.mlr.press/v162/zhao22h.html) | Adds path-consistency regularization to AlphaZero and uses historical plus MCTS-scouted paths for efficient learning. | Reports 94.1% against a 2015 Hex Olympiad champion on 13x13 Hex versus 84.3% for AlphaZero, with 900K self-play games; also reports Othello/Gomoku transfer and offline-learning results. This is an important non-JEPA consistency/efficiency control. |
-| Ota et al., *Revisiting Regularized Policy Optimization for Stable and Efficient Reinforcement Learning in Two-Player Games* (ICML 2026 accepted), [arXiv](https://arxiv.org/abs/2602.10894) | Analyzes reverse-KL/entropy-regularized policy updates and proposes a model-free learner, with experiments on Animal Shogi, Gardner Chess, Go, Hex and Othello. | Recent compute/sample-efficient two-player zero-sum learning is not specific to world models. Include or discuss this control before claiming a general JEPA efficiency advantage; exact budget comparisons require full-paper extraction. |
 | Soemers et al., *Transfer of Fully Convolutional Policy-Value Networks Between Games and Game Variants* (TMLR 2023), [arXiv full text](https://arxiv.org/html/2102.12375) | Uses AlphaZero-like networks and Ludii channel semantics for zero-shot and fine-tuned parameter transfer across board-game variants and distinct games. | Cross-game transfer is established for direct policy-value networks. JEPA needs a same-data/same-compute transfer control and held-out-family tests; transfer itself cannot be its novelty claim. Cite the TMLR version in the paper; the arXiv v1 is superseded. |
 | Gao et al., *A transferable neural network for Hex* (ICGA Journal 2018), [publisher record](https://doi.org/10.3233/ICG-180055) | Transfers a board-size-independent neural network from a base Hex board to larger and smaller sizes, zero-shot and with fine-tuning, including search. | A board-size-only generalization result is not novel evidence for JEPA. Compare it to direct policy/value parameter transfer under the same search budget. |
 | Ye et al., EfficientZero (NeurIPS 2021), [paper](https://arxiv.org/abs/2111.00210) | Adds latent consistency to recurrent MuZero-style planning, with Atari/continuous-control evidence. | A JEPA/consistency auxiliary beside a planner is established. |
@@ -103,6 +102,29 @@ controlled study exists, stop or recast the work as replication/benchmark.
 
 ## Candidate method family, subject to novelty and feasibility gates
 
+### Required direct-policy/Q control from KLENT
+
+Full-text review of Ota et al. (ICML 2026 accepted) found a concrete strong
+baseline omitted from the initial plan. KLENT directly trains policy and
+action-value (Q(s,a)) in self-play with reverse-KL and entropy regularization
+and λ-returns, with no search during training. Their five-game experiments use
+a shared 6-block ResNet and three seeds. In the aggregate learning curve,
+KLENT reaches 50% average win rate against its anchored Pgx opponents at 75M
+simulator evaluations, versus 300M for Gumbel AlphaZero. Their separate
+800M-training-evaluation match protocol gives each agent 800 test-time MCTS
+rollouts and reports a 77.2% average for KLENT against the anchored baseline.
+These are source-paper results only; do not present them as directly comparable
+to CAISSA's measurements.
+
+Any V2 claim of efficiency or advantage over learned baselines must include a
+KLENT-style regularized direct policy/Q arm (or justify a faithful-port blocker)
+alongside direct minimax-Q. They address different objectives: KLENT learns
+regularized self-play policy/returns, while minimax-Q approximates worst-case
+action values. Report environment calls separately from CPU wall time and
+training compute, since simulator-call parity alone does not account for JEPA
+encoding, prediction, and gradient costs. The precise source-level setup and
+limits are recorded in `V27_PRIOR_ART_REAUDIT_20260930.md`.
+
 The earlier realized-reply formulation is withdrawn as a novelty candidate:
 conditioning on the observed own-action/opponent-reply sequence is too close to
 SPR, TD-JEPA, Deep Latent Competition, and MA-JEPA. The narrower candidate for
@@ -138,10 +160,11 @@ separate studies. If the teacher cannot cover a sufficiently discriminating
 root bank without selection bias, do not fit this objective; return to method
 design or stop the minimax claim.
 
-Minimum learned controls for any future fit: direct PV; same predictor with
-task/reward/policy-value prediction and no latent-state matching; same predictor
-with decoded state-feature prediction; JEPA with latent matching but without
-the minimax-order term; and the full candidate. All controls get the same
+Minimum learned controls for any future fit: direct PV; KLENT-style regularized
+direct policy/Q self-play; direct minimax-Q; same predictor with task/reward/
+policy-value prediction and no latent-state matching; same predictor with
+decoded state-feature prediction; JEPA with latent matching but without the
+minimax-order term; and the full candidate. All controls get the same
 enumerated legal counterfactuals, teacher availability/censoring, game rules,
 parameter budget, optimizer opportunity, seeds, and inference planner. Include
 a no-search policy-only comparison and a fixed independent rule-search

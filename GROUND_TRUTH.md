@@ -749,3 +749,52 @@ Chess, Go, Hex, and Othello. The latter's exact budgets and game-level tables
 still need full-text review before quantitative use. These works further narrow
 any generic efficiency or latent-consistency claim. Keep the experiment
 exploratory; no candidate is frozen and no training gate has passed.
+
+### KLENT full-text follow-up — 2026-09-30
+
+The full accepted ICML 2026 paper by Ota et al. was reviewed at
+`https://arxiv.org/html/2602.10894`. KLENT directly learns a policy and
+action-value Q from regularized self-play, using reverse-KL, entropy and
+lambda-returns without search during training. In its five-game evaluation it
+uses a shared 6-block ResNet, three seeds, anchored pretrained Pgx opponents,
+and simulator calls on the training axis. The paper reports reaching 50% mean
+win rate at 75M simulator evaluations versus 300M for Gumbel AlphaZero. In a
+separate protocol after 800M training evaluations, all methods use 800 test-time
+MCTS rollouts and KLENT reports 77.2% mean win rate against its anchor. These
+figures are the paper's, not ours, and do not directly measure minimax regret
+or hardware compute. Full setup and restrictions are extracted in
+`docs/V27_PRIOR_ART_REAUDIT_20260930.md`.
+
+The authors' official code repository was inspected read-only at
+`https://github.com/KazukiOhta/klent`. Its visible root/README has no LICENSE
+file or declared code license; requirements pin JAX CUDA 12 and Pgx. We did not
+clone, download or execute it. Treat upstream code as uncleared for reuse. A
+clean-room implementation from the published equations is an option, requiring
+an independent fidelity review.
+
+Research decision: require a KLENT-style regularized direct policy/Q arm in V2
+efficiency comparisons, separate from the direct minimax-Q worst-case control.
+Simulator-call parity alone is inadequate; record environment calls, CPU time,
+model/training cost and inference budget. No code, data, model, checkpoint, or
+training run was created for this review. No claim of JEPA superiority has been
+established. All 78 project Markdown files have now been copied to
+`D:/notes/vault_1/Caissa-JEPA/` with repository-relative paths; independent
+SHA-256 comparison found 0 missing files and 0 mismatches. The Obsidian UI was
+left closed to keep the user's screen available.
+
+### V2.8 experiment redesign proposal — 2026-09-30
+
+Created `docs/V28_KLENT_JEPA_COMPARISON_DESIGN.md`: a proposal to test whether
+adding one-/two-ply action-conditioned JEPA prediction to a KLENT-style direct
+policy/Q learner improves decision performance under matched data, capacity,
+training schedule, measured CPU compute and inference budget. It separates this
+fixed-opponent behavior estimand from a minimax/planning estimand and defines
+matched task-prediction controls, leakage/coverage/runtime gates, multiple
+compute axes and explicit kill criteria. This is not frozen, code, trained
+model, or evidence of superiority. Next allowed development sequence is a
+clean-room baseline specification, synthetic fidelity checks, then a
+model-blind data/compute audit; JEPA training remains gated. `ROADMAP.md` and
+`docs/DOCUMENT_INDEX.md` link the proposal. The latest sync copied all 79
+project Markdown files to `D:/notes/vault_1/Caissa-JEPA/`; SHA-256 comparison
+found 0 missing files and 0 mismatches. Obsidian UI remains closed in this
+session to keep the user's desktop available.
