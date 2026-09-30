@@ -360,3 +360,21 @@ sample-size/power and cross-game gates remain open. No trajectories or training
 data were produced. The existing full suite passed 348 tests in 127.285 seconds.
 Next: independently audit a frozen situation-generation, grouping/split and
 evaluation schedule, then assess opponent-bank power before board-game training.
+
+### V2.8 independent split/power review (2026-09-30)
+
+`docs/V28_SPLIT_PROTOCOL_REVIEW_01.md` is a read-only independent audit. It
+found the existing splitter useful but too small to imply power; the old pilot
+uses at most 24 easy endgame roots/game and is already exposed. Existing V2.7
+opponent receipts also fail to calibrate a bank because simple matchups saturate
+and the bounded-search sample is tiny with unresolved seat effects. Reversi4 is
+therefore limited to validating data/provenance machinery. Before any scientific
+fit, freeze whole-trajectory grouping, opponent-family holdouts, raw and
+role-/symmetry-normalized state/counterfactual hashes, and the paired seat
+schedule; require zero group overlap, the existing 100 unique-root/50 beyond-
+depth support floors, and a model-blind paired power simulation (initial target
+80% power at family-wise alpha .05 for a justified five-point effect). Validate
+an independent rules/runtime gate for a harder game before using it as a
+scientific game. These are proposals pending a frozen protocol and receipt, not
+completed acceptance results. No V2.8 training or confirmation is authorized by
+the current evidence; all JEPA advantage and novelty claims remain unproven.

@@ -908,4 +908,38 @@ Markdown file to the same relative path in `D:/notes/vault_1/Caissa-JEPA/` and
 verify SHA-256 equality. Keep the Obsidian UI closed to leave the screen free.
 Next, independently audit a frozen, model-blind situation-bank, grouping/split
 and evaluation schedule. Training remains blocked until provenance, opponent-
-power and compute gates pass.
+
+### Independent V2.8 protocol review (2026-09-30)
+
+`docs/V28_SPLIT_PROTOCOL_REVIEW_01.md` records a read-only independent audit.
+It found the older trajectory splitter has useful hashing/canonical-overlap
+checks but uses a narrow random-opponent mix and small minimum support; it is
+not the V2.8 split/power protocol. The old endgame pilot (up to 24 roots/game)
+is easy, tiny, and exposed; its zero-regret result is not confirmation. Existing
+V2.7 match receipts do not calibrate opponent power (saturated simple pairings,
+few search-game trajectories, unresolved Reversi seat effect). Reversi4 must be
+kept as a rules/split-pipeline fixture only. Next: freeze whole-trajectory and
+opponent-family grouping, raw plus role-/symmetry-normalized overlap checks for
+all states and counterfactual branches, and paired-seat evaluation; independently
+validate a harder game, then produce a model-blind bank/support/power receipt.
+Initial proposed floors are 100 unique roots and 50 beyond-depth roots per game;
+these are not a power result. Proposed paired power target is 80% for a justified
+5-point effect at family-wise alpha .05, with roots, game, training seed, family
+and seats kept in uncertainty estimates. No V2.8 training or confirmatory result
+is supported yet.
+
+The reviewer was assigned under the user's approved `gpt-6-luna` / `high`
+configuration. The response did not independently report runtime model
+metadata, so this is a record of configuration requested, not a runtime
+attestation.
+
+This review and the latest Reversi4 report/receipt are now part of the project
+Markdown set. After the current Ground Truth update, mirror all current project
+Markdown to `D:/notes/vault_1/Caissa-JEPA/` preserving relative paths; verify
+SHA-256 before commit/push. The completed copy pass now includes 86 project
+Markdown files, with 0 missing and 0 SHA-256 mismatches; the vault's Ground
+Truth file opens as readable UTF-8 text. Latest completed code/test milestone remains
+`5abbd777261c34228888ecbddd9924686b159b63`; docs-only receipt commit
+`6c14cd40040ea5b48007e99f9d42f47a7b616419` is ahead of `origin/main` and still
+needs push/hash verification. The prior vault sync copied 85 Markdown files
+with zero missing files or hash mismatches; rerun after this review addition.
