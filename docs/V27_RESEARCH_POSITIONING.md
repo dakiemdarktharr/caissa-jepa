@@ -159,6 +159,36 @@ credible opponent population. The candidate method, fairness matrix, and match
 estimand remain proposals until an informative independent opponent suite
 exists.
 
+### Bounded-search opponent feasibility, exploratory (2026-09-30)
+
+An in-repository depth-limited negamax/alpha-beta opponent was added on top of
+the separate bitboard `ReferenceGame` implementation. It has a fixed depth 3,
+500-node per-move cap, a handwritten line/mobility/corner evaluator, and emits
+its completed depth and node-cap diagnostics. This is a feasibility policy,
+not a calibrated engine. Differential tests compare legal actions, terminal
+outcomes, and every resulting board/player over four seeded trajectories in
+each of Connect4-gravity-8x8, Reversi8, and rectangular Connect-6x7. The
+independent implementation agrees on those tested trajectories; it remains
+same-project validation, not third-party rule certification.
+
+The fingerprinted paired-seat pilot in
+`validation/V27_SEARCH_OPPONENT_03.json` contains 32 games (two seeds, four
+pairings, both seats, two game families) and took 86.69 seconds locally. The
+preceding same-schedule V2 run took 53.43 seconds; both are exploratory CPU
+timings and should not be treated as stable performance estimates.
+Search beat the simple center/corner policy and legal-random policy in 4/4
+games per family for each pairing. That is encouraging only as an opponent-bank
+sanity result: two seeds are not an estimate of strength or uncertainty. It
+also exposed a serious diagnostic: search-vs-search in Reversi8 was won by the
+minus seat in all four games, and the pilot hit its per-move node cap 116 times
+in that family. The earlier deterministic tie-order pilot is preserved in
+`validation/V27_SEARCH_OPPONENT_01.json`; the revised seat-seeded tie ordering
+is separately recorded in `validation/V27_SEARCH_OPPONENT_02.json`. These are
+development receipts, not selection or confirmation data. Before this policy
+can anchor training or evaluation, analyze color/dihedral equivariance,
+improve Reversi budget completion, and repeat a model-blind seat-symmetric
+variance/diversity pilot. Do not treat its wins as JEPA evidence.
+
 ## Proposed V2.7 go/no-go thresholds
 
 These thresholds are **provisional gates to calibrate from a model-blind power

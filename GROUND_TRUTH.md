@@ -18,6 +18,22 @@ Markdown files, preserved paths, zero SHA-256 mismatches. The vault copy is
 byte-verified, but the updated page has not yet been visually reopened in
 Obsidian during this continuation.
 
+**Next model-blind feasibility step (2026-09-30):** implemented a project-owned
+depth-limited negamax/alpha-beta opponent over separate bitboard reference
+rules, plus transition/terminal/legal-action differential checks against the
+main adapter. Twelve seeded trajectories across Connect4-gravity-8x8,
+Reversi8 and Connect-6x7 matched at every tested state; this is same-project
+validation, not an external referee. The fingerprinted 32-game pilot is
+`docs/validation/V27_SEARCH_OPPONENT_03.json` (two seeds, four policy pairings,
+both seats, two games; 86.69 seconds). Search beat random and center/corner
+sanity policies in 4/4 sampled games per family, but this sample is too small to
+estimate strength. Reversi search-self-play remained seat-skewed (minus won
+4/4) and hit its per-move node cap 116 times. Preserve earlier revision
+receipts 01 and 02. The targeted plus full regression passes **329 tests in
+93.235 seconds**. No JEPA model, self-play dataset, training or checkpoint was
+created. The opponent bank still fails the gate; investigate symmetry and
+budget before training.
+
 **Latest continuation decision (2026-09-30):** V2.6 exact-minimax-supervised
 planning remains not cleared for fitting: the current exact solver is cheap on
 small/endgame positions but cannot cover sampled Connect4-8x8 midgame roots at
@@ -33,12 +49,12 @@ named opponent, exploitability, or Nash equilibrium. The proposed reply-
 conditioned JEPA family remains close prior art and has not passed a novelty
 gate. **No V2.7 model, dataset, training, checkpoint, or positive result exists.**
 The active environment is Python 3.11.9 with NumPy available and Torch absent;
-no package was installed. One V2.7 model-blind match-feasibility helper was
-implemented and tested: 96 sanity-policy matches across gravity Connect4-8x8
-and Reversi8 ran in5.207s; the simplistic heuristic beat random in all 16
-heuristic-vs-random matches per game, so this opponent set is too weak for model
-evaluation. This is only feasibility evidence. No self-play dataset, model,
-training, checkpoint, or positive JEPA result exists. Receipt:
+no package was installed. The first V2.7 model-blind match-feasibility helper
+was implemented and tested: 96 sanity-policy matches across gravity
+Connect4-8x8 and Reversi8 ran in 5.207s; the simplistic heuristic beat random
+in all 16 heuristic-vs-random matches per game, so that initial opponent set is
+too weak for model evaluation. This is only feasibility evidence. No self-play
+dataset, model, training, checkpoint, or positive JEPA result exists. Receipt:
 `docs/validation/V27_MATCH_FEASIBILITY_01.json`; source and three targeted tests:
 `tools/v27_match_feasibility.py`, `test_v27_match_feasibility.py`. Next, build
 and validate a stronger bounded-search opponent and differential rules check;

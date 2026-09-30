@@ -29,6 +29,22 @@ quá yếu, không phải bằng chứng model mạnh. Kết quả, seed, seat v
 [receipt V2.7](validation/V27_MATCH_FEASIBILITY_01.json). Bước tiếp theo là
 opponent search độc lập và kiểm tra luật; chưa tạo self-play dataset hay train.
 
+**Cập nhật tiếp theo:** đã có một đối thủ alpha-beta giới hạn depth 3/500
+node mỗi nước trên bộ luật bitboard tham chiếu do dự án tự viết. 12 trajectory
+có seed trên ba cấu hình game khớp legal actions, trạng thái cuối và utility
+với adapter chính; đây chỉ là kiểm tra nội bộ, không phải referee bên ngoài.
+Pilot fingerprinted 32 trận (hai seed, hai chỗ ngồi, hai game) chạy86.69 giây;
+run cùng lịch trước đó mất53.43 giây. Search
+thắng center/random 4/4 trận mỗi cặp ở cả hai game. Tuy nhiên đây là mẫu quá nhỏ
+để ước lượng sức mạnh. Reversi search-self-play bị lệch chỗ ngồi (quân đen
+thua4/4) và có116 lần chạm node cap, nên opponent chưa đủ điều kiện làm baseline
+hoặc sinh dữ liệu nghiên cứu. Tôi sẽ xử lý symmetry/budget và lặp feasibility
+model-blind trước khi đóng băng protocol. Chi tiết:
+[V2.7 positioning](V27_RESEARCH_POSITIONING.md), receipts
+[01](validation/V27_SEARCH_OPPONENT_01.json),
+[02](validation/V27_SEARCH_OPPONENT_02.json),
+[03](validation/V27_SEARCH_OPPONENT_03.json).
+
 ## Kết quả V2.5 mới nhất
 
 | Đánh giá development | Raw-tail JEPA | Baseline mạnh nhất | Chênh lệch regret (dương có lợi JEPA) | Kết luận |

@@ -122,3 +122,9 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   Connect4-gravity-8x8 and Reversi8. Tiny random/sanity-heuristic pilot only;
   unsuitable as the learned-model opponent bank. No self-play dataset or model
   training has been produced.
+- `../benchmarks/v27_search_opponent.py` and
+  `../tools/v27_search_opponent_probe.py`: shallow bounded-search feasibility
+  policy, code—not an engine—and a paired-seat exploratory schedule.
+- `validation/V27_SEARCH_OPPONENT_01.json`–`03.json`: successive model-blind
+  opponent feasibility receipts. They expose Reversi seat bias and search node
+  exhaustion; none is model-selection or confirmatory evidence.
