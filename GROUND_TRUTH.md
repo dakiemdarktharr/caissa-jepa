@@ -825,19 +825,24 @@ Q MAE 0.11375, 0.05894, 0.05667) compare the one-step improvement target
 \(\pi_\theta\). They do not demonstrate learned-policy convergence. Q MAE is
 from the learned Q head. The result concerns one seven-state synthetic game and
 is not board-game strength, cross-game generalization, KLENT reproduction, or
-JEPA-over-baseline evidence. The 346-test full-suite result predates the latest
-audit repairs and must be rerun. The independent reviewer also found stale
+JEPA-over-baseline evidence. The independent reviewer also found stale
 on-policy target reuse when `epochs > 1` and missing replay/model/role provenance.
 The implementation now rejects multi-epoch fit and attaches deterministic
-trajectory identity, rules version, player sequence and behavior-model hash; a
-corrected learned-policy probe and tests are pending. The raw per-state output
-remains excluded from Git. Receipts/reports are
-`docs/validation/V28_KLENT_COUNTUP_01.json` and
-`docs/V28_KLENT_COUNTUP_01.md` (historical/corrected interpretation). Do not
+trajectory identity, rules version, player sequence and behavior-model hash.
+The corrected learned-policy probe passes; across seeds 17/29/43,
+learned-policy TV is 0.020999/0.028382/0.019536, improvement-target TV is
+0.019945/0.020272/0.016093, and Q MAE is 0.113751/0.058942/0.056669. Full
+regression after the repair passes **346 tests in 134.030 seconds**; focused
+tests pass 16/16. The raw per-state output remains excluded from Git.
+Historical/corrected receipts and reports are
+`docs/validation/V28_KLENT_COUNTUP_01.json`,
+`docs/V28_KLENT_COUNTUP_01.md`, and
+`docs/validation/V28_KLENT_COUNTUP_02.json` / `docs/V28_KLENT_COUNTUP_02.md`.
+These are engineering checks only, not a JEPA or board-game result. Do not
 start production board-game training until baseline review, model-blind rules,
 runtime/power and data-split gates pass. The repository remains on `main`; its
-current receipt/docs/fix changes need commit and remote verification. Obsidian
-at `D:/notes/vault_1/Caissa-JEPA/` was refreshed with 88 project Markdown files;
-the verified copy pass had zero missing files and zero SHA-256 mismatches. The
-PowerShell window was hidden and Obsidian UI stayed closed to preserve the
-user's screen.
+current result docs need commit and remote verification. Obsidian
+at `D:/notes/vault_1/Caissa-JEPA/` most recently contains all 90 project
+Markdown files; the post-result verified copy pass found zero missing files and
+zero SHA-256 mismatches. The PowerShell window was hidden and Obsidian UI stayed
+closed to preserve the user's screen.

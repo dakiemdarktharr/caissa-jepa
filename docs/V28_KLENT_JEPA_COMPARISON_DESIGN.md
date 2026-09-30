@@ -147,7 +147,7 @@ must be reported separately.
 | --- | --- | --- |
 | KLENT source audit | Full paper, official code presence, license state, objective and budget extracted | PASS for paper; upstream code license not established, no code fetched or used |
 | Objective distinction | Independent method review explains which outcome is policy behavior and which is minimax; no conflation | OPEN |
-| Clean-room baseline spec | Equations, perspective, legal-action masks, lambda targets, seed/config and synthetic checks frozen | K0.1 equations, masked targets, signed returns, separate policy/Q heads, finite-difference gradients and self-play collection are implemented. Independent review found the original probe scored the improvement target rather than learned policy, multi-epoch stale-target reuse and missing trajectory provenance. One-pass fitting and replay metadata fixes are in progress; corrected probe and regression are pending. |
+| Clean-room baseline spec | Equations, perspective, legal-action masks, lambda targets, seed/config and synthetic checks frozen | K0.1 equations, masked targets, signed returns, separate policy/Q heads, finite-difference gradients and self-play collection are implemented. Independent review findings are repaired; corrected post-commit three-seed synthetic diagnostic and 346-test full regression pass. This remains engineering fidelity only. |
 | Model-blind data/compute gate | Game rules, trajectory split, complete reply coverage, legal replay, runtime and power receipt pass | NOT STARTED |
 | Development pilot | Multiple seeds, append-only config/data/checkpoint hashes; all controls and failures retained | NOT STARTED |
 | Locked confirmation | Preregistered sample, primary metric, multiplicity, timeout policy and independent review | CLOSED |
@@ -157,9 +157,10 @@ fingerprint, checkpoint hashes, seed, sample/skip counts, cost counters and
 uncertainty. The first post-commit synthetic receipt is retained at
 `docs/validation/V28_KLENT_COUNTUP_01.json`, but its policy TV/Brier metrics are
 for the one-step improvement target \(\pi'\), not learned \(\pi_\theta\). The
-corrected follow-up reports both metrics separately. Its target is exact
+corrected follow-up reports both metrics separately. Learned-policy TV is
+0.0195–0.0284; improvement-target TV is 0.0161–0.0203. Its target is exact
 backward-induction quantal response in one seven-state game; neither receipt
 establishes board-game strength, transfer, JEPA benefit, or KLENT reproduction.
 Raw per-state output is excluded under `chess_data/`. Independent fidelity
-review is complete with fixes applied; the corrected diagnostic and model-blind
-data/compute gate remain pending before JEPA training.
+review is complete with fixes applied; the model-blind data/compute gate remains
+pending before JEPA training.

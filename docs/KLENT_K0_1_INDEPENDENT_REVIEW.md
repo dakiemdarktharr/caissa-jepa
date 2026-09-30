@@ -5,9 +5,9 @@ Date: 2026-09-30. Scope: read-only review of `two_player/klent_baseline.py`,
 design. The audit checked published KLENT equations at
 https://arxiv.org/html/2602.10894 (Eqs. 2–4, Algorithm 1, Appendices D/F),
 adaptation fidelity, perspective/signs, masks, data provenance, and claim
-limits. It did not run training or inspect board-game data. Model/effort
-attribution is pending confirmation from the reviewer; the task requested the
-user-approved `gpt-6-luna/high` configuration.
+limits. It did not run training or inspect board-game data. The follow-up was
+assigned with the user's approved `gpt-6-luna/high` configuration; the returned
+review did not independently restate its model metadata.
 
 ## Findings
 
@@ -45,12 +45,12 @@ strength, transfer, a JEPA benefit, or paper-scale efficiency.
   hash, and deterministic replay-derived identity; tests check format, roles,
   and repeatability.
 - `tools/v28_klent_countup_probe_v2.py` evaluates learned policy and improvement
-  target separately. Its exploratory three-seed run found learned-policy TV
-  0.0195–0.0284, target TV 0.0161–0.0203, and Q MAE 0.0567–0.1138. The raw
-  state-level receipt is excluded under `chess_data/`; its SHA-256 is
-  `4ae514dd468f0a87cdf716fcdaa0e9a52bc96c0aad629386cef98eb88050104b`.
-- The focused K0.1 tests pass (16 tests, 0.135 s). Full repository regression
-  after the repair is running; do not treat the earlier 346-test result as
-  verification of these latest edits.
+  target separately on committed source `79b09e34dff35f0a76757bd4dd898ed0c7acbd96`.
+  Its three-seed run found learned-policy TV 0.0195–0.0284, target TV
+  0.0161–0.0203, and Q MAE 0.0567–0.1138. The compact receipt is
+  `docs/validation/V28_KLENT_COUNTUP_02.json`; the raw state-level receipt is
+  excluded under `chess_data/` and hashed there.
+- Focused tests pass (16 tests, 0.135 s); the full repository regression passes
+  346 tests in 134.030 s after the repairs.
 - The model-blind board-game rule/data/runtime/power audit and every JEPA versus
   matched-control comparison remain open.

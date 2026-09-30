@@ -142,6 +142,12 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   the learned network policy and improvement target separately, and hashes
   trajectory identity/role/model metadata. It is an engineering diagnostic,
   not board-game or JEPA evidence.
+- `V28_KLENT_COUNTUP_02.md` and `validation/V28_KLENT_COUNTUP_02.json`: corrected
+  post-commit, three-seed Count Up receipt. Learned-policy TV is 0.0195–0.0284;
+  the one-step improvement-target TV is 0.0161–0.0203. The target remains
+  slightly better fit than the learned policy; this establishes no JEPA benefit.
+- `KLENT_K0_1_INDEPENDENT_REVIEW.md`: read-only implementation audit, findings,
+  repairs and scope limits.
 - `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
   deterministic project-owned match-schedule feasibility helper and its tests;
   not a strength benchmark.

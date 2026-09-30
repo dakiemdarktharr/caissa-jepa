@@ -247,9 +247,11 @@ tests in 125.103 seconds. An independent audit found that the source-hashed
 three-seed Count Up probe scored the one-step policy-improvement target, not the
 learned network policy; its reported TV numbers are therefore target-construction
 agreement only, and its Q MAE is learned-head error on one seven-state synthetic
-game. A corrected versioned probe now separates both policy metrics. The audit
-also found stale target reuse when epochs exceed one and missing trajectory
-provenance; K0.1 now enforces one pass and attaches replay/model/role metadata.
+game. Corrected post-commit probe `docs/V28_KLENT_COUNTUP_02.md` separates both
+policy metrics; learned-policy TV is 0.0195–0.0284 across three seeds, versus
+improvement-target TV 0.0161–0.0203. The audit also found stale target reuse
+when epochs exceed one and missing trajectory provenance; K0.1 now enforces one
+pass and attaches replay/model/role metadata.
 Neither synthetic receipt is board-game strength, generalization, a paper
 reproduction, or JEPA superiority. The raw per-state receipt remains excluded
 under `chess_data/`. Next rerun the corrected diagnostic and close the model-blind
@@ -263,11 +265,12 @@ confirmation/paper (large). No calendar-duration estimate is asserted.
 
 The first synthetic probe is retained as history but corrected: its policy metric
 was for the improvement target, not the network policy. See
-`docs/V28_KLENT_COUNTUP_01.md` for the distinction and correction record. The
-346-test repository regression predates the latest fixes and must be rerun. The
-independent review found the metric issue, multi-epoch stale-target reuse, and
-missing trajectory provenance; fixes are implemented and a corrected probe is
-being run. The model-blind board-game audit and JEPA comparison remain open.
+`docs/V28_KLENT_COUNTUP_01.md` and `docs/V28_KLENT_COUNTUP_02.md`. The independent
+review found the metric issue, multi-epoch stale-target reuse, and missing
+trajectory provenance; fixes are implemented, the corrected post-commit probe
+passes as an engineering diagnostic, and full regression passes 346 tests in
+134.030 seconds. The model-blind board-game audit and JEPA comparison remain
+open.
 
 V2.7 stop rules: stop/narrow if two game families cannot support non-saturated
 paired evaluation; if direct or non-JEPA predictive controls match the JEPA
