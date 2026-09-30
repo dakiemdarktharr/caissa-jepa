@@ -2,14 +2,20 @@
 
 Updated: 2026-09-30. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
-**Current continuation state:** uncommitted Reversi D4/player-relative
-canonicalization changes and research-document updates are under review on
-`main`; no branch was created. The focused search-opponent suite passes 5
-tests; full regression now passes **330 tests in 150.012 seconds**. An
-independent review using the user-approved gpt-6-luna/high configuration is
-complete with no blocking finding. Obsidian sync (78 Markdown files, all hashes
-matched) is complete. Commit `cc3cb127819ac8e9a24446f7a02fc748e6d4cb06` was
-pushed fast-forward to `origin/main` and remote SHA verification passed.
+**Current continuation state:** canonicalization, exploratory pilot receipt,
+and initial novelty re-audit were committed on `main` as
+`cc3cb127819ac8e9a24446f7a02fc748e6d4cb06`; publication status was recorded in
+`8796a8f5fe9d027db06a339fc6e9563aeead7b91`. Both were pushed fast-forward and
+the latter matched the remote SHA at verification. Current working-tree changes
+extend the prior-art audit with Athénan, *Minimax Strikes Back*, AAAI-25
+Markov-game abstraction, board-game transfer, PCZero and ICML-26 regularized
+game learning, and revise the candidate's model-blind gate. The latest
+documentation copy was synced to Obsidian, but the repository changes are not
+yet committed/pushed. The focused search suite passes 5 tests; full
+regression passed **330 tests in 150.012 seconds**.
+An independent review using the user-approved gpt-6-luna/high configuration
+found no blocking finding. The previous Obsidian sync contained 78 Markdown
+files with matching hashes; it needs refresh after these latest edits.
 The latest pilot is exploratory only: 32
 receipt rows over two seeds took 51.19 seconds; shallow search beat each sanity
 opponent 4/4 in sampled pairings. Identical-policy Reversi self-play has only
@@ -28,12 +34,27 @@ or commit-blocking fairness issue. The updated focused suite passes 5 tests in
 0.621 seconds; full suite passed 330 tests in 150.012 seconds immediately before
 that assertion-only test edit.
 
-The 2026-09-30 prior-art re-audit adds Deep Latent Competition and the recent
-MA-JEPA preprint. Generic opponent-action-conditioned latent prediction is not
-a novelty claim. The only retained candidate is complete legal-reply-set
-prediction plus a separately evaluated minimax action-order objective; its
-novelty is unverified, oracle feasibility is not passed, and training is not
-authorized by evidence. See `docs/V27_PRIOR_ART_REAUDIT_20260930.md` and
+The 2026-09-30 prior-art re-audit adds Deep Latent Competition, the recent
+MA-JEPA preprint, AAR/AI's learned ranking/value/search combination, and
+Athénan (JMLR 2026), a direct two-player perfect-information zero-sum game
+method using tree-bootstrapped value learning with minimax. Athénan reports
+strong results across Go, Hex, Othello, Arimaa and other games, so it is a key
+non-JEPA baseline. Its AAMAS 2023 follow-up *Minimax Strikes Back* compares
+Athénan with Polygames/AlphaZero and reports much lower state-data generation
+cost in its setup. Generic opponent-action-conditioned latent prediction or
+tree-state supervision is not a novelty claim. The only retained candidate is
+complete legal-reply-set prediction plus a separately evaluated minimax
+action-order objective; distinctness is unverified, oracle feasibility is not
+passed, and training is not yet justified by evidence. Approximate zero-sum
+Markov-game abstraction and direct game/variant policy-value transfer are also
+prior art, so neither latent compression nor transfer alone is a contribution.
+Before coding or fitting, the next gate is a source-level design and measurable
+comparison that distinguishes this candidate from Athénan-style tree-value
+learning, minimax-Q/abstraction, direct policy-value transfer, and task/feature
+prediction at matched compute. If no fair incremental claim survives, stop or
+pivot to a benchmark paper. Any future method comparison must include these
+controls. See
+`docs/V27_PRIOR_ART_REAUDIT_20260930.md` and
 `docs/V27_RESEARCH_POSITIONING.md`.
 
 The preceding committed V2.7 positioning milestone passed 325
@@ -689,3 +710,41 @@ visually opened and read this entry page.
 Update this document and its vault copy after important decisions/deliverables and before ending a long session. Never substitute historical data/run claims for live verification.
 
 Discovery correction: an initial 22-file copy was placed at D:/notes/Caissa-JEPA (the parent outside the vault). It is preserved as an intake snapshot, not the active mirror. No originals were moved or deleted.
+
+### Prior-art update — 2026-09-30 (after Athénan audit)
+
+The targeted review now includes Ishibashi, Abe & Iwasaki, “Approximate State
+Abstraction for Markov Games” (AAAI 2025), which extends Q/minimax-value-based
+aggregation to two-player zero-sum Markov games and reports a 760-state Markov
+Soccer experiment; Soemers et al., “Transfer of Fully Convolutional
+Policy-Value Networks Between Games and Game Variants” (TMLR 2023), with
+zero-shot and fine-tuned game/variant transfer; Gao et al. (ICGA Journal 2018)
+on transfer across Hex board sizes; and Banerjee & Stone (ICML 2007) on value
+function transfer for general game playing. Sources and method-level comparison
+are recorded in `docs/V27_PRIOR_ART_REAUDIT_20260930.md`. The methodological
+novelty risk remains critical: compact minimax-sufficient abstraction and game
+transfer are established, so neither latent compression nor held-out transfer
+alone is a contribution. No V2.7 training, model, checkpoint, or JEPA advantage
+exists. Next gate: define a measurable increment versus Athénan tree-value
+learning, minimax-Q/approximate abstraction, direct policy-value transfer, and
+task-prediction controls; then test label coverage and matched compute before
+training. Two independent `gpt-6-luna/high` audits agree that this remains only
+a candidate question: direct minimax-Q can learn the same action ordering from
+the same successor labels, and Athénan already initializes all legal child
+values at searched nodes then tree-bootstraps its partial tree. The JEPA claim
+survives only if latent prediction adds planning-relevant information or a
+measured fixed-compute decision advantage. The audits did not establish
+novelty/superiority and ran no training. Details are in the re-audit note.
+All 78 project Markdown files were copied to
+`D:/notes/vault_1/Caissa-JEPA/` with their repository-relative paths and
+independently compared by SHA-256; 0 files were missing or mismatched. Obsidian
+UI was not opened during this sync to leave the desktop free.
+
+The same source audit also found two required efficiency/consistency controls:
+PCZero (ICML 2022), which reports efficient path-consistency-regularized
+AlphaZero results in Hex/Othello/Gomoku, and Ota et al. (ICML 2026 accepted), a
+model-free regularized policy-optimization study across Animal Shogi, Gardner
+Chess, Go, Hex, and Othello. The latter's exact budgets and game-level tables
+still need full-text review before quantitative use. These works further narrow
+any generic efficiency or latent-consistency claim. Keep the experiment
+exploratory; no candidate is frozen and no training gate has passed.

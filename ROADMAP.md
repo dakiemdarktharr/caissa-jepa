@@ -2,16 +2,25 @@
 
 Version 1 — 2026-09-29; V2.7 positioning amended 2026-09-30. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
 
-Latest positioning gate: prior-art re-audit added Deep Latent Competition,
-MA-JEPA, neural minimax-Q and learned ranking inside minimax search. Generic
-joint-action JEPA, opponent-conditioned imagination, and learned minimax action
-ordering are not novelty claims. The retained candidate combines complete
-legal-reply-set prediction with a separately ablated minimax action-order
-objective, but direct methodological equivalence is unresolved and the label
-coverage gate has failed at prior V2.6 budgets. No V2.7 model/data/training is
-cleared. The next work is a focused primary-source check plus model-blind teacher
-coverage/power design; if no fair informative study exists, pivot to a benchmark
-or negative-results paper rather than relaxing gates.
+Latest positioning gate: primary-source review now includes Athénan
+(JMLR 2026) and its AAMAS 2023 comparison with Polygames, plus AAAI 2025
+approximate state abstraction for two-player zero-sum Markov games, TMLR 2023
+cross-game/variant transfer of policy-value networks, and board-size transfer
+in Hex. Generic joint-action JEPA, opponent-conditioned imagination,
+tree-supervised value learning, minimax search, minimax-sufficient state
+abstraction, and game transfer are not novelty claims. The retained candidate
+combines complete legal-reply-set prediction with a separately ablated minimax
+action-order objective, but methodological distinctness remains unverified and
+V2.6 teacher coverage failed at prior budgets. This combination must be
+distinguished experimentally from Athénan-style tree-value learning,
+minimax-Q/approximate abstraction, direct policy-value transfer, and ordinary
+task/feature prediction before any training. Require model-blind target
+coverage and a fair measured-compute comparison. If that design is infeasible or
+adds no decision quality at matched compute, pivot to a benchmark or
+negative-results paper rather than relaxing gates. The broader audit also found
+path-consistency AlphaZero (PCZero, ICML 2022) and regularized model-free
+two-player game learning (ICML 2026 accepted). The candidate must be
+distinguished from these compute-efficient controls; no training yet.
 
 Latest M7 evidence: V2.5 grid05 completed all42 cells and independently passed
 its artifact/source/data/schedule audit. It was **not promoted**: raw-tail's
@@ -195,7 +204,7 @@ claim without a separate validated estimator.
 
 | Workstream / size | Dependency | Deliverable and acceptance | Current status / kill gate |
 | --- | --- | --- | --- |
-| V2.7 positioning / small | V2.6 gate failure | Focused primary-source search on multi-agent JEPA, competitive latent world models, minimax-preserving objectives, and counterfactual action-set representations; define one incremental question not already tested | Novelty re-audit found Deep Latent Competition (competitive two-player joint latent dynamics/opponent modeling) and MA-JEPA (joint-action-conditioned JEPA in cooperative simultaneous Dec-POMDP). Risk is now **critical**. Candidate only: all legal reply-set prediction plus minimax action-order preservation; unresolved, unfrozen. Stop if close prior art already tests this increment. |
+| V2.7 positioning / small | V2.6 gate failure | Focused primary-source review across competitive JEPA, minimax learning, Markov-game abstraction, and board-game transfer; define and test one incremental question | Search found Deep Latent Competition, MA-JEPA, Athénan, approximate Markov-game state abstraction (AAAI 2025), and direct policy-value transfer across games/variants (TMLR 2023). Novelty risk remains **critical**. Complete legal reply-set prediction plus minimax action-order preservation is only a candidate; it is not frozen or established as distinct. Next: finish source-level candidate audit and identify measurable separation versus Athénan, minimax-Q/abstraction, direct policy-value transfer, and task-prediction controls. No training until that test and model-blind coverage gate pass. |
 | Rules and opponent feasibility / medium | Positioning | Project-owned rules for at least two game families; independently check transitions/terminal/role/symmetry; test opponent diversity, non-saturated match schedule, game length and CPU runtime | Depth-3/500-node search agrees with the adapter on 12 seeded trajectories. After Reversi D4/color-role canonicalization, its capped pilot beats random/center controls in 4/4 samples per pairing/family, with 68 cap hits (down from 116 in the preceding two-seed run). Same-policy self-play favors plus/first on both unique seeds (four receipt rows include duplicate seat-swap records); the preceding version favored minus/second on both unique seeds. Seat/RNG effects are unresolved. An independent review found no blocker. Full regression passes 330 tests; receipt source hashes match. Do not generate research data yet; increase seed diversity and independently audit rules. OpenSpiel reference remains uninstalled. |
 | Data audit / medium | Rules pilot passes | Local self-play manifest with seeds, policy/opponent provenance, outcomes, hashes, trajectory-grouped splits and replay/duplicate/seat-balance audits | Not started; production data/training forbidden before pass. No third-party corpus or service needed. |
 | Method freeze and matched pilot / large | Positioning, feasibility, data audit | Freeze two-ply JEPA plus direct PV, task-prediction, decoded-feature and JEPA-ablation controls; identical trajectory labels, model budget, optimizer schedule and inference planner; at least three seeds; all censors retained | Not started. A match-score result is limited to the declared opponent suite; keep expected-opponent and minimax planners as separate studies. |

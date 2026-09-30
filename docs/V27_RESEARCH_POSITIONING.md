@@ -22,12 +22,25 @@ The original broad hypothesis—both-player-action-conditioned latent
 prediction improves bounded planning—remains the project's motivation, but is
 no longer an adequate V2.7 novelty question after the prior-art re-audit.
 Current falsifiable candidate: with identical complete legal counterfactual
-reply sets, teacher coverage/censoring, capacity, optimizer updates and
-planning budget, does latent-state prediction plus a separate worst-case
+reply sets, teacher coverage/censoring, capacity, optimizer updates and measured
+training/search compute, does latent-state prediction plus a separate worst-case
 action-order-preservation objective improve held-out minimax decision quality
-over direct minimax-Q/value learning, task/reward/policy prediction, and decoded
-state-transition controls? This candidate is not frozen; see
+over direct minimax-Q/value learning, Athénan-style tree-value learning,
+approximate Q/minimax state abstraction, direct policy/value transfer,
+task/reward/policy prediction, and decoded state-transition controls? These are
+the required controls, not an assertion that the candidate differs sufficiently
+from prior work. The candidate is not frozen; see
 `V27_PRIOR_ART_REAUDIT_20260930.md`.
+
+Two independent read-only audits sharpened the stop gate: direct minimax-Q can
+learn the same action order from the same successor labels, while Athénan
+already enumerates legal children and tree-bootstraps searched values. The
+candidate therefore survives only if its latent target adds measurable
+planning-relevant information or lowers decision regret at fixed measured
+compute. Before training, run the model-blind closure/coverage gate in the
+prior-art re-audit; if that added information or cost advantage is absent, drop
+the JEPA-specific claim rather than promote the same minimax learner under a new
+name.
 
 The target opponent suite would be fixed before training and include independent
 legal-random, tactical heuristic, frozen historical self-play checkpoints, and
@@ -44,6 +57,13 @@ identified in both training and evaluation; it does not show worst-case play.
 | Assran et al., I-JEPA (CVPR 2023), [paper](https://arxiv.org/abs/2301.08243) | Predicts target-region embeddings from context embeddings without pixel reconstruction. | Latent prediction itself is not a contribution. |
 | Schwarzer et al., SPR (ICLR 2021), [paper](https://arxiv.org/abs/2007.05929) | EMA-target, action-conditioned multi-step latent prediction for Atari control. | Action-conditioned multi-step consistency is established; include a close non-JEPA predictive control. |
 | Schrittwieser et al., MuZero (Nature 2020), [paper](https://arxiv.org/abs/1911.08265) | Recurrent action-conditioned latent dynamics with reward, policy, and value learning; demonstrated on chess, shogi, Go, and Atari. | Latent planning across board games is established; do not claim it as new. |
+| Cohen-Solal, Athénan (JMLR 2026), [paper](https://www.jmlr.org/papers/v27/25-2259.html) | Neural tree bootstrapping from search states, Descent minimax, richer outcome heuristics and ordinal action selection; evaluated on the exact two-player perfect-information zero-sum game class across Go, Hex, Othello, Arimaa, Connect6, Havannah and more. | Strong direct non-JEPA precedent/baseline: reports +62.51% ± 6.3% against ExIt across ten games and 91% vs. MoHex in Hex-11 at 2.5 s/move. Large compute limits local replication, not the relevance of its algorithmic control. Tree-state learning means complete branch supervision alone is not novel. |
+| Cohen-Solal & Cazenave, *Minimax Strikes Back* (AAMAS 2023), [paper](https://www.lamsade.dauphine.fr/~cazenave/papers/MinimaxStrikesBack_AAMAS.pdf) | Direct Athénan-vs-Polygames/AlphaZero comparison; Athénan learns state evaluation using minimax/Descent and no policy. | Reports much lower training-state generation cost and competitive/superior game results under its own resource setup. Strong evidence that minimax value learning can be a powerful low-compute non-JEPA baseline. |
+| Ishibashi et al., *Approximate State Abstraction for Markov Games* (AAAI 2025), [official paper](https://ojs.aaai.org/index.php/AAAI/article/download/33930/36085) | Extends approximate state aggregation by optimal Q/minimax value to two-player zero-sum Markov games, proves a duality-gap bound, and evaluates exact-Q aggregation in a 760-state Markov Soccer game. | Any general “JEPA learns a compact minimax-sufficient state” claim overlaps this work. Its experiments rely on solving the small game and do not use JEPA or multi-step predictive representation; those gaps are only starting points for a measured increment. |
+| Zhao et al., PCZero (ICML 2022), [PMLR paper](https://proceedings.mlr.press/v162/zhao22h.html) | Adds path-consistency regularization to AlphaZero and uses historical plus MCTS-scouted paths for efficient learning. | Reports 94.1% against a 2015 Hex Olympiad champion on 13x13 Hex versus 84.3% for AlphaZero, with 900K self-play games; also reports Othello/Gomoku transfer and offline-learning results. This is an important non-JEPA consistency/efficiency control. |
+| Ota et al., *Revisiting Regularized Policy Optimization for Stable and Efficient Reinforcement Learning in Two-Player Games* (ICML 2026 accepted), [arXiv](https://arxiv.org/abs/2602.10894) | Analyzes reverse-KL/entropy-regularized policy updates and proposes a model-free learner, with experiments on Animal Shogi, Gardner Chess, Go, Hex and Othello. | Recent compute/sample-efficient two-player zero-sum learning is not specific to world models. Include or discuss this control before claiming a general JEPA efficiency advantage; exact budget comparisons require full-paper extraction. |
+| Soemers et al., *Transfer of Fully Convolutional Policy-Value Networks Between Games and Game Variants* (TMLR 2023), [arXiv full text](https://arxiv.org/html/2102.12375) | Uses AlphaZero-like networks and Ludii channel semantics for zero-shot and fine-tuned parameter transfer across board-game variants and distinct games. | Cross-game transfer is established for direct policy-value networks. JEPA needs a same-data/same-compute transfer control and held-out-family tests; transfer itself cannot be its novelty claim. Cite the TMLR version in the paper; the arXiv v1 is superseded. |
+| Gao et al., *A transferable neural network for Hex* (ICGA Journal 2018), [publisher record](https://doi.org/10.3233/ICG-180055) | Transfers a board-size-independent neural network from a base Hex board to larger and smaller sizes, zero-shot and with fine-tuning, including search. | A board-size-only generalization result is not novel evidence for JEPA. Compare it to direct policy/value parameter transfer under the same search budget. |
 | Ye et al., EfficientZero (NeurIPS 2021), [paper](https://arxiv.org/abs/2111.00210) | Adds latent consistency to recurrent MuZero-style planning, with Atari/continuous-control evidence. | A JEPA/consistency auxiliary beside a planner is established. |
 | Schwarting et al., Deep Latent Competition (CoRL 2020; PMLR 2021), [proceedings](https://proceedings.mlr.press/v155/schwarting21a.html) | A competitive two-player racing agent uses a joint latent transition over both players' actions, opponent-view prediction, an opponent-action model, and imagined self-play. The environment is visual racing rather than a deterministic, fully observable board game. | Two-player competitive latent world models and opponent-conditioned imagination predate this project. Our novelty cannot be “include the opponent” or “use latent self-play.” We differ in game class, deterministic legal-action structure, and potentially worst-case minimax objectives; those differences need an empirical/theoretical increment. |
 | Bagatella et al., TD-JEPA (ICLR 2026), [proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/3d158f054ff0cb83397367234899db07-Abstract-Conference.html), [official code](https://github.com/facebookresearch/td_jepa) | State/task encoders, a policy-conditioned multi-step predictor, and latent policies for zero-shot RL. Official code states CC BY-NC 4.0. | The proposed sequential predictor is close prior art. Conditioning on a second player's action or changing the domain is not enough to establish novelty. No code is copied or used. |
@@ -52,7 +72,7 @@ identified in both training and evaluation; it does not show worst-case play.
 | Grimm et al., Value Equivalence, NeurIPS 2020, [paper](https://arxiv.org/abs/2011.03506) | Argues that learned models should preserve planning-relevant value updates, not merely generic transitions. | Predictive loss must connect to a controlled decision metric; latent error alone is inadequate. |
 | Xie et al., model-based multi-agent RL in zero-sum Markov games, NeurIPS 2020, [proceedings](https://proceedings.neurips.cc/paper_files/paper/2020/hash/0cc6ee01c82fc49c28706e0918f57e2d-Abstract.html) | Model-based learning of Nash-equilibrium values/policies with sample-complexity guarantees. | Zero-sum model-based game solving is established; keep equilibrium and fixed-opponent match estimands separate. |
 | Zhu & Zhao, Online Minimax Q Network Learning (IEEE 2020), [source](https://ieeexplore.ieee.org/document/9292435/) | Neural minimax-Q learning for two-player zero-sum Markov games. | Include direct minimax-Q/value as a required non-JEPA control; this source's detailed benchmark configuration still needs full-text review. |
-| Khanna et al., AAR/AI (ACM TiiS 2022), [empirical paper](https://faculty.ist.psu.edu/jxd6067/myPapers/J06-FindingFaults.pdf) | The underlying RTS model-based agent combines learned transition, leaf evaluation and action ranking with minimax; the paper studies human fault localization. | Learned ranking plus model components inside minimax search predates this candidate; its empirical endpoint is human explanation, not comparative JEPA strength. |
+| Dodge et al., AAR/AI (ACM TiiS 2021), [method paper](https://faculty.ist.psu.edu/jxd6067/mypapers/J04-AARAI.pdf) | Their two-player simultaneous-action RTS agent uses learned transition, leaf evaluation and top-level action ranking with a two-round minimax search; the paper studies human assessment. | Learned ranking plus model/value components inside adversarial search clearly predates this candidate, though it does not report JEPA or compare a complete reply-set loss against a pairwise minimax-order objective. |
 | He et al., Opponent Modeling in Deep Reinforcement Learning, ICML 2016, [proceedings](https://proceedings.mlr.press/v48/he16.html) | DRON jointly learns a policy and opponent-strategy representation, evaluated in simulated soccer and trivia. It targets adapting to observed opponent behavior. | This is behavior modeling, unlike the proposed transition predictor conditioned on an observed reply. A match win against a fixed opponent does not establish opponent-model accuracy or generalization. |
 | Rajeswaran et al., A Game Theoretic Framework for Model Based RL, ICML 2020, [proceedings](https://proceedings.mlr.press/v119/rajeswaran20a.html) | Treats policy and learned model as players in a Stackelberg-style game to address model-policy distribution shift in continuous-control MBRL. It is not a turn-based two-player board-game planner. | Game-theoretic model robustness is adjacent, but does not make our minimax planner, fixed-suite match estimator, and behavior model interchangeable. We need to state which one is evaluated. |
 | Bai, Jin & Yu, self-play in zero-sum games, [paper](https://arxiv.org/abs/2006.12007) | Formalizes equilibrium-oriented learning and distinguishes it from best-response behavior. | Self-play match outcomes cannot be called equilibrium evidence without exploitability/Nash-gap analysis. |
@@ -68,8 +88,9 @@ but are not automatically novel contributions.
 The only candidate question worth targeted follow-up is narrower: does training
 on the **complete legal counterfactual reply set** with an auxiliary objective
 that preserves the ordering of worst-case (minimax) action values improve
-fixed-budget decisions over equally trained direct policy/value, task-prediction,
-and decoded-state controls in deterministic alternating games? This is a
+fixed-budget decisions over equally trained minimax-Q and Athénan-style
+tree-value learners, task-prediction, and decoded-state controls in deterministic
+alternating games? This is a
 candidate empirical question, not a unique method claim. The exact targets,
 planner, controls, transfer protocol, and feasibility gates are not frozen.
 Before coding this objective, search specifically for minimax/world-model

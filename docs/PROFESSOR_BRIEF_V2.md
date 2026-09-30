@@ -1,5 +1,7 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
+> **Cập nhật nghiên cứu 30/09/2026:** deep search phát hiện thêm prior art trực tiếp về state abstraction trong Markov game zero-sum (AAAI 2025), transfer policy-value giữa nhiều game/variant (TMLR 2023), path-consistency regularization cho AlphaZero (ICML 2022), và một phương pháp model-free hiệu quả trên năm board games (ICML 2026 accepted), bên cạnh Athénan. Vì vậy, latent compression, minimax-sufficient abstraction, cross-game transfer, latent consistency, hay sample efficiency đều không thể tự đứng làm novelty claim. Candidate complete-reply-set JEPA + minimax action-ordering vẫn chưa đóng băng và chưa được xác minh là khác biệt đủ; trước training cần benchmark công bằng với Athénan/tree-value, minimax-Q/abstraction, policy-value transfer, PCZero, model-free regularized policy optimization và task-prediction. Hiện chưa có training V2.7, checkpoint, hay bằng chứng JEPA hơn baseline. Chi tiết nguồn trong [prior-art re-audit](V27_PRIOR_ART_REAUDIT_20260930.md).
+
 **Cập nhật: 30/09/2026 — bản trao đổi với giáo sư.** V1 và các grid V2–V2.5
 đều chưa vượt cổng đề cử. V2.5 là so sánh đầy đủ, đã audit độc lập, nhưng
 không cho thấy JEPA vượt baseline: mức exact gần như bằng không và planner
@@ -64,10 +66,19 @@ cho tìm kiếm tiếp là dự đoán toàn bộ tập legal replies và bảo 
 
 Rà soát nguồn sâu hơn còn tìm thấy minimax-Q neural learners và AAR/AI: agent
 RTS liên quan dùng learned transition, leaf evaluation, action ranking cùng
-minimax search. Vì vậy ngay cả “học thứ tự hành động minimax” cũng có tiền lệ
-gần; candidate chỉ đáng triển khai nếu có phân biệt toán học rõ với các phương
-pháp này và cổng độ phủ teacher không chọn lọc vị trí. Báo cáo đối chiếu từng
-công trình, claim limit và điều kiện dừng nằm trong
+minimax search. Quan trọng hơn, Athénan (JMLR 2026) thuộc chính lớp hai người,
+perfect-information, zero-sum mà dự án nhắm tới: phương pháp này học value từ
+các state trong search tree và dùng minimax; báo cáo kết quả trên Go, Hex,
+Othello, Arimaa và game khác. Đây là baseline phi-JEPA trực tiếp cần được đưa
+vào so sánh, không chỉ một bài liên quan xa. Bất kỳ candidate nào dự đoán toàn
+bộ nhánh hợp lệ cũng phải chứng minh nó bổ sung hơn tree-value learning ở cùng
+state/action/compute budget. Vì vậy ngay cả “học thứ tự hành động minimax” cũng
+có tiền lệ gần; nghiên cứu AAMAS 2023 [*Minimax Strikes Back*](https://www.lamsade.dauphine.fr/~cazenave/papers/MinimaxStrikesBack_AAMAS.pdf)
+còn so Athénan trực tiếp với Polygames/AlphaZero và báo cáo chi phí tạo
+state-data thấp hơn khoảng296 lần theo thiết lập của bài. Candidate chỉ đáng
+triển khai nếu có phân biệt toán học rõ và
+cổng độ phủ teacher không chọn lọc vị trí. Báo cáo đối chiếu từng công trình,
+claim limit và điều kiện dừng nằm trong
 [V2.7 prior-art re-audit](V27_PRIOR_ART_REAUDIT_20260930.md). Pilot chuẩn hóa
 Reversi chỉ vượt đối thủ sanity 4/4 trên hai seed; lệch ghế tự đấu đảo từ quân
 âm thắng trên cả hai seed duy nhất sang quân dương thắng trên cả hai seed duy
