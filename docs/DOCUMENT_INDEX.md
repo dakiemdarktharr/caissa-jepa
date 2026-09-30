@@ -112,6 +112,10 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 
 ## V2.7 pivot feasibility (proposal only)
 
+- `V27_PRIOR_ART_REAUDIT_20260930.md`: targeted source audit that adds Deep
+  Latent Competition, MA-JEPA, minimax-Q/value-equivalence, and learned
+  minimax-search ranking precedents; it supersedes the earlier realized-reply
+  novelty candidate, but is not a systematic review.
 - `V27_RESEARCH_POSITIONING.md`: targeted prior art, estimand change, provisional
   method family, data/evaluation gates and stop criteria; not frozen and not a
   novelty claim.
@@ -125,6 +129,10 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `../benchmarks/v27_search_opponent.py` and
   `../tools/v27_search_opponent_probe.py`: shallow bounded-search feasibility
   policy, code—not an engine—and a paired-seat exploratory schedule.
-- `validation/V27_SEARCH_OPPONENT_01.json`–`03.json`: successive model-blind
+- `validation/V27_SEARCH_OPPONENT_01.json`–`04.json`: successive model-blind
   opponent feasibility receipts. They expose Reversi seat bias and search node
   exhaustion; none is model-selection or confirmatory evidence.
+- The V2.7 prior-art review now includes Deep Latent Competition and the
+  2026-09-27 MA-JEPA preprint. Novelty risk is critical; no unique method claim
+  is frozen. See the candidate minimax-preservation question in
+  `V27_RESEARCH_POSITIONING.md`.

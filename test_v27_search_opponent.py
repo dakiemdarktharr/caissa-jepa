@@ -20,6 +20,20 @@ def action_to_reference(action, cols):
     return row * cols + col
 
 
+def transform_reference_state(game, state, rotation=0, mirror=False, swap_colors=False):
+    source = game.board(state)
+    transformed = [0] * len(source)
+    for row in range(game.rows):
+        for col in range(game.cols):
+            rr, cc = row, game.cols - 1 - col if mirror else col
+            for _ in range(rotation):
+                rr, cc = cc, game.rows - 1 - rr
+            value = source[row * game.cols + col]
+            transformed[rr * game.cols + cc] = -value if swap_colors else value
+    player = -state.player if swap_colors else state.player
+    return game.from_board(transformed, player)
+
+
 class V27SearchOpponentTests(unittest.TestCase):
     def test_reference_rules_match_project_adapter_over_seeded_trajectories(self):
         for adapter, reference in CONFIGS:
@@ -69,10 +83,35 @@ class V27SearchOpponentTests(unittest.TestCase):
         state = game.initial()
         first = DepthLimitedOpponent(game, max_depth=2, node_limit=150)
         second = DepthLimitedOpponent(game, max_depth=2, node_limit=150)
+        _, tied_mappings = first._canonical_reversi(state)
+        self.assertEqual(len(tied_mappings), 4)
         action_a = first.choose_action(state, random.Random(271828))
         action_b = second.choose_action(state, random.Random(271828))
         self.assertEqual(action_a, action_b)
         self.assertIn(action_a, game.legal_actions(state))
+
+    def test_reversi_canonicalization_removes_color_and_dihedral_frame(self):
+        game = ReferenceGame(8, 8, 0, reversi=True)
+        state = game.initial()
+        rng = random.Random(901)
+        for _ in range(12):
+            state = game.transition(state, rng.choice(game.legal_actions(state)))
+        search = DepthLimitedOpponent(game, max_depth=1, node_limit=500)
+        canonical, _ = search._canonical_reversi(state)
+        for rotation in range(4):
+            for mirror in (False, True):
+                for swap_colors in (False, True):
+                    transformed = transform_reference_state(
+                        game, state, rotation, mirror, swap_colors
+                    )
+                    candidate, mappings = search._canonical_reversi(transformed)
+                    self.assertEqual(candidate, canonical)
+                    self.assertGreaterEqual(len(mappings), 1)
+                    for mapping in mappings:
+                        mapped_board = [0] * 64
+                        for old, new in enumerate(mapping):
+                            mapped_board[new] = game.board(transformed)[old] * transformed.player
+                        self.assertEqual(tuple(mapped_board), game.board(canonical))
 
 
 if __name__ == "__main__":

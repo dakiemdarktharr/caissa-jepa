@@ -100,11 +100,44 @@ class DepthLimitedOpponent:
                 break
         return best
 
-    def choose_action(self, state, rng: random.Random | None = None) -> int:
+    def _canonical_reversi(self, state):
+        """Normalize role and board orientation, retaining every canonical map.
+
+        Randomly choosing among tied canonical maps makes decisions equivariant
+        in distribution when a position has spatial symmetries. The internal
+        search then sees the same player-relative canonical board for color and
+        dihedral transforms of the original position.
+        """
+        if self.game.rows != self.game.cols:
+            raise ValueError("Reversi symmetry normalization requires a square board")
+        board = self.game.board(state)
+        best_board = None
+        best_mappings = []
+        for mirror in (False, True):
+            for rotation in range(4):
+                mapping = []
+                for row in range(self.game.rows):
+                    for col in range(self.game.cols):
+                        rr, cc = row, (self.game.cols - 1 - col if mirror else col)
+                        for _ in range(rotation):
+                            rr, cc = cc, self.game.rows - 1 - rr
+                        mapping.append(rr * self.game.cols + cc)
+                relative = [0] * len(board)
+                for old, new in enumerate(mapping):
+                    relative[new] = board[old] * state.player
+                candidate = tuple(relative)
+                if best_board is None or candidate < best_board:
+                    best_board = candidate
+                    best_mappings = [tuple(mapping)]
+                elif candidate == best_board:
+                    best_mappings.append(tuple(mapping))
+        canonical_state = self.game.from_board(best_board, player=1)
+        return canonical_state, tuple(best_mappings)
+
+    def _choose_in_frame(self, state, rng: random.Random | None) -> int:
         legal = self.game.legal_actions(state)
         if not legal:
             raise ValueError("Cannot choose an action from a terminal state")
-        self.stats = SearchStats()
         best_action = legal[0]
         for depth in range(1, self.max_depth + 1):
             iteration_action = best_action
@@ -142,3 +175,22 @@ class DepthLimitedOpponent:
             best_action = iteration_action
             self.stats.completed_depth = depth
         return best_action
+
+    def choose_action(self, state, rng: random.Random | None = None) -> int:
+        legal = self.game.legal_actions(state)
+        if not legal:
+            raise ValueError("Cannot choose an action from a terminal state")
+        self.stats = SearchStats()
+        if not self.game.reversi:
+            return self._choose_in_frame(state, rng)
+
+        canonical_state, mappings = self._canonical_reversi(state)
+        mapping = rng.choice(mappings) if rng is not None else mappings[0]
+        canonical_action = self._choose_in_frame(canonical_state, rng)
+        if canonical_action == -1:
+            return -1
+        inverse = {new: old for old, new in enumerate(mapping)}
+        action = inverse[canonical_action]
+        if action not in legal:
+            raise RuntimeError("Canonical search returned an illegal original-frame action")
+        return action

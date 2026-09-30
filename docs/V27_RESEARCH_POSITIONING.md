@@ -18,12 +18,16 @@ strength on harder positions, but changes the question: win rate against a
 fixed, declared opponent suite is not minimax regret, exploitability, or Nash
 equilibrium quality.
 
-Proposed falsifiable question: with the same local self-play trajectories,
-game rules, policy/value labels, model capacity, training updates, and inference
-search budget, does a two-ply, both-player-action-conditioned JEPA objective
-improve paired match performance over direct policy/value, recurrent
-task-prediction, and explicit state-feature prediction on at least two
-deterministic zero-sum game families?
+The original broad hypothesis—both-player-action-conditioned latent
+prediction improves bounded planning—remains the project's motivation, but is
+no longer an adequate V2.7 novelty question after the prior-art re-audit.
+Current falsifiable candidate: with identical complete legal counterfactual
+reply sets, teacher coverage/censoring, capacity, optimizer updates and
+planning budget, does latent-state prediction plus a separate worst-case
+action-order-preservation objective improve held-out minimax decision quality
+over direct minimax-Q/value learning, task/reward/policy prediction, and decoded
+state-transition controls? This candidate is not frozen; see
+`V27_PRIOR_ART_REAUDIT_20260930.md`.
 
 The target opponent suite would be fixed before training and include independent
 legal-random, tactical heuristic, frozen historical self-play checkpoints, and
@@ -41,58 +45,96 @@ identified in both training and evaluation; it does not show worst-case play.
 | Schwarzer et al., SPR (ICLR 2021), [paper](https://arxiv.org/abs/2007.05929) | EMA-target, action-conditioned multi-step latent prediction for Atari control. | Action-conditioned multi-step consistency is established; include a close non-JEPA predictive control. |
 | Schrittwieser et al., MuZero (Nature 2020), [paper](https://arxiv.org/abs/1911.08265) | Recurrent action-conditioned latent dynamics with reward, policy, and value learning; demonstrated on chess, shogi, Go, and Atari. | Latent planning across board games is established; do not claim it as new. |
 | Ye et al., EfficientZero (NeurIPS 2021), [paper](https://arxiv.org/abs/2111.00210) | Adds latent consistency to recurrent MuZero-style planning, with Atari/continuous-control evidence. | A JEPA/consistency auxiliary beside a planner is established. |
+| Schwarting et al., Deep Latent Competition (CoRL 2020; PMLR 2021), [proceedings](https://proceedings.mlr.press/v155/schwarting21a.html) | A competitive two-player racing agent uses a joint latent transition over both players' actions, opponent-view prediction, an opponent-action model, and imagined self-play. The environment is visual racing rather than a deterministic, fully observable board game. | Two-player competitive latent world models and opponent-conditioned imagination predate this project. Our novelty cannot be “include the opponent” or “use latent self-play.” We differ in game class, deterministic legal-action structure, and potentially worst-case minimax objectives; those differences need an empirical/theoretical increment. |
 | Bagatella et al., TD-JEPA (ICLR 2026), [proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/3d158f054ff0cb83397367234899db07-Abstract-Conference.html), [official code](https://github.com/facebookresearch/td_jepa) | State/task encoders, a policy-conditioned multi-step predictor, and latent policies for zero-shot RL. Official code states CC BY-NC 4.0. | The proposed sequential predictor is close prior art. Conditioning on a second player's action or changing the domain is not enough to establish novelty. No code is copied or used. |
+| Kaplowitz et al., MA-JEPA (arXiv preprint submitted 2026-09-27), [preprint](https://arxiv.org/abs/2609.33563), [full text](https://arxiv.org/html/2609.33563) | Joint-embedding world model for cooperative Dec-POMDP MARL/SMAC. A training-only predictor conditions on synchronized local states and simultaneous joint actions to predict each agent's next observation embedding; policy/value learning uses imagined latent rollouts. It is not an alternating, fully observable, two-player zero-sum game, and the source is a new preprint rather than peer-reviewed work. | This is very recent and materially increases risk: JEPA with joint action-conditioned multi-agent prediction and imagined planning is already explicit. Our contribution cannot be framed as the first multi-agent or opponent-action-conditioned JEPA. We must compare objectives and solution concept, not just the domain. |
 | Soemers et al., board-game variant transfer, [paper](https://arxiv.org/abs/2102.12375) | Policy/value transfer across board-game variants. | Multi-variant game transfer is established independently of JEPA. |
 | Grimm et al., Value Equivalence, NeurIPS 2020, [paper](https://arxiv.org/abs/2011.03506) | Argues that learned models should preserve planning-relevant value updates, not merely generic transitions. | Predictive loss must connect to a controlled decision metric; latent error alone is inadequate. |
+| Xie et al., model-based multi-agent RL in zero-sum Markov games, NeurIPS 2020, [proceedings](https://proceedings.neurips.cc/paper_files/paper/2020/hash/0cc6ee01c82fc49c28706e0918f57e2d-Abstract.html) | Model-based learning of Nash-equilibrium values/policies with sample-complexity guarantees. | Zero-sum model-based game solving is established; keep equilibrium and fixed-opponent match estimands separate. |
+| Zhu & Zhao, Online Minimax Q Network Learning (IEEE 2020), [source](https://ieeexplore.ieee.org/document/9292435/) | Neural minimax-Q learning for two-player zero-sum Markov games. | Include direct minimax-Q/value as a required non-JEPA control; this source's detailed benchmark configuration still needs full-text review. |
+| Khanna et al., AAR/AI (ACM TiiS 2022), [empirical paper](https://faculty.ist.psu.edu/jxd6067/myPapers/J06-FindingFaults.pdf) | The underlying RTS model-based agent combines learned transition, leaf evaluation and action ranking with minimax; the paper studies human fault localization. | Learned ranking plus model components inside minimax search predates this candidate; its empirical endpoint is human explanation, not comparative JEPA strength. |
 | He et al., Opponent Modeling in Deep Reinforcement Learning, ICML 2016, [proceedings](https://proceedings.mlr.press/v48/he16.html) | DRON jointly learns a policy and opponent-strategy representation, evaluated in simulated soccer and trivia. It targets adapting to observed opponent behavior. | This is behavior modeling, unlike the proposed transition predictor conditioned on an observed reply. A match win against a fixed opponent does not establish opponent-model accuracy or generalization. |
 | Rajeswaran et al., A Game Theoretic Framework for Model Based RL, ICML 2020, [proceedings](https://proceedings.mlr.press/v119/rajeswaran20a.html) | Treats policy and learned model as players in a Stackelberg-style game to address model-policy distribution shift in continuous-control MBRL. It is not a turn-based two-player board-game planner. | Game-theoretic model robustness is adjacent, but does not make our minimax planner, fixed-suite match estimator, and behavior model interchangeable. We need to state which one is evaluated. |
 | Bai, Jin & Yu, self-play in zero-sum games, [paper](https://arxiv.org/abs/2006.12007) | Formalizes equilibrium-oriented learning and distinguishes it from best-response behavior. | Self-play match outcomes cannot be called equilibrium evidence without exploitability/Nash-gap analysis. |
 
 This targeted review is not a systematic review. Current novelty disposition:
-**high risk / unverified**. The only defensible potential increment is a rigorously
-isolated study of how both-player counterfactual latent prediction changes
-bounded-compute decisions in a defined game suite. This is a domain-specific
-scientific question, not yet a unique method claim. Before freezing the method,
-search specifically for reply-conditioned or two-player minimax JEPA, strategic
-representation objectives, and outcome-trained latent planners. If an equivalent
-method/evaluation already exists, narrow the question or stop the novelty claim.
+**critical risk / unverified**. Deep Latent Competition already studies
+two-player competitive imagined latent interaction with opponent actions, and
+MA-JEPA now studies joint-action-conditioned target-embedding prediction and
+latent imagination in a different multi-agent game class. The differences in
+game timing, observability, reward structure, and solution concept are real,
+but are not automatically novel contributions.
 
-## Proposed method family, subject to feasibility
+The only candidate question worth targeted follow-up is narrower: does training
+on the **complete legal counterfactual reply set** with an auxiliary objective
+that preserves the ordering of worst-case (minimax) action values improve
+fixed-budget decisions over equally trained direct policy/value, task-prediction,
+and decoded-state controls in deterministic alternating games? This is a
+candidate empirical question, not a unique method claim. The exact targets,
+planner, controls, transfer protocol, and feasibility gates are not frozen.
+Before coding this objective, search specifically for minimax/world-model
+value-equivalence methods, minimax-Q neural learners, learned action ranking in
+minimax search, adversarial branch-prediction objectives, and counterfactual
+action-set representation learning. AAR/AI is a close learned-ranking plus
+transition/value plus minimax-search precedent; resolve the precise objective
+distinction from the primary source. If an equivalent method or stronger
+controlled study exists, stop or recast the work as replication/benchmark.
 
-The starting candidate is provisionally named **reply-conditioned two-ply JEPA**
-only as an internal identifier. For observed nonterminal trajectory states
-\(s_t\), acting-player action \(a_t\), and actual legal reply \(b_t\):
+## Candidate method family, subject to novelty and feasibility gates
 
-\[
-z_t=f_\theta(s_t),\quad
-\hat z_{t+1}=q_\psi(z_t,e(a_t),r_t),\quad
-\hat z_{t+2}=q_\psi(\hat z_{t+1},e(b_t),r_{t+1}).
-\]
+The earlier realized-reply formulation is withdrawn as a novelty candidate:
+conditioning on the observed own-action/opponent-reply sequence is too close to
+SPR, TD-JEPA, Deep Latent Competition, and MA-JEPA. The narrower candidate for
+follow-up is provisionally **legal-reply-set minimax-preservation JEPA**; this
+name is only an internal label and the method is not frozen.
 
-EMA target embeddings of the actual successor states supply stop-gradient
-targets at each valid nonterminal horizon. Separate policy and player-to-move
-outcome-value heads train on the same visited states for every family. A JEPA
-candidate is distinct from a behavior model: it predicts a state representation
-conditioned on the observed legal action sequence; it does not claim to predict
-which action a particular opponent will choose. The planner is fixed before
-training and named explicitly: either policy-mixture expectation against the
-declared opponent suite, or worst-case search. These are separate experimental
-arms and may not be pooled. An opponent-policy model, if ever added, requires a
-separate behavior-label objective and calibrated held-out opponent likelihood.
+For deterministic turn-based rules \(T\), a nonterminal root \(s\), legal own
+actions \(A(s)\), and legal replies \(B(T(s,a))\), enumerate
+\(s_{ab}=T(T(s,a),b)\) for every legal pair. Let \(z=f_\theta(s)\) and
+\(\hat z_{ab}=q_\psi(z,e(a),e(b),e(\mathrm{game}),e(\mathrm{turn}))\). A target
+encoder supplies stop-gradient \(\bar z_{ab}=\bar f_\xi(s_{ab})\). The basic
+counterfactual-set prediction loss would average over **all** legal \((a,b)\)
+pairs at each sampled root, not just the pair that happened in one trajectory.
+This alone is not novel; joint-action latent prediction is prior art.
 
-Minimum learned controls: direct PV; same recurrent predictor with task/reward/
-policy-value prediction and no latent-state matching; same recurrent predictor
-with decoded state-feature prediction; and JEPA with its latent loss ablated.
-All controls share trajectory rows, outcomes, symmetries, legal masks, seed
-schedules, encoder/head widths, tuning opportunity, and planner. Include a
-no-search policy-only comparison and a fixed rule-search reference as separate
-system baselines. Training-data generation and any extra counterfactual
-transitions must be provided to controls or charged and disclosed.
+The strategic candidate adds a separately specified worst-case action-order
+preservation objective: where a predeclared teacher provides trustworthy
+depth-two action values \(v_B(s,a)=\min_{b\in B(T(s,a))} V_B(s_{ab})\), train a
+latent value head \(\hat v(s,a)\) to preserve pairwise ordering of own actions
+with a fixed margin and tie mask. The planner then uses legal engine transitions
+for branching and latent values at its declared cutoff; it does not ask a
+learned policy distribution for the opponent's action. Teacher labels must be
+complete for the admitted root bank or the whole predeclared root is censored;
+no post-hoc filtering of hard positions is allowed. Exact teacher feasibility
+is currently a known risk and the previous V2.6 cost gate failed on larger
+roots.
 
-This two-ply loss is still close to SPR, EfficientZero, TD-JEPA, and MuZero.
-Do not fit it unless the targeted novelty check identifies a precise unresolved
-question and the pre-fit audit confirms that the local code can test it fairly.
-If it is merely a replication in another domain, label it a replication study.
+This candidate is distinct from an opponent behavior model (no opponent action
+distribution is predicted), distinct from a worst-case planner (minimax is the
+planner's solution concept, not a learned model), and distinct from a policy-
+mixture expectation. Expected-opponent planning and worst-case search remain
+separate studies. If the teacher cannot cover a sufficiently discriminating
+root bank without selection bias, do not fit this objective; return to method
+design or stop the minimax claim.
+
+Minimum learned controls for any future fit: direct PV; same predictor with
+task/reward/policy-value prediction and no latent-state matching; same predictor
+with decoded state-feature prediction; JEPA with latent matching but without
+the minimax-order term; and the full candidate. All controls get the same
+enumerated legal counterfactuals, teacher availability/censoring, game rules,
+parameter budget, optimizer opportunity, seeds, and inference planner. Include
+a no-search policy-only comparison and a fixed independent rule-search
+reference as separate system baselines. Teacher/search FLOPs and counterfactual
+transition generation must be common or accounted and disclosed.
+
+The counterfactual-set loss is close to existing multi-agent joint predictors;
+the unresolved candidate is whether minibatch training that preserves an
+adversarial minimax action ordering contributes under equal compute in this
+strict game class. Do not fit until targeted prior-art search identifies that
+gap precisely, teacher labels pass a model-blind coverage/power pilot, and a
+pre-fit fairness audit confirms the same target/censor/compute exposure for all
+controls. If this only replicates minimax-Q/model-based game learning with a
+JEPA auxiliary, describe it as such rather than claiming a new architecture.
 
 ## Data and evaluation gates
 
@@ -180,7 +222,8 @@ Search beat the simple center/corner policy and legal-random policy in 4/4
 games per family for each pairing. That is encouraging only as an opponent-bank
 sanity result: two seeds are not an estimate of strength or uncertainty. It
 also exposed a serious diagnostic: search-vs-search in Reversi8 was won by the
-minus seat in all four games, and the pilot hit its per-move node cap 116 times
+minus seat in both unique seeded trajectories (four receipt rows include
+duplicate seat swaps), and the pilot hit its per-move node cap 116 times
 in that family. The earlier deterministic tie-order pilot is preserved in
 `validation/V27_SEARCH_OPPONENT_01.json`; the revised seat-seeded tie ordering
 is separately recorded in `validation/V27_SEARCH_OPPONENT_02.json`. These are
@@ -188,6 +231,43 @@ development receipts, not selection or confirmation data. Before this policy
 can anchor training or evaluation, analyze color/dihedral equivariance,
 improve Reversi budget completion, and repeat a model-blind seat-symmetric
 variance/diversity pilot. Do not treat its wins as JEPA evidence.
+
+### Reversi symmetry correction pilot (version 3; exploratory)
+
+The search was changed to normalize the player-to-move as +1, map square
+Reversi positions to a canonical D4 orientation, and sample uniformly among
+symmetry-tied canonical maps. The same fingerprinted 32-match schedule in
+`validation/V27_SEARCH_OPPONENT_04.json` took 51.19 seconds. The canonicalizer
+unit test checks every rotation, reflection, and color/turn swap on a seeded
+midgame state; all map to the same canonical position. Search again won the
+center/corner and random pairings 4/4 per family. In Reversi it recorded 68
+node-cap hits versus 116 in the prior V2 run, while total calls and trajectories
+also changed; this small run is a diagnostic comparison, not an efficiency
+claim. Reversi search-self-play favored the plus/first seat in the two unique
+seeded trajectories (four receipt rows include duplicated seat-swap records),
+whereas V2 favored the minus/second seat in its two unique trajectories. This
+cannot separate first-move advantage from residual seat/RNG effects; the
+discrepancy remains unresolved. Do not freeze this opponent suite or generate
+training data from it yet.
+
+### Novelty re-audit (2026-09-30)
+
+A targeted primary-source search found two closer works than the initial review
+captured. **Deep Latent Competition** already models two-player competitive
+latent interaction, opponent view/action, and imagined self-play in visual
+racing. **MA-JEPA**, a preprint submitted 2026-09-27, jointly predicts target
+embeddings conditioned on all agents' local states and simultaneous actions,
+then trains policies through imagined latent rollouts on cooperative SMAC. SMAC
+is outside this project's primary class (partial observations, simultaneous
+multi-agent actions, cooperative shared rewards), but the architecture makes
+“joint-action-conditioned JEPA” untenable as a novelty claim. Together these
+works push novelty risk to **critical**. The only candidate gap is now an
+adversarial one: whether complete legal-reply-set prediction combined with
+minimax action-order preservation adds value under a matched compute budget in
+deterministic alternating games. This needs its own prior-art search, exact
+definition, and teacher-coverage gate. The existence of this gap is not yet
+verified. The candidate formulation above is not frozen, and no training should
+start until that check passes.
 
 ## Proposed V2.7 go/no-go thresholds
 

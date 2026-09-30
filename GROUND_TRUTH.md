@@ -2,8 +2,41 @@
 
 Updated: 2026-09-30. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
-Final regression for the V2.7 feasibility/documentation milestone passed **325
-tests in 128.753 seconds** on Python 3.11.9. The targeted primary-source review
+**Current continuation state:** uncommitted Reversi D4/player-relative
+canonicalization changes and research-document updates are under review on
+`main`; no branch was created. The focused search-opponent suite passes 5
+tests; full regression now passes **330 tests in 150.012 seconds**. An
+independent review using the user-approved gpt-6-luna/high configuration is
+complete with no blocking finding. Obsidian sync (78 Markdown files, all hashes
+matched) is complete; commit, push, and remote verification remain outstanding.
+The latest pilot is exploratory only: 32
+receipt rows over two seeds took 51.19 seconds; shallow search beat each sanity
+opponent 4/4 in sampled pairings. Identical-policy Reversi self-play has only
+two unique trajectories (the seat-swap rows duplicate each game): V2 had
+minus-seat wins 2/2, and the canonicalized version plus-seat wins 2/2. Seat
+effects remain unresolved. Reversi node-cap hits fell from 116 to 68, but
+match trajectories and search calls changed, so this is not an efficiency
+claim. No JEPA model has been trained and no JEPA-over-baseline result exists.
+
+Independent review found (a) duplicated identical-policy self-play rows being
+too easily read as four independent games and (b) no explicit assertion for the
+four tied canonical maps on the symmetric initial Reversi board. Documentation
+now reports two unique seeds/trajectories, and the focused test asserts the
+four-map case. Reviewer found no canonicalization defect, receipt hash mismatch,
+or commit-blocking fairness issue. The updated focused suite passes 5 tests in
+0.621 seconds; full suite passed 330 tests in 150.012 seconds immediately before
+that assertion-only test edit.
+
+The 2026-09-30 prior-art re-audit adds Deep Latent Competition and the recent
+MA-JEPA preprint. Generic opponent-action-conditioned latent prediction is not
+a novelty claim. The only retained candidate is complete legal-reply-set
+prediction plus a separately evaluated minimax action-order objective; its
+novelty is unverified, oracle feasibility is not passed, and training is not
+authorized by evidence. See `docs/V27_PRIOR_ART_REAUDIT_20260930.md` and
+`docs/V27_RESEARCH_POSITIONING.md`.
+
+The preceding committed V2.7 positioning milestone passed 325
+tests in 128.753 seconds on Python 3.11.9. The targeted primary-source review
 now also records the distinction between learned opponent-behavior models
 (He et al., ICML 2016), game-theoretic robust MBRL (Rajeswaran et al., ICML
 2020), fixed-suite match estimation, and worst-case/equilibrium planning. See
@@ -15,10 +48,9 @@ The V2.7 positioning and bounded-search feasibility milestones are commits
 `59b7698093809f0e90934c4934975876842158dc`, respectively, both pushed to
 `origin/main` and verified against remote SHAs. Only local `main` and
 `origin/main` remain; the working tree was clean after the latest push. The
-Obsidian mirror was refreshed at `D:/notes/vault_1/Caissa-JEPA/`: 77 project
-Markdown files, preserved paths, zero SHA-256 mismatches. The vault copy is
-byte-verified, but the updated page has not yet been visually reopened in
-Obsidian during this continuation.
+Obsidian mirror at `D:/notes/vault_1/Caissa-JEPA/` then contained 77 project
+Markdown files. That count describes the prior sync only; the current
+continuation refresh and final hash verification are tracked below.
 
 **Next model-blind feasibility step (2026-09-30):** implemented a project-owned
 depth-limited negamax/alpha-beta opponent over separate bitboard reference
@@ -30,7 +62,8 @@ validation, not an external referee. The fingerprinted 32-game pilot is
 both seats, two games; 86.69 seconds). Search beat random and center/corner
 sanity policies in 4/4 sampled games per family, but this sample is too small to
 estimate strength. Reversi search-self-play remained seat-skewed (minus won
-4/4) and hit its per-move node cap 116 times. Preserve earlier revision
+both unique trajectories; four rows include duplicate seat swaps) and hit its
+per-move node cap 116 times. Preserve earlier revision
 receipts 01 and 02. The targeted plus full regression passes **329 tests in
 93.235 seconds**. No JEPA model, self-play dataset, training or checkpoint was
 created. The opponent bank still fails the gate; investigate symmetry and
@@ -606,6 +639,50 @@ Copy only project Markdown, preserving relative paths and originals. Exclude `.g
 4. `README.md`, `docs/RESEARCH_IDENTITY.md`, `docs/MARS_JEPA_RESEARCH_IDENTITY.md`, `V7_RESEARCH_PROTOCOL.md`, `docs/MARS_HARDENING.md`, `docs/RESEARCH_DECISIONS.md` for implemented chess protocol.
 5. `docs/DOCUMENT_INDEX.md` for current versus historical provenance.
 6. `model_registry.py`, `adversarial_jepa.py`, `research_dataset.py`, `research_protocol.py`, `research_search.py`, `confirmatory_protocol.py`, `training_runtime.py`, `runtime_safety.py` to verify code claims.
+
+## Continuation update — 2026-09-30
+
+The Reversi search helper now canonicalizes player-to-move to +1 and square
+boards over D4, then maps the selected move back to the original frame. The
+focused suite passes 5 tests, including all rotations, reflections, and
+color/turn swaps on a seeded midgame. A second assertion verifies that the
+symmetric initial position has four tied canonical maps, exercising that
+selection path. These tests establish properties of this implementation; they
+do not certify the strategy or external game rules. Receipt
+`docs/validation/V27_SEARCH_OPPONENT_04.json` records 32 exploratory match rows,
+two seeds, two game families, 51.19 seconds, 68 Reversi node-cap hits, and 4/4
+sampled sanity-policy wins. The two Reversi self-play seeds each appear twice
+through seat-swap rows, leaving two unique trajectories: plus/first won 2/2 in
+receipt 04, while minus/second won both unique trajectories in receipt 03. This
+unresolved reversal is evidence against interpreting the tiny pilot as bias
+correction or strength evidence. No training data were generated.
+
+Targeted source review found Deep Latent Competition (CoRL 2020/PMLR 2021), a
+two-player racing system with joint latent dynamics conditioned on both
+players' actions, opponent-view prediction, opponent action modeling, and
+imagined self-play. Its visual racing setting differs from this project's
+deterministic fully observable turn-based board-game class, but it rules out
+novelty claims about competitive latent interaction or opponent-action
+conditioning alone. MA-JEPA (Kaplowitz et al., arXiv preprint submitted
+2026-09-27; not peer reviewed as of this update) further studies joint-action
+conditioned JEPA prediction and imagined planning in cooperative decentralized
+partially observable SMAC tasks. This difference in timing, observability,
+team/reward structure, and solution concept does not itself establish novelty.
+The retained reply-set/minimax-ordering objective remains a candidate only;
+equivalent minimax/value-equivalence literature and exact teacher coverage
+must be checked before implementation or training.
+
+At the start of this continuation, HEAD and `origin/main` were both
+`1f437db31e98e8b3905953a7cc222f9169f89d28`, branch inventory contained only
+`main` locally and remotely, and no tags were reported. The working tree has
+the files listed by `git status` for this continuation; no commit/push of these
+changes has happened yet. Re-run status and hashes before the next mutation.
+
+Final Obsidian sync after the document corrections copied all **78 project
+Markdown files** to `D:/notes/vault_1/Caissa-JEPA/`, preserving relative paths;
+all 78 SHA-256 comparisons passed. This continuation did not reopen the page in
+the Obsidian UI so the user's screen stays available; the prior session
+visually opened and read this entry page.
 
 Update this document and its vault copy after important decisions/deliverables and before ending a long session. Never substitute historical data/run claims for live verification.
 

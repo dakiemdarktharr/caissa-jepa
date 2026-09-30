@@ -1,6 +1,17 @@
 # CAISSA-JEPA research roadmap
 
-Version 1 — 2026-09-29. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
+Version 1 — 2026-09-29; V2.7 positioning amended 2026-09-30. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
+
+Latest positioning gate: prior-art re-audit added Deep Latent Competition,
+MA-JEPA, neural minimax-Q and learned ranking inside minimax search. Generic
+joint-action JEPA, opponent-conditioned imagination, and learned minimax action
+ordering are not novelty claims. The retained candidate combines complete
+legal-reply-set prediction with a separately ablated minimax action-order
+objective, but direct methodological equivalence is unresolved and the label
+coverage gate has failed at prior V2.6 budgets. No V2.7 model/data/training is
+cleared. The next work is a focused primary-source check plus model-blind teacher
+coverage/power design; if no fair informative study exists, pivot to a benchmark
+or negative-results paper rather than relaxing gates.
 
 Latest M7 evidence: V2.5 grid05 completed all42 cells and independently passed
 its artifact/source/data/schedule audit. It was **not promoted**: raw-tail's
@@ -184,8 +195,8 @@ claim without a separate validated estimator.
 
 | Workstream / size | Dependency | Deliverable and acceptance | Current status / kill gate |
 | --- | --- | --- | --- |
-| V2.7 positioning / small | V2.6 gate failure | Focused primary-source search on two-player/reply-conditioned JEPA, strategic representation objectives, and outcome-trained latent planners; identify an incremental question not already tested | Targeted review records I-JEPA, SPR, TD-JEPA, MuZero, value equivalence, opponent modeling, and game-theoretic MBRL; it is not systematic. Novelty risk remains high. Stop the novelty claim if the objective is only a domain replication. |
-| Rules and opponent feasibility / medium | Positioning | Project-owned rules for at least two game families; independently check transitions/terminal/role/symmetry; test opponent diversity, non-saturated match schedule, game length and CPU runtime | The 96-game sanity policy is too weak. A depth-3/500-node bitboard alpha-beta policy now agrees with the main adapter on 12 seeded trajectories and beats random/center controls in 4/4 pilot pairings per family, but only two seeds; Reversi self-play is seat-skewed (minus won 4/4) and 116 node-cap hits remain. Study symmetry/budget and repeat model-blind before data generation. OpenSpiel reference remains uninstalled. |
+| V2.7 positioning / small | V2.6 gate failure | Focused primary-source search on multi-agent JEPA, competitive latent world models, minimax-preserving objectives, and counterfactual action-set representations; define one incremental question not already tested | Novelty re-audit found Deep Latent Competition (competitive two-player joint latent dynamics/opponent modeling) and MA-JEPA (joint-action-conditioned JEPA in cooperative simultaneous Dec-POMDP). Risk is now **critical**. Candidate only: all legal reply-set prediction plus minimax action-order preservation; unresolved, unfrozen. Stop if close prior art already tests this increment. |
+| Rules and opponent feasibility / medium | Positioning | Project-owned rules for at least two game families; independently check transitions/terminal/role/symmetry; test opponent diversity, non-saturated match schedule, game length and CPU runtime | Depth-3/500-node search agrees with the adapter on 12 seeded trajectories. After Reversi D4/color-role canonicalization, its capped pilot beats random/center controls in 4/4 samples per pairing/family, with 68 cap hits (down from 116 in the preceding two-seed run). Same-policy self-play favors plus/first on both unique seeds (four receipt rows include duplicate seat-swap records); the preceding version favored minus/second on both unique seeds. Seat/RNG effects are unresolved. An independent review found no blocker. Full regression passes 330 tests; receipt source hashes match. Do not generate research data yet; increase seed diversity and independently audit rules. OpenSpiel reference remains uninstalled. |
 | Data audit / medium | Rules pilot passes | Local self-play manifest with seeds, policy/opponent provenance, outcomes, hashes, trajectory-grouped splits and replay/duplicate/seat-balance audits | Not started; production data/training forbidden before pass. No third-party corpus or service needed. |
 | Method freeze and matched pilot / large | Positioning, feasibility, data audit | Freeze two-ply JEPA plus direct PV, task-prediction, decoded-feature and JEPA-ablation controls; identical trajectory labels, model budget, optimizer schedule and inference planner; at least three seeds; all censors retained | Not started. A match-score result is limited to the declared opponent suite; keep expected-opponent and minimax planners as separate studies. |
 | Development and selection / large | Pilot informative | Append-only adaptive development ledger; freeze finite shortlist before distinct opponent/variant selection; paired seats/color, clustered uncertainty and multiplicity/censor rules | Not started. A development improvement nominates a candidate only; no reuse of exposed opponents as confirmation. |

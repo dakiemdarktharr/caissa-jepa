@@ -1,13 +1,13 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
-**Cập nhật: 29/09/2026 — bản trao đổi với giáo sư.** V1 và các grid V2–V2.5
+**Cập nhật: 30/09/2026 — bản trao đổi với giáo sư.** V1 và các grid V2–V2.5
 đều chưa vượt cổng đề cử. V2.5 là so sánh đầy đủ, đã audit độc lập, nhưng
 không cho thấy JEPA vượt baseline: mức exact gần như bằng không và planner
 hybrid dùng latent kém hơn. **Chưa chứng minh JEPA tốt hơn baseline; tài liệu
 này phù hợp để xin góp ý về pivot nghiên cứu, chưa phải bản thảo Q1.** Q1 là
 mục tiêu chất lượng, không phải cam kết được nhận.
 
-**Cập nhật hướng V2.7:** V2.6 không qua cổng chi phí/độ phủ của nhãn minimax:
+**Định vị V2.7 ban đầu (nay đã được rà soát lại):** V2.6 không qua cổng chi phí/độ phủ của nhãn minimax:
 game nhỏ dễ giải chính xác, còn Connect4-8x8 giữa ván phần lớn hết ngân sách
 solver. Tôi đề xuất đánh giá một hướng riêng: dữ liệu self-play tự sinh và
 paired matches trên ít nhất hai họ game khó hơn, so sánh JEPA với direct
@@ -33,17 +33,49 @@ opponent search độc lập và kiểm tra luật; chưa tạo self-play datase
 node mỗi nước trên bộ luật bitboard tham chiếu do dự án tự viết. 12 trajectory
 có seed trên ba cấu hình game khớp legal actions, trạng thái cuối và utility
 với adapter chính; đây chỉ là kiểm tra nội bộ, không phải referee bên ngoài.
-Pilot fingerprinted 32 trận (hai seed, hai chỗ ngồi, hai game) chạy86.69 giây;
-run cùng lịch trước đó mất53.43 giây. Search
-thắng center/random 4/4 trận mỗi cặp ở cả hai game. Tuy nhiên đây là mẫu quá nhỏ
-để ước lượng sức mạnh. Reversi search-self-play bị lệch chỗ ngồi (quân đen
-thua4/4) và có116 lần chạm node cap, nên opponent chưa đủ điều kiện làm baseline
-hoặc sinh dữ liệu nghiên cứu. Tôi sẽ xử lý symmetry/budget và lặp feasibility
-model-blind trước khi đóng băng protocol. Chi tiết:
+Pilot v2 có fingerprint 32 trận và chạy86.69 giây; search thắng center/random
+4/4 mẫu mỗi cặp/game nhưng N=2 seed. Reversi v2 self-play để quân âm thắng
+4/4 và có116 node-cap hits. Sau đó tôi thêm canonicalization D4 cùng chuẩn hóa
+player-to-move. Unit test xác nhận các phép quay/lật/đổi màu cùng ánh xạ về một
+trạng thái canonical và kiểm tra nhánh bốn canonical maps đồng hạng ở bàn đầu.
+Pilot v3 cùng lịch chạy51.19 giây, giảm còn68 cap hits; tuy vậy self-play lần
+này quân dương/đi trước thắng trên cả hai seed duy nhất (bốn receipt rows có
+hai bản sao seat-swap). V2 trước đó quân âm thắng trên cả hai seed duy nhất.
+Các chỗ ngồi đảo dấu giữa hai phiên bản cho thấy ngân hàng opponent vẫn chưa
+được hiệu chuẩn; hai seed không tách được first-move advantage khỏi bất đối
+xứng policy/RNG. Vì vậy
+chưa dùng để sinh dữ liệu nghiên cứu.
+
+**Rà soát novelty mới:** Deep Latent Competition đã mô hình hóa tương tác latent
+cạnh tranh giữa hai người, dự đoán góc nhìn/hành động đối thủ và self-play tưởng
+tượng trong game đua xe. Preprint MA-JEPA (27/09/2026) đã dùng JEPA với predictor
+điều kiện theo trạng thái và hành động đồng thời của nhiều agent trong cooperative
+SMAC. Dù hai domain này khác game luân phiên, fully observable, zero-sum mà đề tài
+nhắm tới, chúng khiến claim “JEPA đầu tiên có action/opponent conditioning” không
+thể bảo vệ. Novelty hiện ở mức rủi ro nghiêm trọng/chưa xác minh. Candidate hẹp
+cho tìm kiếm tiếp là dự đoán toàn bộ tập legal replies và bảo toàn thứ tự hành
+động minimax dưới compute budget công bằng; chưa đóng băng, chưa có bằng chứng
+đã là phương pháp mới. Chi tiết và receipts:
 [V2.7 positioning](V27_RESEARCH_POSITIONING.md), receipts
 [01](validation/V27_SEARCH_OPPONENT_01.json),
 [02](validation/V27_SEARCH_OPPONENT_02.json),
-[03](validation/V27_SEARCH_OPPONENT_03.json).
+[03](validation/V27_SEARCH_OPPONENT_03.json),
+[04](validation/V27_SEARCH_OPPONENT_04.json).
+
+Rà soát nguồn sâu hơn còn tìm thấy minimax-Q neural learners và AAR/AI: agent
+RTS liên quan dùng learned transition, leaf evaluation, action ranking cùng
+minimax search. Vì vậy ngay cả “học thứ tự hành động minimax” cũng có tiền lệ
+gần; candidate chỉ đáng triển khai nếu có phân biệt toán học rõ với các phương
+pháp này và cổng độ phủ teacher không chọn lọc vị trí. Báo cáo đối chiếu từng
+công trình, claim limit và điều kiện dừng nằm trong
+[V2.7 prior-art re-audit](V27_PRIOR_ART_REAUDIT_20260930.md). Pilot chuẩn hóa
+Reversi chỉ vượt đối thủ sanity 4/4 trên hai seed; lệch ghế tự đấu đảo từ quân
+âm thắng trên cả hai seed duy nhất sang quân dương thắng trên cả hai seed duy
+nhất (bốn receipt rows mỗi phiên bản có seat-swap lặp), nên hiện không chứng
+minh sức mạnh hay đã sửa được bias. Full regression đạt330 test; reviewer độc
+lập không tìm thấy lỗi chặn commit và các chỉnh sửa về số ván duy nhất/test
+tie-map đã được áp dụng. Tuy nhiên không có model,
+dataset, checkpoint hoặc kết quả JEPA mới.
 
 ## Kết quả V2.5 mới nhất
 

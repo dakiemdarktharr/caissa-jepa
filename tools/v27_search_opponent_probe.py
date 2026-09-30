@@ -119,7 +119,7 @@ def run_probe():
             "search_node_cap_exhaustions": sum(row["node_cap_exhaustions"] for row in rows),
         }
     return {
-        "pilot_version": "v2-seat-seeded-tie-order",
+        "pilot_version": "v3-player-relative-dihedral-canonicalization",
         "stage": "exploratory model-blind bounded-search opponent feasibility; not a strength benchmark",
         "rules_source": "project-owned independent bitboard ReferenceGame; differential agreement with BoardGame is not external validation",
         "game_configs": [name for name, _ in GAME_CONFIGS],
@@ -127,7 +127,8 @@ def run_probe():
         "base_seeds": list(SEEDS),
         "search": {"max_depth": MAX_DEPTH, "per_move_node_limit": NODE_LIMIT,
                    "ordering": "center-first; reversi corners-first; randomized within equal-priority groups",
-                   "randomness": "independent deterministic RNG streams attached to absolute seat; same base seed for paired seat swaps"},
+                   "randomness": "independent deterministic RNG streams attached to absolute seat; same base seed for paired seat swaps",
+                   "reversi_symmetry": "normalize player-to-move as +1 and canonicalize the square board over D4; sample uniformly among tied canonical maps"},
         "source_sha256": {
             "probe": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             "search_opponent": hashlib.sha256((ROOT / "benchmarks" / "v27_search_opponent.py").read_bytes()).hexdigest(),
