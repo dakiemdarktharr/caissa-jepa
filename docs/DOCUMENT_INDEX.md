@@ -148,6 +148,17 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   slightly better fit than the learned policy; this establishes no JEPA benefit.
 - `KLENT_K0_1_INDEPENDENT_REVIEW.md`: read-only implementation audit, findings,
   repairs and scope limits.
+- `V28_PRIOR_ART_DELTA_20260930.md`: targeted primary-source update for H-JEPA,
+  ActSWM, Action-Conditioned Predictive Consistency and TD-JEPA; it narrows
+  action-sensitivity and transfer novelty claims and records the remaining
+  role-conditioned adversarial-game question as unverified.
+- `V28_REVERSI4_RULES_GATE_01.md` and `validation/V28_REVERSI4_RULES_GATE_01.json`:
+  model-blind exhaustive rules/transition subgate for project-owned Reversi4.
+  It is not a data-split/power pass or game-strength result.
+- `../tools/v28_reversi4_rules_gate.py` and
+  `../test_v28_reversi4_rules_gate.py`: independent coordinate-ray rules
+  comparator, exhaustive gate runner, and bounded regression tests; no
+  third-party engine or training data is used.
 - `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
   deterministic project-owned match-schedule feasibility helper and its tests;
   not a strength benchmark.

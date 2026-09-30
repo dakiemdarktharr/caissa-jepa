@@ -846,3 +846,35 @@ at `D:/notes/vault_1/Caissa-JEPA/` most recently contains all 90 project
 Markdown files; the post-result verified copy pass found zero missing files and
 zero SHA-256 mismatches. The PowerShell window was hidden and Obsidian UI stayed
 closed to preserve the user's screen.
+
+### V2.8 literature delta and model-blind rules gate (2026-09-30)
+
+Targeted full-text primary-source review added H-JEPA (arXiv v1, 2026-09-27),
+ActSWM (arXiv v2, 2026-08-15), Action-Conditioned Predictive Consistency
+(2026-08-13), and TD-JEPA (ICLR 2026 proceedings) in
+`docs/V28_PRIOR_ART_DELTA_20260930.md`. These establish prior art for
+action-conditioned JEPA, action-sensitivity/readout, multi-step dynamics,
+planning, and policy/task transfer. No direct two-player alternating
+perfect-information zero-sum JEPA method was found in this targeted pass, which
+does not certify novelty. The candidate must remain an explicit role-conditioned
+alternating-action comparison against KLENT, task-prediction and minimax/tree
+controls; if the measured fixed-budget decision benefit is absent, drop the
+algorithm-novelty claim.
+
+The project-owned Reversi4 adapter passed the exhaustive *rules-only* subgate
+against a separate coordinate-ray oracle: all 62,789 reachable player-states
+(including 6,168 terminal), 89,332 legal transitions, 8,988 forced-pass states
+and 113,900 complete two-ply reply pairs were checked; maximum branching was 6.
+The initial run took 8.73s wall / 8.59s CPU on local Python 3.11.9. No dataset
+or training was created. The temporary source used commit
+`c335c53ab273b92a1e533cb6bd7b98fb01b23ab6` plus a working-tree source hash; a
+post-commit audit is required for the final receipt. This passes only rule,
+transition and two-ply coverage for a 4x4 feasibility variant. Leakage/split,
+opponent power, model compute parity, JEPA benefit and cross-game transfer all
+remain unaudited. Full Reversi4 results must not be generalized to the stated
+game class. Current gate source/test and literature note have passed the 348-test
+full regression (127.285 seconds). The exhaustive pre-commit audit used
+working-tree source; rerun after commit to pin the final source hash and resource
+receipt. Then sync the new audit note to Obsidian and push/verify the documentation
+milestone. Data split, opponent-power, model-compute and JEPA-superiority gates
+remain open.

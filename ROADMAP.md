@@ -325,3 +325,23 @@ JEPA generally. The next design must be separately versioned before fitting:
    readiness review. Do not relabel this pilot as confirmation.
 
 Commit verified milestones on main, push without rewriting history, verify remote SHA, and mirror all Markdown to Obsidian. Record reviewer findings and repairs. Mark only deliverables actually executed as complete. Unfinished study stages must remain explicit, even when engineering tests pass.
+
+## V2.8 update: prior art and first rules subgate (2026-09-30)
+
+Recent primary full text now includes H-JEPA, ActSWM, Action-Conditioned
+Predictive Consistency and TD-JEPA. Generic action-conditioned latent prediction,
+action sensitivity/readout, multi-step planning and transfer are not novelty
+claims. The only remaining candidate question is the value of explicit player
+role and alternating opponent-reply structure under fixed-budget decisions,
+compared with KLENT, matched task prediction, and minimax/tree-value controls.
+This positioning is tentative; see `docs/V28_PRIOR_ART_DELTA_20260930.md`.
+
+The exhaustive Reversi4 rules subgate passed against a separate project-owned
+coordinate-ray oracle: 62,789 reachable states, 89,332 transitions, 8,988 pass
+states and 113,900 full two-ply reply pairs in 8.73 seconds wall/8.59 seconds
+CPU. This is a small-variant rule/coverage result only; data leakage, opponent
+power, memory/compute parity, locked sample-size/power, and cross-game gates
+remain open. No trajectories or training data were produced. Full regression
+passes 348 tests in 127.285 seconds. Next: pin the post-commit exhaustive
+receipt, then independently audit the immutable schedule/split plan. Do not train
+until data/provenance and model-blind power gates pass.
