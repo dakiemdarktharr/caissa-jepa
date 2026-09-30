@@ -1,0 +1,73 @@
+{
+  "schema": "caissa-v28-klent-countup-01",
+  "stage": "exploratory synthetic baseline convergence check",
+  "claim_status": "engineering/fidelity evidence only; no board-game strength or JEPA comparison",
+  "audit_correction": "The reported policy TV and Brier values score the one-step policy-improvement target, not the learned network policy. They are target-construction agreement only; Q MAE is learned-head error. See docs/KLENT_K0_1_INDEPENDENT_REVIEW.md and the versioned follow-up probe.",
+  "source_commit": "f9ac7f739fda1268515ef7e03652a9e9bc0bae47",
+  "raw_receipt_path": "chess_data/two-player-klent-toy/v28_countup_dev02.json",
+  "raw_receipt_sha256": "96ef527b96744352d6fe8076cabecc798be9e706a508ba2353a5177f46fce7ea",
+  "source_sha256": {
+    "two_player/klent_baseline.py": "6cc091222ff89188ac9e26bbc4ba6e95c78b2999a4162980657eddf3156474a8",
+    "two_player/klent_model.py": "b76fe4f4b58a3318617f392fb9d798b0b8dcc56bb58cccbeb0d29414ec194997",
+    "tools/v28_klent_countup_probe.py": "7b4872fdf2805819d9e1e16c23a4d224d5f9a4fff989208e7103d6e5de0e98df"
+  },
+  "config_sha256": "649daf3570dc11fdb0ee06a32634de27c7cdae684c0278749361f79fd000c8ea",
+  "environment": {
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "compute": "local CPU; no cloud or paid hardware",
+    "data": "procedurally generated online from a project-owned seven-state deterministic game; no external data",
+    "game": "Count Up N=7, actions add 1 or 2, alternating zero-sum, terminal on reaching/exceeding 7"
+  },
+  "training": {
+    "seeds": [17, 29, 43],
+    "alpha": 0.5,
+    "beta": 1.0,
+    "lambda": 0.8824969025845955,
+    "latent": 8,
+    "phases": 400,
+    "episodes_per_phase": 16,
+    "episodes_per_seed": 6400,
+    "batch_size": 64,
+    "fit_epochs_per_phase": 1,
+    "optimizer_steps_per_seed": 800,
+    "source_reproduction": false,
+    "checkpoints_written": false
+  },
+  "exact_target": "backward-induction quantal-response fixed point with temperature alpha",
+  "metrics": [
+    {
+      "seed": 17,
+      "transitions": 31318,
+      "wall_seconds": 2.5165903,
+      "cpu_seconds": 2.5,
+      "mean_policy_total_variation": 0.01994529830322279,
+      "mean_policy_brier": 0.00044816183670058857,
+      "mean_q_mae": 0.11375103220078854
+    },
+    {
+      "seed": 29,
+      "transitions": 31256,
+      "wall_seconds": 3.7943144,
+      "cpu_seconds": 3.765625,
+      "mean_policy_total_variation": 0.020271964800510998,
+      "mean_policy_brier": 0.0004665755838996467,
+      "mean_q_mae": 0.05894241274085625
+    },
+    {
+      "seed": 43,
+      "transitions": 31170,
+      "wall_seconds": 3.7873991,
+      "cpu_seconds": 3.765625,
+      "mean_policy_total_variation": 0.016093075790795764,
+      "mean_policy_brier": 0.0003305533325686026,
+      "mean_q_mae": 0.05666934898491265
+    }
+  ],
+  "limitations": [
+    "single synthetic finite game with seven states",
+    "no held-out games, opponents, or generalization split",
+    "no JEPA model or non-JEPA ablation comparison",
+    "no statistical superiority or paper-reproduction claim"
+  ]
+}

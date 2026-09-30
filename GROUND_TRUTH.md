@@ -814,3 +814,30 @@ and `docs/DOCUMENT_INDEX.md` link both documents. All 80 project Markdown files 
 `D:/notes/vault_1/Caissa-JEPA/`; SHA-256 comparison found zero missing files and
 zero mismatches. The Obsidian UI was not opened in this session to keep the
 desktop available.
+
+### Current K0.1 convergence evidence (2026-09-30)
+
+The post-commit source-hashed Count Up probe ran on commit
+`f9ac7f739fda1268515ef7e03652a9e9bc0bae47`, with seeds 17, 29 and 43. **Independent
+review correction:** its policy TV/Brier values (TV 0.01995, 0.02027, 0.01609;
+Q MAE 0.11375, 0.05894, 0.05667) compare the one-step improvement target
+\(\pi'\) with the exact quantal-response fixed point, not the network policy
+\(\pi_\theta\). They do not demonstrate learned-policy convergence. Q MAE is
+from the learned Q head. The result concerns one seven-state synthetic game and
+is not board-game strength, cross-game generalization, KLENT reproduction, or
+JEPA-over-baseline evidence. The 346-test full-suite result predates the latest
+audit repairs and must be rerun. The independent reviewer also found stale
+on-policy target reuse when `epochs > 1` and missing replay/model/role provenance.
+The implementation now rejects multi-epoch fit and attaches deterministic
+trajectory identity, rules version, player sequence and behavior-model hash; a
+corrected learned-policy probe and tests are pending. The raw per-state output
+remains excluded from Git. Receipts/reports are
+`docs/validation/V28_KLENT_COUNTUP_01.json` and
+`docs/V28_KLENT_COUNTUP_01.md` (historical/corrected interpretation). Do not
+start production board-game training until baseline review, model-blind rules,
+runtime/power and data-split gates pass. The repository remains on `main`; its
+current receipt/docs/fix changes need commit and remote verification. Obsidian
+at `D:/notes/vault_1/Caissa-JEPA/` was refreshed with 88 project Markdown files;
+the verified copy pass had zero missing files and zero SHA-256 mismatches. The
+PowerShell window was hidden and Obsidian UI stayed closed to preserve the
+user's screen.

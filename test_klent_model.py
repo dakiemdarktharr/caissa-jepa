@@ -35,6 +35,7 @@ class CountUpGame:
     """Small acyclic alternating game used only for synthetic validation."""
 
     name = "count-up-test"
+    rules_version = "count-up-test-v1"
 
     def initial(self):
         from two_player.games import State
@@ -135,10 +136,24 @@ class KLENTModelTests(unittest.TestCase):
             self.assertTrue(np.all(trajectory["q_target"] >= -1.0))
             self.assertTrue(np.all(trajectory["q_target"] <= 1.0))
             self.assertTrue(np.all(trajectory["legal"].sum(axis=1) == 2))
+            self.assertEqual(trajectory["game_name"], game.name)
+            self.assertEqual(trajectory["rules_version"], game.rules_version)
+            self.assertEqual(len(trajectory["player_sequence"]), trajectory["plies"])
+            self.assertEqual(len(trajectory["trajectory_sha256"]), 64)
+            self.assertEqual(len(trajectory["behavior_model_sha256"]), 64)
+            np.testing.assert_array_equal(
+                trajectory["player_sequence"], [1 if i % 2 == 0 else -1 for i in range(trajectory["plies"])]
+            )
+        replay_a = collect_selfplay_batch(game, model, episodes=1, seed=73)["trajectories"][0]
+        replay_b = collect_selfplay_batch(game, model, episodes=1, seed=73)["trajectories"][0]
+        self.assertEqual(replay_a["trajectory_sha256"], replay_b["trajectory_sha256"])
+        self.assertEqual(replay_a["behavior_model_sha256"], replay_b["behavior_model_sha256"])
         report = fit_selfplay_batch(model, collected, epochs=1, batch_size=8, seed=73)
         self.assertEqual(report["training_examples"], collected["transitions"])
         self.assertGreater(report["optimizer_steps"], 0)
         self.assertTrue(np.isfinite(report["history"][0]["loss"]))
+        with self.assertRaisesRegex(ValueError, "exactly one epoch"):
+            fit_selfplay_batch(model, collected, epochs=2, batch_size=8, seed=73)
 
 
 if __name__ == "__main__":

@@ -133,6 +133,15 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   probe on a seven-state synthetic game; its generated raw receipt stays under
   the excluded `chess_data/` tree, with only a small aggregate receipt eligible
   for source control.
+- `V28_KLENT_COUNTUP_01.md` and `validation/V28_KLENT_COUNTUP_01.json`: compact
+  historical report and receipt for the three-seed Count Up probe. Independent
+  review found that its reported policy error scores the improvement target,
+  not the learned policy; the report includes this correction. The raw
+  state-level receipt remains ignored.
+- `../tools/v28_klent_countup_probe_v2.py`: corrected follow-up that evaluates
+  the learned network policy and improvement target separately, and hashes
+  trajectory identity/role/model metadata. It is an engineering diagnostic,
+  not board-game or JEPA evidence.
 - `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
   deterministic project-owned match-schedule feasibility helper and its tests;
   not a strength benchmark.

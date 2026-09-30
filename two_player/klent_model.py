@@ -6,11 +6,13 @@ separate over one shared tanh encoder, as specified in the source paper.
 """
 
 from dataclasses import asdict, dataclass
+import hashlib
+import json
 import time
 
 import numpy as np
 
-from .games import ACTION_SIZE, FEATURE_SIZE
+from .games import ACTION_SIZE, FEATURE_SIZE, RULES_VERSION
 from .klent_baseline import regularized_policy_target
 from .klent_baseline import alternating_lambda_returns
 
@@ -188,6 +190,7 @@ def collect_selfplay_episode(game, model, rng, *, max_plies=256):
     values = []
     rewards = []
     terminal_successors = []
+    replay = []
     plies = 0
     while True:
         result = game.terminal(state)
@@ -210,6 +213,7 @@ def collect_selfplay_episode(game, model, rng, *, max_plies=256):
         state_value = float(np.sum(policy_target * np.where(legal, q_values[0], 0.0)))
         action = int(rng.choice(np.arange(ACTION_SIZE), p=policy_target))
         actor = state.player
+        replay.append({"board": list(state.board), "player": actor, "action": action})
         next_state = game.transition(state, action)
         next_result = game.terminal(next_state)
         reward = 0.0 if next_result is None else float(actor * next_result)
@@ -229,6 +233,23 @@ def collect_selfplay_episode(game, model, rng, *, max_plies=256):
     returns = alternating_lambda_returns(
         rewards, next_values, terminal_successors, lam=model.config.lambda_, gamma=1.0
     )
+    model_digest = hashlib.sha256()
+    for name in sorted(model.params):
+        model_digest.update(name.encode("utf-8"))
+        model_digest.update(np.asarray(model.params[name]).tobytes(order="C"))
+    model_digest.update(json.dumps(model.config_dict(), sort_keys=True).encode("utf-8"))
+    rules_version = getattr(game, "rules_version", RULES_VERSION)
+    game_name = getattr(game, "name", type(game).__name__)
+    identity_payload = {
+        "game": game_name,
+        "rules_version": rules_version,
+        "behavior_model_sha256": model_digest.hexdigest(),
+        "replay": replay,
+        "outcome": int(game.terminal(state)),
+    }
+    trajectory_sha256 = hashlib.sha256(
+        json.dumps(identity_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
     return {
         "x": np.stack([row[0] for row in states]),
         "legal": np.stack([row[1] for row in states]),
@@ -239,6 +260,11 @@ def collect_selfplay_episode(game, model, rng, *, max_plies=256):
         "terminal_successors": np.asarray(terminal_successors, dtype=bool),
         "outcome": int(game.terminal(state)),
         "plies": plies,
+        "game_name": game_name,
+        "rules_version": rules_version,
+        "behavior_model_sha256": model_digest.hexdigest(),
+        "player_sequence": [row["player"] for row in replay],
+        "trajectory_sha256": trajectory_sha256,
     }
 
 
@@ -263,8 +289,8 @@ def collect_selfplay_batch(game, model, *, episodes, seed, max_plies=256):
 
 def fit_selfplay_batch(model, batch, *, epochs, batch_size, seed):
     """Fit detached policy/return targets from a collected on-policy batch."""
-    if type(epochs) is not int or epochs < 1 or type(batch_size) is not int or batch_size < 1:
-        raise ValueError("epochs and batch size must be positive integers")
+    if type(epochs) is not int or epochs != 1 or type(batch_size) is not int or batch_size < 1:
+        raise ValueError("on-policy KLENT fitting requires exactly one epoch and a positive batch size")
     trajectories = batch.get("trajectories")
     if not trajectories:
         raise ValueError("cannot fit an empty self-play batch")

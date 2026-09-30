@@ -122,6 +122,13 @@ new \(\pi'\). Generate each episode to terminal, then compute return targets.
 Store seeds and player roles. Independent train/development/locked-final splits
 are by whole game/trajectory before any window extraction.
 
+The implementation rejects `epochs != 1`: repeating a frozen on-policy batch
+after parameter updates is off-policy reuse and requires a separately versioned
+method, not an implicit trainer option. Each trajectory record carries game and
+rules identity, ordered acting-player sequence, behavior-model parameter/config
+hash, and stable replay-derived trajectory hash before it can enter a persistent
+dataset or split audit.
+
 ## Required synthetic checks before game training
 
 1. **Policy target algebra:** compare the numerically stable masked implementation
