@@ -122,6 +122,12 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `V28_KLENT_JEPA_COMPARISON_DESIGN.md`: new V2.8 candidate design for a fair
   direct policy/Q versus JEPA-augmented comparison; not frozen, implemented, or
   evidence.
+- `KLENT_CLEANROOM_BASELINE_SPEC.md`: equation-level K0.1 clean-room baseline
+  spec and synthetic fidelity gates; a documented CAISSA adaptation, not a
+  reproduction of upstream code or paper-scale results.
+- `../two_player/klent_baseline.py` and `../test_klent_baseline.py`: K0.1
+  masked policy-target and signed lambda-return utilities; 10 synthetic unit
+  tests pass, with no self-play fitting or game-strength result.
 - `../tools/v27_match_feasibility.py` and `../test_v27_match_feasibility.py`:
   deterministic project-owned match-schedule feasibility helper and its tests;
   not a strength benchmark.

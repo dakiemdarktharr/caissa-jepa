@@ -791,10 +791,23 @@ training schedule, measured CPU compute and inference budget. It separates this
 fixed-opponent behavior estimand from a minimax/planning estimand and defines
 matched task-prediction controls, leakage/coverage/runtime gates, multiple
 compute axes and explicit kill criteria. This is not frozen, code, trained
-model, or evidence of superiority. Next allowed development sequence is a
-clean-room baseline specification, synthetic fidelity checks, then a
-model-blind data/compute audit; JEPA training remains gated. `ROADMAP.md` and
-`docs/DOCUMENT_INDEX.md` link the proposal. The latest sync copied all 79
-project Markdown files to `D:/notes/vault_1/Caissa-JEPA/`; SHA-256 comparison
-found 0 missing files and 0 mismatches. Obsidian UI remains closed in this
-session to keep the user's desktop available.
+model, or evidence of superiority. The clean-room baseline specification is
+K0.1, and `two_player/klent_baseline.py` now implements its masked policy target
+and player-perspective alternating lambda-return utilities. Ten focused
+synthetic unit tests pass; two initial assertions failed and were corrected
+(one numerical tolerance, one validation order) before the passing run. These
+are code-correctness checks, not policy convergence, game results, or evidence
+of JEPA superiority. The complete repository suite then passed **340 tests in
+114.972 seconds**, including the new tests; Qt emitted existing missing-asset
+warnings during UI smoke coverage, but the suite exited successfully. Next is
+the direct policy/Q fitting loop and exact alternating-toy convergence test,
+followed by independent fidelity review and the model-blind data/compute audit;
+JEPA training remains gated. Added
+`docs/KLENT_CLEANROOM_BASELINE_SPEC.md` as K0.1: it specifies the masked KLENT
+policy-improvement distribution, action-value loss, player-relative signs for
+alternating lambda returns, and six synthetic fidelity checks. It is an
+equation-level CAISSA adaptation, not a paper/code reproduction. `ROADMAP.md`
+and `docs/DOCUMENT_INDEX.md` link both documents. All 80 project Markdown files were copied to
+`D:/notes/vault_1/Caissa-JEPA/`; SHA-256 comparison found zero missing files and
+zero mismatches. The Obsidian UI was not opened in this session to keep the
+desktop available.

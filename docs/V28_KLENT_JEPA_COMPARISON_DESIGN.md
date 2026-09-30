@@ -147,13 +147,13 @@ must be reported separately.
 | --- | --- | --- |
 | KLENT source audit | Full paper, official code presence, license state, objective and budget extracted | PASS for paper; upstream code license not established, no code fetched or used |
 | Objective distinction | Independent method review explains which outcome is policy behavior and which is minimax; no conflation | OPEN |
-| Clean-room baseline spec | Equations, perspective, legal-action masks, lambda targets, seed/config and synthetic checks frozen | NOT STARTED |
+| Clean-room baseline spec | Equations, perspective, legal-action masks, lambda targets, seed/config and synthetic checks frozen | K0.1 equations and perspective specified; target/return utilities implemented; 10 focused tests and full repository suite (340 tests, 114.972s) pass. Independent fidelity review and small-game convergence test remain open. |
 | Model-blind data/compute gate | Game rules, trajectory split, complete reply coverage, legal replay, runtime and power receipt pass | NOT STARTED |
 | Development pilot | Multiple seeds, append-only config/data/checkpoint hashes; all controls and failures retained | NOT STARTED |
 | Locked confirmation | Preregistered sample, primary metric, multiplicity, timeout policy and independent review | CLOSED |
 
 All future receipts must record source commit, source/config hash, dataset
 fingerprint, checkpoint hashes, seed, sample/skip counts, cost counters and
-uncertainty. The only allowed first implementation after the specification is
-frozen is the clean-room KLENT baseline plus synthetic fidelity tests; training
-the JEPA candidate waits for the model-blind data/compute gate.
+uncertainty. The next implementation is the direct policy/Q fitting and data
+collection loop plus synthetic fidelity/convergence tests. JEPA training waits
+for independent baseline review and the model-blind data/compute gate.
