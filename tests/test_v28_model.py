@@ -266,7 +266,7 @@ class V28ModelTests(unittest.TestCase):
                              observed_root("reversi6")])
         for variant in ("reply-jepa", "task-value-dynamics", "direct-leaf"):
             model = Model(Config(variant=variant, seed=11, latent=6, batch_size=2))
-            metrics = model.update(batch)
+            metrics = model._update(batch)
             self.assertEqual(model.step, 1)
             self.assertTrue(np.isfinite(metrics["loss"]))
             self.assertGreater(metrics["gradient_norm"], 0)
@@ -284,7 +284,8 @@ class V28ModelTests(unittest.TestCase):
     def test_checkpoint_requires_exact_config_and_dataset_identity(self):
         model = Model(Config(variant="reply-jepa", seed=3, latent=4, batch_size=2))
         identity = {"dataset_sha256": "a" * 64,
-                    "audit_sha256": "b" * 64, "split": "train"}
+                    "audit_sha256": "b" * 64,
+                    "run_config_sha256": "c" * 64, "split": "train"}
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "checkpoint.npz"
             model.save(path, identity)
@@ -295,11 +296,29 @@ class V28ModelTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "identity"):
                 Model.load(path, model.config, {"dataset_sha256": "c" * 64,
                                                 "audit_sha256": "b" * 64,
+                                                "run_config_sha256": "c" * 64,
                                                 "split": "train"})
             with self.assertRaisesRegex(ValueError, "requires dataset"):
                 model.save(path, {})
             with self.assertRaisesRegex(ValueError, "train split"):
                 model.save(path, {**identity, "split": "selection"})
+
+    def test_checkpoint_rejects_inconsistent_epoch_history_and_optimizer_steps(self):
+        model = Model(Config(seed=3, latent=4, batch_size=2))
+        identity = {"dataset_sha256": "a" * 64,
+                    "audit_sha256": "b" * 64,
+                    "run_config_sha256": "c" * 64, "split": "train"}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "checkpoint.npz"
+            model.training_state = {"completed_epochs": 1, "history": []}
+            with self.assertRaisesRegex(ValueError, "epoch count"):
+                model.save(path, identity)
+            model.training_state = {
+                "completed_epochs": 1,
+                "history": [{"epoch_index": 0, "updates": 1,
+                             "metric_semantics": "root_weighted_pre_update_minibatch_train"}]}
+            with self.assertRaisesRegex(ValueError, "optimizer step"):
+                model.save(path, identity)
 
 
 if __name__ == "__main__":

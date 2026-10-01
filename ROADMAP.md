@@ -9,10 +9,14 @@ and treat the implementation as a separate V02 supervised candidate. The
 candidate is documented in `docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md`; the
 independent implementation/method review found no remaining P1 issue after
 terminal-H2, perspective, forced-pass, gradient and checkpoint tests were
-added. The current V2.8 suite passes 63 tests. This signs off only on code and
-objective consistency. No training has occurred. Do not begin fitting until
-the V02 artifact set is frozen and the hidden nonlearned V08 schedule completes
-its replay, runtime and power gates.
+added. This signs off only on code and objective consistency. The current V2.8
+suite count is updated in the dated continuation below. A deterministic
+train-only runtime is implemented and has received public-entrypoint,
+resume-history, receipt, and runtime-fingerprint hardening. Independent review
+found no remaining P1/P2 blocker in this runtime scope. The complete focused
+V2.8 suite passes 70 tests. No production training has occurred. Do not begin fitting until that runtime
+review, the V02 artifact freeze, and the hidden nonlearned V08 schedule's
+replay, runtime and power gates pass.
 
 ## Current V2.8 gate update (2026-10-01)
 
@@ -21,6 +25,21 @@ V05/V08 replace the exact-root primary for the tested schedule with paired, colo
 The next work is staged: (1) **exploratory, small**—implement the complete-game evaluator and require exact rule/terminal agreement, deterministic replay, legal action handling, and reproducible nonlearned paired execution; (2) **development, medium**—only after evaluator and model-blind runtime/power gates pass, fit JEPA and same-data/same-search controls with reproducible seeds, no collapse, and complete resource logging; (3) **model selection, medium/large**—predeclare candidate budgets and select on development/selection splits only, then commit model/config/data/evaluator hashes; (4) **locked confirmation, large**—run the 9,600-block schedule under the local cap and report every outcome, timeout, censor, color/game/seed effect, corrected test, and uncertainty interval.
 
 Current acceptance: DEV09 strict prefit data audit passed; DEV10 exact-root coverage was 0/5 at its tested budget despite 5/5 rule checks; V05/V08 method review passed with the caveats above now repaired; focused V08 tests pass. Production evaluator, measured nonlearned schedule/runtime/variance gate, trained models, checkpoints, and results are still incomplete. Training remains blocked until gates and a version freeze pass. No third-party dataset is admitted. Stop or narrow if local runtime exceeds the cap, games saturate, observed variance makes the margin underpowered, replay/rule mismatch occurs, or JEPA fails either primary control. Never retune the primary endpoint after learned outcomes.
+
+### Trainer hardening continuation (2026-10-01)
+
+The supported production fit entrypoint is `train_dataset()`, which obtains
+records only through `load_split(..., "train")`; the low-level epoch/update
+primitives are private and reserved for unit tests. Checkpoint metadata requires an ordered,
+complete epoch history whose update total equals the Adam step. An interrupted
+run resumed to two epochs matches uninterrupted model, EMA and Adam tensors
+exactly. Atomic JSON receipts bind checkpoint, dataset, audit, code and run
+identities, and label epoch losses as root-weighted pre-update minibatch
+training metrics with no held-out evaluation. The run identity binds the
+research lockfile hash and Python/NumPy/platform versions. Independent review
+confirmed that this fingerprint affects resume compatibility and appears in
+the receipt. This is engineering verification only;
+DEV09 approval is unchanged and no project-data fit has run.
 
 Version 1 — 2026-09-29; V2.7 positioning amended 2026-09-30. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
 

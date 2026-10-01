@@ -21,7 +21,7 @@ METHOD_VERSION = "v28-supervised-reply-set-model-v02-prototype"
 VARIANTS = ("reply-jepa", "task-value-dynamics", "direct-leaf")
 RULE_DESC_SIZE = 6
 ACTION_PAIR_SIZE = 2 * ACTION_SIZE
-_IDENTITY_KEYS = {"dataset_sha256", "audit_sha256", "split"}
+_IDENTITY_KEYS = {"dataset_sha256", "audit_sha256", "run_config_sha256", "split"}
 
 
 @dataclass(frozen=True)
@@ -164,6 +164,7 @@ class Model:
     def __init__(self, config=Config()):
         self.config = config
         self.step = 0
+        self.training_state = {"completed_epochs": 0, "history": []}
         rng = np.random.default_rng(config.seed)
         d = config.latent
         predictor_in = d + ACTION_PAIR_SIZE + RULE_DESC_SIZE
@@ -384,7 +385,8 @@ class Model:
             raise FloatingPointError("nonfinite V2.8 loss or gradient")
         return metrics, grad
 
-    def update(self, batch):
+    def _update(self, batch):
+        """Low-level optimizer primitive; production fitting uses train_dataset."""
         metrics, gradients = self.loss_grad(batch)
         norm = float(np.sqrt(sum(np.sum(gradient ** 2) for gradient in gradients.values())))
         scale = min(1.0, 5.0 / max(norm, 1e-12))
@@ -412,8 +414,11 @@ class Model:
         return {"allocated": sum(value.size for value in self.params.values()),
                 "active": sum(self.params[key].size for key in active)}
 
-    def save(self, path, identity):
+    def save(self, path, identity, *, training_state=None):
         _validate_checkpoint_identity(identity)
+        training_state = (self.training_state if training_state is None
+                          else training_state)
+        _validate_training_state(training_state, optimizer_step=self.step)
         path = Path(path)
         arrays = {prefix + key: value for prefix, group in
                   (("p_", self.params), ("t_", self.target),
@@ -422,7 +427,8 @@ class Model:
                   for key, value in arrays.items()}
         metadata = {"method": METHOD_VERSION, "config": asdict(self.config),
                     "identity": identity, "step": self.step, "array_hashes": hashes,
-                    "code_sha256": _model_code_sha256()}
+                    "code_sha256": _model_code_sha256(),
+                    "training_state": training_state}
         arrays["metadata"] = np.asarray(json.dumps(metadata, sort_keys=True, allow_nan=False))
         path.parent.mkdir(parents=True, exist_ok=True)
         fd, temporary = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp",
@@ -468,6 +474,9 @@ class Model:
             if type(metadata.get("step")) is not int or metadata["step"] < 0:
                 raise ValueError("invalid optimizer step")
             model.step = metadata["step"]
+            training_state = metadata.get("training_state")
+            _validate_training_state(training_state, optimizer_step=model.step)
+            model.training_state = training_state
             return model
 
 
@@ -486,7 +495,8 @@ def _effective_rank(latent):
 def _model_code_sha256():
     root = Path(__file__).resolve().parents[1]
     paths = (Path(__file__), root / "two_player" / "v28_data.py",
-             root / "two_player" / "games.py")
+             root / "two_player" / "games.py",
+             root / "two_player" / "v28_train.py")
     content = {path.name: hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
                for path in paths}
     canonical = json.dumps(content, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -496,10 +506,32 @@ def _model_code_sha256():
 def _validate_checkpoint_identity(identity):
     if not isinstance(identity, dict) or not _IDENTITY_KEYS <= set(identity):
         raise ValueError("checkpoint identity requires dataset, audit, and split fields")
-    for field in ("dataset_sha256", "audit_sha256"):
+    for field in ("dataset_sha256", "audit_sha256", "run_config_sha256"):
         value = identity.get(field)
         if (not isinstance(value, str) or len(value) != 64
                 or any(char not in "0123456789abcdef" for char in value)):
             raise ValueError(f"checkpoint identity has invalid {field}")
     if identity.get("split") != "train":
         raise ValueError("checkpoint identity must identify the train split")
+
+
+def _validate_training_state(state, *, optimizer_step=None):
+    if (not isinstance(state, dict) or type(state.get("completed_epochs")) is not int
+            or state["completed_epochs"] < 0 or not isinstance(state.get("history"), list)):
+        raise ValueError("invalid checkpoint training state")
+    history = state["history"]
+    if len(history) != state["completed_epochs"]:
+        raise ValueError("checkpoint epoch count does not match training history")
+    update_count = 0
+    for epoch_index, entry in enumerate(history):
+        if (not isinstance(entry, dict) or entry.get("epoch_index") != epoch_index
+                or type(entry.get("updates")) is not int or entry["updates"] < 1
+                or entry.get("metric_semantics") != "root_weighted_pre_update_minibatch_train"):
+            raise ValueError("checkpoint training history has invalid epoch/update metadata")
+        update_count += entry["updates"]
+    if optimizer_step is not None and update_count != optimizer_step:
+        raise ValueError("optimizer step count does not match training history")
+    try:
+        json.dumps(state, sort_keys=True, allow_nan=False)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("checkpoint training state must be finite JSON") from exc
