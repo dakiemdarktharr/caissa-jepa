@@ -82,5 +82,60 @@ Novelty status: **unverified/high risk**. Evidence required beyond this review: 
 | Kaplowitz, Obahor & Schroeder de Witt (2026), [MA-JEPA, arXiv:2609.33563v1](https://arxiv.org/abs/2609.33563), [full paper](https://arxiv.org/html/2609.33563) | Train a stochastic JEPA world model with local and joint action-conditioned embedding prediction, then learn policies from latent imagination | Cooperative, partially observed SMAC multi-agent tasks; centralized training / decentralized execution | At matched nominal environment-step budgets, reports mean win rate and seed standard deviation against DMAWM, MAMBA, MAPPO, QMIX and MAT on eight maps; matches or exceeds the strongest reported mean on four of eight, while DMAWM leads on 2s3z, so_many_baneling and 3s_vs_4z | This is a close JEPA/action-conditioned world-model precedent, but it is cooperative MARL with simultaneous joint actions and partial observations, not alternating two-player zero-sum minimax. Its task-dependent results reinforce the need for component ablations, multiple seeds and matched baselines; JEPA alone does not imply superiority. Its joint-action JEPA mechanism is not an acceptable novelty claim. |
 | Zhang et al. (2026), [V-JEPA Policy, arXiv:2609.37250v1](https://arxiv.org/abs/2609.37250) | Build a world-action model on frozen V-JEPA 2.1 latents using an instruction-conditioned future-latent predictor coupled to a flow-matching action expert trained downstream | LIBERO, LIBERO-Plus and RoboCasa-GR1; 0.9B total / 0.6B trainable parameters, plus DROID video-instruction pretraining without action labels | The 2026-09-29 preprint reports competitive performance against WAM/VLA baselines and says a same-framework visual-foundation comparison favors predictive JEPA latents, especially under distribution shifts; no board-game or minimax metric | Reinforces that learned future latents can condition action generation and downstream planning; that mechanism is not unique. The robotics setting uses large visual pretraining and continuous actions, not known-rule alternating zero-sum games. A CAISSA claim must isolate the incremental decision benefit of its adversarial-game objective at small matched budgets. |
 | Terver et al. (2026), [What Drives Success in Physical Planning with Joint-Embedding Predictive World Models?, arXiv:2512.24497v4](https://arxiv.org/abs/2512.24497), TMLR | Ablate model architecture, training objective and planner within JEPA world-model planning | Simulated and real-robot navigation/manipulation tasks | The v4 paper states its selected model outperforms DINO-WM and V-JEPA 2-AC on navigation and manipulation; its revision notes that tabulated standard deviations capture per-seed variability, not epoch variability | Directly supports treating representation, objective and planner as separate experimental factors. This is not adversarial board-game evidence, and paper-reported results are not a CAISSA comparison. |
+| Kubíček & Lisý (2026), [LAMIR, ICLR 2026](https://arxiv.org/abs/2510.05048), [published paper](https://openreview.net/pdf?id=NnBbr4hI8a) | Learn player information-set representations, joint-action latent transitions, reward/termination and legal-action masks; learn a bounded abstraction; perform depth-limited look-ahead solving | Two-player zero-sum imperfect-information games, including Goofspiel and Oshi-Zumo; Leduc uses a chance-node test-time workaround | Full text reports that sufficient capacity recovers near-exact game structure, reduced-capacity abstractions improve exploitability in small games, and LAMIR reaches up to 80% head-to-head win rate over RNaD in large games. Its large study reports 864 GPU hours and 20,736 CPU hours; this resource figure is not directly comparable with CAISSA's local budget | Closest game-theoretic learned-model threat found so far. It is not JEPA and targets learned rule/observation abstraction where explicit rules/state are unavailable or intractable. It nevertheless already combines two-player zero-sum latent dynamics, opponent actions and test-time solving. CAISSA must not claim those ingredients as new. The residual hypothesis is narrower: a JEPA objective can improve strategic decisions or transfer over equally resourced task-prediction models in fully observed deterministic games with known rules. The existing task-value-dynamics arm is a compact, domain-appropriate task-prediction control, not a LAMIR replication; report this scope difference explicitly. |
+| Becker & Sunberg (2025), [Simultaneous AlphaZero, arXiv:2512.12486](https://arxiv.org/abs/2512.12486) | Extend AlphaZero search to two-player zero-sum deterministic Markov games with simultaneous moves by solving matrix games in tree search | Pursuit-evasion and satellite custody maintenance | Reports robust strategies against maximally exploitative opponents; primary abstract inspected | Simultaneous action timing differs from this project's alternating-turn core. Classify separately; it reinforces that zero-sum planners and solution concepts vary with move timing. |
 
 The September 29 V-JEPA Policy preprint is a post-v1 search addition; the full text and source record were checked on 2026-10-01. Together with MA-JEPA, DLC, action-sensitive world models and the JEPA-WM ablation study, these sources keep novelty risk critical for generic action-conditioned latent prediction, opponent-state prediction, imagined self-play, or action generation from predicted latents. Their domain mismatch does not remove them as prior art. V2.8's reply-set/minimax ordering hypothesis remains unverified and needs broader forward/backward citation and venue search before any submission claim. No claim of first method is approved.
+
+### Planning-benefit and objective-alignment search (2026-10-01)
+
+This follow-up search targeted primary conference proceedings for tests that
+connect latent-model objectives to downstream planning, offline JEPA planning,
+and learned game-theoretic models. It remains a targeted search rather than a
+systematic review.
+
+| Work and primary source | Question / design | Domain and data | Baseline / metric / relevant evidence | Difference and consequence for CAISSA |
+| --- | --- | --- | --- | --- |
+| Sobal et al. (2025), [Learning from Reward-Free Offline Data: A Case for Planning with Latent Dynamics Models, NeurIPS 2025](https://proceedings.neurips.cc/paper_files/paper/2025/hash/3e7cf447f21cd11c846463affefce665-Abstract-Conference.html) | Compare offline RL and control/planning using a JEPA latent dynamics model; vary data quality, diversity and environment variability | Offline reward-free navigation tasks and unseen layouts; details/results summarized from official proceedings abstract | Reports model-free RL benefits from high-quality data, while latent planning generalizes better to unseen layouts and is more data efficient; comparable trajectory stitching | Direct evidence that JEPA latent planning can be useful in an offline regime, but not a two-player/adversarial game comparison. CAISSA must use held-out game/rule variants and distinguish objective gain from data-quality and coverage effects. |
+| Zhou et al. (2025), [DINO-WM, ICML 2025](https://proceedings.mlr.press/v267/zhou25t.html) | Predict future pretrained visual patch features and optimize action sequences toward target features without observation reconstruction | Six visual environments: mazes, object pushing and multi-particle tasks | Reports zero-shot goal-reaching and comparisons to prior planning methods; official PMLR abstract and metadata inspected | Strong precedent for latent prediction plus test-time action optimization, but uses visual goal reaching, single-agent actions and a pretrained DINOv2 representation. It reinforces that JEPA's contribution must be separated from encoder priors, planner, and target construction. |
+| Saanum, Dayan & Schulz (2024), [Simplifying Latent Dynamics with Softly State-Invariant World Models, NeurIPS 2024](https://proceedings.neurips.cc/paper_files/paper/2024/hash/43ba0466af2b1ac76aa85d8fbec714e3-Abstract-Conference.html) | Regularize action effects in latent space using a parsimonious latent-space model, then assess future prediction, planning and model-free RL | Several control-model settings; official proceedings abstract inspected | Reports improved accuracy, generalization and downstream task performance from systematic action treatment | Action-structured latent geometry is a nearby non-JEPA/JEPA-adjacent objective family. Include action-effect/feature-dynamics controls and do not treat better latent loss alone as strategic benefit. |
+| Schrittwieser et al. (2019/2020), [MuZero, Nature / arXiv:1911.08265](https://arxiv.org/abs/1911.08265) | Learn recurrent action-conditioned latent dynamics whose reward, policy and value predictions support tree search | Atari 57 plus Go, chess and shogi | Reports superhuman Atari results and board-game strength matching AlphaZero; primary abstract inspected; full-text method passage checked in the earlier targeted review above | This is already learned latent planning across board games with unknown rules. CAISSA's narrower exact-rule setting cannot claim generic latent game dynamics as new; a fair causal test must hold planner and measured inference compute constant and show a decision-quality gain from JEPA over task-prediction and direct-state controls. |
+
+#### Experimental consequence
+
+The relevant causal chain is not “lower future-latent error therefore a better
+game player.” Report, separately, target-latent prediction by horizon, latent
+rank/collapse diagnostics, legal-action ranking/value calibration, and paired
+game outcome under identical search. A latent target loss can improve while
+minimax choices do not; that is a negative planning result. When the exact
+transition oracle is cheaper than learned imagination, latent prediction must
+justify its own training and inference costs. Therefore V03 is strictly an
+exploratory runtime/variance gate and cannot validate JEPA or decide method
+superiority.
+
+The V2 experiment should treat JEPA objective, model family and planner as
+separate factors. At minimum, compare (i) the role-explicit JEPA candidate,
+(ii) same-backbone direct policy/value learning, (iii) action-conditioned
+task/value-prediction dynamics analogous in scope (but not labelled a MuZero
+replication), (iv) a recurrent multi-step consistency objective, (v) a
+feature-transition/decoded-state control, and (vi) exact-state search without
+learned latent input. Keep data, game adapter, search algorithm, tree budget,
+and opponent schedule matched. Report both equal-update and equal-measured
+compute tracks; for small games, report exact minimax regret on held-out roots
+where a complete oracle map is available, plus paired complete-game score on
+the larger test cases. Select on development games/variants only; lock the final
+game groups, candidate, seeds, practical margin, correction, censor rules and
+analysis before confirmation. If JEPA loses to the strongest appropriately
+matched task-prediction control, stop the superiority claim even if it beats a
+weak direct-policy baseline.
+
+LAMIR raises the novelty bar but should not be folded into the core scope: its
+imperfect-information abstraction solves an information-set explosion absent
+from the core games, while simultaneous actions and chance remain separate
+classes. This comparison concerns learned strategic models and search; it is
+not evidence that LAMIR is a JEPA or a baseline already run here. A LAMIR-
+inspired task-model/abstraction arm is a high-value comparison, but its
+information-set abstraction and CFR solver do not transfer unchanged to
+known-rule perfect-information games. Port it only if state/action abstraction
+and measured compute can be matched without giving an arm privileged
+information.

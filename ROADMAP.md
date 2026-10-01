@@ -2,6 +2,40 @@
 
 ## Latest evaluator milestone (2026-10-01)
 
+### Planning-benefit search update (2026-10-01)
+
+The primary-source follow-up in `docs/RELATED_WORK.md` added offline JEPA
+planning (NeurIPS 2025), DINO-WM (ICML 2025), PLSM (NeurIPS 2024), and a
+decision-focused MuZero comparison. Together these papers make latent
+prediction plus planning an established direction. The empirical gap cannot
+be “JEPA predicts futures” or “a latent planner plays a game.” It must be a
+predeclared, decision-quality advantage over strong objective-matched
+non-JEPA controls in this game class.
+
+The development/model-selection panel must at least include the current JEPA
+candidate, same-backbone policy/value, task/value-prediction dynamics,
+multi-step EMA consistency, feature-transition/decoded-state, and exact-state
+search controls. Freeze common data, search, tree and opponent budgets; report
+separate equal-update and equal-measured-compute tracks. A JEPA win over direct
+policy/value alone is insufficient if it loses to the stronger task-prediction
+control. Report latent error/collapse separately from legal-move ranking,
+calibration, minimax regret where exact roots are feasible, and paired game
+outcome. If exact-state planning already uses less compute for equal decision
+quality, the learned model's cost must be justified. V03 remains only a
+model-blind proxy runtime/variance gate and cannot unlock or substitute for
+learned-model training evidence.
+
+The 2026 primary-source search added LAMIR (ICLR 2026), a two-player zero-sum
+learned-model look-ahead solver for imperfect-information games. It raises the
+novelty bar for latent dynamics, opponent actions and game-theoretic search.
+Its learned information-set abstraction addresses a problem absent from our
+fully observed known-rule core, so do not call the compact
+`task-value-dynamics` arm a LAMIR reproduction. Treat that arm as the direct
+non-JEPA objective control; any proposed LAMIR-inspired abstraction port must
+be scoped as exploratory until a matched-compute protocol and independent
+fairness review exist. Adding any new co-primary arm later requires a revised
+pre-outcome multiplicity/power plan.
+
 The learned complete-game evaluator and analysis handoff are implemented as
 prefit infrastructure. Independent review (`gpt-6-luna/high`) found and then
 verified fixes for the locked-schedule wrapper mismatch, an uncommitted
