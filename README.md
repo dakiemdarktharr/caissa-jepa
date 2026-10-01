@@ -9,11 +9,30 @@ including MuZero, SPR/EfficientZero and RePAIR. No planning advantage or Q1
 publication readiness has been established.
 
 The current V2.8 planner candidate and its versioned amendments are documented in
-`docs/METHOD_V28_PLANNER_V01.md` and `docs/METHOD_V28_PLANNER_V02_AMENDMENT.md`
-through `V03_AMENDMENT.md`. The corrected model-blind DEV06 root/oracle gate is
-in `docs/V28_MODEL_BLIND_GATE_DEV06.md`. Both game root schedules pass feasibility
-only; trajectory split/power gates and every learned JEPA-vs-baseline result are
-still pending.
+`docs/METHOD_V28_PLANNER_V01.md` through `V05_AMENDMENT.md`. The frozen exact-root
+regret estimand failed a 6x7 feasibility pilot (DEV10: zero of five complete
+root-value maps within 500,000 nodes/two seconds). V05 therefore proposes paired
+color-swapped whole-game score as the primary endpoint, with minimax regret only
+as a secondary complete-root diagnostic. Its match/power protocol is V08; an
+independent method review found no blocking statistical or schedule-integrity
+issue. It remains pre-fit pending an implemented evaluator and measured
+nonlearned runtime/variance/power gate.
+
+V2.8 data feasibility remains in development. DEV01–DEV08 are retained as
+model-blind diagnostics; strict DEV09 passes only the prefit data audit, not
+training approval or scientific power. DEV05's
+support audit had an indentation defect. DEV06's reported support pass is
+excluded from fitting because the code did not enforce the exact split tuple.
+DEV07 stopped before output because valid Reversi play can contain more forced
+passes than the former bound allowed. Strict DEV09 passed source regeneration,
+component, family and support audits for Connect4 6x7 plus Reversi6; its full
+receipt is `docs/validation/V28_DATA_SPLIT_DEV09.json`. This establishes only
+prefit data feasibility, and `training_approved` remains false. Read
+`docs/V28_DATA_POWER_PROTOCOL_V01.md` through `V07_AMENDMENT.md` and the
+receipts. Read `docs/V28_MATCH_POWER_PROTOCOL_V08_AMENDMENT.md` for the proposed
+paired-match design. The locked schedule is only a pre-fit commitment;
+paired-match runtime/power, training, and all learned JEPA-over-baseline
+results remain open.
 
 `two_player/` is the GUI-independent, shared-weight tiny-game research pipeline:
 tic-tac-toe, gravity connect-3 and 4x4 Reversi; a 3x4 connect-3 size combination

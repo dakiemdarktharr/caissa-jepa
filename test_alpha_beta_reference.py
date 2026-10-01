@@ -82,7 +82,9 @@ class AlphaBetaReferenceTests(unittest.TestCase):
             self.assertIsNone(adapter.terminal(state))
             position = reference.from_board(state.board, state.player)
             fast = AlphaBetaReferenceSolver(reference, node_limit=100_000, time_limit=1.)
-            exact = ReferenceSolver(reference, node_limit=100_000, time_limit=1.)
+            # The plain solver is an intentionally unpruned oracle; its timing
+            # budget must not match the optimized alpha-beta implementation.
+            exact = ReferenceSolver(reference, node_limit=100_000, time_limit=10.)
             self.assertEqual(fast.action_values(position), exact.action_values(position))
             self.assertTrue(fast.last_stats["complete"])
             self.assertTrue(exact.last_stats["complete"])

@@ -1,0 +1,3612 @@
+{
+  "artifact_metadata": {
+    "records.jsonl": {
+      "bytes": 2685407,
+      "rows": 3531,
+      "sha256": "7955cbf753fcc2a0ae6507fa7e73570cba7635b1ee31ae7553463914e7fd5cf9"
+    },
+    "trajectories.jsonl": {
+      "bytes": 221018,
+      "rows": 284,
+      "sha256": "3a8e5851ccdfd0a489881e679aac083512d10521dbb3c01b534793d8ffc92c29"
+    }
+  },
+  "code_commit": "02ec29733546f47550ac53fb50364f89770e2fe4",
+  "component_summary": {
+    "by_game_sizes": {
+      "connect4-gravity-6x7": [
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "reversi6": [
+        5,
+        4,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "fingerprints": [
+          "01b8a58334663a8a095c15d9c1314cd0d973460f192c90b8702d819f36e1f8bc"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "03b4d9bcbc92e108b98ae946fd10668b3d71aae26400803c6dcff96a37a2a5fd",
+          "47ddb9693bcc6a9eb80a94e89f87e0c94432810d5749ca33ac0178347196ed45",
+          "b91fa8b50b2eb0338880b096f018e526cb3da8c4ba593af56367fd34b0f86067"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 3
+      },
+      {
+        "fingerprints": [
+          "04680a2acd085c1f70b673861699ae4a9db0679e758d88926d6c371c508e7fcc"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0478c93281b1f0b733905e69cd6c07c6df96dd957653627f000ac61e670503a2"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "06a9c8983e35c95502a633845fec7553363a311c2aa8711ed49d0f4410a90fb9"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "087fc73e9024e9b5b49a7cdda75dee97ac102a5cb1a4b8f2bc18baeb671a1850"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0988b30f7d8039e6f9f47fe3be0d4a97ba10106ba3c2189d82b22654c2617113"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0a62f1258812578cb5e8c74d591bd6ef1a7623af2eb14112f52c4788185266ad"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0afafc8c3b589d3594f0631e21ffc9bc8475226954bc1da8042e9981110dcef8"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0b1a7d8194de624d4d24d83dc30c5224f6850915ce2ad3de43d779f9931a297d"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0b4c0e6b440826c491a90e13ee40799460fc22d2beb7af2f3087b6f45429c4e0"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0deeaa3897a26aaa4ebafcd0608512d71f06a79c5a4f2d59d946a7640ac34a52"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0e1caae38d3c6f55fedb251e3898b67457fd6946199d24fdf61de9dea236fbcd"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0e91a049bce5b0b6a14d4f13dc60a539ba337fddb0bdaf0f8a3f925ff567d816"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "0f039e9a8539032739ddbeae2b6a05a05a0f549a2d8212fa168a16abe7f7e7fc"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "129735d538c26c7466e331a3c332654bb378acd9704ccfdf31fa349293b849b5"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "12f01eb77a4c3c2bef45340bab1c7ec9833eeca8477153591ffe166610120357"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "13492f8204ce30992b6122ebda6975246e3d73490b4bfc354bc3e286d7b53c47",
+          "35fbccbb4aa9f32b3b536334f4a7626b68dea07b06d51ed3a4b8e8426316bc89",
+          "4486d57f73ffd6528824ee319c672fe92dff3ae397f934858c0e56828d89ec4e",
+          "c8998b6663bf0ca1bc5d014f0d399d21b000eef7a2da451623c7ef97afdef013"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 4
+      },
+      {
+        "fingerprints": [
+          "146cd11b69c070c88060107f91b43b43885a4464d863c665d0809de582610a6a"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "1535b3705fa33f1d16995af57a32a043ea03e6e4ea3b41daa08957c0f0101bee"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "1579e905c7e94659727faa7440e2ff800e640a15adb5c2e7ca6030373f93c7d9"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "16ab15376b316e8fb3d6814bb010c807c1e5c2b36c39fbe64d20e7fa64b1a775"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "1de4f29592a6786c58bad5b4d29fbca049b3b3d2e86e409abb6aa6dcfba28164"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "1e4ad60f4182ca77dd0d01a03ac1288786e3dd78b5a4a217288bc4532c8e9a38"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "1ebeb65329c92864de500f9c658ce3aa22de9b2f64d56324dd8610d790fd7708"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "22e1d458f0fd913e9f4ece129d0ff42b10262b111302cf55c9303de029ba87b7"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "2457f65c2999441aa9851d6a410f31f3235c7d83cb8cbebfa5e13dad4900ec92"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "246b6b2b7bfd3a327d53ace24cddfd0bf033ffab35296995f85ca7c919619832"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "2865dbb81a17a9a92eaf3a2b25dc9a690684b6a0ccf7eac6aa169b4a1de2e92d"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "2c615ee4f16821e3457cfa7439ee11531f12f03e3c7875eeb7a4c1c09e8ba2d9"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "305a995c2cce2c80bd0a1a7ff9df776235912da5e03b961c9b5091f576f00f7a"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "320b88fbd5c5a6cd75f0a422ba20290186bc692aa0af2cffa4960a75485af3b3"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3221719a28d823323b2c9d737b01ca7e26ec9c1ba3f26914e06f53c98ecb1872",
+          "dd4ac4257b2347b262b13624cb2ad0090bc164baf130355e0aefbabf8a64220b"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 2
+      },
+      {
+        "fingerprints": [
+          "348596f8c8f0be31ad389cbb6883c907b5fb0079588289f961d3d68508ea22e6"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "34b2a075d1c5545ec48cb6afca295be9b8a6b7f42c966bfe5fafb3a74a7673e3"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "365b2ec9ef1099a7a8f87b1e12ba5d5d08ea46c39e0b2884c1569d672679cc9f"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3750478df3aac786e6da2e4161f991b828a440067d39638b09fc7ab899429cda"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3a498c0ec22be6760eda8fe2791262a415842c02c9660bc31901b18f377c969c"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3b0609385f9bdf139cbd481658523d9b3b0b7f00493cdbaa2c7555c27e7a7342"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3b1ad3c24bf90eb7c3a05dab82d5b90d921a9b5d1be34f85a3d753c813255fe4"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3b3597155c944cf4fbbe6a351a26cd9afb4d2d85eea8c318a7743f1a62c648e5"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3bb867c3d9c76ff3075dbd14ccb0e705f69136bfc8f5bc7cd231daf7b6673d99"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3e4dc6d0a05251597c370d2743785a96a7e5b6af41f3114511525fba99305e81"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "3ee619b06c26a42f66ea9970ca61083e6285b116928620abf3c9c1c5cc4c80c1"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4107a58b6f001b7fb9c9486aa76c993cc78bb53f5a7705526b547f456b5811fe"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "41d412724a41cbdeb35d13b396e2e9941ca89a1f15f685d4cbbfa5d782e64f4c"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "423ce85db9492596a9fc4371e450b4e48d1cd7c085cbcf24d1e2493174e0b4f1"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4367db4d4fcf26362bf51e788cf2988a72041e48bc4a370cd038607db1409442"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "43b9a704dc5cdf3fcf474a73de1007c792387fdd8a0a258dcfc73f91335c5fdf"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "44ca018af68627f7ace9b1688626c5ab5bc4866da9d7d6913c8452ad44b1054c"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "44df4ff2deccd7bfe6222652e2df2aba25991899f0e87d503805054c77af5ce5"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "45870c4a3d55af20227b890a434513182798ab455ee9bc8b1b1a0a60e0387054"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "46b5110f776bab3342afd5bdb2eab5cbf644c690caa3ef2c260b4899facf734b"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "46c6d8cce9c3bdb1854378232dcbd770c0a5a60f7924b5c97313e960e85bc466"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "477ed6bb0aaa545d968ed090e033f2da216418433c674d515b846f42866a5f47"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "483274cf7790f8908717933cf4f55c1055cc5422129bf6acd4208f0f3b97f097"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4886f8e11a04340fd685df6835c03ca51032ffd4e32b0d9ab7f05ce50e9047d7"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "48daae37eea0f7cbe991e32c2e302028c0a8b75254388e48c5ebf0b6ba0e99ce"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "492fa691ba9b4ea645b2fcf29e3b89a92ebdcec8f24780e5b617d7224d9f6d17"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "49755c355602772a629a7e32e3733dafba7d071d9a3f3e9f98bc7e76b0d3573c"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4a6958c8be9994ac383abd2a06cd1f237fe69340693ca74ac5f44412816eb385",
+          "b0cd4d21d2e38c15684495bf4a193db1814024c82960ff8c3c2bd42943bcfd3d"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "validation"
+        ],
+        "trajectories": 2
+      },
+      {
+        "fingerprints": [
+          "4aa70fb2d9feacea32f8566f33e5a4600aec73c7382a72ff2ec5cd022313f8e1"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4c1f69ab68eda0bc44a0bc1dce7a0a14f09c8654d9631250f7f01d677ea285a5"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4c82a421a7a95298e55189a57985aa1e846ac9163310cb6b8c7a99dfd694b75a"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4d2fb4a8b910327407c24a1fa2119bcffa22b3c7bafe9c5ac061d3453b74058b"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "4f309d8e9700c0e0f3f3d1ddaa14a6edda4a3d3c5de2e3bae72085fda1129bb6"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5287f5a763ed08e84646be061d8fbeb76bf6d6404c50ea7cead4c2f25e128b35"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "538af5db9ca4028552f3fe8f4576f46a453fcc468dc1c6cc6a20cfe9caad4fc3"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5428dc6ad6d899a5a496cd40b3436bae2b1ab448b027bd566946965598193d85"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "559b87675450c841b60c48338a028825c7627f43c4ef20f27a220cec925d22bc"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "560f687f02989621dafb4ced111e4d300e7e5d7e7a262c398886007969480a52"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5622802cd00632e9bd21aeb1041be3d291386e2d68acc3059aefd708e5726f16"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "582939a08a3453767838a386887b80376a23f8b587ad025ad386e8d14c9f8e97"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5830837506b36a88ed3e85db3e9b4f4fe47bd68ff93e0eea269ad2012b45fcc9"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "58d858a8c8dd5dc603b6288034a16741453072edf33baa0da9fa111f2456cabe"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "59bb3e8ed22261e9f5cfe6180d53751ef034bc03f5c1dbbd9665314dc10a1b0e"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "59f1118592cbbc705fb7548e7f62ec040dc3be111e66a2d450e2b58e3eb0384c"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5b79c12c364e5d2dc3a8535d212733bcb9dcd53dd459b722e902b342144918eb"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5e01140a622ac38e45c59efa1e3548b4344315f03a544cd993e9aa78d8182562"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "5eb22ed71e225ded4335f035d6964a544e6d44d65f5b4bae80ab085dc0e0760f"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "60d0d23b6c3935d1c7f049c17d6e9a1c9244037baddb6808dae7569d51847d91"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "60f8e6e1487489fd30e838973a9a010529d0c76c0069520e9921703aa76bd3a3"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "61d23f92c58090e9675c5d4ade0da4f8e65386ac2ca5a0fbc7dccc1337f62223"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "62457f6443bb5b474dc0b95dd1dafce2f0af705ba087c28912790a5015da4f29"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "62693d00c0ebc01c8bedbe726b25a6c2a8d40bae32e2a92141b854279de968a9"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "62e59e9adc5bb9d31111676284cf797c6aa062503f2426d3b4e7173a44575a48"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "65d29d37ae698983f05c1799460bd5087ab6505c57729568db19ce174dd2c586"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "65faf7afcefc7610ca5cc2fcafddc441b9235d488f74e0e8302bfc8706e3c262"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "673c2093adac3496c0cecadb4c69fcfc3ad883a4618566239d74a040dd13c28f"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "69183ace5e09920a208848022574a1d2364d1d0ff5776dc28167f6db61f59344"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "6b35c47f21f3396d326d56a08b124c4e627a162f9acc06432b113ae4d9968ff0"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "6b4166a138a0f6da237fa93cda2704f3a4b3f6146bae95d235c9c613359dc287"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "6c5e82b56d6e80760092cd53305ab9c87aa63109693b4a1f96bd978e7df9ca53",
+          "8ae585d56e34ce5d21304c9bbd240f6399e23240caead958097be29a18c7138c",
+          "95d447b5f630159b1317b892fc60add4d3e8685e691a244b7469c552263fdb31",
+          "c832f9d9cad5e9d3a46bb0fe987110d91966f45921e69094ba6bbeacc24d4c15",
+          "f10d32f1edd9d8044a5804be0db590f83e63d790a71cc8b9e496b7589c050d7a"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 5
+      },
+      {
+        "fingerprints": [
+          "6cfd3ea1e4842b171aa7e731edee158901af6db95595949d018f3b94dc34a0d8"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "6d05fa6aa04ac600bfcfad56cff9c2fc17eca0fcb65a81c62642f82c7ec83767"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "70f62f36a54ebdaa1dbc7e988882d01876300a8b79b4ec4aa74b117bac263080"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "719fb15ee098545cbf6cb680aad7c9b3bab373081aa5d222eac011aa77444e92"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "76fd505bda2f9d064d4749ef640f39819be13dff0b755b932e9e7e51b9e51cfd"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "78060bce923862278d4c493fcbd3079f8612b017e9a6ba246776e258d00e00e4"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "78202359013152dd35c19c43c6ded06b409b2488ec9a5e73bba9566b19b70b75"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "7913b3a84f47231021b67838b02a4b93113b187b22d079ca52bc2cc4488b2145"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "7d99d0c73531bd8abac536b02522b0dfd7e4e3668ad4e0b87248f7805059bc84"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "7e1fb1675283023142b9822959b9dae004f8cacd3be1e5ab721ddb9fcc8e9d2c"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "7e35f7e36c71fd55cca238394a4c82fb9578c15d0b75df7a1740db5cbeb1680e"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "7f499fbc0532d5351bdbc2910c6c8223b798dd07cf285789c36d5e14da7a88a5"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "815f6ce7ed068c61b929b511987b05b62d48b4ddd2152e985597c56646e55496"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "81ba8ba79c469e90facf8fc2d7633975f44b4790b90966553af3afa9bed95c7c"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "829d552ae42af1020dc7afc509d3fab83cf658c968cb9c78435dd922038b01b8"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "82af7cbb05953f73ed6f7eb659a75e59e863f251f2feb35dd314c597268cc8d2"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "86e57aababc71016e9ac5bda250d4d4e95fe6e94902d4002602700fce8534b53"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "86ff6fdb9ea304481eb328b53f7395041191f011dfc12f16f7a170742ab9b964"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "87cc27c9a32e1ffd8b3064e471a545610e383159bcd3c5805d5e8cfe0a41a261"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "8848ac869e4a5692bbeb4c99b33949a86e0cdcc8116a8837695a3794a9cca423"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "8ac84dcb6fa1b4dad335a0f7a62fe11e538d69502cf4a21cdb2452f624734168"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "8be34d9b82f3905f62bd014c5b05708a73df9e58be7ea5b8f7cd990733082386"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "8f0f65296d6bd84fb14283e77af007391a310f5e3d4f1d20c83cea29bedc926b"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "96bcbcc230117cb9a800ba016f60296aea6de973140a6059b2cbfafdc8cdd0b3"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "974f23121580f6847a18452509341ca1a1ede42595a900384ade9d14d5b8f3b3"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "9aaba12f3827c311e6c1ce754fb4a3cf96215e2e0859d0dae00f88ec07bfdd0f"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a04a9b68dc3cf240d7e31dc276f6879fc728a548ef38f0208c11b62fe3c9b770"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a0b8c7f079c434a407aa27eedafea4a18ef1e7c9c6fbbf3148a03692dd11daf4"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a3918a2400d9086a82b70e96d3a36b8dbf25f1dabeb0c398411ef4e80472349e"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a3f6eca994f9fafb5358b057e0ec947bd5606a21ae37c911bf77e09db8c48d16"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a73c641e2b0e35b529197f68245d3d207128662c9c6a29495e0a4889883e579b"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a79ebfc3340443821cd8c7a1dc5bf9bc0370fa799cc384ba50a8f25763a3cb5b"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a992542302e601bee2b0e2f21ea004e86e7b5839759f96e2f90bd3b158e4145c"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a9bc6e7b7eb3484f59e430eaf6e8bcfe059f5003c0d95bf93b72c612e135882d"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "a9f28a0f874c9628b570dc2cb55405fec12cfd3df8b20d2df75d91bc25abed09"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "aa0157eda388fe95f0a68cc37d55b778b6abd4292a2572073f4166b92f763acb"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ab405ee9b254c5699211057545c04a1f36d9ca551dabed87a2556572369c5dae"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "acced20b8cbd0231af3b194dcc4a29ffc763c89a4fa8489a5be082e68542bdee"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "af932fbade777797b2891d5e6da37d8cc9221d4961f6b7367792e09f79f61aca"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "afdaf70062814df3171fce1208ca46903a1d83d672238c3be7e75bdcdab127ea"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b0a64810111db36b29fa9475dd55355c599e31a31abb7d92add652ca0678873a"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b196713c71062b5f88faf8621a7bacf5abdfa5635bcf8d1a6f73be70ac76bb18"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b1dc8978b249d1d439af8c8a5dad8d7ba3465c2d2e1374e2d345ec67848cb91f"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b1e8e61f84dd472f13829753262d0e420fe1866954d64b530717e85975d1a746"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b285c14d41984fcd6578e95e582cdf1aeca9e202a24fd8f89a4790fc5e2fddbb"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b37c21d442d129d1beb71115b35ba52620bbc867907dbc8e8fb6bf12ab44f532"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b4f766a3f26a7899de5d46cbd211f33483d174033e7a4d94d4e4278da4edf50e"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b5200c02ac19239a7e83ec5d1982348439b12b3ba46b94b76db372e0334e2312"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b66d29852fddd046fdf332d53e2de57154c103de333a205634a3e8a0ea715e81"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b6a04b966f4a0a90f413baac55783e92d3859446a81fca8e07336c36beacb52a"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b72eee9d354eb0eb75ce885c71e890ad8d18a715b93e55a722d4e38bc8c8f274"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b8aad12072d2588b8bc4bef499b395521a0dec75e0b99be1d86700149031acd7"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "b8e85eefcf8d96273eec664b7478d3cdcc41b87380108e9de80a5a022d63f2ae"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ba7b03c09e5f4d1135ba5d3c5807a05e4627f70bfc153c0d79796d3dfb40fd99"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "baa63357aa8980095f7eda50c28802fc408cf2d096457ae7ecc17ad3c65deb81"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "bca83003bad50a7601ef790d6e0c3eba6bdd942afc4d7aaecf8b6dd38bbb6107"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "bdabab21e28d3e8ceb640aaf31e425a68bccbd69b6d65159e4068e5f0aff8150"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c00299cd98fbf680acc3827d20e62c401e72a989afc2f9f6c76d139446b7f78e"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c0b1587772ba08878557a25047664400d215ff59e44b28b420d427096b3ea210"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c17d9484f9cb782556dfc83f017f5f2b0405c7103b3b0f827d2debbe74e51aea"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c1932ab98d9283d2c5574a3cd14db160f56cf751212be9ebf0a1d216f2876b3d"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c20d0db0fd780b2f22265d40d099691b560d29c65fac48d505695a0dc8cd74b5"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c5769b42157eb5a6bfef2c9f8ec318bb7a3f10074f110e24fe1b62e22147898f"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c57bc2b7637fefc5c5a1c0c7b93bef6866008646d7046872ac2ddf24b1d9ef2c"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c73d53a38e5b514fabe64b4ca605e9c3bd6128e2b6aae0e50bc3a79ba0dc6bf6"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "c92e8bc03921563833f888900847c0d1453236df6cc3b16d72ba7a727dc023f9"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "cba3ce90574606790e927583fcef0708e9181cf8f9b49912a7711f9d73e7f933"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "cd7a55a527ccae784bd636a8c1be149c58863b38e9e1c60866372ce2576c10cd"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "cfe4da53073b4e1b8302e1f086936f9955a21c9d118b894356732b796826d93a"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d05dc961b66aecd16c023b3e80c738a88d991ca09fd54dfc97b1d39fd8fb3e62"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d09aa62b34598d2aa004c82604a2d6d9b15dd800126759752efa46caece7c5f3"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d209c7ab8cb7de0d65ce8d2eef525d0918212816b66f5cd855a8e5d1d9368af6"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d220a65392075d478463130f206dda7d1e2ca202e1df53dcaa14500ee4869fd5"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d3c0e1368b95344d0f07eb5b03f5c54cb1ced2e5434173d2133b15cc1caa0c09"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d4520533f2b32b324f3529a9731ffa54886baf94081985908925084dd769353b"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d542e8fc6090fb0730cb64d1c18f48fa9657425e8c05d3a021675c8c7add8a32"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d67f98464e7d0ef6cdbd0fdf51efbe3a972657efe34717823658a4dcb6e57812"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d73f505bfb87bb3ac15fc320d8ad04f5073b3c7b06cfbe36c35defb459292b02"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "d833b103bc68396df4d28d067feef8eee5b45de3e4567af3e12251f9accfefd0"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "da221ecba097e399ec93d4d310b1792c05ab333ccf180d76a16bac44d8798ecf"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "da8df7ec6439fea2ceae4b260e466b31fdfbe51f3bec79cb16214b36cbbf32ba"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "dae7fc25d12fd135f8bbf7b329df7535abddfe8ee41ac8aff408b8b001cafe1f"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "db0c45b075333b721b4517733cfb5971ab0f58074953f39a04df6f7d908b1c29"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "dcfbe4c01e0421817fb07e32c6a448417ca0c4f2e29e7450c724c7fc5cb9d211"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "dd83160b783ed1eb69e99d727f5bff6249eeb0eb86db908240efe9c31e664817"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e0cdd3db337ad72cccf92afc4b8e100763ec4ba6cd8b8cfe80ab213e9202e95a"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e0fe18e9a394ce8d22d1a52c657d2a8b53b5ba75a7889d6932e4dc333182df72"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e124b5fcf30480e0b2b27d8d479e4f39f321e76e8fd815f21c95f7323dbf1624"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e15ff7ec7398d635ebc488eab10ab16e9f50a7df2301884df212d54387fe8a2e"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e1b50330409798448ea54a19c53a0a0cb8f25055232763a74be8b0335bd1d2f1"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e1d8f0ec6f5bc4046cd6205cf330ec18585856826fc8ca3d04081750037fc4fe"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e1ddcc1c3d2089964a74febb0a416ed386cc76e4c3744512af50251782cda062"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e1e088424a12d57143b3ffb6987a5b1850728b8a622ad4fc4d8a945600d74ce9"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e273ae338001c260377a214138a2368ce2023f11c80a39a62ef7f059ff700067"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e46bb370a95fa5679518b82c1b13cb442277a8cee7d3b309217155d01fbac3f7"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e610cb11751ebb4981f2f7ff453efa7ce78267b44e963941805dd535254cb421"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "e67684864c43aa17caa1ba719da36af7700533178aefff037b2702df94464b30"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ea5d14d162c8ebba1ee23c5a03d7dbc9d3acc4bd7bb344dc8c02b594f0dfa718"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ebd6e26efcc8bf9efb0376d31e1f8459ff2809bd40668e348cdc31e7bf7c6f17"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ebf99afc881ecb5c1fdef3b7c456faac23b77f7c675dd240185df45595112a3a"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ec23051321656cfb953be6450bd11e49bcb7f00a73e06bb1f2c5240fe52e944c"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "ef472b80a38cb40ce32eef81527e3ad28ba11da91ca3e6ebc40c85746012e261"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f15468638050304d6a57a9d51620d08cca40d35775a579af302e80edd2f2792e"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f19216e3eaa4effc43600ac3c53817a3c6a609aec2097c309c6a0c976dfb85ce"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f2444497682586cddc7d32a5466eb132d5a0a2d194ccf13038ff3e62433c4d08"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f3d37a473aa53efd948d4dd202a399b5586d8b7ad31d4a33bfb5c160ff63b6ee"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f4ce6793badf93446370f1222d84909e06f4338c788e342f5e6f9b5097e694d3"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f75b86a6563d82525f14b2602c587266da59572a162bf79cb9a1cc9e0e3315bd"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f7dc53094d7d659fdeb231022cf5da114312acae20d72786cf56b00da039d812"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f826d94b22136cf65b93fe36dbeef65a4b5acd052d002b00e49987d5bdab3ac8"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f948009001364be3700e624be19a1972e3ea7fb320db6371001a8ebbbc05d3ba"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "f9bd2bd4bd394ab752b12c21db464d6d0834150e86e244eb3765f685b59e4ab4"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "positional"
+        ],
+        "splits": [
+          "selection"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "fc4bebf81ab60da894c8cd0cd936f0bd1f10b660f8a98d5c198163d9e7f43895"
+        ],
+        "games": [
+          "connect4-gravity-6x7"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      },
+      {
+        "fingerprints": [
+          "fdcac50f18ece41a38b86205c3ce120e484d6c76503a0ffc17aa3435e6454ec9"
+        ],
+        "games": [
+          "reversi6"
+        ],
+        "policy_families": [
+          "tactical",
+          "uniform"
+        ],
+        "splits": [
+          "train"
+        ],
+        "trajectories": 1
+      }
+    ],
+    "count": 207,
+    "largest": 5,
+    "mixed_split_count": 0,
+    "mixed_split_examples": []
+  },
+  "cross_split_overlap": {},
+  "dataset_fingerprint": "cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40",
+  "episodes_per_game_split": 48,
+  "input_trajectories": 284,
+  "interpretation": "No model was fit. Current loader was not given approval. This proves prefit data audit feasibility for the named synthetic two-game protocol only, not model performance, exact-oracle power, transfer, novelty or Q1 readiness.",
+  "numpy": "2.4.6",
+  "protocol_id": "dev09-v1",
+  "python": "3.11.9",
+  "runtime_seconds": 127.69197839999106,
+  "schema": "v28-procedural-trajectories-v09",
+  "seed": 28094007,
+  "source_sha256": "55ab1f05e83e837118385846e068aac32a25232a5aaa3b8a7dd244dd2a8c6dcc",
+  "split_order": [
+    "train",
+    "validation",
+    "selection"
+  ],
+  "status": "PASSED: prefit data feasibility only",
+  "support": {
+    "connect4-gravity-6x7/locked-final": {
+      "counterfactual_branch_states": 0,
+      "h2_records": 0,
+      "policy_families": [],
+      "records": 0,
+      "trajectories": 0,
+      "unique_branch_keys": 0
+    },
+    "connect4-gravity-6x7/selection": {
+      "counterfactual_branch_states": 27258,
+      "h2_records": 127,
+      "policy_families": [
+        "positional"
+      ],
+      "records": 139,
+      "trajectories": 44,
+      "unique_branch_keys": 23352
+    },
+    "connect4-gravity-6x7/train": {
+      "counterfactual_branch_states": 87174,
+      "h2_records": 264,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 307,
+      "trajectories": 72,
+      "unique_branch_keys": 77094
+    },
+    "connect4-gravity-6x7/validation": {
+      "counterfactual_branch_states": 36264,
+      "h2_records": 109,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 128,
+      "trajectories": 24,
+      "unique_branch_keys": 32058
+    },
+    "reversi6/locked-final": {
+      "counterfactual_branch_states": 0,
+      "h2_records": 0,
+      "policy_families": [],
+      "records": 0,
+      "trajectories": 0,
+      "unique_branch_keys": 0
+    },
+    "reversi6/selection": {
+      "counterfactual_branch_states": 354669,
+      "h2_records": 928,
+      "policy_families": [
+        "positional"
+      ],
+      "records": 976,
+      "trajectories": 48,
+      "unique_branch_keys": 289430
+    },
+    "reversi6/train": {
+      "counterfactual_branch_states": 849218,
+      "h2_records": 1418,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 1490,
+      "trajectories": 72,
+      "unique_branch_keys": 725164
+    },
+    "reversi6/validation": {
+      "counterfactual_branch_states": 275706,
+      "h2_records": 467,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 491,
+      "trajectories": 24,
+      "unique_branch_keys": 235458
+    }
+  },
+  "title": "V2.8 DEV09 strict model-blind data audit",
+  "training_approved": false,
+  "unique_trajectories": 284
+}

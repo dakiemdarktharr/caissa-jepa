@@ -2,15 +2,19 @@
 
 Updated: 2026-10-01. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
-## Current verified state (2026-10-01)
+## Current verified state (2026-10-01; refreshed after DEV10 root-oracle pilot)
 
-- Only local `main` and remote `origin/main` remain. Commit `a6632cd5f938df2fb888d6ff4449440a359f25bf` was pushed without force and matches `origin/main`; the working tree is clean.
-- The full repository suite passed after the final V2.8 gate corrections: 348 tests in 163.687 seconds. The 12 V2.8-focused tests pass. These are regression checks, not model evidence.
-- The corrected model-blind exact-oracle gate passed for gravity Connect4 4x5 (100/100 exact maps; 72 variable labels; 53 beyond-depth roots) and Reversi6 (150/150; 54; 54) under 200k nodes, 2 seconds, and 500k cache entries. Source and raw-receipt hashes match the tracked DEV06 summary. This only establishes root/support/oracle feasibility.
-- No V2.8 JEPA or matched baseline has been trained; no V2.8 checkpoint or JEPA-over-baseline result exists. No claim of superiority, verified novelty, cross-game transfer, exploitability, or Q1 readiness is supported. Dataset split/leakage, opponent-family, power, and learned-performance gates remain open.
+- Base commit remains `02ec29733546f47550ac53fb50364f89770e2fe4` on local/remote `main`. This session has uncommitted V2.8 data/protocol changes; Git inventory and push verification are pending. No branch was created.
+- The last environment-complete full regression passed 381 tests in 128.652 seconds before the V08 analysis additions. In the current available Python runtime, all 45 V2.8 tests pass and all 18 focused V08 power/analysis/model-blind tests pass. Root discovery ran 371 tests in 162.177 seconds but ended with 20 errors because PySide6 is unavailable in that Python 3.14 runtime; NumPy is available. No dependency was installed. Logs remain in system temp, outside Git.
+- The corrected model-blind exact-oracle gate passed for gravity Connect4 4x5 (100/100 exact maps; 72 variable labels; 53 beyond-depth roots) and Reversi6 (150/150; 54; 54) under 200k nodes, 2 seconds, and 500k cache entries. This establishes feasibility only.
+- V2.8 DEV01–DEV04 failed model-blind split/support gates. DEV05 used 96 candidate episodes per game/split and wrote trajectories only, but its original support-floor check was defective: it inspected only empty locked-final. The recorded Connect4 counts were train 9/2 records, validation 4/20, selection 9/26; it also reported seat-coverage failures and one quarantined mixed-family component. Independent review invalidated its pass status. DEV01 and DEV02–DEV05 diagnostics and hashes are retained in `docs/validation/`; local full trajectories/manifests remain ignored under their matching `chess_data/v28_data_dev*/` folders. No model-facing records were published.
+- The implementation now checks support floors inside each game/split, regenerates each trajectory from required source split/seed/episode/policy hashes, locks generation to named quota/seed protocols, preserves duplicate family lineage before component quarantine, and withholds records on any failure. Tests cover support floors, regenerable lineage, component assignment, duplicate paths, and fail-closed publication. The stochastic positional policy remains an explicitly versioned softmax over a standardized heuristic.
+- DEV06's reported pass is excluded from fitting because it did not enforce exact splits. DEV07 stopped before output on valid Reversi passes. After correcting both plus the reviewed threshold override, DEV09 (`dev09-v1`, schema v09, seed `28094007`, quota 48, exact ordered train/validation/selection, phase `1/3`) passed full prefit data audit for Connect4 6x7 and Reversi6. It produced 3,531 records across 284 unique trajectories; train/validation/selection support is C4 `72/24/44` trajectories and `307/128/139` records, Reversi `72/24/48` and `1490/491/976`. Independent replay and artifact/source SHA checks matched receipt `docs/validation/V28_DATA_SPLIT_DEV09.json`. Raw files/manifests remain ignored in `chess_data/v28_data_dev09/`. Training is not approved and no model was fit.
+- DEV10 extended the model-blind exact-root gate to Connect4 gravity 6x7. It used five scheduled roots at plies 5–11, 500,000-node/500,000-cache/two-second root budgets and an independent reference-rule differential. Rule checks passed 5/5; the oracle returned complete root action maps for 0/5. This is a budget-specific feasibility result, not proof that 6x7 exact labels are impossible. Method V05 and protocol V08 pivot the primary endpoint to paired color-swapped complete-game score.
+- Protocol V08 defines a fixed panel of 20 checkpoints, 120 unique match seeds per checkpoint/game/control, a +0.05 practical score margin, stratified standard errors, one-sided boundary tests with Holm correction, simultaneous bounds and explicit timeout/replay failure rules. `tools/v28_match_power.py` produces 9,600 paired blocks; the commitment receipt binds schedule rows, generator and analysis hashes. In the conservative scenario (SD .50, effect .10, margin .05), planned 2,400 blocks give marginal power .9961 per control and a dependence-free joint lower bound .9921. The independent method reviewer verified these values, hashes and schedule, with no P1-or-higher blocker. The matched-game evaluator and four-hour nonlearned runtime/power gate have not run.
+- No V2.8 JEPA or matched baseline has been trained; no V2.8 checkpoint or JEPA-over-baseline result exists. DEV09 remains prefit data-feasibility only; `training_approved` remains false. Training is blocked on evaluator implementation, nonlearned schedule/runtime/power, and independent review. No claim of superiority, verified novelty, cross-game transfer, exploitability, or Q1 readiness is supported. A dataset pass alone does not authorize training.
 - Primary-source review identifies critical novelty risk for generic action-conditioned/joint-action JEPA, opponent-state prediction, and imagined self-play. Deep Latent Competition and MA-JEPA are recorded in `docs/RELATED_WORK.md`; the reply-set JEPA/minimax gap remains unverified.
-- Obsidian vault: `D:\notes\vault_1\Caissa-JEPA\`. The current sync contains 100 source Markdown files and has zero missing files or SHA-256 mismatches; Ground Truth is the first reference page. The vault has 184 project-folder Markdown files including retained notes. This session verified bytes without opening the Obsidian UI to keep the desktop available.
-- Continue next with the frozen V2.8 trajectory/opponent/split/power protocol and data pipeline. Do not begin training until its pre-fit gates pass. User instructions persist: run shell/PowerShell hidden in the background; keep only `main`; preserve all work, never force-push, and push completed milestones; use Obsidian as long-term memory; no paid services, restricted data, unapproved licenses, or external contact.
+- Obsidian vault is `D:\notes\vault_1\Caissa-JEPA\`. This session copied 110 project Markdown files preserving relative paths and verified zero SHA-256 mismatches; `GROUND_TRUTH.md` exists there and reads successfully. The vault had been discovered and opened in Obsidian in the prior verified session; this session did not foreground its UI so the user's desktop remained available. User requires hidden/background shell commands, only `main`, preservation and normal push of completed changes, Obsidian as project memory, and no paid services, restricted data, unapproved licenses, or external contact.
 
 The continuation paragraphs below are historical. Later dated entries supersede their interim branch, test, novelty, data, and gate status.
 
@@ -1123,3 +1127,33 @@ zero missing files and zero content mismatches; the vault contains 184 Markdown
 files total, including previously retained vault notes. No vault content was
 deleted. This background file/hash verification did not open the Obsidian UI in
 this session to leave the desktop available.
+
+### DEV10 exact-root feasibility and primary-endpoint redesign (2026-10-01)
+
+Extended `tools/v28_modelblind_gate.py` to the admitted gravity Connect4 6x7
+game and added adapter-action round-trip, seeded schedule and reference-rule
+coverage tests. The focused gate suite passes 7 tests. The DEV10 exploratory
+schedule requested five unique uniformly generated roots (seed 28094010,
+trajectory seeds 29100000 onward, target ply 5–11); all five passed independent
+two-ply rule comparisons. With 500,000 nodes, 500,000 cache entries and a two
+second per-root budget, exact action-value coverage was 0/5 and the gate failed.
+See `docs/validation/V28_ROOT_ORACLE_DEV10_PILOT.json`. This is a small
+feasibility diagnostic, not a power estimate and not a learned result.
+
+The exact minimax-regret primary endpoint is stopped for this two-game design.
+Method V05 and data/power protocol V08 propose paired color-swapped complete
+game score against the two strongest same-search no-JEPA controls, with fixed
+secondary finite-opponent league results and exact regret only when a separately
+frozen root set is fully solved. The proposed +0.05 practical match-score margin
+and paired scenario power gate are pre-fit and require independent review. No
+model training has begun or is authorized; implementation of the schedule and
+power analysis remain outstanding. DEV09 remains only a prefit synthetic data
+audit pass. No JEPA-over-baseline, broad transfer, exploitability, novelty, or
+Q1 claim is supported.
+
+The full post-DEV09 repository suite passed 381 tests in 128.652 seconds before
+the match-analysis additions. The focused model-blind gate, power, and analysis
+tests pass 17/17. The five-root DEV10 oracle run completed and produced the
+failure receipt. The locked schedule contains 9,600 paired blocks and its
+commitment is recorded without model outcomes. The screen remained free during
+all command runs by launching PowerShell hidden in the background.

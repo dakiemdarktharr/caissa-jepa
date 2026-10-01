@@ -7,8 +7,24 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `GROUND_TRUTH.md` | Current session authority and resume entry; read first |
 | `AGENTS.md` | Active project collaboration rules |
 | `README.md` | Current two-player research entry plus legacy chess compatibility |
+| `docs/V28_DATA_POWER_PROTOCOL_V01.md` | Initial prefit data/power protocol; superseded in status by amendments, retained as immutable history |
+| `docs/V28_DATA_POWER_PROTOCOL_V02_AMENDMENT.md` | DEV01-driven component-first and family-diversity correction; historical plan |
+| `docs/V28_DATA_POWER_PROTOCOL_V03_AMENDMENT.md` | DEV02/03 support allocation and fixed 48-quota pilot; superseded after DEV04 |
+| `docs/V28_DATA_POWER_PROTOCOL_V04_AMENDMENT.md` | DEV04-driven 96-quota DEV05 plan; audit implementation was defective, so its pilot has no valid pass status |
+| `docs/V28_DATA_POWER_PROTOCOL_V05_AMENDMENT.md` | Historical scope pivot to Connect4 6x7 plus Reversi6; pilot details superseded by v0.6 |
+| `docs/V28_DATA_POWER_PROTOCOL_V06_AMENDMENT.md` | Historical exact-split correction; DEV07 stopped before output |
+| `docs/V28_DATA_POWER_PROTOCOL_V07_AMENDMENT.md` | DEV09 protocol and passed prefit data audit; no training approval |
+| `docs/V28_MATCH_POWER_PROTOCOL_V08_AMENDMENT.md` | Paired-match primary estimand after the DEV10 exact-root feasibility failure; pre-fit proposal |
+| `docs/validation/V28_MATCH_SCHEDULE_V08_COMMITMENT.json` | 9,600-block deterministic schedule and scenario-power commitment; no outcomes, evaluator or power gate pass |
+| `docs/validation/V28_DATA_SPLIT_DEV01.json` | Failed original split feasibility receipt |
+| `docs/validation/V28_DATA_SPLIT_DEV02_DEV05.json` | Model-blind data diagnostic receipts; DEV05 support gate caveat documented |
+| `docs/validation/V28_DATA_SPLIT_DEV06.json` | DEV06 support-feasibility receipt; excluded from fitting after split-schedule enforcement review |
+| `docs/validation/V28_DATA_SPLIT_DEV09.json` | Passed strict data-audit receipt for synthetic Connect4 6x7 + Reversi6; raw records are ignored and training is unapproved |
 | `ROADMAP.md` | Current milestones and evidence/kill gates |
 | `METHOD_SPEC.md` | Frozen original v1; read amendments before implementation |
+| `docs/METHOD_V28_PLANNER_V04_AMENDMENT.md` | Historical exact-root-regret candidate; DEV10 showed current 6x7 oracle budget unresolved |
+| `docs/METHOD_V28_PLANNER_V05_AMENDMENT.md` | Current paired-match candidate; pre-fit redesign, independent method review signed off; evaluator/power gate pending |
+| `docs/validation/V28_ROOT_ORACLE_DEV10_PILOT.json` | Five-root Connect4 6x7 exact-label pilot; 0/5 complete maps under frozen local budget |
 | `docs/METHOD_AMENDMENTS.md` | Active v1.2 middle/late feasibility design and objective controls |
 | `docs/RELATED_WORK.md` | Primary-source positioning review; not an exhaustive publication review |
 | `docs/DATA_SOURCES.md` | Source/license register; no external data acquired |
@@ -180,6 +196,13 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
   `validation/V28_MODEL_BLIND_GATE_DEV06.json`: authoritative corrected gate;
   Connect4 4x5 100/100 and Reversi6 150/150 exact maps under 200k nodes, 2s,
   500k cache; support/coverage/rule checks pass, no power or model comparison.
+- `V28_DATA_POWER_PROTOCOL_V01.md`: pre-fit proposal for self-play provenance,
+  opponent-family holdouts, trajectory/counterfactual split audits, power, and
+  locked confirmation; not implemented and does not authorize training.
+- `V28_DATA_POWER_PROTOCOL_V02_AMENDMENT.md` and
+  `validation/V28_DATA_SPLIT_DEV01.json`: model-blind trajectory/branch split
+  pilot failed on Connect4 overlap and positional-policy support; component-first
+  splitting and a more diverse pinned policy are required before another pilot.
 - `../tools/v28_modelblind_gate.py`, `../tests/test_v28_modelblind_gate.py`,
   `../two_player/planner.py`, and `../tests/test_v28_planner.py`: root schedule,
   exact-oracle/rule check and depth-two max-min planner; focused unittest scope

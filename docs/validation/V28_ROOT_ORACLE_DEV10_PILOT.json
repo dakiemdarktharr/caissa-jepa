@@ -1,0 +1,114 @@
+﻿{
+    "schema":  "caissa-jepa-v28-root-oracle-pilot-receipt-v1",
+    "title":  "DEV10 Connect4 6x7 model-blind exact-root feasibility pilot",
+    "stage":  "exploratory fixed-schedule model-blind feasibility; no training",
+    "game":  "connect4-gravity-6x7",
+    "schedule":  {
+                     "candidate_quota":  5,
+                     "attempts":  5,
+                     "schedule_seed":  28094010,
+                     "first_trajectory_seed":  29100000,
+                     "connect4_target_ply":  [
+                                                 5,
+                                                 11
+                                             ],
+                     "reversi_target_empties":  null,
+                     "behavior_policy":  "project-owned uniform over legal actions",
+                     "unique_symmetry_roots":  5
+                 },
+    "oracle_budget":  {
+                          "nodes":  500000,
+                          "seconds_per_root":  2.0,
+                          "cache_entries":  500000,
+                          "coverage_rule":  "100% of the fixed scheduled root population or gate failure; no solver-success filtering"
+                      },
+    "summary":  {
+                    "scheduled_roots":  5,
+                    "requested_unique_roots":  5,
+                    "candidate_quota_pass":  true,
+                    "complete_exact_maps":  0,
+                    "timeouts_or_failures":  5,
+                    "variable_exact_labels":  0,
+                    "beyond_depth_roots":  0,
+                    "support_floor_pass":  false,
+                    "rule_comparison_pairs":  280,
+                    "all_roots_rule_valid":  true,
+                    "oracle_coverage_pass":  false,
+                    "gate_pass":  false
+                },
+    "roots":  [
+                  {
+                      "index":  0,
+                      "trajectory_seed":  29100000,
+                      "ply":  8,
+                      "legal_root_actions":  7,
+                      "two_ply_branch_keys":  56,
+                      "rule_differential_pass":  true,
+                      "exact_complete":  false,
+                      "oracle_nodes":  33050,
+                      "oracle_seconds":  2.000225,
+                      "oracle_error":  "Alpha-beta time budget exhausted"
+                  },
+                  {
+                      "index":  1,
+                      "trajectory_seed":  29100001,
+                      "ply":  11,
+                      "legal_root_actions":  7,
+                      "two_ply_branch_keys":  56,
+                      "rule_differential_pass":  true,
+                      "exact_complete":  false,
+                      "oracle_nodes":  32754,
+                      "oracle_seconds":  2.000216,
+                      "oracle_error":  "Alpha-beta time budget exhausted"
+                  },
+                  {
+                      "index":  2,
+                      "trajectory_seed":  29100002,
+                      "ply":  8,
+                      "legal_root_actions":  7,
+                      "two_ply_branch_keys":  56,
+                      "rule_differential_pass":  true,
+                      "exact_complete":  false,
+                      "oracle_nodes":  38061,
+                      "oracle_seconds":  2.000203,
+                      "oracle_error":  "Alpha-beta time budget exhausted"
+                  },
+                  {
+                      "index":  3,
+                      "trajectory_seed":  29100003,
+                      "ply":  8,
+                      "legal_root_actions":  7,
+                      "two_ply_branch_keys":  56,
+                      "rule_differential_pass":  true,
+                      "exact_complete":  false,
+                      "oracle_nodes":  41006,
+                      "oracle_seconds":  2.000173,
+                      "oracle_error":  "Alpha-beta time budget exhausted"
+                  },
+                  {
+                      "index":  4,
+                      "trajectory_seed":  29100004,
+                      "ply":  8,
+                      "legal_root_actions":  7,
+                      "two_ply_branch_keys":  56,
+                      "rule_differential_pass":  true,
+                      "exact_complete":  false,
+                      "oracle_nodes":  39074,
+                      "oracle_seconds":  2.000277,
+                      "oracle_error":  "Alpha-beta time budget exhausted"
+                  }
+              ],
+    "source_commit":  "02ec29733546f47550ac53fb50364f89770e2fe4",
+    "source_sha256":  {
+                          "gate":  "41abb4fe0afd51e75fe8e5f29f20862960da3e2dff7128b00ed50da9aa53cbf4",
+                          "adapter":  "fbdce0893f6dcc76d30b71d4391842abbcd7c15a0d1a9e20c40077457e273d3a",
+                          "planner":  "759f1f6a72297c725a3c239a6f0594bff5422a778d02642cc067bbc9d92e1e88",
+                          "reference_rules":  "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+                          "alpha_beta":  "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c"
+                      },
+    "environment":  {
+                        "python":  "3.11.9",
+                        "platform":  "Windows-10-10.0.26200-SP0"
+                    },
+    "claim_limit":  "Self-generated root/oracle feasibility only; not training data quality, model performance, power, or JEPA advantage."
+}

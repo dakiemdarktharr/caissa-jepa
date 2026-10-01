@@ -1,0 +1,89 @@
+{
+  "schema": "caissa-jepa-v28-data-split-dev01",
+  "date": "2026-10-01",
+  "stage": "model-blind synthetic data / split feasibility; no learned model",
+  "source_commit": "02ec29733546f47550ac53fb50364f89770e2fe4",
+  "source_sha256": "199cae9aa2d69474313ade01d4ac74981239c3337ca5baab35e1c44b3888f82a",
+  "data_version": "v28-procedural-trajectories-v01",
+  "data_directory": "chess_data/v28_data_dev01/ (ignored; not distributed)",
+  "data_artifacts": {
+    "trajectories.jsonl": {
+      "rows": 144,
+      "bytes": 56728,
+      "sha256": "8dcfb5d7b7b490b22c05d9605c28022bd68d1fc5669cc3ecdc1caa4d04533fd4"
+    },
+    "records.jsonl": {
+      "rows": 1634,
+      "bytes": 1141235,
+      "sha256": "8567f2cc95149a956f493e0179a43c27676ddce878cb64a2c36755d6f543cf5d"
+    }
+  },
+  "schedule": {
+    "episodes_per_game_split": 24,
+    "seed": 28094000,
+    "games": ["connect4-gravity-4x5", "reversi6"],
+    "splits": ["train", "validation", "selection"],
+    "locked_final_generated": false,
+    "minimum_phase_fraction": 0.3333333333333333,
+    "source": "project-owned rules and policy families; synthetic self-play only"
+  },
+  "primary_attempt": {
+    "status": "FAILED",
+    "unique_trajectories": 112,
+    "duplicate_trajectories": 32,
+    "records": 1634,
+    "overlap_components": {
+      "count": 70,
+      "largest_component_trajectories": 15,
+      "mixed_split_components": 5
+    },
+    "support": {
+      "connect4-gravity-4x5/train": {"records": 197, "trajectories": 24, "h2": 174},
+      "connect4-gravity-4x5/validation": {"records": 234, "trajectories": 24, "h2": 211},
+      "connect4-gravity-4x5/selection": {"records": 83, "trajectories": 7, "h2": 76},
+      "reversi6/train": {"records": 479, "trajectories": 24, "h2": 456},
+      "reversi6/validation": {"records": 488, "trajectories": 24, "h2": 464},
+      "reversi6/selection": {"records": 153, "trajectories": 9, "h2": 144}
+    },
+    "cross_split_context_target_and_counterfactual_key_overlap": {
+      "connect4-gravity-4x5/train|validation": 83,
+      "connect4-gravity-4x5/train|selection": 33,
+      "connect4-gravity-4x5/validation|selection": 12
+    },
+    "training_allowed": false
+  },
+  "phase_sensitivity_on_same_trajectories": [
+    {
+      "minimum_phase_fraction": 0.5,
+      "status": "FAILED",
+      "support_records_trajectories_h2": {
+        "connect4-gravity-4x5/train": [129, 24, 111],
+        "connect4-gravity-4x5/validation": [167, 24, 146],
+        "connect4-gravity-4x5/selection": [62, 7, 55],
+        "reversi6/train": [341, 24, 318],
+        "reversi6/validation": [344, 24, 320],
+        "reversi6/selection": [99, 9, 90]
+      },
+      "overlap": {
+        "connect4-gravity-4x5/train|validation": 14,
+        "connect4-gravity-4x5/validation|selection": 6
+      },
+      "overlap_components": {"count": 85, "largest": 7, "mixed_split": 4}
+    },
+    {
+      "minimum_phase_fraction": 0.6,
+      "status": "FAILED",
+      "support_records_trajectories_h2": {
+        "connect4-gravity-4x5/train": [95, 24, 79],
+        "connect4-gravity-4x5/validation": [125, 24, 104],
+        "connect4-gravity-4x5/selection": [48, 7, 41],
+        "reversi6/train": [249, 24, 226],
+        "reversi6/validation": [248, 24, 224],
+        "reversi6/selection": [63, 9, 54]
+      },
+      "overlap": {"connect4-gravity-4x5/validation|selection": 6},
+      "overlap_components": {"count": 88, "largest": 7, "mixed_split": 1}
+    }
+  ],
+  "interpretation": "The original one-third scope fails cross-split state/branch disjointness on Connect4 and loses selection support to duplicate positional-policy trajectories. Raising the phase threshold reduces Connect4 overlaps but also reduces selection support and still fails. Reversi6 has no observed overlap in this small pilot, but is not cleared for full support, power, or locked evaluation. No model was fitted and no JEPA/baseline comparison occurred."
+}

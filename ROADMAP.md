@@ -1,6 +1,22 @@
 # CAISSA-JEPA research roadmap
 
+## Current V2.8 gate update (2026-10-01)
+
+V05/V08 replace the exact-root primary for the tested schedule with paired, color-swapped complete-game scores. The independent method review signed off the analysis and schedule integrity with no P1-or-higher finding. Its caveats are addressed by adding per-comparison power plus a dependence-free lower bound on both controls passing, and by binding the schedule-generator source hash in the commitment receipt. This is protocol sign-off, not model validation.
+
+The next work is staged: (1) **exploratory, small**—implement the complete-game evaluator and require exact rule/terminal agreement, deterministic replay, legal action handling, and reproducible nonlearned paired execution; (2) **development, medium**—only after evaluator and model-blind runtime/power gates pass, fit JEPA and same-data/same-search controls with reproducible seeds, no collapse, and complete resource logging; (3) **model selection, medium/large**—predeclare candidate budgets and select on development/selection splits only, then commit model/config/data/evaluator hashes; (4) **locked confirmation, large**—run the 9,600-block schedule under the local cap and report every outcome, timeout, censor, color/game/seed effect, corrected test, and uncertainty interval.
+
+Current acceptance: DEV09 strict prefit data audit passed; DEV10 exact-root coverage was 0/5 at its tested budget despite 5/5 rule checks; V05/V08 method review passed with the caveats above now repaired; focused V08 tests pass. Production evaluator, measured nonlearned schedule/runtime/variance gate, trained models, checkpoints, and results are still incomplete. Training remains blocked until gates and a version freeze pass. No third-party dataset is admitted. Stop or narrow if local runtime exceeds the cap, games saturate, observed variance makes the margin underpowered, replay/rule mismatch occurs, or JEPA fails either primary control. Never retune the primary endpoint after learned outcomes.
+
 Version 1 — 2026-09-29; V2.7 positioning amended 2026-09-30. Sizes are relative, not completion-date promises. Q1 is a quality target; acceptance and positive outcomes are unknown. See Ground Truth first and the source review in `docs/RELATED_WORK.md`.
+
+## V2.8 current continuation (2026-10-01)
+
+DEV01–DEV05 are model-blind data feasibility attempts only. DEV01 had cross-split leakage; DEV02/03 quarantined policy-family-mixed components; DEV03/04/05 lacked Connect4 support. DEV05 additionally used a broken support-floor gate that checked only the empty locked-final split; its status is invalid and no model-facing records were written. The independent review required support checks per game/split, reproducible trajectory lineage, protocol-locked quota/seed, and family provenance through duplicate paths. These are now being corrected with regression tests.
+
+Stop increasing quota on 4x5 Connect4. DEV06 on gravity Connect4 6x7 plus Reversi6 reported support audit pass, but the code did not enforce the exact split tuple. Its data is excluded from fitting. DEV07 stopped before output on a valid Reversi pass sequence; review also found a caller-overridable phase threshold. Strict DEV09 passes the frozen tuple, quota, seed, source-regeneration, component, family, and per-split support audits for Connect4 6x7 plus Reversi6. This is prefit data feasibility only. DEV10's exact-root pilot passed independent rules for 5/5 scheduled Connect4 6x7 positions but returned 0/5 complete action-value maps within 500,000 nodes/two seconds. The exact-regret primary is therefore stopped. Method V05 / protocol V08 propose a paired color-swapped match-score endpoint; this pivot is not yet independently reviewed or powered. No training is authorized until the nonlearned match/power gate, data/rules checks, and independent method/fairness review pass. Keep all unresolved paired blocks; never tune a primary metric after learned outcomes.
+
+Retain the research objective and result standard: JEPA's planner must beat a non-JEPA baseline under an independently verified matched compute budget on a predeclared confirmatory metric. Prior methods make generic two-action prediction and search insufficent novelty claims; see `docs/RELATED_WORK.md` and the frozen V2.8 method documents.
 
 Latest positioning gate: primary-source review now includes Athénan
 (JMLR 2026) and its AAMAS 2023 comparison with Polygames, plus AAAI 2025
@@ -499,3 +515,33 @@ SMAC and reports comparator-dependent outcomes across eight maps. The candidate
 reply-set JEPA/minimax branch-ranking gap remains unverified. Update the locked
 claim ledger and finish broader forward/backward citation search before any
 positive novelty claim. See `docs/RELATED_WORK.md` and `GROUND_TRUTH.md`.
+
+### V2.8 data and power protocol proposal (2026-10-01)
+
+`docs/V28_DATA_POWER_PROTOCOL_V01.md` records a pre-fit proposal for new
+project-generated trajectories, four pinned behavior families, episode/family
+holdouts, symmetry/role/counterfactual leakage checks, a model-blind power
+simulation, locked-final isolation, and matched JEPA controls. It keeps learned
+opponent-response modeling separate from worst-case minimax. This document is
+not implemented, independently approved, or permission to train. Next, review
+and implement only the bounded provenance/split audit; stop if the connected
+state graph, family support, or local power budget fails.
+
+### V2.8 synthetic data split feasibility, DEV01 (2026-10-01)
+
+Implemented the versioned self-play generator/auditor in `two_player/v28_data.py`
+and ran only a model-blind pilot. Its tracked summary is
+`docs/validation/V28_DATA_SPLIT_DEV01.json`; raw trajectories/records and
+manifest are excluded from Git under `chess_data/v28_data_dev01/`. The 144-game
+pilot produced 1,634 windows, 112 unique trajectories, and 32 duplicate
+symmetry/role paths. Connect4 failed strict split integrity with 83
+train/validation, 33 train/selection, and 12 validation/selection overlapping
+raw/canonical/context/target/counterfactual keys; selection had only 7 unique
+trajectories. Five components crossed assigned splits. Reversi6 showed no
+cross-split overlap in this small pilot but is not cleared for full support.
+
+The same-data phase sensitivity at 0.5 and 0.6 reduced some Connect4 overlaps
+but also lost selection support and still failed; neither threshold is promoted.
+`docs/V28_DATA_POWER_PROTOCOL_V02_AMENDMENT.md` requires component-first group
+assignment, versioned diversity for the positional family, and a new fixed-scope
+model-blind gate. Training remains blocked; no model or power result exists.

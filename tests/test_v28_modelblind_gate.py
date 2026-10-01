@@ -13,6 +13,10 @@ class ModelBlindGateTests(unittest.TestCase):
         for action in (0, 3, 24, 27, 28):
             ref_action = action_to_reference(adapter, action)
             self.assertEqual(action_to_adapter(adapter, ref_action), action)
+        connect4_large = GAMES["connect4-gravity-6x7"][0]
+        for action in (0, 6, 32, 40, 46):
+            ref_action = action_to_reference(connect4_large, action)
+            self.assertEqual(action_to_adapter(connect4_large, ref_action), action)
         reversi = GAMES["reversi6"][0]
         self.assertEqual(action_to_reference(reversi, 64), -1)
         self.assertEqual(action_to_adapter(reversi, -1), 64)
@@ -29,6 +33,14 @@ class ModelBlindGateTests(unittest.TestCase):
                     break
                 state = adapter.transition(state, rng.choice(adapter.legal_actions(state)))
                 self.assertGreater(compare_rules(adapter, reference, state), 0)
+
+    def test_connect4_six_by_seven_root_schedule_is_reproducible(self):
+        first, rejected, _ = schedule_roots("connect4-gravity-6x7", 8, 53, 1900)
+        second, rejected_again, _ = schedule_roots("connect4-gravity-6x7", 8, 53, 1900)
+        self.assertEqual(first, second)
+        self.assertEqual(rejected, rejected_again)
+        self.assertEqual(len(first), 8)
+        self.assertTrue(all(5 <= row["ply"] <= 11 for row in first))
 
     def test_schedule_is_reproducible_and_keeps_duplicate_dispositions(self):
         first, first_rejected, _ = schedule_roots("connect4-gravity-4x5", 12, 51, 900)

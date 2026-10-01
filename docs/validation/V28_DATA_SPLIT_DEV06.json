@@ -1,0 +1,111 @@
+{
+  "artifact_metadata": {
+    "records.jsonl": {
+      "bytes": 2701985,
+      "rows": 3551,
+      "sha256": "fc4ddc9d8f3b144f76997cc636f5a73035ed8165d9f35e3c325798e62da381bb"
+    },
+    "trajectories.jsonl": {
+      "bytes": 223227,
+      "rows": 287,
+      "sha256": "04e13d613130b295daece934b606f635cfe2950878e45c98316d350e93094af7"
+    }
+  },
+  "audit_errors_as_recorded": [],
+  "audit_status_as_recorded": "PASSED",
+  "code_commit": "02ec29733546f47550ac53fb50364f89770e2fe4",
+  "component_assignment_quarantine": 0,
+  "component_count": 275,
+  "episodes_per_game_split": 48,
+  "interpretation": "Prefit support feasibility only; excluded from fitting after protocol-enforcement review.",
+  "protocol_id": "dev06-v1",
+  "runtime_seconds": 152.7885876999935,
+  "schema": "v28-procedural-trajectories-v06",
+  "seed": 28094004,
+  "source_sha256": "b94b62a9b2d0eaff31e0ae91e8afaa4eac25fbd3b891e89772d9586fe39ede17",
+  "support": {
+    "connect4-gravity-6x7/locked-final": {
+      "counterfactual_branch_states": 0,
+      "h2_records": 0,
+      "policy_families": [],
+      "records": 0,
+      "trajectories": 0,
+      "unique_branch_keys": 0
+    },
+    "connect4-gravity-6x7/selection": {
+      "counterfactual_branch_states": 14562,
+      "h2_records": 64,
+      "policy_families": [
+        "positional"
+      ],
+      "records": 72,
+      "trajectories": 47,
+      "unique_branch_keys": 12600
+    },
+    "connect4-gravity-6x7/train": {
+      "counterfactual_branch_states": 96406,
+      "h2_records": 298,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 342,
+      "trajectories": 72,
+      "unique_branch_keys": 85054
+    },
+    "connect4-gravity-6x7/validation": {
+      "counterfactual_branch_states": 46242,
+      "h2_records": 182,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 200,
+      "trajectories": 24,
+      "unique_branch_keys": 40194
+    },
+    "reversi6/locked-final": {
+      "counterfactual_branch_states": 0,
+      "h2_records": 0,
+      "policy_families": [],
+      "records": 0,
+      "trajectories": 0,
+      "unique_branch_keys": 0
+    },
+    "reversi6/selection": {
+      "counterfactual_branch_states": 364094,
+      "h2_records": 920,
+      "policy_families": [
+        "positional"
+      ],
+      "records": 968,
+      "trajectories": 48,
+      "unique_branch_keys": 296819
+    },
+    "reversi6/train": {
+      "counterfactual_branch_states": 862868,
+      "h2_records": 1402,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 1474,
+      "trajectories": 72,
+      "unique_branch_keys": 738758
+    },
+    "reversi6/validation": {
+      "counterfactual_branch_states": 277794,
+      "h2_records": 471,
+      "policy_families": [
+        "tactical",
+        "uniform"
+      ],
+      "records": 495,
+      "trajectories": 24,
+      "unique_branch_keys": 236388
+    }
+  },
+  "title": "V2.8 DEV06 data-feasibility receipt",
+  "training_approved": false,
+  "validity_caveat": "The actual invocation used the prescribed train/validation/selection schedule. Static review found the generator did not enforce the exact unique ordered split tuple under the protocol ID. Current loader rejects the old source hash; do not fit these records. DEV07 reruns under corrected enforcement."
+}

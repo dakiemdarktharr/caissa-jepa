@@ -1,0 +1,459 @@
+{
+  "interpretation": "Development/support diagnostics only; no training or learned-model evidence.",
+  "runs": {
+    "DEV02": {
+      "artifact_metadata": {
+        "trajectories.jsonl": {
+          "bytes": 41387,
+          "rows": 103,
+          "sha256": "35193be10a3a7ff5b72bd2fca068e9c74ac0c6edabe144ef56925161966d5236"
+        }
+      },
+      "audit_errors_as_recorded": [
+        {
+          "quarantined_components": 3,
+          "reason": "component-first assignment quarantined candidate components"
+        }
+      ],
+      "audit_status_as_recorded": "FAILED",
+      "candidate_episodes_per_game_split": 24,
+      "component_count": 95,
+      "numpy": "2.4.6",
+      "python": "3.11.9",
+      "quarantined_component_count": 3,
+      "records_artifact_published": false,
+      "runtime_seconds": 44.94982270000037,
+      "schema": "v28-procedural-trajectories-v02",
+      "seed": 28094000,
+      "source_sha256": "09c61cb14af7847ad28eb3e526cbfbb4a4f3b68fffd418b25f51d674c8ad227f",
+      "support": {
+        "connect4-gravity-4x5/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "connect4-gravity-4x5/selection": {
+          "counterfactual_branch_states": 3954,
+          "h2_records": 57,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 63,
+          "trajectories": 10,
+          "unique_branch_keys": 3048
+        },
+        "connect4-gravity-4x5/train": {
+          "counterfactual_branch_states": 16381,
+          "h2_records": 154,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 173,
+          "trajectories": 21,
+          "unique_branch_keys": 13162
+        },
+        "connect4-gravity-4x5/validation": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "reversi6/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "reversi6/selection": {
+          "counterfactual_branch_states": 167686,
+          "h2_records": 461,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 485,
+          "trajectories": 24,
+          "unique_branch_keys": 135388
+        },
+        "reversi6/train": {
+          "counterfactual_branch_states": 434044,
+          "h2_records": 724,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 761,
+          "trajectories": 38,
+          "unique_branch_keys": 371134
+        },
+        "reversi6/validation": {
+          "counterfactual_branch_states": 121932,
+          "h2_records": 196,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 206,
+          "trajectories": 10,
+          "unique_branch_keys": 104760
+        }
+      },
+      "validity_caveat": "Failed component quarantine and support audit; diagnostics only."
+    },
+    "DEV03": {
+      "artifact_metadata": {
+        "trajectories.jsonl": {
+          "bytes": 39616,
+          "rows": 98,
+          "sha256": "4697416b50b027f682801a203f5f73951fd5cdc038b3c89ee4d87408cd41690b"
+        }
+      },
+      "audit_errors_as_recorded": [
+        {
+          "quarantined_components": 5,
+          "reason": "component-first assignment quarantined candidate components"
+        }
+      ],
+      "audit_status_as_recorded": "FAILED",
+      "candidate_episodes_per_game_split": 24,
+      "component_count": 98,
+      "numpy": "2.4.6",
+      "python": "3.11.9",
+      "quarantined_component_count": 5,
+      "records_artifact_published": false,
+      "runtime_seconds": 49.6752303000103,
+      "schema": "v28-procedural-trajectories-v03",
+      "seed": 28094001,
+      "source_sha256": "5648460e6bec693cc281ab71fbed00f766dad7551532b9ad551e2dad016c140e",
+      "support": {
+        "connect4-gravity-4x5/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "connect4-gravity-4x5/selection": {
+          "counterfactual_branch_states": 3743,
+          "h2_records": 40,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 45,
+          "trajectories": 9,
+          "unique_branch_keys": 2999
+        },
+        "connect4-gravity-4x5/train": {
+          "counterfactual_branch_states": 9600,
+          "h2_records": 79,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 90,
+          "trajectories": 12,
+          "unique_branch_keys": 7873
+        },
+        "connect4-gravity-4x5/validation": {
+          "counterfactual_branch_states": 3996,
+          "h2_records": 35,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 39,
+          "trajectories": 5,
+          "unique_branch_keys": 3254
+        },
+        "reversi6/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "reversi6/selection": {
+          "counterfactual_branch_states": 181083,
+          "h2_records": 449,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 473,
+          "trajectories": 24,
+          "unique_branch_keys": 149662
+        },
+        "reversi6/train": {
+          "counterfactual_branch_states": 415908,
+          "h2_records": 715,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 751,
+          "trajectories": 36,
+          "unique_branch_keys": 355428
+        },
+        "reversi6/validation": {
+          "counterfactual_branch_states": 146178,
+          "h2_records": 236,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 248,
+          "trajectories": 12,
+          "unique_branch_keys": 125118
+        }
+      },
+      "validity_caveat": "Failed component quarantine and Connect4 validation support; diagnostics only."
+    },
+    "DEV04": {
+      "artifact_metadata": {
+        "trajectories.jsonl": {
+          "bytes": 71350,
+          "rows": 175,
+          "sha256": "235bd69ba532c203912a911c672aecf256af04ceaebb87548920b5a55a157db2"
+        }
+      },
+      "audit_errors_as_recorded": [
+        {
+          "quarantined_components": 1,
+          "reason": "component-first assignment quarantined candidate components"
+        }
+      ],
+      "audit_status_as_recorded": "FAILED",
+      "candidate_episodes_per_game_split": 48,
+      "component_count": 161,
+      "numpy": "2.4.6",
+      "python": "3.11.9",
+      "quarantined_component_count": 1,
+      "records_artifact_published": false,
+      "runtime_seconds": 94.79840860000695,
+      "schema": "v28-procedural-trajectories-v04",
+      "seed": 28094002,
+      "source_sha256": "1f913d5166b86987a0ebdfdee3065a2550ef62ec32cc8237f9415a4f3b23fdc4",
+      "support": {
+        "connect4-gravity-4x5/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "connect4-gravity-4x5/selection": {
+          "counterfactual_branch_states": 2916,
+          "h2_records": 28,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 33,
+          "trajectories": 10,
+          "unique_branch_keys": 2394
+        },
+        "connect4-gravity-4x5/train": {
+          "counterfactual_branch_states": 7002,
+          "h2_records": 54,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 64,
+          "trajectories": 15,
+          "unique_branch_keys": 5626
+        },
+        "connect4-gravity-4x5/validation": {
+          "counterfactual_branch_states": 3858,
+          "h2_records": 41,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 45,
+          "trajectories": 6,
+          "unique_branch_keys": 3084
+        },
+        "reversi6/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "reversi6/selection": {
+          "counterfactual_branch_states": 354920,
+          "h2_records": 912,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 960,
+          "trajectories": 48,
+          "unique_branch_keys": 286972
+        },
+        "reversi6/train": {
+          "counterfactual_branch_states": 868426,
+          "h2_records": 1397,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 1469,
+          "trajectories": 72,
+          "unique_branch_keys": 743674
+        },
+        "reversi6/validation": {
+          "counterfactual_branch_states": 297864,
+          "h2_records": 464,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 488,
+          "trajectories": 24,
+          "unique_branch_keys": 255472
+        }
+      },
+      "validity_caveat": "Failed Connect4 validation/selection support floors; diagnostics only."
+    },
+    "DEV05": {
+      "artifact_metadata": {
+        "trajectories.jsonl": {
+          "bytes": 128434,
+          "rows": 310,
+          "sha256": "e3d8c7d3aceec96cdb1c1627f3250e39a1ec6131155c6527a4dfb739c1b9adfe"
+        }
+      },
+      "audit_errors_as_recorded": [
+        {
+          "family": "uniform",
+          "group": "connect4-gravity-4x5/train",
+          "reason": "policy family missing from a player seat"
+        },
+        {
+          "family": "tactical",
+          "group": "connect4-gravity-4x5/train",
+          "reason": "policy family missing from a player seat"
+        },
+        {
+          "family": "uniform",
+          "group": "connect4-gravity-4x5/validation",
+          "reason": "policy family missing from a player seat"
+        },
+        {
+          "family": "tactical",
+          "group": "connect4-gravity-4x5/validation",
+          "reason": "policy family missing from a player seat"
+        },
+        {
+          "quarantined_components": 1,
+          "reason": "component-first assignment quarantined candidate components"
+        }
+      ],
+      "audit_status_as_recorded": "FAILED",
+      "candidate_episodes_per_game_split": 96,
+      "component_count": 283,
+      "numpy": "2.4.6",
+      "python": "3.11.9",
+      "quarantined_component_count": 1,
+      "records_artifact_published": false,
+      "runtime_seconds": 206.2435320999939,
+      "schema": "v28-procedural-trajectories-v05",
+      "seed": 28094003,
+      "source_sha256": "8ece9688c5ad38bda053fb007714ffd49057e6cddfac774a149593d253da7677",
+      "support": {
+        "connect4-gravity-4x5/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "connect4-gravity-4x5/selection": {
+          "counterfactual_branch_states": 1698,
+          "h2_records": 23,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 26,
+          "trajectories": 9,
+          "unique_branch_keys": 1344
+        },
+        "connect4-gravity-4x5/train": {
+          "counterfactual_branch_states": 268,
+          "h2_records": 1,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 2,
+          "trajectories": 9,
+          "unique_branch_keys": 244
+        },
+        "connect4-gravity-4x5/validation": {
+          "counterfactual_branch_states": 1746,
+          "h2_records": 18,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 20,
+          "trajectories": 4,
+          "unique_branch_keys": 1416
+        },
+        "reversi6/locked-final": {
+          "counterfactual_branch_states": 0,
+          "h2_records": 0,
+          "policy_families": [],
+          "records": 0,
+          "trajectories": 0,
+          "unique_branch_keys": 0
+        },
+        "reversi6/selection": {
+          "counterfactual_branch_states": 749135,
+          "h2_records": 1842,
+          "policy_families": [
+            "positional"
+          ],
+          "records": 1938,
+          "trajectories": 96,
+          "unique_branch_keys": 600751
+        },
+        "reversi6/train": {
+          "counterfactual_branch_states": 1696490,
+          "h2_records": 2791,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 2934,
+          "trajectories": 144,
+          "unique_branch_keys": 1450580
+        },
+        "reversi6/validation": {
+          "counterfactual_branch_states": 534841,
+          "h2_records": 936,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ],
+          "records": 984,
+          "trajectories": 48,
+          "unique_branch_keys": 455530
+        }
+      },
+      "validity_caveat": "Invalid as a support-floor gate result: code checked support only for the final empty locked-final split. Reported per-split counts still show Connect4 support failure; no records artifact was written. Original manifest/hash retained unchanged."
+    }
+  },
+  "title": "V2.8 model-blind split feasibility receipts DEV02-DEV05"
+}

@@ -24,6 +24,8 @@ from two_player.games import BoardGame, State
 GAMES = {
     "connect4-gravity-4x5": (BoardGame("connect4-gravity-4x5", 4, 5, 4, gravity=True),
                              ReferenceGame(4, 5, 4, gravity=True)),
+    "connect4-gravity-6x7": (BoardGame("connect4-gravity-6x7", 6, 7, 4, gravity=True),
+                             ReferenceGame(6, 7, 4, gravity=True)),
     "reversi6": (BoardGame("reversi6", 6, 6, 0, reversi=True),
                  ReferenceGame(6, 6, 0, reversi=True)),
 }
