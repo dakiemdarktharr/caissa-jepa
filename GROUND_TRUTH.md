@@ -1132,12 +1132,12 @@ superiority claim is currently supported.
 ### Obsidian mirror verification (2026-10-01)
 
 The project Markdown mirror was refreshed in the verified vault at
-`D:\notes\vault_1\Caissa-JEPA\`. The sync copied 100 source Markdown files,
-including this Ground Truth as the first reference page. A SHA-256 pass found
-zero missing files and zero content mismatches; the vault contains 184 Markdown
-files total, including previously retained vault notes. No vault content was
-deleted. This background file/hash verification did not open the Obsidian UI in
-this session to leave the desktop available.
+`D:\notes\vault_1\Caissa-JEPA\`. The latest sync copied 105 source Markdown
+files, including this Ground Truth as the first reference page. A SHA-256 pass
+found zero missing files and zero content mismatches. It copied only and did
+not delete vault notes. The Obsidian UI was verified in an earlier session;
+this sync used hidden background file/hash verification and left the desktop
+available.
 
 ### DEV10 exact-root feasibility and primary-endpoint redesign (2026-10-01)
 
