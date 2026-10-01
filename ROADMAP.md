@@ -44,9 +44,10 @@ found no P1/P2 in scope; five supervisor tests and the combined focused suite
 pass (24 tests). The Windows Job Object accepted the child, but its CPU-time
 cap has not been separately stress-tested. Full repository discovery ran 407
 tests with 20 environment errors caused by unavailable/incomplete PySide6 in
-the bundled runtime. Once the updated Obsidian mirror and milestone commit are
-verified, run a fresh full 9,600-block pilot with a distinct V03 output
-identity. Keep both earlier partials immutable. A full pilot passing
+the bundled runtime. The updated Obsidian mirror and milestone commit `05246a1`
+are verified. V03 was launched hidden at 2026-10-01 11:55 UTC to a fresh
+9,600-block output with a 14,400-second user-CPU cap and 15-second atomic
+heartbeat. Keep both earlier partials immutable. A full pilot passing
 establishes proxy-runtime and paired-variance feasibility only; it still does
 not authorize training.
 DEV09 still has
