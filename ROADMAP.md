@@ -13,22 +13,43 @@ suite passed 19/19, both CLI help checks passed, timeout-forfeit replay passed,
 and both production loaders verified the same 9,600-row schedule fingerprint.
 See `docs/V28_MODEL_MATCH_EVALUATOR_REVIEW_01.md`.
 
-This clears evaluator software review only. The four-CPU-hour model-blind
-proxy job left a 4,839-row JSONL temporary file without a final artifact or
-watchdog receipt. Independent audit found 4,837/4,838 rows replayable after
-schema adaptation; one timeout lacks enough detail to validate and the file's
-runner SHA predates current code. Its 2,400 valid Connect4 independent-tape
-blocks have descriptive paired SD 0.30114; the 2,399 reversed-tape blocks
-have SD 0.30120 and a near-opposite mean, expected under same-policy
-self-play. Reversi has only 38 rows. These do not finish the runtime/power
-gate; see `docs/V28_MODELBLIND_PARTIAL_AUDIT_01.md`. Do not append to or resume
-that file. A fresh full pilot must use the current committed runner, a unique
-output path, explicit CPU cap, and auditable terminal status. The new V02
-9,600-block run has launched to ignored output
-`chess_data/v28_modelblind_proxy_v02_current.jsonl` with a hidden watchdog,
-14,400-second CPU cap, current runner/schedule hashes, and separate logs. It
-is exploratory, has no results yet, and must finish or leave a recorded cap
-status before this gate can be assessed. DEV09 still has
+This clears evaluator software review only. The earlier four-CPU-hour
+model-blind proxy job left a 4,839-row JSONL temporary file without a final
+artifact or watchdog receipt. Independent audit found 4,837/4,838 rows
+replayable after schema adaptation; one timeout lacks enough detail to validate
+and the file's runner SHA predates current code. Its 2,400 valid Connect4
+independent-tape blocks have descriptive paired SD 0.30114; the 2,399
+reversed-tape blocks have SD 0.30120 and a near-opposite mean, expected under
+same-policy self-play. Reversi has only 38 rows. These do not finish the
+runtime/power gate; see `docs/V28_MODELBLIND_PARTIAL_AUDIT_01.md`. Do not append
+to or resume that file.
+
+V02 also stopped abnormally after 616 of its 9,600 scheduled proxy blocks. Its
+ignored partial JSONL is preserved and all prefix records replay under the
+current verifier, but there is no terminal receipt. The traceback is truncated
+before its exception type/message and the watchdog did not finish its terminal
+status write; the root cause is unknown. Preserve it without resuming/appending
+or treating it as a gate result. See
+`docs/V28_MODELBLIND_V02_INTERRUPTION_AUDIT_01.md`. A new pilot needs a unique
+output identity, durable periodic progress and independent terminal/liveness
+monitoring in addition to current source/schedule hashes and explicit CPU cap.
+`tools/v28_modelblind_pilot_supervisor.py` now provides these controls and
+requires its terminal artifact, runner receipt, selected schedule, and source
+hashes to agree before declaring completion. The fingerprint includes the
+supervisor, pilot entry point, and policy/rules modules, plus Python/NumPy
+versions, and is checked unchanged at completion. An 8-block nested-output
+smoke completed and all rows replayed; its evidence is lifecycle-only. The
+independent supervisor review closed four earlier P2s and the final code review
+found no P1/P2 in scope; five supervisor tests and the combined focused suite
+pass (24 tests). The Windows Job Object accepted the child, but its CPU-time
+cap has not been separately stress-tested. Full repository discovery ran 407
+tests with 20 environment errors caused by unavailable/incomplete PySide6 in
+the bundled runtime. Once the updated Obsidian mirror and milestone commit are
+verified, run a fresh full 9,600-block pilot with a distinct V03 output
+identity. Keep both earlier partials immutable. A full pilot passing
+establishes proxy-runtime and paired-variance feasibility only; it still does
+not authorize training.
+DEV09 still has
 `training_approved: false`, no project-data checkpoint exists, and no learned
 match has run. Therefore training/selection and locked confirmation remain
 closed. After a fresh bounded nonlearned runtime/paired-variance pilot, review
