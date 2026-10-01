@@ -86,8 +86,8 @@ context/target isolation. `two_player_v2/` uses a shared two-layer encoder and
 recurrent dynamics with direct, value-dynamics, decoded, projected JEPA, raw JEPA
 and no-response comparisons. This is development work; improvement is unproven.
 The [36-run v2 grid](docs/V2_GRID01_RESULTS.md) completed without errors, but
-JEPA did not beat the strongest tuned value-dynamics baseline (regret0.249145
-versus0.247664). Development continues; selection/final predictions remain closed.
+JEPA did not beat the strongest tuned value-dynamics baseline (regret 0.249145
+versus 0.247664). Development continues; selection/final predictions remain closed.
 The [v2.1 amendment](docs/METHOD_V21.md) preserves that source and uses
 `two_player_v21/` for coherent legal-symmetry augmentation and a finite auxiliary
 weight grid. [Training-only diagnosis](docs/V2_GRID01_DIAGNOSIS.md) motivates the
@@ -113,21 +113,54 @@ It cannot promote a JEPA candidate or establish novelty.
 
 The [completed order probe](docs/V24_ORDER_RESULTS.md) failed its materiality
 screen in every game/capacity group and passed independent artifact audit.
+V2.4 reused the V2.3 checkpoints (hidden/latent 64/32 and 128/64); it did not
+train or evaluate playing strength. Its largest median order-bound ratio was
+0.002787 against a 0.10 materiality threshold.
 The [V2.5 method](docs/METHOD_V25.md) therefore tests a separate hypothesis:
 complete-reply mean/max latent consistency, compared with strong recurrent
 policy/value, scalar, decoded and gradient-allocation controls. Its42-cell
-development design is frozen; implementation verification precedes training.
-This is not a demonstrated model improvement or a novel-principle claim.
+development grid. The first attempt stopped inconclusive at cell4 because its
+memory observer leaked retained ctypes types; the repaired 42-cell grid05 later
+completed and was independently audited. It was **not promoted**: the candidate
+raw-tail exact-state regret was 0.202446 versus 0.203775 for direct, while its
+hybrid regret was worse (0.268340 versus 0.203775). See the
+[full V2.5 result](docs/V25_GRID05_RESULTS.md) and
+[runtime repair](docs/V25_RUNTIME_AMENDMENT.md).
 
-The first V2.5 attempt then stopped **inconclusive** at cell4 because its Windows
-memory observer leaked retained ctypes types. Three cells completed; the failed
-attempt and costs are preserved. A [prospective runtime repair](docs/V25_RUNTIME_AMENDMENT.md)
-keeps all scientific settings and budgets unchanged and requires a fresh42-cell
-attempt after verification. The [positioning note](docs/V25_RESEARCH_POSITIONING.md)
-explains the intended contribution and its boundaries for professor discussion.
+## Tested model settings and development results
 
+These studies use different data access, metrics, and evaluation protocols.
+The table covers the active multi-game pilot and development series; the legacy
+MARS-JEPA chess compatibility variants are listed separately below. Their
+regret values must be read within each study; the figures do not form a
+single cross-version leaderboard. `Exact regret` is lower-is-better action
+regret on that study's development roots. V2.3 reports training fit only, and
+V2.4 is a representation diagnostic rather than a strength comparison.
+
+| Study | Model families and tested settings | Main result and interpretation |
+| --- | --- | --- |
+| [V1 / 21-run pilot](METHOD_SPEC.md) | Seven variants; shared 32-dimensional latent encoder; EMA 0.99; batch 64; Adam at 0.001; 10 epochs; seeds 17/29/43. | No demonstrated JEPA benefit. Exact-state regret hit a ceiling; hybrid full JEPA made some Reversi errors avoided by direct re-encoding. |
+| [V2 / grid01](docs/METHOD_V2.md) | 6 families; shared encoder 198→64→32; recurrent hidden 64, latent 32, projection 16; batch 128; 40 epochs; learning rates 0.0003/0.001; seeds 17/29/43; 36 runs. | Selected projected-JEPA setting (lr 0.001) regret 0.249145 versus 0.247664 for value-dynamics. Not promoted. |
+| [V2.1 / grid02](docs/METHOD_V21.md) | Same base dimensions; coherent legal-symmetry augmentation; 60 runs; rates 0.0003/0.001; predictive-arm auxiliary weights 0.1/1.0; 3 seeds; 40 epochs. | Raw JEPA (lr 0.001, weight 0.1) regret 0.207425; improvement over value-dynamics 0.004826 (95% interval −0.039003 to 0.044845). Promotion gates failed. |
+| [V2.2 / grid03](docs/METHOD_V22.md) | Same base dimensions; 6 families, 2 rates (0.0003/0.001), 3 seeds; 25% selected training roots as the primary scarce-label arm, with a full-label sensitivity arm; 40 epochs; 72 runs. | Raw JEPA (lr 0.001, weight 0.1) scarce-label regret 0.293339 versus direct 0.283917. Not promoted. |
+| [V2.3 / fit diagnostic](docs/METHOD_V23_DIAGNOSTIC.md) | Direct, value-dynamics, raw JEPA; hidden/latent widths 64/32 and 128/64; projection 16; learning rate 0.001; 160 epochs; 3 seeds; 18 runs. | Larger models and longer training improved training fit for all families. Direct had lower final fit error than raw JEPA at both capacities; no strength evaluation was run. |
+| [V2.4 / order probe](docs/METHOD_V24_ORDER_PROBE.md) | Reused the 18 V2.3 checkpoints at both capacities; no new training. | Largest median order-bound ratio 0.002787, below the 0.10 materiality threshold. The proposed obstruction was not established. |
+| [V2.5 / grid05](docs/METHOD_V25.md) | Seven families; encoder 198→128→64; transition hidden 50, latent 64, 65 actions; batch 32 complete-reply groups; auxiliary coefficient 0.1; 160 epochs; rates 0.0003/0.001; 3 seeds; 42 runs. | Raw-tail (selected lr 0.0003) exact regret 0.202446 versus direct 0.203775 (95% interval for improvement −0.023899 to 0.026938); hybrid regret was worse. Not promoted. |
+| [V2.8 / supervised V02](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md) | Separate prefit prototype: latent 32, EMA 0.99, batch 64, learning rate 0.001, reply-JEPA weight 1.0, variance weight 0.1, target std 0.1, covariance weight 0.01. Compared in design with task-value-dynamics and direct-leaf controls. | **Untrained.** No V2.8 model result or JEPA advantage is available. These are prototype defaults, not frozen study settings. |
+
+### Figures
+
+Each figure reports only its named development study. V2.1 and V2.2 show
+development regret and paired uncertainty; V2.3 shows training-label fit; V2.5
+shows exact-state and hybrid planning results. Do not compare their plotted
+values across figures as if they shared one protocol.
+
+![V2 development grid: tuned family regret and paired effects](docs/figures/v2-grid01.png)
 ![V2.1 development means and uncertainty](docs/figures/v21-grid02.png)
 ![V2.2 restricted-label development](docs/figures/v22-grid03.png)
+![V2.3 training fit by game, family and capacity](docs/figures/v23-fit.png)
+![V2.5 complete legal-reply development results](docs/figures/v25-grid05.png)
+
 Read [adaptive research controls](docs/V2_RESEARCH_CONTROL.md) and the
 [novelty-risk follow-up](docs/V2_FORK_GEOMETRY_NOVELTY.md) before interpreting it.
 
