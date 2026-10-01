@@ -14,14 +14,20 @@ and both production loaders verified the same 9,600-row schedule fingerprint.
 See `docs/V28_MODEL_MATCH_EVALUATOR_REVIEW_01.md`.
 
 This clears evaluator software review only. The four-CPU-hour model-blind
-proxy job stopped without a watchdog receipt; its 4,839-row JSONL temporary
-file is preserved as an incomplete exploratory artifact and cannot be called a
-completed runtime/power gate. Do not restart it until the partial is audited
-and a recovery/rerun protocol is recorded. DEV09 still has
+proxy job left a 4,839-row JSONL temporary file without a final artifact or
+watchdog receipt. Independent audit found 4,837/4,838 rows replayable after
+schema adaptation; one timeout lacks enough detail to validate and the file's
+runner SHA predates current code. Its 2,400 valid Connect4 independent-tape
+blocks have descriptive paired SD 0.30114; the 2,399 reversed-tape blocks
+have SD 0.30120 and a near-opposite mean, expected under same-policy
+self-play. Reversi has only 38 rows. These do not finish the runtime/power
+gate; see `docs/V28_MODELBLIND_PARTIAL_AUDIT_01.md`. Do not append to or resume
+that file. A fresh full pilot must use the current committed runner, a unique
+output path, explicit CPU cap, and auditable terminal status. DEV09 still has
 `training_approved: false`, no project-data checkpoint exists, and no learned
 match has run. Therefore training/selection and locked confirmation remain
-closed. After resolving the partial pilot, run a bounded nonlearned runtime
-and paired-variance gate, review and freeze the exact V02 artifacts, then fit
+closed. After a fresh bounded nonlearned runtime/paired-variance pilot, review
+and freeze the exact V02 artifacts, then fit
 development/selection panels only if those gates support the planned margin.
 Locked confirmation remains conditional on successful training and no
 post-selection edits. A failure to finish within the declared local cap or
