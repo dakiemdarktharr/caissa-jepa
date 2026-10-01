@@ -23,7 +23,12 @@ have SD 0.30120 and a near-opposite mean, expected under same-policy
 self-play. Reversi has only 38 rows. These do not finish the runtime/power
 gate; see `docs/V28_MODELBLIND_PARTIAL_AUDIT_01.md`. Do not append to or resume
 that file. A fresh full pilot must use the current committed runner, a unique
-output path, explicit CPU cap, and auditable terminal status. DEV09 still has
+output path, explicit CPU cap, and auditable terminal status. The new V02
+9,600-block run has launched to ignored output
+`chess_data/v28_modelblind_proxy_v02_current.jsonl` with a hidden watchdog,
+14,400-second CPU cap, current runner/schedule hashes, and separate logs. It
+is exploratory, has no results yet, and must finish or leave a recorded cap
+status before this gate can be assessed. DEV09 still has
 `training_approved: false`, no project-data checkpoint exists, and no learned
 match has run. Therefore training/selection and locked confirmation remain
 closed. After a fresh bounded nonlearned runtime/paired-variance pilot, review
