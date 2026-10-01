@@ -1,0 +1,109 @@
+{
+  "schema": "caissa-jepa-v28-modelblind-summary-v2",
+  "date": "2026-10-01",
+  "stage": "fixed-schedule model-blind development feasibility gate; no training",
+  "source_commit": "d9dc357335d6065850a762cf4eabb4aa47152b86",
+  "runtime": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "solver": "project independent bitboard reference with bounded exact alpha-beta",
+    "referee_limit": "independent implementation in this repository; not a third-party referee"
+  },
+  "common_budget": {
+    "nodes_per_root": 200000,
+    "seconds_per_root": 2.0,
+    "cache_entries": 500000,
+    "coverage_rule": "100 percent of the fixed requested unique-root population or gate failure; no solver-success filtering"
+  },
+  "games": {
+    "connect4-gravity-4x5": {
+      "candidate_count": 100,
+      "schedule_seed": 28093031,
+      "first_trajectory_seed": 29100000,
+      "attempts": 106,
+      "target_plies": [5, 11],
+      "behavior_policy": "project-owned uniform legal self-play",
+      "rule_transition_comparisons": 2509,
+      "exact_complete": 100,
+      "timeouts_or_failures": 0,
+      "variable_exact_action_labels": 72,
+      "beyond_depth_roots": 53,
+      "candidate_quota_pass": true,
+      "rule_differential_pass": true,
+      "oracle_coverage_pass": true,
+      "support_floor_pass": true,
+      "gate_pass": true,
+      "raw_receipt": "chess_data/v28_gate/connect4_gravity4x5_dev06.json",
+      "raw_sha256": "1aa85157c1290baead04be45644f88ed5000f5bf22796dce838517bb4bb629a5"
+    },
+    "reversi6": {
+      "candidate_count": 150,
+      "schedule_seed": 28093032,
+      "first_trajectory_seed": 29300000,
+      "attempts": 150,
+      "target_empties": [5, 8],
+      "behavior_policy": "project-owned uniform legal self-play",
+      "rule_transition_comparisons": 2651,
+      "exact_complete": 150,
+      "timeouts_or_failures": 0,
+      "variable_exact_action_labels": 54,
+      "beyond_depth_roots": 54,
+      "candidate_quota_pass": true,
+      "rule_differential_pass": true,
+      "oracle_coverage_pass": true,
+      "support_floor_pass": true,
+      "gate_pass": true,
+      "raw_receipt": "chess_data/v28_gate/reversi6_dev06.json",
+      "raw_sha256": "dbe78448a8b6c1a502ff9ab994c979405b5a57d75a021136775c5417395230e4"
+    }
+  },
+  "source_sha256": {
+    "gate": "b1d8ca85cfcf2639a93deb4baeefe909310ff097c95dd4ff1e2ac63640843b39",
+    "adapter": "fbdce0893f6dcc76d30b71d4391842abbcd7c15a0d1a9e20c40077457e273d3a",
+    "planner": "759f1f6a72297c725a3c239a6f0594bff5422a778d02642cc067bbc9d92e1e88",
+    "reference_rules": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+    "alpha_beta": "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c"
+  },
+  "retained_negative_runs": [
+    {
+      "receipt": "chess_data/v28_gate/connect4_gravity4x5_dev02.json",
+      "sha256": "86fabc813d8bc02c361d7f8dfce771f9c2dc1d356e9e35936a8d8fdd9549f60a",
+      "budget": "100000 nodes, 0.5 seconds, 500000 cache entries",
+      "result": "99/100 exact maps; one timeout"
+    },
+    {
+      "receipt": "chess_data/v28_gate/reversi6_dev02.json",
+      "sha256": "901cb7561033c06644bb2b405fe5fbf2941b6ccb356bc07d706075e97bd0df09",
+      "budget": "100000 nodes, 0.5 seconds, 500000 cache entries",
+      "result": "100/100 exact maps but only 40 beyond-depth roots; support floor failed"
+    },
+    {
+      "receipt": "chess_data/v28_gate/connect4_gravity4x5_dev04.json",
+      "sha256": "ccd3ff9a0291eb87dfdf9d3945002f04b9c6b32f778ff38be0b8a45c3760bb8e",
+      "budget": "200000 nodes, 1.0 second, 200000 cache entries",
+      "result": "96/100 exact maps and 49 beyond-depth roots; gate failed"
+    },
+    {
+      "receipt": "chess_data/v28_gate/connect4_gravity4x5_dev05.json",
+      "sha256": "c9e81c18df242aa25f67b9ec0a0d620db46b030e5a6b115782ad0f945432a201",
+      "budget": "200000 nodes, 1.0 second, 500000 cache entries",
+      "result": "98/100 exact maps; two timeouts; gate failed"
+    }
+  ],
+  "interpretation": {
+    "passed": [
+      "requested unique-root quotas",
+      "100 symmetry-unique roots and at least 50 beyond-depth roots per game",
+      "complete exact action values on every fixed root under the DEV06 common budget",
+      "differential legal actions, transitions, and terminal status checks under the current corrected runner"
+    ],
+    "not_passed_or_not_measured": [
+      "trajectory-level training/dev/model-selection/locked-final split disjointness",
+      "opponent-family holdouts and calibration",
+      "paired statistical power or locked confirmatory sample size",
+      "learned JEPA/baseline training or planning performance",
+      "cross-game transfer, exploitability, or Q1 publication readiness"
+    ],
+    "claim_limit": "Project-generated development-root feasibility only. Raw roots/action labels are exposed and ignored by Git; they are not training or locked-final data. This does not establish JEPA superiority."
+  }
+}

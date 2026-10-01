@@ -8,6 +8,13 @@ and its [amendments](docs/METHOD_AMENDMENTS.md) first. The primary-source
 including MuZero, SPR/EfficientZero and RePAIR. No planning advantage or Q1
 publication readiness has been established.
 
+The current V2.8 planner candidate and its versioned amendments are documented in
+`docs/METHOD_V28_PLANNER_V01.md` and `docs/METHOD_V28_PLANNER_V02_AMENDMENT.md`
+through `V03_AMENDMENT.md`. The corrected model-blind DEV06 root/oracle gate is
+in `docs/V28_MODEL_BLIND_GATE_DEV06.md`. Both game root schedules pass feasibility
+only; trajectory split/power gates and every learned JEPA-vs-baseline result are
+still pending.
+
 `two_player/` is the GUI-independent, shared-weight tiny-game research pipeline:
 tic-tac-toe, gravity connect-3 and 4x4 Reversi; a 3x4 connect-3 size combination
 is held out. Scope is middle/late local-position diagnostics, not whole-game

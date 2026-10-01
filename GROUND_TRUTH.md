@@ -1018,3 +1018,96 @@ repository-relative paths for 89 files; SHA-256 verification found zero missing
 files and zero mismatches. Ground Truth was readable in UTF-8. This count
 excludes `.git`, caches, environments, build output, generated data, checkpoints,
 and logs. The Obsidian UI was not opened to preserve the user's desktop.
+
+### V2.8 independent method review and first planner implementation (2026-09-30)
+
+The independent V2.8 review found five protocol ambiguities: terminal outcomes
+immediately after the root action; oracle-coverage bias from dropping hard roots;
+the target-source contract across JEPA and non-JEPA arms; alternating-player Q
+and return perspective; and incomplete sampling/behavior-policy identity. The
+review also found no count mismatch in the existing 24-root feasibility receipt.
+`docs/METHOD_V28_PLANNER_V02_AMENDMENT.md` freezes corrections for these items.
+All scheduled nonterminal model-blind roots must stay in the denominator, and
+every fixed development-gate root must have complete exact root-action values
+before that game passes. A failed coverage gate requires a new version with a
+uniformly changed budget, never solver-success filtering.
+
+Implemented `two_player/planner.py` as a bounded-value depth-two max-min planner
+using exact adapter legality/terminal rules and root-player score perspective;
+immediate terminal root actions are scored directly without enumerating replies.
+Ten focused unittest cases pass across planner contracts and model-blind gate
+logic, including immediate wins, terminal reply outcomes, both player
+perspectives, draw, forced pass, deterministic scheduling, action encoding, and
+reference-rule transitions. This is implementation evidence only. No training
+dataset or checkpoint was created; ignored raw gate receipts contain generated
+root positions and exact labels.
+
+### V2.8 early fixed-schedule gate attempt, superseded (2026-10-01)
+
+`docs/V28_MODEL_BLIND_GATE_DEV03.md` and its raw receipts first recorded complete
+root maps at 200,000 nodes and 1.0 second with 500,000 cache entries (the initial
+tracked summary incorrectly said 200,000 cache entries). The 100-root gravity
+Connect4 4x5 schedule had 72 variable exact labels and 53 beyond-depth roots;
+Reversi6 had 150/150 maps, 54 variable exact labels, and 54 beyond-depth roots.
+However, that gate implementation omitted the requested-root/support condition
+from `gate_pass` and did not compare terminal outcomes after the first move.
+DEV03 is historical and superseded, not the authoritative gate.
+
+### V2.8 corrected model-blind gate DEV06 (2026-10-01)
+
+`docs/V28_MODEL_BLIND_GATE_DEV06.md` and
+`docs/validation/V28_MODEL_BLIND_GATE_DEV06.json` are the authoritative reviewed
+record. Under a common cap of 200,000 nodes, 2 seconds, and 500,000 cache entries,
+gravity Connect4 4x5 completed 100/100 exact root-action maps with 72 variable-
+label and 53 beyond-depth roots; Reversi6 completed 150/150 with 54 variable-
+label and 54 beyond-depth roots. Terminal-aware rule comparisons covered 2,509
+and 2,651 legal transitions. Both passed unique-root quota, support floors, full
+oracle coverage, and current differential terminal/rule checks.
+
+Earlier failures are retained: at 100k nodes/0.5 seconds, Connect4 solved 99/100
+and the 100-root Reversi6 schedule had only 40 beyond-depth roots. At 200k
+nodes/1 second/200k cache, Connect4 solved 96/100 with 49 beyond-depth roots;
+with 500k cache at 1 second it solved 98/100. Those runs failed and no roots were
+removed. The corrected DEV06 run uniformly raised the time budget to two seconds.
+Hashes/counts for all retained raw receipts are in the DEV06 summary.
+
+These model-blind results do not audit training-trajectory split leakage,
+opponent-family calibration, or statistical power. Root banks are exposed
+development evidence and are ineligible for locked-final confirmation or reuse
+as training roots. No model has been fitted, and no JEPA-vs-baseline result exists.
+The v0.3 amendment clarifies planner counters, the `GameSpec.validate` contract,
+terminal return indexing, and expanded unit-test coverage.
+
+After the final DEV06 gate-predicate and terminal-differential fixes, the complete
+repository suite passed: `python -B -m unittest discover -s . -p 'test_*.py' -q`
+— 348 tests in 163.687 seconds. Existing Qt warnings concerned temporary
+chess-piece assets and window sizing; the process exited with `OK`. All twelve
+V2.8-focused tests also pass separately. These are regression checks, not a
+V2.8 training run.
+
+### Targeted adversarial JEPA prior-art update (2026-10-01)
+
+Primary sources were checked for Deep Latent Competition (CoRL 2020/PMLR 155)
+and the 2026-09-27 MA-JEPA preprint. Deep Latent Competition already combines
+joint latent transitions, opponent-viewpoint prediction, and imagined self-play
+in partially observed continuous racing; it is outside this project's finite
+alternating perfect-information class, but rules out generic novelty claims for
+joint-action latent prediction or imagined adversarial self-play. MA-JEPA uses
+JEPA-based action-conditioned joint prediction and latent imagination for
+cooperative, partially observed SMAC. Its paper reports task-dependent results:
+it matches or exceeds the strongest reported comparator mean on four of eight
+maps, and is behind DMAWM on other maps. These works make the general mechanism
+novelty risk critical. The only candidate gap is reply-set JEPA for adversarial
+minimax branch ranking under matched compute; that gap remains unverified. See
+`docs/RELATED_WORK.md` and `docs/V27_RESEARCH_POSITIONING.md`; no novelty or
+superiority claim is currently supported.
+
+### Obsidian mirror verification (2026-10-01)
+
+The project Markdown mirror was refreshed in the verified vault at
+`D:\notes\vault_1\Caissa-JEPA\`. The sync copied 100 source Markdown files,
+including this Ground Truth as the first reference page. A SHA-256 pass found
+zero missing files and zero content mismatches; the vault contains 184 Markdown
+files total, including previously retained vault notes. No vault content was
+deleted. This background file/hash verification did not open the Obsidian UI in
+this session to leave the desktop available.

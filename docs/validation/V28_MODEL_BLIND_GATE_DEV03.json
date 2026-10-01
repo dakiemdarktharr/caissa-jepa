@@ -1,0 +1,74 @@
+{
+  "schema": "caissa-jepa-v28-modelblind-summary-v1",
+  "date": "2026-10-01",
+  "stage": "exploratory fixed-schedule model-blind feasibility; no training",
+  "source_commit": "d9dc357335d6065850a762cf4eabb4aa47152b86",
+  "runtime": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "solver": "project independent bitboard reference with bounded exact alpha-beta"
+  },
+  "common_budget": {
+    "nodes_per_root": 200000,
+    "seconds_per_root": 1.0,
+    "cache_entries": 500000,
+    "coverage_rule": "100 percent of every fixed scheduled nonterminal root; no solver-success filtering"
+  },
+  "games": {
+    "connect4-gravity-4x5": {
+      "candidate_count": 100,
+      "schedule_seed": 28093031,
+      "first_trajectory_seed": 29100000,
+      "target_plies": [5, 11],
+      "behavior_policy": "project-owned uniform legal self-play",
+      "rule_comparison_pairs": 2509,
+      "oracle_complete": 100,
+      "timeouts_or_failures": 0,
+      "variable_exact_action_labels": 72,
+      "beyond_depth_roots": 53,
+      "support_floor_pass": true,
+      "oracle_coverage_pass": true,
+      "raw_receipt": "chess_data/v28_gate/connect4_gravity4x5_dev03.json",
+      "raw_sha256": "aa81c201781b46401da47a3ec50af5eca07bba7776e365ad336d353cdf5d0070"
+    },
+    "reversi6": {
+      "candidate_count": 150,
+      "schedule_seed": 28093032,
+      "first_trajectory_seed": 29300000,
+      "target_empties": [5, 8],
+      "behavior_policy": "project-owned uniform legal self-play",
+      "rule_comparison_pairs": 2651,
+      "oracle_complete": 150,
+      "timeouts_or_failures": 0,
+      "variable_exact_action_labels": 54,
+      "beyond_depth_roots": 54,
+      "support_floor_pass": true,
+      "oracle_coverage_pass": true,
+      "raw_receipt": "chess_data/v28_gate/reversi6_dev03.json",
+      "raw_sha256": "1a385be5924bef78e1e297fd694e24ab6f27f6339c2a002861d0577186c90b3a"
+    }
+  },
+  "source_sha256": {
+    "gate": "df7eb2b6330bf55b9cf406608339e608436e9e34b224d45d748821b1656275a5",
+    "adapter": "fbdce0893f6dcc76d30b71d4391842abbcd7c15a0d1a9e20c40077457e273d3a",
+    "planner": "759f1f6a72297c725a3c239a6f0594bff5422a778d02642cc067bbc9d92e1e88",
+    "reference_rules": "916a08f68cb2be60529b8d134cdea448f2d53aeb24d6ad5bc775699e9918ce9e",
+    "alpha_beta": "8970353212bf89e543f8b0ae8c167a1260ce257cd1770f61f605973814d08d6c"
+  },
+  "interpretation": {
+    "passed": [
+      "fixed-schedule root support floor",
+      "depth-two beyond-depth support floor",
+      "complete exact root-action labels for these development gate roots",
+      "differential rules and legal-transition comparisons covered every scheduled root"
+    ],
+    "not_passed_or_not_measured": [
+      "trajectory-level train/dev/model-selection/locked-final split disjointness",
+      "opponent-family holdouts and calibration",
+      "paired statistical power or locked confirmatory sample size",
+      "learned JEPA/baseline training or planning performance",
+      "cross-game transfer, exploitability, or Q1 publication readiness"
+    ],
+    "claim_limit": "Historical exploratory feasibility only. This receipt predates an explicit quota/support gate_pass condition and is superseded by V28_MODEL_BLIND_GATE_DEV06.json. Exposed roots cannot be used as locked-final confirmation or silently as training roots."
+  }
+}

@@ -166,6 +166,24 @@ Initial original project Markdown count: 20 (18 tracked, 2 untracked). Ground Tr
 - `METHOD_V28_PLANNER_V01.md`: frozen development-candidate algorithm and
   losses/controls for reply-set latent max-min planning; model fitting remains
   gated on fresh data/power and independent review.
+- `METHOD_V28_PLANNER_V02_AMENDMENT.md`: independent-review corrections for
+  immediate terminal branches, all-root oracle coverage, target-source matching,
+  player-perspective equations, and a frozen data sampler; design only.
+- `METHOD_V28_PLANNER_V03_AMENDMENT.md`: implementation-contract corrections
+  for branch counters, adapter validation, terminal return indexing, and test
+  coverage; no learned model/result.
+- `V28_MODEL_BLIND_GATE_DEV03.md` and
+  `validation/V28_MODEL_BLIND_GATE_DEV03.json`: fixed-schedule model-blind
+  historical exploratory receipt, superseded; cache metadata is corrected and
+  the old runner lacked quota/support pass enforcement.
+- `V28_MODEL_BLIND_GATE_DEV06.md` and
+  `validation/V28_MODEL_BLIND_GATE_DEV06.json`: authoritative corrected gate;
+  Connect4 4x5 100/100 and Reversi6 150/150 exact maps under 200k nodes, 2s,
+  500k cache; support/coverage/rule checks pass, no power or model comparison.
+- `../tools/v28_modelblind_gate.py`, `../tests/test_v28_modelblind_gate.py`,
+  `../two_player/planner.py`, and `../tests/test_v28_planner.py`: root schedule,
+  exact-oracle/rule check and depth-two max-min planner; focused unittest scope
+  only, not strength evidence.
 - `V28_GAME_FEASIBILITY_01.md` and `validation/V28_GAME_FEASIBILITY_01.json`:
   24-root no-gravity Connect4 4x5 exact-oracle cost probe (12/23 complete).
   It rejects that tiny sample as a production bank and does not select a

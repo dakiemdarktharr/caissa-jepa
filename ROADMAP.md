@@ -414,3 +414,88 @@ under the corrected planner-root schedule, then build fresh trajectory/opponent
 groups, prove zero raw/role/symmetry/counterfactual overlap, calibrate opponents,
 and run model-blind power. If either game misses these gates, revise the game
 scope before training. No production data or training has begun.
+
+### V2.8 V0.2 review corrections and planner component (2026-09-30)
+
+The independent review identified five ambiguities; `docs/METHOD_V28_PLANNER_V02_AMENDMENT.md`
+now freezes terminal-after-own-action handling, 100% exact-oracle coverage of a
+fixed model-blind gate population, arm-specific target sources and shared branch
+exposure, alternating-player Q/return signs, and the sampler/behavior identity
+required before fitting. Any solver-incomplete gate fails as a whole; no root
+may be dropped by oracle success. This resolves design ambiguities only and
+leaves support/power, data, code review, novelty, and all comparative claims open.
+
+The first reusable inference component is in `two_player/planner.py`. It applies
+exact legal/terminal rules to a two-ply max-min tree and directly scores root
+actions that end the game. Three focused unittest checks pass. This verifies a
+small planner contract only; JEPA integration and baseline comparison have not
+been implemented. Next is independent code review, then the fresh fixed-root
+coverage/split/support/power gate; training stays blocked until every criterion
+passes.
+
+### V2.8 fixed-schedule root/oracle gate, receipt 03 (2026-10-01)
+
+The historical DEV03 runner used a common 200k-node / 1.0-second exact-oracle
+cap and reported these counts, but omitted requested-root/support pass predicates
+and root-successor terminal comparisons; treat its `gate_pass` fields as
+superseded. Its schedules reported gravity Connect4 4x5 100/100 roots, 72
+exact-variable roots and 53 beyond-depth; Reversi6 150/150,
+54 exact-variable and 54 beyond-depth. Differential checks counted 2,509 and
+2,651 legal transition comparisons. The tracked aggregate is
+`docs/validation/V28_MODEL_BLIND_GATE_DEV03.json`; raw generated roots and action
+labels remain ignored at `chess_data/v28_gate/` and are SHA-pinned there. These
+banks meet current support floors only. They are exposed development gates,
+not locked-final roots, training data, statistical power, or model outcomes.
+
+Independent implementation review added `docs/METHOD_V28_PLANNER_V03_AMENDMENT.md`
+to define nonoverlapping branch-counter accounting, include `validate` in the
+adapter contract, make terminal return indexing explicit, and require tests for
+minus-player value signs, draw, forced pass, and terminal replies. Ten focused
+unittests currently pass. Remaining before production training: independently
+review the V0.3 implementation, construct fresh provenance-bearing trajectory
+data, perform group-first split/overlap and opponent-family audits, and estimate
+power with a fresh model-blind schedule. Only then may the first development fit
+begin; no superiority claim is supported now.
+
+The complete repository regression suite passed after these changes:
+`python -B -m unittest discover -s . -p 'test_*.py' -q` — 348 tests in 229.984
+seconds. Existing Qt temporary-asset/window-size warnings were emitted, but the
+suite exited successfully. No V2.8 model was trained by this run.
+
+### Corrected V2.8 model-blind gate, DEV06 (2026-10-01)
+
+DEV03's early receipt metadata and gate predicate were reviewed and corrected:
+the actual cache was 500k entries (not the 200k first stated), the earlier runner
+did not enforce quota/support in its pass flag, and it omitted a terminal check
+after the root action. Its summary is now marked historical. The updated runner
+checks these cases and its twelve focused tests pass.
+
+DEV06 uses 200k nodes, a uniform 2-second limit, and 500k cache entries. Gravity
+Connect4 4x5 passed with 100/100 exact maps, 72 variable labels, and 53
+beyond-depth roots; Reversi6 passed with 150/150, 54, and 54 respectively. Gate
+is true only when the full root quota, exact labels, support floor, and rule
+differential checks all pass. Tracked evidence is
+`docs/V28_MODEL_BLIND_GATE_DEV06.md` and
+`docs/validation/V28_MODEL_BLIND_GATE_DEV06.json`; raw receipts are excluded from
+Git and hash-pinned. Prior failed runs (Connect4 96/100 and 98/100 at the
+one-second settings; first Reversi6 schedule 40/100 beyond-depth) remain in the
+aggregate.
+
+This only clears the root/oracle feasibility gate. Fresh trajectory data,
+opponent-family holdouts, counterfactual overlap tests, and a model-blind power
+analysis remain before any fit. No learned JEPA or baseline result exists.
+
+### Post-fix regression and prior-art checkpoint (2026-10-01)
+
+After the final DEV06 runner fixes, the full repository suite passed: 348 tests
+in 163.687 seconds (`python -B -m unittest discover -s . -p 'test_*.py' -q`).
+This verifies regression only; it does not clear data, power, or training gates.
+
+Primary-source review of Deep Latent Competition and MA-JEPA confirms critical
+novelty risk for generic joint-action-conditioned latent prediction, opponent
+state prediction, or imagined self-play. The former studies partially observed
+continuous competitive racing; the latter is cooperative, partially observed
+SMAC and reports comparator-dependent outcomes across eight maps. The candidate
+reply-set JEPA/minimax branch-ranking gap remains unverified. Update the locked
+claim ledger and finish broader forward/backward citation search before any
+positive novelty claim. See `docs/RELATED_WORK.md` and `GROUND_TRUTH.md`.
