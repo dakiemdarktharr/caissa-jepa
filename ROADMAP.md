@@ -1,5 +1,33 @@
 # CAISSA-JEPA research roadmap
 
+## Latest evaluator milestone (2026-10-01)
+
+The learned complete-game evaluator and analysis handoff are implemented as
+prefit infrastructure. Independent review (`gpt-6-luna/high`) found and then
+verified fixes for the locked-schedule wrapper mismatch, an uncommitted
+inference budget, forfeit/replay accounting, and a mutable analysis-source
+hash. Evaluator and analyzer independently bind the wrapper to the raw schedule
+artifact and current frozen source; confirmatory mode uses only the frozen
+two-second / 500,000-transition budget. The combined evaluator/analysis/power
+suite passed 19/19, both CLI help checks passed, timeout-forfeit replay passed,
+and both production loaders verified the same 9,600-row schedule fingerprint.
+See `docs/V28_MODEL_MATCH_EVALUATOR_REVIEW_01.md`.
+
+This clears evaluator software review only. The four-CPU-hour model-blind
+proxy job stopped without a watchdog receipt; its 4,839-row JSONL temporary
+file is preserved as an incomplete exploratory artifact and cannot be called a
+completed runtime/power gate. Do not restart it until the partial is audited
+and a recovery/rerun protocol is recorded. DEV09 still has
+`training_approved: false`, no project-data checkpoint exists, and no learned
+match has run. Therefore training/selection and locked confirmation remain
+closed. After resolving the partial pilot, run a bounded nonlearned runtime
+and paired-variance gate, review and freeze the exact V02 artifacts, then fit
+development/selection panels only if those gates support the planned margin.
+Locked confirmation remains conditional on successful training and no
+post-selection edits. A failure to finish within the declared local cap or
+power to detect the practical margin triggers a scope/power redesign before
+any learned outcomes are viewed.
+
 ## V2.8 implementation finding (2026-10-01)
 
 The first shared-model prototype did not implement the frozen V01 objective: it

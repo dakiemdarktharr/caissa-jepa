@@ -159,11 +159,19 @@
     },
     "claim_limit": "conditional on the frozen checkpoint panel and tested games/controls; not population training-seed generalization or exploitability"
   },
-  "analysis_code_sha256": "43f2debeecc07da60a3d39eb21b55d1342485684af42daccd4eb6ad072315b5e",
+  "analysis_code_sha256": "beb9b1979e8459cc44917e70ca5b7086a15bf98e0c4c09b8f70aa0012c8e344b",
   "artifact": {
-    "path": "chess_data/v28_match_v08_locked.json (ignored local file)",
+    "path": "chess_data/v28_match_v08_locked.json",
     "bytes": 3967448,
     "sha256": "f18efbcac152409893c4999b2323993b5a838dfe0201d94bc8aaec8ca3db3c84"
+  },
+  "learned_match_protocol": {
+    "protocol": "v28-learned-model-match-v01",
+    "budget": {
+      "max_move_seconds": 2.0,
+      "max_nodes_per_move": 500000
+    },
+    "scope": "paired color assignments from adapter initial states under the common two-ply minimax planner; conditional on the fixed checkpoint panel"
   },
   "interpretation": "No outcomes or model results are present. Schedule commitment does not pass evaluator, runtime, power, training, or review gates."
 }

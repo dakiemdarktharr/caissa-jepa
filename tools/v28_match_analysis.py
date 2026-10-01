@@ -21,10 +21,48 @@ from tools.v28_match_power import (
 
 BOOTSTRAP_REPLICATES = 10_000
 BOOTSTRAP_SEED = 28094081
+MATCH_PROTOCOL = "v28-learned-model-match-v01"
+LOCKED_BUDGET = {"max_move_seconds": 2.0, "max_nodes_per_move": 500_000}
 
 
 def sha256_bytes(value):
     return hashlib.sha256(value).hexdigest()
+
+
+def load_locked_schedule(schedule_path, commitment_path):
+    """Independently validate the wrapper, raw rows and frozen analysis source."""
+    schedule_path, commitment_path = Path(schedule_path), Path(commitment_path)
+    wrapper = json.loads(commitment_path.read_text(encoding="utf-8"))
+    artifact = wrapper.get("artifact")
+    if not isinstance(artifact, dict) or not isinstance(artifact.get("path"), str):
+        raise ValueError("commitment wrapper lacks a schedule artifact reference")
+    expected_path = (ROOT / artifact["path"]).resolve()
+    actual_path = schedule_path.resolve()
+    if ROOT.resolve() not in expected_path.parents or actual_path != expected_path:
+        raise ValueError("analysis schedule path differs from the committed artifact")
+    schedule_bytes = actual_path.read_bytes()
+    if (len(schedule_bytes) != artifact.get("bytes")
+            or sha256_bytes(schedule_bytes) != artifact.get("sha256")):
+        raise ValueError("raw schedule bytes differ from the commitment fingerprint")
+    schedule_data = json.loads(schedule_bytes)
+    rows = schedule_data.get("blocks")
+    manifest = schedule_data.get("manifest")
+    if (not isinstance(rows, list) or rows != make_schedule()
+            or manifest != wrapper.get("commitment")
+            or manifest.get("blocks_sha256") != sha256_bytes(json.dumps(
+                rows, sort_keys=True, separators=(",", ":"),
+                allow_nan=False).encode("utf-8"))
+            or manifest.get("schedule_code_sha256") != sha256_bytes(
+                (ROOT / "tools" / "v28_match_power.py").read_bytes())):
+        raise ValueError("schedule rows/manifest differ from the committed design")
+    if wrapper.get("analysis_code_sha256") != sha256_bytes(
+            (ROOT / "tools" / "v28_match_analysis.py").read_bytes()):
+        raise ValueError("analysis source differs from the frozen commitment")
+    protocol = wrapper.get("learned_match_protocol", {})
+    if (protocol.get("protocol") != MATCH_PROTOCOL
+            or protocol.get("budget") != LOCKED_BUDGET):
+        raise ValueError("learned-match protocol/budget differs from its commitment")
+    return schedule_data
 
 
 def _score(value):
@@ -274,17 +312,40 @@ def main():
     parser.add_argument("schedule", type=Path)
     parser.add_argument("outcomes", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--commitment", type=Path,
+                        default=ROOT / "docs" / "validation" /
+                        "V28_MATCH_SCHEDULE_V08_COMMITMENT.json")
     args = parser.parse_args()
-    schedule_data = json.loads(args.schedule.read_text(encoding="utf-8"))
-    schedule_rows = schedule_data.get("blocks", [])
-    if not schedule_rows or schedule_rows != make_schedule():
-        parser.error("schedule does not match the frozen generator/commitment")
-    canonical = json.dumps(schedule_rows, sort_keys=True, separators=(",", ":"),
-                           allow_nan=False).encode("utf-8")
-    if schedule_data.get("manifest", {}).get("blocks_sha256") != sha256_bytes(canonical):
-        parser.error("schedule commitment hash mismatch")
+    try:
+        schedule_data = load_locked_schedule(args.schedule, args.commitment)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        parser.error(f"locked schedule/analysis commitment is invalid: {exc}")
+    schedule_rows = schedule_data["blocks"]
     outcome_bytes = args.outcomes.read_bytes()
     outcomes = read_jsonl(args.outcomes)
+    if not outcomes or outcomes[0].get("record_type") != "manifest":
+        parser.error("learned-match outcome manifest is required")
+    outcome_header = outcomes.pop(0)
+    if (outcome_header.get("schema") != "v28-learned-model-match-v01"
+            or outcome_header.get("outcomes_are_locked") is not True
+            or outcome_header.get("block_count") != len(schedule_rows)
+            or outcome_header.get("schedule_sha256") != schedule_data["manifest"]["blocks_sha256"]):
+        parser.error("learned-match outcome header does not match locked schedule")
+    receipt_path = args.outcomes.with_suffix(args.outcomes.suffix + ".receipt.json")
+    if not receipt_path.is_file():
+        parser.error("learned-match outcome receipt is missing")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if (receipt.get("status") != "complete" or receipt.get("confirmatory") is not True
+            or receipt.get("block_count") != len(schedule_rows)
+            or receipt.get("schedule_sha256") != schedule_data["manifest"]["blocks_sha256"]
+            or receipt.get("commitment_sha256") != sha256_bytes(args.schedule.read_bytes())
+            or outcome_header.get("commitment_sha256") != receipt.get("commitment_sha256")
+            or receipt.get("artifact_sha256") != sha256_bytes(outcome_bytes)
+            or receipt.get("artifact_bytes") != len(outcome_bytes)):
+        parser.error("learned-match receipt does not match complete outcome bytes")
+    model_match_source = Path(__file__).with_name("v28_model_match.py")
+    if receipt.get("model_match_source_sha256") != sha256_bytes(model_match_source.read_bytes()):
+        parser.error("learned-match evaluator source differs from receipt")
     result = analyze(schedule_rows, outcomes)
     result["schedule_blocks_sha256"] = schedule_data["manifest"]["blocks_sha256"]
     result["analysis_code_sha256"] = sha256_bytes(Path(__file__).read_bytes())

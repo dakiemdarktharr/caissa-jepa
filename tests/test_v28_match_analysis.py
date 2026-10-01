@@ -1,6 +1,12 @@
+import hashlib
+import json
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 
-from tools.v28_match_analysis import _holm, analyze, validate_outcomes
+from tools.v28_match_analysis import (_holm, analyze, validate_outcomes,
+                                     load_locked_schedule)
 from tools.v28_match_power import (
     CHECKPOINT_SEEDS, COMPARISONS, FIRST_MATCH_SEED, GAMES,
     MATCHES_PER_CHECKPOINT, make_schedule,
@@ -23,6 +29,37 @@ class MatchAnalysisTests(unittest.TestCase):
         actual = validate_outcomes(self.schedule, self.outcomes)
         self.assertEqual(len(actual), len(self.schedule))
         self.assertEqual(len(actual), len(GAMES) * len(COMPARISONS) * 2)
+
+    def test_locked_loader_binds_analysis_code_and_schedule_artifact(self):
+        root_source = Path(__file__).resolve().parents[1]
+        wrapper = json.loads((root_source / "docs" / "validation" /
+                              "V28_MATCH_SCHEDULE_V08_COMMITMENT.json").read_text(
+                                  encoding="utf-8"))
+        rows = make_schedule()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools_dir = root / "tools"
+            tools_dir.mkdir()
+            for name in ("v28_match_power.py", "v28_match_analysis.py"):
+                (tools_dir / name).write_bytes((root_source / "tools" / name).read_bytes())
+            schedule_path = root / wrapper["artifact"]["path"]
+            schedule_path.parent.mkdir(parents=True)
+            schedule_bytes = json.dumps(
+                {"manifest": wrapper["commitment"], "blocks": rows},
+                sort_keys=True, indent=2, allow_nan=False).encode("utf-8") + b"\n"
+            schedule_path.write_bytes(schedule_bytes)
+            wrapper["artifact"].update(
+                bytes=len(schedule_bytes),
+                sha256=hashlib.sha256(schedule_bytes).hexdigest())
+            wrapper_path = root / "commitment.json"
+            wrapper_path.write_text(json.dumps(wrapper), encoding="utf-8")
+            with patch("tools.v28_match_analysis.ROOT", root):
+                loaded = load_locked_schedule(schedule_path, wrapper_path)
+                self.assertEqual(loaded["blocks"], rows)
+                analysis_path = tools_dir / "v28_match_analysis.py"
+                analysis_path.write_text("# changed analysis\n", encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "analysis source"):
+                    load_locked_schedule(schedule_path, wrapper_path)
 
     def test_missing_or_duplicate_block_fails_closed(self):
         with self.assertRaisesRegex(ValueError, "missing"):
