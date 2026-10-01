@@ -18,6 +18,19 @@ independent method review found no blocking statistical or schedule-integrity
 issue. It remains pre-fit pending an implemented evaluator and measured
 nonlearned runtime/variance/power gate.
 
+The implementation audit found the first shared-model prototype did not match
+frozen V01's KLENT policy/Q and alternating lambda-return objective. V01 is
+preserved unchanged; the prototype is now separately versioned as the proposed
+supervised V02 candidate in
+[`docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md`](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md).
+V02 uses recorded behavior-action and terminal-outcome labels, with a
+reply-set JEPA auxiliary loss and matched task-dynamics/direct-leaf controls.
+An independent implementation/objective review found no P1 issue, but V02 is
+still prefit, not frozen, and untrained; its data/runtime/power gates remain
+open. No JEPA advantage has been measured. The model-blind nonlearned
+runtime/power gate remains in progress. See
+[`docs/V28_MODEL_V02_REVIEW_01.md`](docs/V28_MODEL_V02_REVIEW_01.md).
+
 V2.8 data feasibility remains in development. DEV01–DEV08 are retained as
 model-blind diagnostics; strict DEV09 passes only the prefit data audit, not
 training approval or scientific power. DEV05's

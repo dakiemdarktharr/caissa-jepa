@@ -1,5 +1,19 @@
 # CAISSA-JEPA research roadmap
 
+## V2.8 implementation finding (2026-10-01)
+
+The first shared-model prototype did not implement the frozen V01 objective: it
+used behavior-action cross-entropy and terminal outcome regression rather than
+KLENT policy/Q targets with alternating lambda returns. Preserve V01 as written
+and treat the implementation as a separate V02 supervised candidate. The
+candidate is documented in `docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md`; the
+independent implementation/method review found no remaining P1 issue after
+terminal-H2, perspective, forced-pass, gradient and checkpoint tests were
+added. The current V2.8 suite passes 63 tests. This signs off only on code and
+objective consistency. No training has occurred. Do not begin fitting until
+the V02 artifact set is frozen and the hidden nonlearned V08 schedule completes
+its replay, runtime and power gates.
+
 ## Current V2.8 gate update (2026-10-01)
 
 V05/V08 replace the exact-root primary for the tested schedule with paired, color-swapped complete-game scores. The independent method review signed off the analysis and schedule integrity with no P1-or-higher finding. Its caveats are addressed by adding per-comparison power plus a dependence-free lower bound on both controls passing, and by binding the schedule-generator source hash in the commitment receipt. This is protocol sign-off, not model validation.

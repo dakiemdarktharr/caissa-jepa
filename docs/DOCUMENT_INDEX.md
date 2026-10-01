@@ -24,6 +24,8 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `METHOD_SPEC.md` | Frozen original v1; read amendments before implementation |
 | `docs/METHOD_V28_PLANNER_V04_AMENDMENT.md` | Historical exact-root-regret candidate; DEV10 showed current 6x7 oracle budget unresolved |
 | `docs/METHOD_V28_PLANNER_V05_AMENDMENT.md` | Current paired-match candidate; pre-fit redesign, independent method review signed off; evaluator/power gate pending |
+| `docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md` | Separate implementation-aligned supervised reply-set JEPA candidate; prefit draft, not frozen/reviewed/trained |
+| `docs/V28_MODEL_V02_REVIEW_01.md` | Independent implementation/objective review; no P1, training and V08 gates remain closed |
 | `docs/validation/V28_ROOT_ORACLE_DEV10_PILOT.json` | Five-root Connect4 6x7 exact-label pilot; 0/5 complete maps under frozen local budget |
 | `docs/METHOD_AMENDMENTS.md` | Active v1.2 middle/late feasibility design and objective controls |
 | `docs/RELATED_WORK.md` | Primary-source positioning review; not an exhaustive publication review |
