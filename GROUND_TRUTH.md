@@ -1,8 +1,20 @@
 # CAISSA-JEPA — Ground Truth
 
-Updated: 2026-09-30. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
+Updated: 2026-10-01. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
-**Current continuation state:** canonicalization, exploratory pilot receipt,
+## Current verified state (2026-10-01)
+
+- Only local `main` and remote `origin/main` remain. Commit `a6632cd5f938df2fb888d6ff4449440a359f25bf` was pushed without force and matches `origin/main`; the working tree is clean.
+- The full repository suite passed after the final V2.8 gate corrections: 348 tests in 163.687 seconds. The 12 V2.8-focused tests pass. These are regression checks, not model evidence.
+- The corrected model-blind exact-oracle gate passed for gravity Connect4 4x5 (100/100 exact maps; 72 variable labels; 53 beyond-depth roots) and Reversi6 (150/150; 54; 54) under 200k nodes, 2 seconds, and 500k cache entries. Source and raw-receipt hashes match the tracked DEV06 summary. This only establishes root/support/oracle feasibility.
+- No V2.8 JEPA or matched baseline has been trained; no V2.8 checkpoint or JEPA-over-baseline result exists. No claim of superiority, verified novelty, cross-game transfer, exploitability, or Q1 readiness is supported. Dataset split/leakage, opponent-family, power, and learned-performance gates remain open.
+- Primary-source review identifies critical novelty risk for generic action-conditioned/joint-action JEPA, opponent-state prediction, and imagined self-play. Deep Latent Competition and MA-JEPA are recorded in `docs/RELATED_WORK.md`; the reply-set JEPA/minimax gap remains unverified.
+- Obsidian vault: `D:\notes\vault_1\Caissa-JEPA\`. The current sync contains 100 source Markdown files and has zero missing files or SHA-256 mismatches; Ground Truth is the first reference page. The vault has 184 project-folder Markdown files including retained notes. This session verified bytes without opening the Obsidian UI to keep the desktop available.
+- Continue next with the frozen V2.8 trajectory/opponent/split/power protocol and data pipeline. Do not begin training until its pre-fit gates pass. User instructions persist: run shell/PowerShell hidden in the background; keep only `main`; preserve all work, never force-push, and push completed milestones; use Obsidian as long-term memory; no paid services, restricted data, unapproved licenses, or external contact.
+
+The continuation paragraphs below are historical. Later dated entries supersede their interim branch, test, novelty, data, and gate status.
+
+**Historical continuation state (2026-09-30):** canonicalization, exploratory pilot receipt,
 and initial novelty re-audit were committed on `main` as
 `cc3cb127819ac8e9a24446f7a02fc748e6d4cb06`; publication status was recorded in
 `8796a8f5fe9d027db06a339fc6e9563aeead7b91`. Both were pushed fast-forward and
