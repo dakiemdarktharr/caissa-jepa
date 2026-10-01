@@ -1190,3 +1190,11 @@ Review disposition is recorded in `docs/V28_TRAIN_RUNTIME_REVIEW_01.md`.
 These are runtime-integrity checks, not model evidence.
 DEV09 training approval remains false and no project-data fit or checkpoint has
 been produced.
+
+The trainer hardening was committed and pushed on `main` as
+`f5f29af1054496943c43520bbdff5f0b253fd8c4`. The independent review note and
+Obsidian mirror count correction were committed and pushed as
+`1fa508c8d3ab2c9656891138571d42ccb160b4d9`; `origin/main` was verified at that
+hash, and the working tree was clean. Only `main` remains locally and on the
+remote. The four-hour-capped model-blind proxy run is still in progress; its
+output is exploratory and does not compare learned JEPA against either baseline.
