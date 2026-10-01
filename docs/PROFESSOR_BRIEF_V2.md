@@ -1,5 +1,46 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
+## Bản cập nhật hiện hành — V2.8, 01/10/2026
+
+**Trạng thái trung thực:** hiện chưa có mô hình V2.8 nào được huấn luyện, chưa có
+checkpoint, và chưa có kết quả cho thấy JEPA hơn baseline. Các thí nghiệm V1–V2.5
+trước đó không xác nhận ưu thế JEPA; chúng được giữ nguyên như bằng chứng âm, không
+được thay bằng các pilot mới. Một pilot proxy không dùng learned model đang chạy để
+kiểm tra tính toàn vẹn, runtime và độ biến thiên của protocol. Pilot ấy không so sánh
+JEPA, không thể được trình bày như kết quả sức chơi, và chưa cho phép suy luận về
+power của contrast learned-model.
+
+**Câu hỏi nghiên cứu hiện hành:** trong game hai người, luân phiên lượt, quan sát đầy
+đủ, xác định và tổng bằng không với legal actions/terminal rules rõ ràng, liệu mục
+tiêu JEPA dự đoán latent của các nhánh phản hồi hợp lệ có cải thiện quyết định của
+planner max–min dưới cùng dữ liệu và ngân sách tính toán so với task/value prediction
+và direct policy/value? Đối thủ trong planner là phản hồi hợp lệ xấu nhất; đây không
+phải dự báo hành vi của một đối thủ cụ thể, kỳ vọng theo policy chưa hiệu chuẩn, hay
+bảo đảm equilibrium/exploitability.
+
+**Phần có thể đóng góp nếu được chứng minh:** không phải “JEPA dự đoán tương lai”,
+“nhiều game dùng một codebase”, hay “planner có latent”. MuZero, Athénan và LAMIR đã
+đặt chuẩn cao cho learned-model planning/game-theoretic search; MA-JEPA và các JEPA
+policy/world-model gần đây đã dùng conditioning theo hành động. Giả thuyết hẹp cần
+kiểm tra là objective JEPA đem lại lợi thế quyết định tăng thêm trước baseline
+task-prediction ghép cặp công bằng trong panel game đã khóa. Transfer sang
+game/variant chưa huấn luyện là mục tiêu riêng, chưa được protocol hiện tại chứng minh.
+Ma trận nguồn và khác biệt domain nằm ở [review related work](RELATED_WORK.md).
+
+**Cổng bằng chứng:** trước hết hoàn tất replay/runtime/variance audit cho pilot hiện
+tại; sau đó chỉ fit các model development/selection trên split đã audit. Chỉ khóa
+confirmatory run nếu JEPA còn hơn cả direct lẫn task-value control ở practical margin
+đã định trước, không collapse, và đạt same-search/equal-compute checks. Nếu chỉ thắng
+baseline yếu, hoặc predictor loss giảm mà quyết định không tốt hơn, không tuyên bố
+JEPA superiority. Dữ liệu đang xét là self-play sinh từ engine nội bộ; chưa dùng
+dataset bên thứ ba. Không có số liệu V2.8 nào ở thời điểm cập nhật này.
+
+**Đánh giá hiện thời:** đây là hướng nghiên cứu có thể kiểm chứng nhưng novelty risk
+cao và chưa đạt ngưỡng để gọi là bản thảo Q1 triển vọng. Góp ý giáo sư nên tập trung
+vào việc liệu lợi thế của objective JEPA trong game luật đã biết có ý nghĩa khoa học
+đủ mạnh hay cần thu hẹp câu hỏi sang sample efficiency/held-out variant transfer.
+Q1 là mục tiêu chất lượng, không phải cam kết được nhận.
+
 > **Bổ sung ngày 30/09/2026:** Đã đọc toàn văn KLENT (ICML 2026 accepted). Phương pháp này học policy và Q trực tiếp từ self-play, không dùng search trong training; báo cáo đạt 50% win rate trung bình ở 75M simulator evaluations so với 300M của Gumbel AlphaZero (3 seeds, 5 games, 6-block ResNet). Đây là kết quả của bài báo, không phải kết quả CAISSA, và simulator calls không tương đương compute đo trên phần cứng. V2 cần có KLENT-style regularized policy/Q baseline riêng bên cạnh minimax-Q; KLENT tối ưu regularized self-play, không phải nhãn worst-case minimax. Repo code chính thức hiện không công bố license, nên chưa dùng code; có thể triển khai clean-room từ phương trình trong paper và audit fidelity. Hiện chưa có V2.7 training hay bằng chứng JEPA thắng baseline.
 
 > **Cập nhật nghiên cứu 30/09/2026:** deep search phát hiện thêm prior art trực tiếp về state abstraction trong Markov game zero-sum (AAAI 2025), transfer policy-value giữa nhiều game/variant (TMLR 2023), path-consistency regularization cho AlphaZero (ICML 2022), và một phương pháp model-free hiệu quả trên năm board games (ICML 2026 accepted), bên cạnh Athénan. Vì vậy, latent compression, minimax-sufficient abstraction, cross-game transfer, latent consistency, hay sample efficiency đều không thể tự đứng làm novelty claim. Candidate complete-reply-set JEPA + minimax action-ordering vẫn chưa đóng băng và chưa được xác minh là khác biệt đủ; trước training cần benchmark công bằng với Athénan/tree-value, minimax-Q/abstraction, policy-value transfer, PCZero, model-free regularized policy optimization và task-prediction. Hiện chưa có training V2.7, checkpoint, hay bằng chứng JEPA hơn baseline. Chi tiết nguồn trong [prior-art re-audit](V27_PRIOR_ART_REAUDIT_20260930.md).
