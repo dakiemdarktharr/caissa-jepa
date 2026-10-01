@@ -1132,8 +1132,8 @@ superiority claim is currently supported.
 ### Obsidian mirror verification (2026-10-01)
 
 The project Markdown mirror was refreshed in the verified vault at
-`D:\notes\vault_1\Caissa-JEPA\`. The latest sync copied 105 source Markdown
-files, including this Ground Truth as the first reference page. A SHA-256 pass
+`D:\notes\vault_1\Caissa-JEPA\`. The latest sync copied 106 source Markdown
+files, including this Ground Truth and the trainer review as project references. A SHA-256 pass
 found zero missing files and zero content mismatches. It copied only and did
 not delete vault notes. The Obsidian UI was verified in an earlier session;
 this sync used hidden background file/hash verification and left the desktop
@@ -1186,6 +1186,7 @@ entrypoint; underscore-prefixed test primitives remain intentionally available
 for unit tests. Independent review confirmed receipt/resume integrity and
 runtime provenance. The run identity binds the research lockfile hash and
 actual Python/NumPy/platform versions. All focused V2.8 suites pass 70 tests.
+Review disposition is recorded in `docs/V28_TRAIN_RUNTIME_REVIEW_01.md`.
 These are runtime-integrity checks, not model evidence.
 DEV09 training approval remains false and no project-data fit or checkpoint has
 been produced.
