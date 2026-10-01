@@ -40,7 +40,7 @@
     "game_blocks_per_comparison": 2400,
     "blocks_sha256": "ec1e96955a92ae232f1863308f2276d47df926818508b9138845fa4dd2ac0e07",
     "row_order_seed": 28094080,
-    "code_commit": "02ec29733546f47550ac53fb50364f89770e2fe4",
+    "code_commit": "fc2612a3ca348bdcc4c9e015d1401933bc8ba268",
     "schedule_code_sha256": "a60a3670e12d9a2759e6a8661cf9f895f940074b1e62c6e81b29bd943b482807",
     "paired_score_definition": "mean(score_jepa_color_plus, score_jepa_color_minus) - 0.5",
     "practical_margin": 0.05,
@@ -163,7 +163,7 @@
   "artifact": {
     "path": "chess_data/v28_match_v08_locked.json (ignored local file)",
     "bytes": 3967448,
-    "sha256": "14fd3b0bca6f90987009dba56614e930727336bfb8085f2e652afd8ef55f1f86"
+    "sha256": "f18efbcac152409893c4999b2323993b5a838dfe0201d94bc8aaec8ca3db3c84"
   },
   "interpretation": "No outcomes or model results are present. Schedule commitment does not pass evaluator, runtime, power, training, or review gates."
 }
