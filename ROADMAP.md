@@ -18,7 +18,7 @@ are in `docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md` and
 
 The development grant is issued. Two initial resource preflights stopped before fitting at 1.17 GB and 1.32 GB; pilot 03 then passed four 20-second stable-memory checks and completed one three-epoch JEPA fit in 65.619 s wall / 60.469 s CPU, peak working set 859 MB. It is compute-only evidence. Preserve all three pilot receipts and use a new root for the 60-fit panel. Twenty focused V2.9 tests and 96 V2.8 regression tests pass under the exact locked Python 3.11.9 / NumPy 2.4.6 runtime; `py_compile` and `git diff --check` pass. Sandboxed startup initially failed, but the existing environment ran successfully using the authorized elevated noninteractive execution path. The panel can proceed under its frozen specification.
 
-The Windows Job Object supervisor passed independent `gpt-6-luna/high` review with no P1/P2 findings. It requires a parent release handshake after child assignment, caps per-process and per-job commit plus per-process user CPU, enforces a wall cap, and samples a reactive free-RAM guard each second. The 1.3 GB commit cap and 4-hour CPU cap are protective policy choices, not empirically calibrated thresholds; pilot 03's working-set measurement does not establish peak commit. Require four fresh stable readings above 2 GB before running the panel. Do not lower the gate, read training metrics, or open V08.
+The Windows Job Object supervisor passed independent `gpt-6-luna/high` review with no P1/P2 findings. It requires a parent release handshake after child assignment, caps per-process and per-job commit plus per-process user CPU, enforces a wall cap, and samples a reactive free-RAM guard each second. The 1.3 GB commit cap and 4-hour CPU cap are protective policy choices, not empirically calibrated thresholds; pilot 03's working-set measurement does not establish peak commit. The hidden panel launcher is now waiting for four fresh stable readings above 2 GB; its launch-time reading was 1.35 GB, below the gate, so no fit had started. Do not lower the gate, read training metrics, or open V08.
 
 The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
 macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall
@@ -26,6 +26,14 @@ time ratio ≤3.5, and per-game planner CPU ratio ≤1.25. Failure of any gate s
 epoch-only tuning. Passing is exploratory, not superiority; a confirmatory
 study still needs a separate frozen protocol, broader balanced situations,
 independent review, and unopened locked evaluation.
+
+A targeted primary-source search on 2026-10-02 added value-guided JEPA,
+RC-aux, Temporal-Distance JEPA, VJEPA, and Agentic-JEPA in
+`docs/RELATED_WORK.md`. Value-aligned, multi-horizon, reachability-aware, and
+temporal-progress JEPA objectives already have close precedents outside
+adversarial board games. If V2.9 fails, stop duration tuning and design a
+separate, pre-fit game-specific hypothesis; compare with the nearest objective
+families and retain a negative outcome if no defensible distinction survives.
 
 ## V2.8 first JEPA-vs-baseline development result (2026-10-02)
 

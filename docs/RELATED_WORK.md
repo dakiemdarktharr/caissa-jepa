@@ -159,3 +159,26 @@ Value-Aligned World Model was available here through its official abstract, not 
 PDF. A backward/forward-citation and venue search is still required before a
 submission novelty statement. No proposed loss or weighting scheme is designated
 novel by this search.
+
+### Planning-alignment and transfer update (2026-10-02)
+
+The follow-up search targeted JEPA objectives that align latent prediction with
+planning, value, reachability, and transfer. It used the official PMLR page,
+arXiv author preprints, and the original Zenodo record. It did not establish an
+exhaustive search or a novelty result.
+
+| Work and primary source | Question / method | Domain, data, baseline and reported result | Consequence for CAISSA |
+| --- | --- | --- | --- |
+| Destrade et al. (2026), [Value-Guided Action Planning with JEPA World Models, arXiv:2601.00844](https://arxiv.org/abs/2601.00844) | Shape a JEPA latent space so embedding distance approximates a negative goal-conditioned value, then use that cost to guide action search | Simple goal-conditioned control tasks; the abstract reports improved planning over standard JEPA, but this search did not extract a complete task-by-task table | Value-shaped JEPA planning is already prior art. A minimax/value-aligned CAISSA objective would need stronger game-specific distinction and an explicit matched value-alignment baseline; it is not novel merely because values are zero-sum. |
+| Li et al. (2026), [Predictive but Not Plannable: RC-aux for Latent World Models, arXiv:2605.07278](https://arxiv.org/abs/2605.07278) | Add multi-horizon open-loop prediction, budget-conditioned reachability supervision, and temporal hard negatives to a LeWorldModel backbone | Offline goal-conditioned pixel control and a LIBERO-Goal extension; compares with LeWM-style and control baselines; abstract reports improvements in locked evaluation. Detailed figures were not re-extracted in this update | Multi-horizon rollouts and planning-budget-aware latent supervision are directly overlapping mechanisms. They belong in related work and, if relevant to a later CAISSA design, as a baseline family rather than an originality claim. |
+| Bai & Xiong (2026), [Temporal-Distance JEPA, arXiv:2607.25337](https://arxiv.org/abs/2607.25337), [author code](https://github.com/HKBU-KnowComp/Temporal-Distance-JEPA) | Mine directed temporal progress from trajectory order and cross-trajectory pairs, plus rollout consistency; use the cost directly or to shape JEPA representations | Offline navigation/manipulation. The author preprint reports locked evaluation, ablations, and gains against LeWM and concurrent RC-aux on its environments | Plan-aware JEPA objectives and horizon-matched rollout supervision are not new. The setting is goal progress, not adversarial utility or max-min search; any remaining gap is empirical and must be tested against these objective families. |
+| Huang (2026), [VJEPA: Variational Joint Embedding Predictive Architectures as Probabilistic World Models, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/huang26ba.html) | Replace deterministic future-latent prediction with a variational predictive distribution; connect it to predictive-state representations and modular priors | Published paper abstract frames uncertainty-aware planning/control; this search inspected the official proceedings abstract, not all experiments | Even in deterministic board games, learned forecasts can be epistemically uncertain under held-out variants. A stochastic latent head is a candidate tool, not a novelty claim; calibration and robust planning would need a separate frozen question. |
+| Rodrigo-Ginés (2026), [Agentic-JEPA, Zenodo record 20237490](https://zenodo.org/records/20237490) | Train an EMA JEPA model from self-supervised state/action trajectories and plan by matching predicted states to goal embeddings | Text-based agent environments. The author record reports 100% success in-distribution but 0% on every tested OOD environment; k-step lookahead degrades from 100% to 40% at k=3 | This is a preprint/repository record, not evidence in board games. Its reported transfer and rollout failures reinforce that held-out game/variant transfer and open-loop error must be measured directly, not inferred from within-game play. |
+
+Design update: after V2.9, do not treat a positive duration result as the
+contribution. A next candidate must identify a precise two-player mechanism
+that can improve fixed-budget max-min action selection, freeze that mechanism
+before any new model-selection outcomes, and compare against both the current
+task-value arm and the closest plan-aware JEPA/value-alignment family. If no
+credible distinction survives, narrow the paper to a rigorous benchmark and
+negative result rather than inflate the claim.
