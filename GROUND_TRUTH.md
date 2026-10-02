@@ -1799,3 +1799,14 @@ the working tree was clean. No V2.12 code, data, training, matches, or new
 performance results were added. Documentation diff checks and independent
 protocol review passed; no executable tests were rerun for this documentation-
 only checkpoint.
+
+### Pause request checkpoint (2026-10-02)
+
+The active checkout was re-inspected from
+`16aeae272bf040a97dc4784ec1e2368e23faebf0`: it is on `main`, with no V2.12
+pilot code or outputs. The v04 method status wording and related-work pilot
+status were aligned with the reviewer disposition: pilot instrumentation only
+is cleared; no pilot has started; training and matches remain gated. The user
+requested that these current statuses be pushed to GitHub and then the active
+goal paused. This documentation-only status update contains no executable
+changes or experiment results.

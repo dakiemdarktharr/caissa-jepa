@@ -1,8 +1,8 @@
 # METHOD SPEC V2.12-04: Alternating-Player Multi-step JEPA
 
-Status: draft v04 revised 2026-10-02 after independent review; this
-version awaits independent re-review and is not a training grant,
-novelty claim, or superiority result. The fixed 2.0-second search gate has
+Status: draft v04 reviewed on 2026-10-02 and accepted only for the narrowly
+scoped no-training instrumentation pilot in Section 8; this is not a training
+grant, novelty claim, or superiority result. The fixed 2.0-second search gate has
 failed the rule-only Reversi8 p90 audit. No fitting or locked-data evaluation
 is permitted until the compute protocol is revised from no-outcome evidence
 and independently reviewed. Changes require a new version.

@@ -241,11 +241,10 @@ values. Its falsifiable question is whether that complete candidate improves
 paired game score over five matched controls, with a shared checkpoint across
 Connect Four and Reversi and held-out board sizes. It predicts neither a named
 opponent nor a worst-case value function, and it is not an equilibrium method.
-The exact candidate and controls are in `METHOD_SPEC_V212.md`; the spec remains
-under independent review and the fixed 2.0-second Reversi8 rule-only cap
-failed. After v04 is independently accepted, only the narrowly scoped
-random-initialized, no-training inference/instrumentation pilot described in
-the spec may proceed; training and matches remain blocked. Multi-step JEPA world
+The exact candidate and controls are in `METHOD_SPEC_V212.md`; the spec was
+independently accepted only for the narrowly scoped random-initialized,
+no-training inference/instrumentation pilot. The fixed 2.0-second Reversi8
+rule-only cap failed. Training and matches remain blocked. Multi-step JEPA world
 learning already exist, so neither novelty nor superiority is established.
 Kill this direction if the JEPA arm cannot clear the predeclared all-control
 gates, its advantage disappears under matched compute, or a closer prior-art
