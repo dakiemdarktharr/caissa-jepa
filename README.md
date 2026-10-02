@@ -8,6 +8,18 @@ and its [amendments](docs/METHOD_AMENDMENTS.md) first. The primary-source
 including MuZero, SPR/EfficientZero and RePAIR. No planning advantage or Q1
 publication readiness has been established.
 
+Latest status (2026-10-02): V2.8 completed an exploratory 60-fit, 160-block
+development comparison on Connect4-6x7 and Reversi6. JEPA did not show an
+observed advantage over task-value-dynamics (macro score contrast −0.01875;
+unadjusted 95% seed-cluster interval [−0.08248, 0.04498]). The next V2.9 probe
+is frozen but not yet approved or run: it changes only matched training
+duration from one to three epochs. This tests an under-training explanation;
+duration alone is not an algorithmic novelty claim. See [the V2.9 amendment](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md),
+[panel specification](docs/validation/V29_DEV_FIT_PANEL_V01.json), and
+[current Ground Truth](GROUND_TRUTH.md). A positive development screen would
+only nominate a separate model-selection study, not establish superiority or
+Q1 readiness.
+
 The current V2.8 planner candidate and its versioned amendments are documented in
 `docs/METHOD_V28_PLANNER_V01.md` through `V05_AMENDMENT.md`. The frozen exact-root
 regret estimand failed a 6x7 feasibility pilot (DEV10: zero of five complete
@@ -25,10 +37,12 @@ supervised V02 candidate in
 [`docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md`](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md).
 V02 uses recorded behavior-action and terminal-outcome labels, with a
 reply-set JEPA auxiliary loss and matched task-dynamics/direct-leaf controls.
-An independent implementation/objective review found no P1 issue, but V02 is
-still prefit, not frozen, and untrained; its data/runtime/power gates remain
-open. No JEPA advantage has been measured. The model-blind nonlearned
-runtime/power gate remains in progress. See
+An independent implementation/objective review found no P1 issue. V02's
+development implementation was later trained and evaluated in V2.8 using
+development-only authorization; no training-approved production manifest was
+changed. The V2.8 comparison found no observed JEPA advantage over
+task-value-dynamics. A separate V2.9 three-epoch duration probe is frozen but
+not yet run. See
 [`docs/V28_MODEL_V02_REVIEW_01.md`](docs/V28_MODEL_V02_REVIEW_01.md).
 
 V2.8 data feasibility remains in development. DEV01–DEV08 are retained as
@@ -40,12 +54,15 @@ DEV07 stopped before output because valid Reversi play can contain more forced
 passes than the former bound allowed. Strict DEV09 passed source regeneration,
 component, family and support audits for Connect4 6x7 plus Reversi6; its full
 receipt is `docs/validation/V28_DATA_SPLIT_DEV09.json`. This establishes only
-prefit data feasibility, and `training_approved` remains false. Read
+prefit data feasibility. A separate development-only grant authorized V2.8
+fits while `training_approved` remained false; these results remain
+exploratory. Read
 `docs/V28_DATA_POWER_PROTOCOL_V01.md` through `V07_AMENDMENT.md` and the
 receipts. Read `docs/V28_MATCH_POWER_PROTOCOL_V08_AMENDMENT.md` for the proposed
-paired-match design. The locked schedule is only a pre-fit commitment;
-paired-match runtime/power, training, and all learned JEPA-over-baseline
-results remain open.
+paired-match design. The V2.8 exploratory paired-match and development fit are
+complete, but they do not establish superiority. The locked schedule remains
+unopened; independent confirmatory evidence, transfer, and Q1 readiness remain
+open.
 
 `two_player/` is the GUI-independent, shared-weight tiny-game research pipeline:
 tic-tac-toe, gravity connect-3 and 4x4 Reversi; a 3x4 connect-3 size combination
@@ -146,7 +163,8 @@ V2.4 is a representation diagnostic rather than a strength comparison.
 | [V2.3 / fit diagnostic](docs/METHOD_V23_DIAGNOSTIC.md) | Direct, value-dynamics, raw JEPA; hidden/latent widths 64/32 and 128/64; projection 16; learning rate 0.001; 160 epochs; 3 seeds; 18 runs. | Larger models and longer training improved training fit for all families. Direct had lower final fit error than raw JEPA at both capacities; no strength evaluation was run. |
 | [V2.4 / order probe](docs/METHOD_V24_ORDER_PROBE.md) | Reused the 18 V2.3 checkpoints at both capacities; no new training. | Largest median order-bound ratio 0.002787, below the 0.10 materiality threshold. The proposed obstruction was not established. |
 | [V2.5 / grid05](docs/METHOD_V25.md) | Seven families; encoder 198→128→64; transition hidden 50, latent 64, 65 actions; batch 32 complete-reply groups; auxiliary coefficient 0.1; 160 epochs; rates 0.0003/0.001; 3 seeds; 42 runs. | Raw-tail (selected lr 0.0003) exact regret 0.202446 versus direct 0.203775 (95% interval for improvement −0.023899 to 0.026938); hybrid regret was worse. Not promoted. |
-| [V2.8 / supervised V02](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md) | Separate prefit prototype: latent 32, EMA 0.99, batch 64, learning rate 0.001, reply-JEPA weight 1.0, variance weight 0.1, target std 0.1, covariance weight 0.01. Compared in design with task-value-dynamics and direct-leaf controls. | **Untrained.** No V2.8 model result or JEPA advantage is available. These are prototype defaults, not frozen study settings. |
+| [V2.8 / supervised V02](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md) | Development-only, 60 one-epoch fits; 20 matched seeds × reply-JEPA, task-value-dynamics, direct-leaf on audited DEV09. Shared two-ply max-min planner, 2 s / 500,000-transition caps. | 160 blocks / 320 games completed. JEPA−task-value macro −0.01875 (95% seed-cluster CI [−0.08248, 0.04498]); not evidence of advantage. See [analysis](docs/validation/V28_DEVELOPMENT_MATCH_ANALYSIS_V01.json). |
+| [V2.9 / three-epoch probe](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md) | Frozen pre-fit duration ablation: 60 fresh fits (20 seeds × 3 arms), three epochs, then 160 paired blocks / 320 games. Only duration changes. | **Not yet approved or run.** Automatic exploratory nomination gates are frozen; duration alone is not novelty or superiority. |
 
 ### Figures
 

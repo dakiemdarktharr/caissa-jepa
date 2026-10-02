@@ -1,5 +1,16 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
+## Bước V2.9 kế tiếp — chưa chạy
+
+V2.8 đã hoàn tất so sánh phát triển nhưng chưa cho thấy JEPA vượt task-value-
+dynamics. Thử nghiệm đã đóng băng tiếp theo chỉ đổi thời lượng huấn luyện từ
+một lên ba epoch cho ba nhánh ghép cặp, dùng 20 seed, train split DEV09 đã audit
+và một lịch thi đấu phát triển mới. Đây là phép thử giả thuyết underfit; thay
+đổi thời lượng tự nó không phải novelty thuật toán. Ngưỡng pass/fail tự động
+được ghi trong `V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md`. Chưa cấp grant,
+chưa fit hoặc chạy trận V2.9. Kể cả pass, kết quả chỉ đề cử cho một nghiên cứu
+model-selection riêng, không chứng minh superiority hay mức sẵn sàng Q1.
+
 ## Bản cập nhật hiện hành — V2.8, 02/10/2026
 
 **Trạng thái trung thực:** panel phát triển V2.8 đã hoàn tất 60 fit (20 seed × 3

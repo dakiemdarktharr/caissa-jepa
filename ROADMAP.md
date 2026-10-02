@@ -1,5 +1,31 @@
 # CAISSA-JEPA research roadmap
 
+## V2.9 controlled optimization-exposure probe (pre-fit; 2026-10-02)
+
+V2.8 did not show an observed JEPA advantage over task-value-dynamics. V2.9
+tests one limited explanation: all three matched arms receive three epochs
+instead of one. This preserves a direct duration ablation while holding the
+audited train-only DEV09 data, objectives, model, initialization seeds,
+optimizer, search, budgets, and game schedule design fixed. Duration alone is
+not a unique algorithmic contribution; even a positive result would only
+nominate a stronger candidate for separately preregistered model selection.
+
+The frozen panel covers 20 paired checkpoint seeds × 3 arms (60 fresh fits, 87
+updates each), followed by 160 paired blocks / 320 games on Connect4 gravity
+6×7 and Reversi6. The exact methods, schedule, and automatic nomination gates
+are in `docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md` and
+`docs/validation/V29_DEV_FIT_PANEL_V01.json`. Before any fit: finish independent
+review, run regression, commit/push the protocol, issue a new explicit
+development grant after dataset re-audit, and pass the bounded local runtime
+pilot. Do not read training metrics or open V08.
+
+The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
+macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall
+time ratio ≤3.5, and per-game planner CPU ratio ≤1.25. Failure of any gate stops
+epoch-only tuning. Passing is exploratory, not superiority; a confirmatory
+study still needs a separate frozen protocol, broader balanced situations,
+independent review, and unopened locked evaluation.
+
 ## V2.8 first JEPA-vs-baseline development result (2026-10-02)
 
 The V2.8 development-only panel completed all 60 train fits (20 checkpoint
