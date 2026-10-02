@@ -1,0 +1,89 @@
+{
+  "schema": "caissa-jepa-v211-development-panel-v01",
+  "status": "frozen pre-fit development specification pending independent review",
+  "protocol": "V211_JEPA_WEIGHT_CALIBRATION_V01",
+  "dataset": {
+    "id": "dev09-v1",
+    "root": "chess_data/v28_data_dev09",
+    "fit_split": "train",
+    "forbidden_splits": ["validation", "selection", "locked-final"],
+    "expected_training_approved_manifest": false,
+    "expected_identity": {
+      "manifest_sha256": "f8b2a9dd152840a30ab3e1250d17e1336ae265f774fdc05b8590098e4614146e",
+      "source_sha256": "55ab1f05e83e837118385846e068aac32a25232a5aaa3b8a7dd244dd2a8c6dcc",
+      "dataset_fingerprint": "cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40",
+      "audit_sha256": "8431a2c5f627518f1161b5f5a4789f02e3edcc6a3fd41de458a5acdf4c92ed2e",
+      "records_sha256": "7955cbf753fcc2a0ae6507fa7e73570cba7635b1ee31ae7553463914e7fd5cf9",
+      "trajectories_sha256": "3a8e5851ccdfd0a489881e679aac083512d10521dbb3c01b534793d8ffc92c29"
+    }
+  },
+  "baseline_panel": {
+    "path": "chess_data/v29_fit_panel_dev01/panel.json",
+    "sha256": "b26504104ebde23967d142f01b3842b9e8309a2eb80337736e43c95f6c8f4d72",
+    "baseline_fit_spec": "docs/validation/V29_DEV_FIT_PANEL_V01.json",
+    "baseline_fit_spec_sha256": "9825cbd714714210a8b2beca1aa5ff08d9de20623cb2437f187675c35a794df8"
+  },
+  "parent_v29_approval_sha256": "bd2565865cf013e105f1ae06337a8d20e1a3085135d6f7aa1d7080080a8243ee",
+  "shared_source_sha256_lf_normalized": {
+    "two_player/v28_model.py": "e4c683c69524e388b4680ebaddc5565e4842d6c93e34904a5d22d5df28da5241",
+    "two_player/v28_train.py": "45ae82c809cd5139f45c931ec3a2c82bb827bee6c178b83e740788e21aa6e596",
+    "two_player/v28_data.py": "555ec047fcc06a1d4a71f02b4744181afcd68b237173288191b8d790e78904dd",
+    "requirements-research-lock.txt": "e04d3dbeb4dc7d02f981489a4ee964d23d87c349ee14a2f4334248bb388dbbee"
+  },
+  "games": ["connect4-gravity-6x7", "reversi6"],
+  "method": "v28-supervised-reply-set-model-v02-prototype",
+  "intervention": {
+    "parameter": "jepa_weight",
+    "baseline_value": 1.0,
+    "candidate_value": 8.0,
+    "only_changed_training_parameter": true,
+    "architecture_changed": false,
+    "gradient_projection": false
+  },
+  "checkpoint_seeds": [17, 29, 43, 59, 71, 83, 97, 109, 127, 139, 151, 167, 181, 197, 211, 227, 241, 257, 271, 283],
+  "model_config": {
+    "latent": 32,
+    "learning_rate": 0.001,
+    "ema": 0.99,
+    "batch_size": 64,
+    "jepa_weight": 8.0,
+    "variance_weight": 0.1,
+    "covariance_weight": 0.01,
+    "target_std": 0.1
+  },
+  "run_config": {"epochs": 3, "shuffle_seed": 701, "updates_per_checkpoint": 87},
+  "fit_pairing": "same seed, dataset, records, root expansion, minibatch order, optimizer updates, model code, and runtime as V2.9; fresh initialization; lambda is sole intervention",
+  "controls": ["reply-jepa-lambda1-v29", "task-value-dynamics-v29", "direct-leaf-v29"],
+  "planner": {
+    "type": "two-ply-max-min",
+    "per_move_wall_seconds": 2.0,
+    "transition_cap": 500000,
+    "opponent_semantics": "worst-case legal reply, not a behavioral opponent prediction or equilibrium computation"
+  },
+  "schedule": {
+    "blocks": 240,
+    "games_per_block": 2,
+    "total_games": 480,
+    "matches_per_checkpoint_game_control": 2,
+    "first_match_seed": 35010000,
+    "order_seed": 28110000,
+    "comparisons": ["reply-jepa-lambda1-v29", "task-value-dynamics-v29", "direct-leaf-v29"],
+    "color_assignments": [1, -1],
+    "paired_score": "mean of two color-swapped candidate game scores minus 0.5",
+    "schedule_sha256": "c6574b28767dc29e80c3bfd2ad158c58528561a8dc2c5393c86d54534f33bc2e"
+  },
+  "primary_development_screen": {
+    "practical_margin": 0.05,
+    "candidate_must_exceed_each_control_by": 0.05,
+    "scope": "each game and equal-weight two-game macro",
+    "seed_cluster_count": 20,
+    "uncertainty": "report two-sided 95% t intervals over initialization seed clusters; no superiority claim from this development panel",
+    "train_wall_ratio_max_vs_task_value_dynamics": 3.5,
+    "mean_planner_cpu_ratio_max_each_game_seat_vs_each_control": 1.25,
+    "missing_or_invalid_matches": "no silent exclusion; fail panel completeness and report every reason"
+  },
+  "interpretation": "bounded exploratory development/model-selection only; nomination is not confirmation or a superiority claim",
+  "forbidden_access": ["training-loss histories", "V08 outcomes", "validation during fit", "selection during fit", "locked-final"],
+  "output_root_policy": "fresh ignored chess_data/v211_* roots only; refuse overwrite and resume unless exact fingerprints match",
+  "kill_rule": "If any preflight or nomination screen fails, stop lambda-only tuning and preserve the complete negative or mixed result; no post-hoc subgroup search or schedule changes"
+}

@@ -1376,3 +1376,144 @@ backed up one prior version under
 The sync script copies Markdown only; the full JSON result is retained in the
 repository validation artifact, and its summary is present in this note and
 the professor brief.
+
+### V2.11 pre-fit candidate frozen pending independent review (2026-10-02)
+
+The gradient-conflict mechanism was stopped by its frozen V2.10 gate. A narrow
+prospective calibration hypothesis is now recorded in
+`docs/METHOD_V211_JEPA_WEIGHT_CALIBRATION.md` and
+`docs/validation/V211_JEPA_WEIGHT_CALIBRATION_V01.json`: change only reply-set
+JEPA loss coefficient from 1.0 to 8.0 while keeping the V2.9 architecture,
+audited DEV09 train data, 20 initialization seeds, three epochs/87 updates,
+and planner fixed. It compares the fresh λ=8 candidates against hash-verified
+same-seed V2.9 λ=1 JEPA, task-value-dynamics, and direct-leaf controls on a
+fresh hash-committed schedule of 240 paired blocks/480 color-swapped games.
+Schedule SHA-256 is
+`c6574b28767dc29e80c3bfd2ad158c58528561a8dc2c5393c86d54534f33bc2e`.
+
+The V2.10 gradient diagnostic's median batchwise `||g_J||/||g_task||` is 0.04937
+for Connect4 and 0.04550 for Reversi6. λ=8 implies approximate median ratios
+0.395 and 0.364 if scaling is locally linear; this does not change direction
+or prove strength. Loss weighting is standard calibration and is not asserted
+as novel. V2.11 is a development/model-selection nomination experiment only,
+requires independent review and a new grant before fitting, and does not open
+loss histories, V08 outcomes, or locked-final data. No fit/match/code runner has
+been started under V2.11. If its +0.05 per-game and macro margins and compute
+caps fail, stop λ-only tuning and preserve the negative/mixed result.
+
+This continuation began with a clean tree at `main` matching `origin/main` at
+`702144179ed1a2c2d07ea472087532a935ffe268`; only `main` and `origin/main`
+existed. The existing reviewer `/root/v28_dev_match_audit` was asked to review
+the frozen V2.11 protocol only before implementation or training. No new agent
+was created. PowerShell/command processes are to run hidden in the background
+per the user's desktop-availability instruction. The previously verified
+Obsidian location remains `D:\notes\vault_1\Caissa-JEPA`; sync the revised
+Ground Truth, roadmap, and protocol after review/changes and verify SHA-256.
+
+The independent protocol review is recorded in
+`docs/V211_PROTOCOL_REVIEW_01.md`: no P1/P2, with the V2.11 schedule reproduced
+at 240 paired blocks and matching SHA. The reviewer explicitly did not
+authorize fitting. Its P3 condition was to implement and review the dedicated
+V2.11 runner/checkpoint verifier, new train-only grant, dependency check, and
+resource preflight before fitting. These are implemented in
+`two_player/v211_development.py`, `tools/v211_run_development_panel.py`,
+`tools/v211_development_panel_supervisor.py`, `tools/v211_model_match.py`, and
+`tools/v211_development_match_analysis.py`. The matcher checks frozen V2.9
+ledger/source/runtime/data/checkpoint identities and loads only online/EMA
+weight arrays; it does not call `Model.load` for old controls. Its preflight
+loaded all 60 controls across 20 seeds and 3 arms. Focused V2.11 unit tests pass
+3/3; all V2.11 Python files compile; the spec/schedule validation and
+`git diff --check` pass. The existing reviewer is now checking the complete
+implementation. No V2.11 grant has been issued and no fit/match has started.
+
+The Markdown sync to `D:\notes\vault_1\Caissa-JEPA\` most recently copied 118
+files, backed up two changed prior versions under
+`_sync_history/20261002-164148-v28-hardening-preflight/`, and reported zero
+SHA-256 mismatches. The Computer Use app inventory in this session exposed no
+native app windows, so the changed notes were hash-verified in the vault but
+could not be reopened in the Obsidian UI during this session. The previously
+verified vault location and UI read check remain recorded above.
+
+### V2.11 final implementation review and pre-fit status (2026-10-02)
+
+The first implementation review identified risks around embedded receipt
+history parsing, a forgeable supervisor token, runtime parity, and the
+imported resource-helper identity. Fixes bind receipts while parsing only
+`effective_run` before history, require token plus Windows Job Object
+membership, check runtime identity, and attest supervisor/helper/runner hashes
+and resource status. Its follow-up found no P1/P2 and raised two P3 precision
+issues: comparing working-set use against a commit limit, and checking runtime
+parity only after fit. Both are corrected: working set is diagnostic only,
+while Job Object enforces committed memory; a pre-fit gate now checks all 60
+hash-bound V2.9 control receipts before train-data access. The final independent
+review found no remaining P1/P2 or P3 blocker. Focused V2.11 tests pass 8/8,
+Python compilation and `git diff --check` pass, all 60 controls load
+weights-only, and runtime parity passes for all 60 controls. No V2.11 grant,
+fit, or match exists yet. The next step is a background-only stable-memory
+measurement; only after the requirement is met may the independently reviewed
+train-only V2.11 grant and supervised exploratory panel proceed.
+
+The code and protocol are still development/model-selection only. V2.11 tests
+ordinary loss-weight calibration and cannot establish a novel JEPA method or
+superiority until the frozen matches are actually run and their gates pass.
+
+The first hidden stable-memory measurement did not pass the fit gate: four
+samples 20 seconds apart reported 806,436,864; 909,082,624; 1,032,060,928; and
+861,609,984 available physical bytes, with Windows memory load 93–95%. All were
+below the required 2,000,000,000 bytes and the last was below the reactive
+1,000,000,000-byte floor. No fit or match started. The reviewed supervisor is
+designed to wait for four new stable samples for up to 30 minutes, then stop
+without fitting if the threshold remains unmet. This initial result and the
+continuation decision will be mirrored into Obsidian before that wait is
+started.
+
+The Markdown-only Obsidian sync copied 118 files, backed up four changed prior
+notes to
+`D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-171545-v28-hardening-preflight\`,
+and reported zero hash mismatches. The follow-up resource-status sync also
+copied 118 files, backed up the changed Ground Truth to
+`D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-171805-v28-hardening-preflight\`,
+and reported zero mismatches. Native Obsidian UI is unavailable in the current
+Computer Use inventory, so the update was checked by file/hash rather than by
+opening the app.
+
+### V2.11 implementation review correction (2026-10-02)
+
+The statement above that no V2.11 code runner had started is superseded: the
+protocol implementation now exists, but no fit runner has executed. The first
+implementation reviewer found two P2s: full fit-receipt JSON parsing could
+expose embedded training history, and a caller could forge the supervisor
+token. The matcher now SHA-256-checks receipt bytes against the panel ledger
+without parsing receipt JSON; both old and new models are loaded from online
+and EMA arrays only. The fit process also verifies Windows Job Object
+membership. After a successful fit, the supervisor will attest its source,
+status-file hash, limits, stable memory samples, and peak memory in the panel
+ledger, and the matcher checks that attestation before accepting the panel.
+These fixes are pending independent re-review. Focused tests pass 4/4, all
+V2.11 modules compile, the frozen schedule/spec validate, and all 60 V2.9
+control weights pass the weights-only identity preflight. No V2.11 approval
+grant, training fit, or match has been created or run.
+
+### V2.11 grant and gated supervisor continuation (2026-10-02)
+
+The prior sentence is superseded: after the final independent implementation
+review, the train-only V2.11 grant was created by replaying the audited DEV09
+loader. It contains authorization metadata only, records 1,797 accepted train
+records, is stored at ignored `chess_data/v211_data_dev09_approval.json`, and
+has SHA-256
+`9d7d876fcb94ea67eb90fddb391cd5516f30acda8e25e3041140051134bb0adc`. No
+validation, selection, V08, or locked-final records were opened; no fit or
+match has started. The reviewed supervisor may now be started in the
+background to wait up to 30 minutes for the memory gate and start the frozen
+fit panel only after four qualifying samples.
+
+The first hidden supervisor invocation then exposed a CLI bootstrap defect:
+direct execution from `tools/` did not include the repository root on
+`sys.path`, so it exited before writing a status file or creating an output
+panel. No fit started. The supervisor now adds its own repository root before
+imports; its regression test runs only `--help`. The same independent reviewer
+confirmed this fix, with no remaining concern. `py_compile`, `git diff --check`,
+and the focused V2.11 suite pass; the suite is now 9/9. The initial 60-second
+RAM sample failed, so the next action is to start the corrected background
+supervisor and let its bounded 30-minute preflight either observe four stable
+samples above 2.0 GB and launch, or stop without fitting.
