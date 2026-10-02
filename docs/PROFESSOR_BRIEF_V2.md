@@ -7,7 +7,7 @@ dynamics. Thử nghiệm đã đóng băng tiếp theo chỉ đổi thời lư�
 một lên ba epoch cho ba nhánh ghép cặp, dùng 20 seed, train split DEV09 đã audit
 và một lịch thi đấu phát triển mới. Grant chỉ cho phép fit development/train.
 Hai pilot tài nguyên dừng trước khởi tạo model vì RAM khả dụng ở process
-preflight chỉ 1,17 GB và 1,32 GB, dưới ngưỡng 2 GB. Một fit JEPA ba epoch chỉ dùng đo tài nguyên đã hoàn tất (65,6 giây, peak working set 859 MB); panel 60 fit và đánh giá trận chưa chạy. 20 test V2.9 và 96 test V2.8 pass trên Python 3.12.14 / NumPy 2.3.5 đi kèm, nhưng lockfile nghiên cứu yêu cầu Python 3.11.9 / NumPy 2.4.6 và launcher môi trường hiện tại không khởi chạy được do thiếu base interpreter. Vì vậy panel chưa thể chạy tái lập theo protocol. Supervisor Job Object đã qua review độc lập; giới hạn commit 1,3 GB và CPU 4 giờ là rào bảo vệ, chưa được hiệu chuẩn từ peak commit/CPU thực đo. Đây là phép thử giả thuyết
+preflight chỉ 1,17 GB và 1,32 GB, dưới ngưỡng 2 GB. Một fit JEPA ba epoch chỉ dùng đo tài nguyên đã hoàn tất (65,6 giây, peak working set 859 MB); panel 60 fit và đánh giá trận chưa chạy. 20 test V2.9 và 96 test V2.8 pass trong Python 3.11.9 / NumPy 2.4.6 đúng lockfile. Supervisor Job Object đã qua review độc lập; giới hạn commit 1,3 GB và CPU 4 giờ là rào bảo vệ, chưa được hiệu chuẩn từ peak commit/CPU thực đo. Đây là phép thử giả thuyết
 underfit; thay đổi thời lượng tự nó không phải novelty thuật toán. Ngưỡng
 pass/fail tự động được ghi trong
 `V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md`. Kể cả pass, kết quả chỉ đề cử

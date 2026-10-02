@@ -17,10 +17,9 @@ before fitting below the 2 GB RAM gate; a third resource-only fit then passed
 four stable-memory checks and completed three epochs in 65.6 s with an 859 MB
 peak working set. This is compute feasibility only; the 60-fit panel and
 matches have not run. Python 3.11.9 + pinned NumPy 2.4.6 is ready, and 18 V2.9
-tests plus the 96-test V2.8 regression pass under the bundled Python 3.12.14 /
-NumPy 2.3.5 test runtime. The frozen lock requires Python 3.11.9 / NumPy 2.4.6;
-the project venv launcher currently cannot start because its base interpreter
-is missing, so the fit panel remains blocked pending runtime recovery. The
+tests plus the 96-test V2.8 regression pass in the locked Python 3.11.9 /
+NumPy 2.4.6 environment. The first sandboxed start was denied, but the
+noninteractive execution with the appropriate access succeeded. The
 resource-limited panel supervisor passed independent review. V2.9 changes only matched training
 duration from one to three epochs. This tests an under-training explanation;
 duration alone is not an algorithmic novelty claim. See [the V2.9 amendment](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md),
