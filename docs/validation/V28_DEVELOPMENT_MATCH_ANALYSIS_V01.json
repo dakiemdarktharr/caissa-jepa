@@ -1,0 +1,351 @@
+{
+  "analysis_source_sha256": "7d772496458f54e33b79b0d64de0a217207abec0488cbbac219408c64bd62c5a",
+  "contrasts": [
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        0.05,
+        0.325
+      ],
+      "control": "direct-exact-leaf-value",
+      "game": "connect4-gravity-6x7",
+      "mean": 0.1875,
+      "positive_seed_clusters": 12,
+      "seed_cluster_sd": 0.323173002389872,
+      "seed_cluster_se": 0.07226368018364558,
+      "seed_clusters": 20,
+      "t95_ci": [
+        0.03625037914506668,
+        0.3387496208549333
+      ]
+    },
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.1125,
+        0.0875
+      ],
+      "control": "task-value-dynamics",
+      "game": "connect4-gravity-6x7",
+      "mean": -0.0125,
+      "positive_seed_clusters": 4,
+      "seed_cluster_sd": 0.23612831034708318,
+      "seed_cluster_se": 0.052799895334824494,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.12301145098447004,
+        0.09801145098447005
+      ]
+    },
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.125,
+        0.1
+      ],
+      "control": "direct-exact-leaf-value",
+      "game": "reversi6",
+      "mean": -0.0125,
+      "positive_seed_clusters": 3,
+      "seed_cluster_sd": 0.2625156636930652,
+      "seed_cluster_se": 0.05870028691761673,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.13536111249527333,
+        0.11036111249527332
+      ]
+    },
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.15,
+        0.0875
+      ],
+      "control": "task-value-dynamics",
+      "game": "reversi6",
+      "mean": -0.025,
+      "positive_seed_clusters": 4,
+      "seed_cluster_sd": 0.2798025619686327,
+      "seed_cluster_se": 0.062565754884046,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.15595162992897624,
+        0.10595162992897625
+      ]
+    },
+    {
+      "blocks": 80,
+      "bootstrap_95ci": [
+        0.0,
+        0.175
+      ],
+      "control": "direct-exact-leaf-value",
+      "game": "macro_average_across_two_games",
+      "mean": 0.0875,
+      "positive_seed_clusters": 10,
+      "seed_cluster_sd": 0.20718984429490594,
+      "seed_cluster_se": 0.046329057609100666,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.009467831974999424,
+        0.1844678319749994
+      ]
+    },
+    {
+      "blocks": 80,
+      "bootstrap_95ci": [
+        -0.075,
+        0.04375
+      ],
+      "control": "task-value-dynamics",
+      "game": "macro_average_across_two_games",
+      "mean": -0.01875,
+      "positive_seed_clusters": 4,
+      "seed_cluster_sd": 0.13617785390707565,
+      "seed_cluster_se": 0.030450293836625647,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.08248319745142542,
+        0.044983197451425413
+      ]
+    }
+  ],
+  "game_rules_source_sha256": "fbdce0893f6dcc76d30b71d4391842abbcd7c15a0d1a9e20c40077457e273d3a",
+  "interpretation": "Fixed checkpoint strength under a shared two-ply minimax planner; not opponent-behavior prediction, equilibrium, exploitability, cross-game transfer, or confirmatory evidence.",
+  "matches": {
+    "blocks": 160,
+    "censored_blocks": 0,
+    "cpu_seconds": 96.96875,
+    "evaluator_source_sha256": "075d3257efc88deeb49ea08899615767aeca97931acc954de26b177f24886a40",
+    "forfeits": 0,
+    "max_move_seconds": 2.0,
+    "max_nodes_per_move": 500000,
+    "outcomes_are_locked": false,
+    "paired_games": 320,
+    "path": "C:\\Users\\ANHKHOI\\Documents\\ChatGPT\\caissa-jepa\\chess_data\\v28_development_matches_v01.jsonl",
+    "receipt_sha256": "80badf607e2918e439998ad641686b8b221398b99f24c42bf6ca55312923b590",
+    "schedule_sha256": "384dde9aaba0b9262c56c322c8385d28ad135de4d85e02e715e16f4b33712478",
+    "sha256": "20310ea433024944af28d6940bc55800c709315aed9dd03cb017a47e164cdd2b",
+    "wall_seconds": 100.71517670000321
+  },
+  "panel": {
+    "checkpoint_seeds": [
+      17,
+      29,
+      43,
+      59,
+      71,
+      83,
+      97,
+      109,
+      127,
+      139,
+      151,
+      167,
+      181,
+      197,
+      211,
+      227,
+      241,
+      257,
+      271,
+      283
+    ],
+    "commit": "aaccbf1f62c18b5ffa0426e421529685aed99e27",
+    "completed_runs": 60,
+    "dataset_fingerprint": "cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40",
+    "status": "completed"
+  },
+  "realized_search_compute": [
+    {
+      "arm": "direct-leaf",
+      "control": "direct-exact-leaf-value",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 576.6875,
+        "cpu_seconds": 0.1177734375,
+        "decision_calls": 16.325,
+        "latent_evaluations": 562.1375,
+        "transitions": 1823.9,
+        "wall_seconds": 0.12348118124937173
+      },
+      "totals": {
+        "branch_value_calls": 46135.0,
+        "cpu_seconds": 9.421875,
+        "decision_calls": 1306.0,
+        "latent_evaluations": 44971.0,
+        "transitions": 145912.0,
+        "wall_seconds": 9.878494499949738
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "direct-exact-leaf-value",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 575.625,
+        "cpu_seconds": 0.122265625,
+        "decision_calls": 16.5,
+        "latent_evaluations": 561.5875,
+        "transitions": 1821.3,
+        "wall_seconds": 0.12387248124032339
+      },
+      "totals": {
+        "branch_value_calls": 46050.0,
+        "cpu_seconds": 9.78125,
+        "decision_calls": 1320.0,
+        "latent_evaluations": 44927.0,
+        "transitions": 145704.0,
+        "wall_seconds": 9.909798499225872
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "task-value-dynamics",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 573.95,
+        "cpu_seconds": 0.1212890625,
+        "decision_calls": 16.625,
+        "latent_evaluations": 561.2,
+        "transitions": 1816.0375,
+        "wall_seconds": 0.12041042375931284
+      },
+      "totals": {
+        "branch_value_calls": 45916.0,
+        "cpu_seconds": 9.703125,
+        "decision_calls": 1330.0,
+        "latent_evaluations": 44896.0,
+        "transitions": 145283.0,
+        "wall_seconds": 9.632833900745027
+      }
+    },
+    {
+      "arm": "task-value-dynamics",
+      "control": "task-value-dynamics",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 572.125,
+        "cpu_seconds": 0.1103515625,
+        "decision_calls": 16.625,
+        "latent_evaluations": 561.6,
+        "transitions": 1810.3875,
+        "wall_seconds": 0.11804286373735522
+      },
+      "totals": {
+        "branch_value_calls": 45770.0,
+        "cpu_seconds": 8.828125,
+        "decision_calls": 1330.0,
+        "latent_evaluations": 44928.0,
+        "transitions": 144831.0,
+        "wall_seconds": 9.443429098988418
+      }
+    },
+    {
+      "arm": "direct-leaf",
+      "control": "direct-exact-leaf-value",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 383.3,
+        "cpu_seconds": 0.16640625,
+        "decision_calls": 16.4,
+        "latent_evaluations": 382.675,
+        "transitions": 1227.75,
+        "wall_seconds": 0.17659625249907548
+      },
+      "totals": {
+        "branch_value_calls": 30664.0,
+        "cpu_seconds": 13.3125,
+        "decision_calls": 1312.0,
+        "latent_evaluations": 30614.0,
+        "transitions": 98220.0,
+        "wall_seconds": 14.12770019992604
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "direct-exact-leaf-value",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 367.95,
+        "cpu_seconds": 0.16484375,
+        "decision_calls": 16.4375,
+        "latent_evaluations": 367.225,
+        "transitions": 1174.1875,
+        "wall_seconds": 0.16711282249925716
+      },
+      "totals": {
+        "branch_value_calls": 29436.0,
+        "cpu_seconds": 13.1875,
+        "decision_calls": 1315.0,
+        "latent_evaluations": 29378.0,
+        "transitions": 93935.0,
+        "wall_seconds": 13.369025799940573
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "task-value-dynamics",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 382.2,
+        "cpu_seconds": 0.1828125,
+        "decision_calls": 16.325,
+        "latent_evaluations": 381.525,
+        "transitions": 1220.05,
+        "wall_seconds": 0.19481890750430467
+      },
+      "totals": {
+        "branch_value_calls": 30576.0,
+        "cpu_seconds": 14.625,
+        "decision_calls": 1306.0,
+        "latent_evaluations": 30522.0,
+        "transitions": 97604.0,
+        "wall_seconds": 15.585512600344373
+      }
+    },
+    {
+      "arm": "task-value-dynamics",
+      "control": "task-value-dynamics",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 390.3,
+        "cpu_seconds": 0.1921875,
+        "decision_calls": 16.3,
+        "latent_evaluations": 389.5,
+        "transitions": 1247.925,
+        "wall_seconds": 0.1994486300016433
+      },
+      "totals": {
+        "branch_value_calls": 31224.0,
+        "cpu_seconds": 15.375,
+        "decision_calls": 1304.0,
+        "latent_evaluations": 31160.0,
+        "transitions": 99834.0,
+        "wall_seconds": 15.955890400131466
+      }
+    }
+  ],
+  "schema": "caissa-jepa-v28-development-match-analysis-v01",
+  "status": "exploratory_only",
+  "uncertainty": {
+    "cluster_bootstrap": {
+      "interval": "unadjusted percentile 95% interval",
+      "multiplicity_adjusted": false,
+      "replicates": 20000,
+      "seed": 28094082
+    },
+    "cluster_t_interval": "unadjusted two-sided 95% t interval, df=19",
+    "interpretation": "exploratory; do not use for superiority claims",
+    "primary_unit": "checkpoint seed; paired match seeds averaged per cell",
+    "sampling_scope": "conditional on the two scheduled match seeds per checkpoint-seed/game/control cell; does not separately estimate match-seed or situation-sampling uncertainty"
+  }
+}

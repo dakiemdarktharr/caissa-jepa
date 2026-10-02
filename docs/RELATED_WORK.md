@@ -139,3 +139,23 @@ information-set abstraction and CFR solver do not transfer unchanged to
 known-rule perfect-information games. Port it only if state/action abstraction
 and measured compute can be matched without giving an arm privileged
 information.
+
+### Strategic and value-aware model-learning update (2026-10-02)
+
+The latest primary-source search materially raises the novelty bar for any
+proposal to weight latent predictions by planner value or worst-case replies.
+The V2.8 first development result is recorded separately in
+`docs/validation/V28_DEVELOPMENT_MATCH_ANALYSIS_V01.json`; it does not support a
+JEPA-superiority claim.
+
+| Work and primary source | Question / design | Domain and data | Baseline / metric / relevant evidence | Difference and consequence for CAISSA |
+| --- | --- | --- | --- | --- |
+| Dann, Mansour & Mohri (2026), [Theoretical Foundations and Effective Algorithms for Policy-Aware Simulator Learning, arXiv:2605.29032v3](https://arxiv.org/abs/2605.29032), [full author preprint](https://arxiv.org/html/2605.29032) | How should a learned simulator be trained so an optimizing policy cannot exploit its errors? Formulates model learning as a minimax game against a policy adversary, develops TV/Wasserstein-critic relaxations and critic-guided active data selection | Five high-dimensional continuous-control tasks with generative sampling; biased training state-action distributions and uniform test coverage; additional policy-training tests on DeepMind Control/Gymnasium tasks | Compares with maximum-likelihood dynamics learning, reports RMSE over five seeds and separates average from high-sensitivity regions; reports 1.55–2.20× lower error in sensitive regions. In four policy-transfer tasks, policies trained in the learned simulator approach optimal real-environment returns while MLE-trained simulators fail on three tasks | Directly overlaps the principle of allocating model learning to strategically important regions and is a serious prior-art threat to generic adversarial/value-aware JEPA losses. It is not JEPA and studies stochastic continuous-control simulator exploitation, not alternating finite perfect-information games with exact transitions. CAISSA must test the narrower incremental benefit of EMA target-latent prediction and complete legal reply conditioning against equally decision-aware non-JEPA controls; a softmin-weighted JEPA loss alone is not an adequate novelty claim. |
+| Jiang et al. (2026), [Boosting World Models Learning via Latent-Space Value Alignment, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/jiang26ai.html) | Can latent-space value-alignment regularization combine dynamics fidelity with task-relevant representation learning, using an adaptive weight | Atari 100k and DeepMind Control benchmarks; published PMLR abstract inspected, full PDF fetch unavailable during this search | The official abstract says it improves existing world-model methods with minimal overhead; exact numerical results and baseline-by-task details were not available from the accessible proceedings page and are not inferred here | A close precedent for latent prediction plus task/value alignment. It is not a board-game JEPA/minimax study. Any CAISSA value-aware latent objective needs an explicit ablation against this objective family and cannot claim value alignment as new. |
+| Farahmand, Barreto & Nikovski (2017), [Value-Aware Loss Function for Model-based Reinforcement Learning, AISTATS / PMLR 54](https://proceedings.mlr.press/v54/farahmand17a.html) | Replace generic transition likelihood fitting with a value-function-structured model loss and provide a finite-sample bound | A simple model-based RL example in the inspected proceedings abstract; broader claims require the paper and are not inferred from that abstract | Compares the proposed value-aware loss with maximum likelihood on a simple problem; the source establishes that decision-structured model losses predate CAISSA | Foundational overlap for objectives designed around value/planning. This is a conceptual prior, not a direct JEPA or two-player game baseline. |
+
+Search limitations: the Dann et al. v3 preprint full text was inspected; the ICML 2026
+Value-Aligned World Model was available here through its official abstract, not its
+PDF. A backward/forward-citation and venue search is still required before a
+submission novelty statement. No proposed loss or weighting scheme is designated
+novel by this search.

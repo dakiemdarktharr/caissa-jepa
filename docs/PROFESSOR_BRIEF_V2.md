@@ -1,14 +1,26 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
-## Bản cập nhật hiện hành — V2.8, 01/10/2026
+## Bản cập nhật hiện hành — V2.8, 02/10/2026
 
-**Trạng thái trung thực:** hiện chưa có mô hình V2.8 nào được huấn luyện, chưa có
-checkpoint, và chưa có kết quả cho thấy JEPA hơn baseline. Các thí nghiệm V1–V2.5
-trước đó không xác nhận ưu thế JEPA; chúng được giữ nguyên như bằng chứng âm, không
-được thay bằng các pilot mới. Một pilot proxy không dùng learned model đang chạy để
-kiểm tra tính toàn vẹn, runtime và độ biến thiên của protocol. Pilot ấy không so sánh
-JEPA, không thể được trình bày như kết quả sức chơi, và chưa cho phép suy luận về
-power của contrast learned-model.
+**Trạng thái trung thực:** panel phát triển V2.8 đã hoàn tất 60 fit (20 seed × 3
+arm, một epoch) và 160 block đối sánh (320 ván) trên Connect4-6x7 và Reversi6.
+Đây là kết quả phát triển/mô hình-lựa-chọn, không phải xác nhận. JEPA chưa cho
+thấy ưu thế trước baseline task/value-dynamics. Điểm JEPA trừ 0.5, trung bình
+đều hai game, là −0.0188; khoảng tin cậy t 95% theo 20 cụm seed là
+[−0.0825, 0.0450]. Trước direct-exact-leaf, mức này là +0.0875
+[−0.0095, 0.1845], nhưng lợi thế chỉ xuất hiện trên Connect4 (+0.1875),
+còn Reversi6 là −0.0125. Các khoảng này có điều kiện trên hai match seed đã
+lên lịch trong mỗi ô và không ước lượng riêng bất định do lấy mẫu seed/tình
+huống trận. Vì vậy chưa có căn cứ kết luận JEPA tốt hơn.
+Kết quả đầy đủ, hash và compute theo arm ở
+[báo cáo development](validation/V28_DEVELOPMENT_MATCH_ANALYSIS_V01.json).
+
+Các baseline dùng chung two-ply minimax và giới hạn 2 giây/500.000 transition
+mỗi lượt; compute thực tế vẫn khác theo nhánh tìm kiếm và độ dài game, nên phải
+báo riêng. Các thí nghiệm V1–V2.5 cũng chưa xác nhận ưu thế JEPA và được giữ
+nguyên như bằng chứng âm. Không sử dụng dữ liệu bên thứ ba; DEV09 là self-play
+do dự án tạo. Dữ liệu vẫn ở local, `training_approved` vẫn false, locked-final
+chưa được mở.
 
 **Câu hỏi nghiên cứu hiện hành:** trong game hai người, luân phiên lượt, quan sát đầy
 đủ, xác định và tổng bằng không với legal actions/terminal rules rõ ràng, liệu mục
@@ -27,19 +39,24 @@ task-prediction ghép cặp công bằng trong panel game đã khóa. Transfer s
 game/variant chưa huấn luyện là mục tiêu riêng, chưa được protocol hiện tại chứng minh.
 Ma trận nguồn và khác biệt domain nằm ở [review related work](RELATED_WORK.md).
 
-**Cổng bằng chứng:** trước hết hoàn tất replay/runtime/variance audit cho pilot hiện
-tại; sau đó chỉ fit các model development/selection trên split đã audit. Chỉ khóa
-confirmatory run nếu JEPA còn hơn cả direct lẫn task-value control ở practical margin
-đã định trước, không collapse, và đạt same-search/equal-compute checks. Nếu chỉ thắng
-baseline yếu, hoặc predictor loss giảm mà quyết định không tốt hơn, không tuyên bố
-JEPA superiority. Dữ liệu đang xét là self-play sinh từ engine nội bộ; chưa dùng
-dataset bên thứ ba. Không có số liệu V2.8 nào ở thời điểm cập nhật này.
+**Bước nghiên cứu kế tiếp:** kiểm tra giả thuyết một epoch còn underfit bằng panel
+ba epoch đã ghép cặp cho tất cả arm; đây là thay đổi thời lượng duy nhất và cần
+amendment/schedule/grant phiên bản mới trước khi fit. Sau đó dùng schedule
+development mới và selection split đã audit để quyết định có giữ recipe. Nếu JEPA
+không cải thiện trước task/value-dynamics ở cả hai game với compute đo được hợp lý,
+phải thiết kế lại hoặc thu hẹp claim. V08 vẫn khóa cho tới khi recipe, estimand,
+primary metric, multiplicity, practical margin, censor policy, power và stopping
+rule được đóng băng, kiểm tra độc lập và đăng ký trước. Không đọc locked results để
+điều chỉnh model.
 
-**Đánh giá hiện thời:** đây là hướng nghiên cứu có thể kiểm chứng nhưng novelty risk
-cao và chưa đạt ngưỡng để gọi là bản thảo Q1 triển vọng. Góp ý giáo sư nên tập trung
-vào việc liệu lợi thế của objective JEPA trong game luật đã biết có ý nghĩa khoa học
-đủ mạnh hay cần thu hẹp câu hỏi sang sample efficiency/held-out variant transfer.
-Q1 là mục tiêu chất lượng, không phải cam kết được nhận.
+**Đánh giá hiện thời:** đây là một negative/mixed result hữu ích để chọn hướng tiếp
+theo, chưa phải bản thảo Q1 triển vọng. Novelty risk vẫn cao: policy-aware minimax
+model learning và latent-space value alignment đã xuất hiện trong prior art 2026;
+chỉ có thể bảo vệ đóng góp hẹp sau khi đối chiếu kỹ hơn và đo lợi thế tăng thêm của
+JEPA trước task-prediction. Góp ý giáo sư nên tập trung vào việc liệu lợi thế
+decision-level đủ ý nghĩa trong game luật đã biết, hay hướng phù hợp hơn là sample
+efficiency/held-out variant transfer. Q1 là mục tiêu chất lượng, không phải cam kết
+được nhận.
 
 > **Bổ sung ngày 30/09/2026:** Đã đọc toàn văn KLENT (ICML 2026 accepted). Phương pháp này học policy và Q trực tiếp từ self-play, không dùng search trong training; báo cáo đạt 50% win rate trung bình ở 75M simulator evaluations so với 300M của Gumbel AlphaZero (3 seeds, 5 games, 6-block ResNet). Đây là kết quả của bài báo, không phải kết quả CAISSA, và simulator calls không tương đương compute đo trên phần cứng. V2 cần có KLENT-style regularized policy/Q baseline riêng bên cạnh minimax-Q; KLENT tối ưu regularized self-play, không phải nhãn worst-case minimax. Repo code chính thức hiện không công bố license, nên chưa dùng code; có thể triển khai clean-room từ phương trình trong paper và audit fidelity. Hiện chưa có V2.7 training hay bằng chứng JEPA thắng baseline.
 

@@ -1,5 +1,55 @@
 # CAISSA-JEPA research roadmap
 
+## V2.8 first JEPA-vs-baseline development result (2026-10-02)
+
+The V2.8 development-only panel completed all 60 train fits (20 checkpoint
+seeds × 3 matched arms, one epoch each). Its separate 160-block match completed
+320 seat-swapped games across Connect4-6x7 and Reversi6, with zero forfeits or
+censored blocks. The panel, run receipts, match schedule, matcher source and
+match output hashes passed an independent `gpt-6-luna/high` audit. The
+reproducible summary is
+`docs/validation/V28_DEVELOPMENT_MATCH_ANALYSIS_V01.json`; raw data, checkpoints,
+and match transcripts remain ignored local artifacts under `chess_data/`.
+
+The exploratory per-checkpoint-seed contrast was JEPA minus 0.5 score, macro-
+averaged equally across the two games. Against task-value-dynamics it was
+**−0.01875**, with an unadjusted 95% seed-cluster t interval **[−0.0825,
+0.0450]**; the per-game point estimates were −0.0125 on Connect4 and −0.025 on
+Reversi6. Against direct-exact-leaf it was **+0.0875**, interval **[−0.0095,
+0.1845]**; the game estimates were +0.1875 on Connect4 and −0.0125 on Reversi6.
+No observed advantage over the task-value-dynamics control or consistent
+benefit across games clears the current evidentiary bar. The current hypothesis has therefore not
+passed its key falsification test. This panel is model-selection evidence only;
+no superiority, transfer, equilibrium, exploitability, novelty, or Q1 claim is
+supported. The intervals are unadjusted and conditional on the two scheduled
+match seeds per cell; they do not separately estimate match-seed or
+situation-sampling uncertainty. The games are few, and only the initial-state
+schedule was tested.
+
+Both arms used the same two-ply minimax planner and per-move caps (2 seconds or
+500,000 transitions). Realized transitions, calls and wall/CPU time vary by
+game and policy; report them from the validation JSON and do not call realized
+compute equal. The results evaluate fixed learned checkpoint strength, not an
+opponent-specific response model or an equilibrium solver.
+
+The next iteration must remain predeclared and development-only. The first
+bounded question is whether one epoch (29 optimizer updates) underfits this
+small self-play dataset: prepare a versioned three-epoch matched panel that
+changes training duration only, refit every JEPA and control arm on the same
+train split and seeds, and use a fresh disjoint exploratory match schedule.
+Before fitting, freeze its run identity, approval, schedule hash, selection
+rule, and stopping condition in a new amendment/spec; audit the selection split
+and do not read V08. Keep every failed or mixed run. If longer training does not
+improve JEPA against task-value-dynamics in both games at an acceptable measured
+compute cost, stop tuning duration and redesign or narrow the claim. Do not
+promote a recipe based only on training loss or latent prediction error.
+
+The 2026 prior-art update in `docs/RELATED_WORK.md` adds policy-aware minimax
+simulator learning and latent-space value alignment. These works make generic
+strategic/value-weighted prediction an unsafe novelty claim; a future method
+change requires a specific distinction and its own ablation. This is a targeted
+update, not an exhaustive novelty search.
+
 ## Latest evaluator milestone (2026-10-01)
 
 ### Development-fit gate correction (2026-10-02)
@@ -63,7 +113,7 @@ candidate, same-backbone policy/value, task/value-prediction dynamics,
 multi-step EMA consistency, feature-transition/decoded-state, and exact-state
 search controls. Freeze common data, search, tree and opponent budgets; report
 separate equal-update and equal-measured-compute tracks. A JEPA win over direct
-policy/value alone is insufficient if it loses to the stronger task-prediction
+policy/value alone is insufficient if it loses to the task-value-dynamics
 control. Report latent error/collapse separately from legal-move ranking,
 calibration, minimax regret where exact roots are feasible, and paired game
 outcome. If exact-state planning already uses less compute for equal decision
