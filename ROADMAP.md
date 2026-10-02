@@ -1,6 +1,6 @@
 # CAISSA-JEPA research roadmap
 
-## V2.9 controlled optimization-exposure probe (pre-fit; 2026-10-02)
+## V2.9 controlled optimization-exposure probe (fit in progress; 2026-10-02)
 
 V2.8 did not show an observed JEPA advantage over task-value-dynamics. V2.9
 tests one limited explanation: all three matched arms receive three epochs
@@ -18,7 +18,7 @@ are in `docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md` and
 
 The development grant is issued. Two initial resource preflights stopped before fitting at 1.17 GB and 1.32 GB; pilot 03 then passed four 20-second stable-memory checks and completed one three-epoch JEPA fit in 65.619 s wall / 60.469 s CPU, peak working set 859 MB. It is compute-only evidence. Preserve all three pilot receipts and use a new root for the 60-fit panel. Twenty focused V2.9 tests and 96 V2.8 regression tests pass under the exact locked Python 3.11.9 / NumPy 2.4.6 runtime; `py_compile` and `git diff --check` pass. Sandboxed startup initially failed, but the existing environment ran successfully using the authorized elevated noninteractive execution path. The panel can proceed under its frozen specification.
 
-The Windows Job Object supervisor passed independent `gpt-6-luna/high` review with no P1/P2 findings. It requires a parent release handshake after child assignment, caps per-process and per-job commit plus per-process user CPU, enforces a wall cap, and samples a reactive free-RAM guard each second. The 1.3 GB commit cap and 4-hour CPU cap are protective policy choices, not empirically calibrated thresholds; pilot 03's working-set measurement does not establish peak commit. The hidden panel launcher is now waiting for four fresh stable readings above 2 GB; its launch-time reading was 1.35 GB, below the gate, so no fit had started. Do not lower the gate, read training metrics, or open V08.
+The Windows Job Object supervisor passed independent `gpt-6-luna/high` review with no P1/P2 findings. It requires a parent release handshake after child assignment, caps per-process and per-job commit plus per-process user CPU, enforces a wall cap, and samples a reactive free-RAM guard each second. The 1.3 GB commit cap and 4-hour CPU cap are protective policy choices, not empirically calibrated thresholds; pilot 03's working-set measurement does not establish peak commit. On 2026-10-02 14:07 local, the hidden panel run had completed 12/60 fits with 0 failures; the thirteenth fit was running. No match or training-metric review has occurred. Do not lower the gate, read training metrics, or open V08.
 
 The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
 macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall

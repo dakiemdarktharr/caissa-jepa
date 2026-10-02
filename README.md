@@ -15,11 +15,13 @@ unadjusted 95% seed-cluster interval [−0.08248, 0.04498]). The next V2.9 probe
 is frozen and has a development-only train-split grant. Two preflights stopped
 before fitting below the 2 GB RAM gate; a third resource-only fit then passed
 four stable-memory checks and completed three epochs in 65.6 s with an 859 MB
-peak working set. This is compute feasibility only; the 60-fit panel and
-matches have not run. Python 3.11.9 + pinned NumPy 2.4.6 is ready, and 18 V2.9
-tests plus the 96-test V2.8 regression pass in the locked Python 3.11.9 /
-NumPy 2.4.6 environment. The first sandboxed start was denied, but the
-noninteractive execution with the appropriate access succeeded. The
+peak working set. The supervised V2.9 panel then passed its own memory gate;
+at 14:07 local it had completed 12/60 fits with no failures, while matches had
+not started. These are progress/resource facts only, with no JEPA strength
+result. Python 3.11.9 + pinned NumPy 2.4.6 is ready, and 20 V2.9 tests plus the
+96-test V2.8 regression pass in that locked environment. The first sandboxed
+start was denied, but noninteractive execution with the appropriate access
+succeeded. The
 resource-limited panel supervisor passed independent review. V2.9 changes only matched training
 duration from one to three epochs. This tests an under-training explanation;
 duration alone is not an algorithmic novelty claim. See [the V2.9 amendment](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md),
@@ -172,7 +174,7 @@ V2.4 is a representation diagnostic rather than a strength comparison.
 | [V2.4 / order probe](docs/METHOD_V24_ORDER_PROBE.md) | Reused the 18 V2.3 checkpoints at both capacities; no new training. | Largest median order-bound ratio 0.002787, below the 0.10 materiality threshold. The proposed obstruction was not established. |
 | [V2.5 / grid05](docs/METHOD_V25.md) | Seven families; encoder 198→128→64; transition hidden 50, latent 64, 65 actions; batch 32 complete-reply groups; auxiliary coefficient 0.1; 160 epochs; rates 0.0003/0.001; 3 seeds; 42 runs. | Raw-tail (selected lr 0.0003) exact regret 0.202446 versus direct 0.203775 (95% interval for improvement −0.023899 to 0.026938); hybrid regret was worse. Not promoted. |
 | [V2.8 / supervised V02](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md) | Development-only, 60 one-epoch fits; 20 matched seeds × reply-JEPA, task-value-dynamics, direct-leaf on audited DEV09. Shared two-ply max-min planner, 2 s / 500,000-transition caps. | 160 blocks / 320 games completed. JEPA−task-value macro −0.01875 (95% seed-cluster CI [−0.08248, 0.04498]); not evidence of advantage. See [analysis](docs/validation/V28_DEVELOPMENT_MATCH_ANALYSIS_V01.json). |
-| [V2.9 / three-epoch probe](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md) | Frozen duration ablation: 60 fresh fits (20 seeds × 3 arms), three epochs, then 160 paired blocks / 320 games. Only duration changes. | Development-only grant issued. One compute-only fit passed (65.6 s, 859 MB); panel and matches have not run. Supervisor passed independent review; fit is blocked until the exact locked Python 3.11.9 / NumPy 2.4.6 runtime is restored. Automatic nomination gates are frozen; duration alone is not novelty or superiority. |
+| [V2.9 / three-epoch probe](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md) | Frozen duration ablation: 60 fresh fits (20 seeds × 3 arms), three epochs, then 160 paired blocks / 320 games. Only duration changes. | Development-only grant issued. One compute-only fit passed (65.6 s, 859 MB); supervised 60-fit panel in progress (12/60 completed at latest check), no matches yet. Automatic nomination gates are frozen; duration alone is not novelty or superiority. |
 
 ### Figures
 
