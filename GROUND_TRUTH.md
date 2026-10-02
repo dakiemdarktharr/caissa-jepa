@@ -1571,3 +1571,25 @@ prior notes backed up under
 `D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-180054-v28-hardening-preflight\`,
 zero SHA-256 mismatches. The app inventory still has no native Obsidian window;
 the vault sync is verified by destination hashes.
+
+### V2.11 fresh grant validation (2026-10-02)
+
+The stable method-note text has been committed/pushed in `00aaeef` and no
+longer embeds a particular grant hash. A second, distinct train-only grant was
+created at ignored
+`chess_data/v211_data_dev09_approval_v02.json`; SHA-256 is
+`1f0e1ea3db751d3ab0d6462a99894ce672a4702d8d4d761c79aaec944b526b22`. The
+train-only loader accepted it and returned exactly 1,797 records, all tagged
+`train`, with DEV09 fingerprint
+`cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40`. This is
+validation of the grant/data boundary, not model training. Grant v01 and the
+failed dev02 supervisor artifacts remain preserved. The next attempt must use
+the v02 grant and fresh ignored output root
+`chess_data/v211_fit_panel_dev03`; no method or panel-spec changes are allowed
+after grant validation.
+
+The Ground Truth and roadmap grant update was mirrored in the verified Obsidian
+vault: 118 Markdown files copied, two changed prior notes backed up under
+`D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-180635-v28-hardening-preflight\`,
+and zero hash mismatches. This hash check confirms destination file contents;
+the current app inventory still exposes no Obsidian UI window.
