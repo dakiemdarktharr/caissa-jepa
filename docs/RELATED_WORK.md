@@ -212,3 +212,43 @@ intervention. See `docs/METHOD_V210_GRADIENT_DIAGNOSTIC.md` and `ROADMAP.md`.
 The diagnostic gate is a project-specific screening rule, not a conventional
 significance standard. If it fails, this candidate stops; there will be no
 post-hoc subgroup search.
+
+## V2.12 decision research update (2026-10-02)
+
+The V2.11 result is now independently audited and does not nominate λ=8. A new
+search added several sources that materially raise the novelty bar:
+
+| Work | Research question and method | Domain/data/baselines/metrics available from primary source | Relevance to CAISSA-JEPA |
+| --- | --- | --- | --- |
+| [When Does LeJEPA Learn a World Model? (Klindt, LeCun & Balestriero, 2026)](https://arxiv.org/abs/2605.26379) | Under what assumptions does LeJEPA recover latent world variables up to rotation; proves identifiability under stationary additive-noise transitions and evaluates synthetic and robotic planning settings | Theoretical analysis plus experiments up to 1024-D and pixel-based robot control; the abstract/source was inspected | Gives principled representation hypotheses, but its assumptions/setting do not establish identifiability or planning gains in finite deterministic adversarial games. A Gaussian regularizer alone is not a contribution here. |
+| [What Drives Success in Physical Planning with Joint-Embedding Predictive World Models? (Terver et al., ICLR 2026)](https://arxiv.org/abs/2512.24497), [official code](https://github.com/facebookresearch/jepa-wms) | Ablates JEPA-WM architecture, objective, horizon/context, inputs, and planner for planning in learned representation space | Simulated navigation/manipulation and robotic data; DINO-WM and V-JEPA-2-AC baselines; planning success and action metrics; primary abstract and code page inspected | Multi-step latent prediction and planner/model co-design are already directly studied. An adversarial-game adaptation alone may be an application paper but is not automatically algorithmically novel. |
+| [JEPA Policy (Xu et al., 2026)](https://arxiv.org/abs/2609.09630), [author project](https://jiejie567.github.io/JEPA-Policy/) | Couple action prediction with future-representation prediction and test whether shared topology improves control | Nine simulated tasks and five-task, 630-episode robot study; MIP and Diffusion Policy comparisons; primary abstract inspected | Shared action/future representations and gradient routing are claimed there. Avoid presenting those ingredients as new. |
+| [Boosting World Models Learning via Latent-Space Value Alignment (Jiang et al., ICML 2026)](https://proceedings.mlr.press/v306/jiang26ai.html) | Add latent value-alignment regularization to model learning while preserving dynamics structure | Atari 100k and DeepMind Control; existing world-model baselines; return/control outcomes; PMLR primary page inspected | Decision/value-aware latent prediction is established, so a planner-weighted JEPA loss needs direct differentiation and game-theoretic analysis to clear novelty review. |
+| [Theoretical Foundations and Effective Algorithms for Policy-Aware Simulator Learning (Dann, Mansour & Mohri, 2026)](https://arxiv.org/abs/2605.29032) | Formulate strategic simulator robustness as a zero-sum minimax game against an adversarial policy, derive a critic-based bound and error-driven active data collection | Continuous-control tasks; ordinary prediction baselines; prediction error in strategically important regions and downstream performance; primary arXiv abstract inspected | This is the closest strategic model-learning prior found so far. The CAISSA question must be distinguished from policy-exploitation robustness in continuous control, not simply renamed as minimax-aware model fitting. |
+| [Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model (Schrittwieser et al., 2020)](https://arxiv.org/abs/1911.08265), [MiniZero comparative framework](https://arxiv.org/abs/2310.11305) | Learn planning representations and use search to master diverse games; MiniZero compares AlphaZero/MuZero-family variants | Go, chess, shogi, 57 Atari games; game/search baselines; strength, return and compute-related outcomes; primary arXiv abstracts inspected | Multi-game board-game planning and learned dynamics are not new. CAISSA needs a JEPA-specific advantage with matched search and at least one held-out game/variant, or a compelling negative-result benchmark contribution. |
+| [One-Step Next-Latent Prediction Is Not a World Model (Wang, Cai & Hong, 2026)](https://arxiv.org/abs/2609.36227) | Shows one-step latent regression identifies a conditional mean, not generally a roll-outable transition kernel; studies multi-step error and short-context prediction | Linear-Gaussian and nonlinear synthetic dynamics, hidden rotation; one-step versus multi-step prediction error; primary arXiv abstract inspected | Direct warning for our current predictor: a low two-ply latent MSE alone is not evidence of a usable recursive world model. Any V2.12 must measure open-loop rollout error, minimax action/rank stability and strength as a function of planning horizon. |
+| [A Sharp Analysis of Model-based RL with Self-Play (Liu et al., 2021)](https://proceedings.mlr.press/v139/liu21z.html), [Incentivize without Bonus: Provably Efficient Model-based Online Multi-agent RL for Markov Games (Yang et al., ICML 2025)](https://proceedings.mlr.press/v267/yang25j.html) | Study model-based learning and equilibrium exploration in zero-sum or multi-agent Markov games | Theoretical finite-horizon Markov games and model-based online RL; regret/sample complexity and equilibrium-related objectives; PMLR primary sources inspected | Strong game-theoretic controls and solution concepts exist. We must define behavioral opponent prediction separately from worst-case minimax planning and compare against appropriate game-theoretic methods when making equilibrium claims. |
+
+### Candidate direction, explicitly unverified
+
+V2.11 suggests that raising the weight of the existing pair-conditioned target
+does not improve play. A new September 2026 preprint also cautions that one-step
+latent prediction need not define a roll-outable world model. The candidate
+question is therefore whether a **multi-step, alternating-player latent
+rollout JEPA** improves horizon-dependent minimax decision quality under equal
+compute. This is an architecture/training/planning hypothesis, not a method,
+novelty claim, or approved training protocol. Multi-step JEPA world models,
+MuZero-style latent planning, and value-aligned/policy-aware model learning
+already exist. Before code or fitting, the protocol must define sequential
+joint-action rollouts, target/masking/horizon losses, exact legal-tree handling,
+rollout stability, same-horizon non-JEPA controls, and a held-out board-size or
+game-variant transfer test. Kill the direction if its benefit comes only from
+extra search, recovers known JEPA-WM practice without a strategic distinction,
+or cannot beat task-value and direct-leaf controls at a predeclared decision
+metric.
+
+Search limitations: searches used the exact title/topic terms recorded in this
+update and prioritized arXiv, PMLR, OpenReview, and author-maintained code. They
+are not a systematic database search and do not establish that no other
+opponent-conditioned JEPA or strategic world-model method exists. Novelty
+remains unverified.

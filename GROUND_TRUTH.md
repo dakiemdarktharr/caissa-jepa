@@ -1593,3 +1593,99 @@ vault: 118 Markdown files copied, two changed prior notes backed up under
 `D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-180635-v28-hardening-preflight\`,
 and zero hash mismatches. This hash check confirms destination file contents;
 the current app inventory still exposes no Obsidian UI window.
+
+### V2.11 dev03 fit complete; independent panel review pending (2026-10-02)
+
+The third supervisor run used grant v02 at frozen commit `ae9c99c` and a fresh
+ignored output root `chess_data/v211_fit_panel_dev03`. The resource gate passed
+four 20-second samples (2,616,799,232; 2,612,367,360; 2,596,892,672; and
+2,569,093,120 bytes available; all above 2.0 GB). The fit completed with status
+`complete`, return code 0, elapsed time 582.14 seconds, peak working set
+858,951,680 bytes, no termination reason, and panel ledger SHA-256
+`729cbec5cc812dc4808df21e5f871f923298e51fd1b80e3757cd5a546e6d5aa0`. The
+panel reports 20/20 runs completed with three epochs and 87 updates each,
+train-only scope, and `locked_final_access=false`.
+
+Before matching, local provenance verification accepted the supervisor status
+attestation, V2.11 grant v02 hash, runtime identity, checkpoint/receipt hashes,
+and every candidate receipt's `effective_run` without parsing its history. It
+loaded all 20 candidate checkpoints and 60 V2.9 control checkpoints from
+weights-only arrays. No training-loss history or V08/locked-final content was
+read. Independent review of this fit panel has been requested from the
+user-approved reviewer. No match has started and no JEPA strength result is
+available. The next step is the already-frozen 240-block/480-game development
+match only after panel review accepts these artifacts.
+
+The independent panel review has now accepted `dev03` for the frozen
+exploratory matcher with no P1/P2 findings. It verified grant/panel identity,
+supervisor status and attestation, all 20 candidate rows, checkpoint/receipt
+hashes, each receipt's `effective_run` before history, exact updates/epochs,
+and candidate runtime equality against all 60 V2.9 control receipts. The
+reviewer did not read histories/losses/game data and ran no match. Its runtime
+was different from the panel runtime, so it correctly warned that its own
+matcher would reject the panel. The local pre-match verification, using the
+runtime that completed the panel, passed all candidate/control identities and
+weights-only loads. The scheduled development match is therefore authorized
+to proceed with that same local runtime. No outcomes have been observed yet.
+
+### V2.11 reviewer disposition and next action (2026-10-02)
+
+The accepted-review disposition above supersedes earlier statements that panel
+review is pending. The approved reviewer found no P1/P2 blockers for the frozen
+exploratory matcher. A pre-match check on the exact local Python runtime used
+for fitting verified the supervisor attestation, train-only grant v02, all 20
+candidate receipts/checkpoints and all 60 same-runtime V2.9 control checkpoints
+using weights-only loading and receipt `effective_run` metadata only. It did
+not inspect loss histories or locked-final data. No match outcome exists yet.
+The next action is the frozen 240-block/480-game DEV09 development match, using
+fresh output artifacts and that same runtime. This remains model selection;
+even a pass nominates a later separately locked confirmation and does not
+establish Q1 readiness or methodological novelty.
+
+### V2.11 match completed and independently audited (2026-10-02)
+
+The frozen local-runtime matcher completed 240/240 paired blocks (480 games),
+with zero forfeits and zero censors. Match artifact SHA-256 is
+`44d6db3cfcff1652fee62c75cb688b48fdc719ac9df77afbc71866cc9fc7dd23`; receipt
+SHA-256 is `276d9ac96e631256890b6ef5047bd598969f708906297f2d9290b44201e5ed7c`.
+The analysis is `docs/validation/V211_DEVELOPMENT_MATCH_ANALYSIS_DEV03.json`.
+An approved independent reviewer replayed all 480 transcripts against pinned
+rules, verified schedule/block order and color swaps, recalculated seed-cluster
+effects and compute ratios, and matched the report exactly; no P1/P2/P3 issues
+remain. They did not inspect training histories/loss metrics or V08/locked-final
+data. λ=8 was not nominated: macro candidate-minus-control scores were −0.04375
+against λ=1 JEPA, −0.0500 against task-value dynamics, and −0.0375 against
+direct-leaf; Reversi was negative against all three, all intervals span zero,
+and every compute screen passed. This is evidence against this calibration,
+not JEPA generally. It supports no superiority, equilibrium, exploitability,
+transfer, novelty, or Q1-readiness claim. The frozen rule stops λ-only tuning.
+Full interpretation is in `docs/V211_DEVELOPMENT_RESULT_REVIEW_01.md`.
+
+The match result reviewer was the user-approved `/root/v28_dev_match_audit`
+agent on the user-approved `gpt-6-luna` high configuration. Their final audit
+reported no P1/P2/P3 issues, replayed all 480 transcripts under pinned rules,
+checked exact block order and color swaps, recomputed the seed-cluster and CPU
+statistics, and matched the analysis exactly. This updates any older pending
+reviewer status above.
+
+The post-V2.11 research search found [One-Step Next-Latent Prediction Is Not a
+World Model (Wang et al., 2026)](https://arxiv.org/abs/2609.36227), a very recent
+paper arguing that one-step latent regression generally learns a conditional
+mean rather than a roll-outable transition kernel. Also reviewed primary
+sources for multistep JEPA-WM ablations, 2026 latent value alignment, policy-
+aware minimax simulator learning, and model-based zero-sum games. They raise
+novelty risk. The current candidate question is now recursive multi-step
+alternating-player latent rollout prediction, motivated by horizon-dependent
+planning failures; this remains unverified and is not a method novelty claim.
+`docs/V212_RESEARCH_GATE.md` captures its falsifiable hypothesis, distinctions
+between opponent behavior prediction and worst-case minimax planning, required
+controls/evaluation, and kill criteria. No V2.12 code or training has started;
+only a no-training feasibility/prior-art audit is allowed until an exact spec
+and protocol have been frozen and independently reviewed.
+
+The user most recently requested that all commands/PowerShell run in the
+background so the desktop remains available. Processes for the V2.11 match,
+analysis and Obsidian synchronization were launched hidden; the match and
+analysis finished successfully. Match output, receipts, checkpoints and
+intermediate logs remain under ignored `chess_data/` and are excluded from Git
+and Obsidian.

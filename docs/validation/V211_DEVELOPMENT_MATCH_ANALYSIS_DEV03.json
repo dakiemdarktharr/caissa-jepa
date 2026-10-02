@@ -1,0 +1,256 @@
+{
+  "claim_limit": "No JEPA superiority, equilibrium, exploitability, transfer, novelty, or Q1-readiness claim follows from this development analysis.",
+  "comparisons": {
+    "direct-leaf-v29": {
+      "connect4-gravity-6x7": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": 0.0375,
+        "positive_seed_clusters": 7,
+        "seed_cluster_sd": 0.3561028089278654,
+        "seed_cluster_se": 0.0796270087741326,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.12916124471232857,
+          0.20416124471232858
+        ]
+      },
+      "equal_weight_macro": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": -0.0375,
+        "positive_seed_clusters": 5,
+        "seed_cluster_sd": 0.2503287312399648,
+        "seed_cluster_se": 0.055975205977383646,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.15465745253826854,
+          0.07965745253826853
+        ]
+      },
+      "nomination_margin_screen": {
+        "each_game": {
+          "connect4-gravity-6x7": false,
+          "reversi6": false
+        },
+        "macro": false,
+        "passed": false
+      },
+      "realized_compute": {
+        "connect4-gravity-6x7": {
+          "candidate_cpu_per_game_seat": 0.1423828125,
+          "candidate_to_control_ratio": 0.951697127937337,
+          "cap": 1.25,
+          "control_cpu_per_game_seat": 0.149609375,
+          "game_seats": 80,
+          "passed": true
+        },
+        "reversi6": {
+          "candidate_cpu_per_game_seat": 0.1947265625,
+          "candidate_to_control_ratio": 0.9950099800399201,
+          "cap": 1.25,
+          "control_cpu_per_game_seat": 0.195703125,
+          "game_seats": 80,
+          "passed": true
+        }
+      },
+      "reversi6": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": -0.1125,
+        "positive_seed_clusters": 5,
+        "seed_cluster_sd": 0.4173459375373712,
+        "seed_cluster_se": 0.09332138864669431,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.3078239111902137,
+          0.08282391119021369
+        ]
+      }
+    },
+    "reply-jepa-lambda1-v29": {
+      "connect4-gravity-6x7": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": 0.05,
+        "positive_seed_clusters": 7,
+        "seed_cluster_sd": 0.3304701594936969,
+        "seed_cluster_se": 0.07389537411631038,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.10466479550476661,
+          0.20466479550476663
+        ]
+      },
+      "equal_weight_macro": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": -0.04375,
+        "positive_seed_clusters": 4,
+        "seed_cluster_sd": 0.2268019945609873,
+        "seed_cluster_se": 0.05071446772709051,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.14989660083860712,
+          0.06239660083860714
+        ]
+      },
+      "nomination_margin_screen": {
+        "each_game": {
+          "connect4-gravity-6x7": true,
+          "reversi6": false
+        },
+        "macro": false,
+        "passed": false
+      },
+      "realized_compute": {
+        "connect4-gravity-6x7": {
+          "candidate_cpu_per_game_seat": 0.144140625,
+          "candidate_to_control_ratio": 1.1181818181818182,
+          "cap": 1.25,
+          "control_cpu_per_game_seat": 0.12890625,
+          "game_seats": 80,
+          "passed": true
+        },
+        "reversi6": {
+          "candidate_cpu_per_game_seat": 0.2126953125,
+          "candidate_to_control_ratio": 1.0055401662049863,
+          "cap": 1.25,
+          "control_cpu_per_game_seat": 0.2115234375,
+          "game_seats": 80,
+          "passed": true
+        }
+      },
+      "reversi6": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": -0.1375,
+        "positive_seed_clusters": 2,
+        "seed_cluster_sd": 0.3085940102430615,
+        "seed_cluster_se": 0.06900371843527518,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.28192644250047416,
+          0.006926442500474167
+        ]
+      }
+    },
+    "task-value-dynamics-v29": {
+      "connect4-gravity-6x7": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": 0.025,
+        "positive_seed_clusters": 6,
+        "seed_cluster_sd": 0.3234273692158639,
+        "seed_cluster_se": 0.07232055833505945,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.1263686681939896,
+          0.17636866819398958
+        ]
+      },
+      "equal_weight_macro": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": -0.05,
+        "positive_seed_clusters": 5,
+        "seed_cluster_sd": 0.1876096170803955,
+        "seed_cluster_se": 0.041950785702446994,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.13780400355942085,
+          0.03780400355942083
+        ]
+      },
+      "nomination_margin_screen": {
+        "each_game": {
+          "connect4-gravity-6x7": false,
+          "reversi6": false
+        },
+        "macro": false,
+        "passed": false
+      },
+      "realized_compute": {
+        "connect4-gravity-6x7": {
+          "candidate_cpu_per_game_seat": 0.147265625,
+          "candidate_to_control_ratio": 1.117037037037037,
+          "cap": 1.25,
+          "control_cpu_per_game_seat": 0.1318359375,
+          "game_seats": 80,
+          "passed": true
+        },
+        "reversi6": {
+          "candidate_cpu_per_game_seat": 0.2037109375,
+          "candidate_to_control_ratio": 0.9775070290534208,
+          "cap": 1.25,
+          "control_cpu_per_game_seat": 0.2083984375,
+          "game_seats": 80,
+          "passed": true
+        }
+      },
+      "reversi6": {
+        "interval_scope": "unadjusted two-sided t interval over checkpoint initialization seeds",
+        "mean": -0.125,
+        "positive_seed_clusters": 2,
+        "seed_cluster_sd": 0.3088603840606711,
+        "seed_cluster_se": 0.06906328143163531,
+        "seed_clusters": 20,
+        "t95_ci": [
+          -0.26955110928458426,
+          0.019551109284584256
+        ]
+      }
+    }
+  },
+  "confirmatory": false,
+  "fit_compute": {
+    "candidate_fit_wall_seconds": 490.71440640001674,
+    "candidate_to_task_value_ratio": 1.135779384093944,
+    "cap": 3.5,
+    "passed": true,
+    "task_value_control_fit_wall_seconds": 432.0508131000097
+  },
+  "nomination": {
+    "all_margin_screens": false,
+    "all_search_compute_screens": true,
+    "interpretation": "nomination is exploratory only; no screen is a confirmatory superiority test",
+    "nominated_for_separate_confirmatory_design": false,
+    "per_control": {
+      "direct-leaf-v29": {
+        "compute": true,
+        "game_margin": {
+          "connect4-gravity-6x7": false,
+          "reversi6": false
+        },
+        "macro_margin": false
+      },
+      "reply-jepa-lambda1-v29": {
+        "compute": true,
+        "game_margin": {
+          "connect4-gravity-6x7": true,
+          "reversi6": false
+        },
+        "macro_margin": false
+      },
+      "task-value-dynamics-v29": {
+        "compute": true,
+        "game_margin": {
+          "connect4-gravity-6x7": false,
+          "reversi6": false
+        },
+        "macro_margin": false
+      }
+    },
+    "zero_forfeits": true
+  },
+  "protocol": "V211_JEPA_WEIGHT_CALIBRATION_V01",
+  "sample": {
+    "censored_blocks": 0,
+    "checkpoint_seeds": 20,
+    "forfeit_blocks": 0,
+    "games": 480,
+    "match_seeds": 40,
+    "paired_blocks": 240
+  },
+  "schema": "caissa-jepa-v211-development-analysis-v01",
+  "source_artifacts": {
+    "analysis_source_sha256": "62d00a7f71823cbffdc1329a7f898c8b6f91486dfebcfe0aacd2769ccfb3fbb1",
+    "baseline_panel_sha256": "b26504104ebde23967d142f01b3842b9e8309a2eb80337736e43c95f6c8f4d72",
+    "candidate_panel_sha256": "729cbec5cc812dc4808df21e5f871f923298e51fd1b80e3757cd5a546e6d5aa0",
+    "match_receipt_sha256": "276d9ac96e631256890b6ef5047bd598969f708906297f2d9290b44201e5ed7c",
+    "match_sha256": "44d6db3cfcff1652fee62c75cb688b48fdc719ac9df77afbc71866cc9fc7dd23"
+  },
+  "status": "complete exploratory development analysis"
+}

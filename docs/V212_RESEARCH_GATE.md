@@ -1,0 +1,150 @@
+# V2.12 Research Gate: Multi-step Alternating-Player JEPA
+
+Status: candidate research direction only. Not an implementation spec, training
+grant, frozen protocol, or novelty claim. No V2.12 fit is authorized by this
+note.
+
+## Evidence motivating the question
+
+The independently audited V2.11 λ=8 model failed its predeclared nomination
+screen. Macro paired scores were −0.04375 vs reply-JEPA λ=1, −0.0500 vs
+task-value dynamics, and −0.0375 vs direct-leaf. The compute screens passed,
+so the result is not explained by extra search. It argues against simply
+increasing the coefficient on the existing all-legal two-ply latent target.
+
+The current model receives a state representation and a pair of actions
+(current player, opponent response), then predicts the leaf representation.
+This is a useful two-ply conditional prediction, but the deployed planner
+evaluates only one such pair before choosing again from the observed state.
+It does not test whether a latent predictor can be recursively rolled out over
+multiple alternating decisions. A September 2026 preprint argues that
+one-step next-latent regression generally learns a conditional mean rather than
+a roll-outable transition kernel, and demonstrates that multi-step error may
+grow even when one-step error is low ([Wang et al., 2026](https://arxiv.org/abs/2609.36227)).
+Multi-step JEPA world models and learned-model game planning are established
+prior art; any CAISSA contribution would need to come from a rigorously tested
+game-theoretic setting and incremental evidence, not from naming the recipe.
+
+## Falsifiable candidate hypothesis
+
+At a fixed number of simulated nodes and a fixed inference/training compute
+budget, a JEPA predictor trained on sequential alternating-player latent
+rollouts will produce lower horizon-dependent minimax decision regret and
+stronger play than a matched task-value latent dynamics model and a direct
+leaf-value model, with the advantage persisting on held-out board-size/game
+variants after zero-shot or explicitly budgeted few-shot transfer.
+
+The hypothesis does **not** assume that the model predicts any particular
+opponent's behavior. The target planner is finite-horizon worst-case max-min
+search for the defined deterministic zero-sum games. It does not estimate a
+behavior-policy expectation or guarantee a full-game equilibrium. The
+distinctions are:
+
+- A behavioral opponent model estimates actions from a named opponent-policy
+  distribution; it is evaluated by calibrated action likelihood and
+  policy-conditional outcomes.
+- The V2.12 candidate would predict state latents conditional on the actions
+  supplied for both alternating roles; it makes no behavioral prediction.
+- The planner would choose max-min over legal action sequences to a fixed
+  horizon, with a pinned leaf evaluator. This is neither a learned opponent
+  response distribution nor an equilibrium solver for the full game.
+- A policy-mixture expected-value planner would require a separately
+  calibrated opponent distribution and is outside this candidate.
+
+## Candidate model family to investigate
+
+Represent state as (s_t), side to move as (p_t\in\{-1,+1\}), legal actions
+as (A(s_t)), and exact deterministic transition as
+(s_{t+1}=T(s_t,a_t)). An online encoder (z_t=f_\theta(s_t,p_t,g)) receives
+the state, role, and compact game descriptor (g); an EMA target encoder
+produces (z^*_t=f_{\bar\theta}(s_t,p_t,g)). A shared transition predictor
+receives ((z_t,a_t,p_t,g)) and predicts (hat z_{t+1}=F_\phi(z_t,a_t,p_t,g)).
+For a legal action sequence (a_{t:t+K-1}), recursively predict
+(hat z_{t+k}) without re-encoding intermediate states. The exact engine is
+still used to generate legal actions and audit the trajectory.
+
+Candidate objective, subject to prior-art and leakage review:
+
+\[
+\mathcal L_{\mathrm{roll}}=\sum_{k\in\mathcal H}\alpha_k\,m_k\,
+\ell(\hat z_{t+k},\operatorname{sg}(z^*_{t+k}))
+ +\lambda_{\mathrm{task}}\mathcal L_{\mathrm{root/task}}
+ +\lambda_{\mathrm{reg}}\mathcal L_{\mathrm{anti-collapse}}.
+\]
+
+Here \,\(\mathcal H\) must include more than one horizon, masks (m_k) exclude
+sequences that encounter terminal states before (k), and terminal payoffs are
+handled exactly. Candidate rollout lengths should be in *individual plies* so
+the alternating role is explicit; report horizons in both plies and full
+player-response pairs. EMA, loss scale, horizon weights, sequences, seeds,
+optimizer, target normalization, and termination masks must be frozen before
+any candidate fit. The exact values cannot be selected after seeing strength
+outcomes.
+
+The first design question is whether to predict every sequence's target latent
+with a uniform action-pair distribution or use a frozen proposal distribution
+for legal counterfactual action sequences. The latter risks collapsing into
+known value-aligned or policy-aware model fitting. Do not add regret weighting
+unless a separate primary-source comparison demonstrates a precise gap and a
+train-only, non-tautological definition.
+
+## Required controls and evaluation before a fit
+
+1. Keep the current single two-ply reply-JEPA as the JEPA ablation.
+2. Add an architecture/compute-matched non-JEPA multi-step latent dynamics
+   control trained on decision targets, with identical sequences, horizon,
+   EMA/regularization where applicable, and update count.
+3. Keep task-value dynamics and direct-leaf controls. If a suitable independent
+   engine/teacher is legally and technically available, pin its version/hash;
+   otherwise use a transparent exact-search reference in small games and do
+   not imply expert strength.
+4. Same-search comparisons must share the exact state rules, legal-action
+   handling, node budget, tie-breaking, situations, seat swaps, seeds, runtime,
+   and termination policy. Report realized neural calls, transitions, CPU and
+   wall time separately.
+5. Representation evaluation must include one-step and open-loop latent
+   errors at each horizon, covariance/effective rank, finite-value rates,
+   predicted-versus-true minimax action ranking, worst-case value error, and
+   action regret against an exact or explicitly bounded search oracle.
+6. Strength evaluation needs paired outcomes against every control, self-play,
+   random, tactical, and bounded-search opponents; enough held-out start
+   situations; and at least one held-out board-size/game variant. Exact full
+   game theoretical value/exploitability should be reported only where it can
+   actually be computed.
+7. Predeclare a primary metric and practical margin, power/sample rationale,
+   seed and color schedule, confidence method, multiplicity handling,
+   censoring/timeout rules, and stopping rule. Keep exploration, selection, and
+   locked confirmation separate.
+
+## Data, access and license
+
+The initial investigation can use project-owned exact board-game code and
+newly generated self-play from that code; no third-party data are needed. Keep
+all generated records, fit artifacts and checkpoints under ignored
+`chess_data/`. Bind each run to rules/source/dataset fingerprints, parser
+version, split, seeds, and exact generation policy. Do not start a production
+fit until the counterfactual rollout generator passes duplicate, illegal
+transition, terminal-mask, episode/split leakage, and hash audits. No paid
+compute or external service is allowed without separate authorization.
+
+## Novelty and stop decision
+
+This direction is not yet shown to be novel. Existing work includes I-JEPA and
+V-JEPA 2, multi-step JEPA-WM studies, MuZero/AlphaZero, value-aligned world
+models, policy-aware simulator learning formulated as minimax, and recent
+next-latent critiques. The related-work matrix is in `docs/RELATED_WORK.md`.
+Before implementation, write a complete method specification that explains
+exactly what differs from each closest work. Kill or reframe the algorithmic
+claim if the method is simply standard multi-step JEPA-WM plus a minimax
+planner, if the baseline can match it with a task-value loss, if any apparent
+gain comes from extra compute, or if it fails the predeclared held-out variant
+and all-control margins. A carefully controlled benchmark/negative result
+may remain useful, but is not a substitute for a demonstrated JEPA benefit.
+
+## Acceptance status
+
+V2.12 is **not ready for coding, training, or a professor-facing superiority
+claim**. Next permitted internal work is a no-training audit of current adapter
+capacity, candidate multistep data generation, prior-art definitions, and
+resource requirements; then the exact method/protocol can be frozen and
+independently reviewed before any fit.
