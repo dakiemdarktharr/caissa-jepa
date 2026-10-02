@@ -1,0 +1,404 @@
+{
+  "analysis_source_sha256": "21bec59c938b5e7155ca66c53d05b63e2bc768a6ab4251558a887a793acee521",
+  "contrasts": [
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.1875,
+        0.1375
+      ],
+      "control": "direct-exact-leaf-value",
+      "game": "connect4-gravity-6x7",
+      "mean": -0.025,
+      "positive_seed_clusters": 7,
+      "seed_cluster_sd": 0.37080992435478316,
+      "seed_cluster_se": 0.08291561975888499,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.19854438660766394,
+        0.14854438660766395
+      ]
+    },
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.2375,
+        -0.0375
+      ],
+      "control": "task-value-dynamics",
+      "game": "connect4-gravity-6x7",
+      "mean": -0.1375,
+      "positive_seed_clusters": 2,
+      "seed_cluster_sd": 0.23612831034708318,
+      "seed_cluster_se": 0.052799895334824494,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.24801145098447006,
+        -0.026988549015529967
+      ]
+    },
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.1375,
+        0.1625
+      ],
+      "control": "direct-exact-leaf-value",
+      "game": "reversi6",
+      "mean": 0.0125,
+      "positive_seed_clusters": 5,
+      "seed_cluster_sd": 0.348634554557604,
+      "seed_cluster_se": 0.07795705632961616,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.15066599407691955,
+        0.17566599407691957
+      ]
+    },
+    {
+      "blocks": 40,
+      "bootstrap_95ci": [
+        -0.1,
+        0.125
+      ],
+      "control": "task-value-dynamics",
+      "game": "reversi6",
+      "mean": 0.0125,
+      "positive_seed_clusters": 3,
+      "seed_cluster_sd": 0.2625156636930652,
+      "seed_cluster_se": 0.05870028691761673,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.11036111249527332,
+        0.13536111249527333
+      ]
+    },
+    {
+      "blocks": 80,
+      "bootstrap_95ci": [
+        -0.11875,
+        0.1
+      ],
+      "control": "direct-exact-leaf-value",
+      "game": "macro_average_across_two_games",
+      "mean": -0.00625,
+      "positive_seed_clusters": 9,
+      "seed_cluster_sd": 0.2580130300667207,
+      "seed_cluster_se": 0.05769346743098846,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.12700381509172443,
+        0.11450381509172441
+      ]
+    },
+    {
+      "blocks": 80,
+      "bootstrap_95ci": [
+        -0.125,
+        0.0
+      ],
+      "control": "task-value-dynamics",
+      "game": "macro_average_across_two_games",
+      "mean": -0.0625,
+      "positive_seed_clusters": 3,
+      "seed_cluster_sd": 0.1433848336691011,
+      "seed_cluster_se": 0.03206182350266106,
+      "seed_clusters": 20,
+      "t95_ci": [
+        -0.12960616780617212,
+        0.004606167806172123
+      ]
+    }
+  ],
+  "game_rules_source_sha256": "fbdce0893f6dcc76d30b71d4391842abbcd7c15a0d1a9e20c40077457e273d3a",
+  "interpretation": "Fixed checkpoint strength under a shared two-ply minimax planner; not opponent-behavior prediction, equilibrium, exploitability, cross-game transfer, or confirmatory evidence.",
+  "matches": {
+    "blocks": 160,
+    "censored_blocks": 0,
+    "cpu_seconds": 132.84375,
+    "evaluator_source_sha256": "701aa1506385fe92eba92bcad0a3c24ca47381a28e87df592f0d9a1819f6432c",
+    "forfeits": 0,
+    "max_move_seconds": 2.0,
+    "max_nodes_per_move": 500000,
+    "outcomes_are_locked": false,
+    "paired_games": 320,
+    "path": "C:\\Users\\ANHKHOI\\Documents\\ChatGPT\\caissa-jepa\\chess_data\\v29_development_matches_v01.jsonl",
+    "receipt_sha256": "156997a13efe03d9dfd64e9fdb130131add5ebfc5d2ec758ba8749593883d6f8",
+    "schedule_sha256": "0cc972d755154f047d66c4abcc926c543a6020d1f5f55fb1ea6f9834294c0d46",
+    "sha256": "e0c0c0dd512068d0917d9774cef23772e1543a2029c4e35fc807c5f16c8491b3",
+    "wall_seconds": 147.91135629999917
+  },
+  "panel": {
+    "checkpoint_seeds": [
+      17,
+      29,
+      43,
+      59,
+      71,
+      83,
+      97,
+      109,
+      127,
+      139,
+      151,
+      167,
+      181,
+      197,
+      211,
+      227,
+      241,
+      257,
+      271,
+      283
+    ],
+    "commit": "c7e8a9656ef16a3c39482589c3500b25ed2836a5",
+    "completed_runs": 60,
+    "dataset_fingerprint": "cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40",
+    "fit_cpu_seconds_by_arm": {
+      "direct-leaf": 324.453125,
+      "reply-jepa": 342.203125,
+      "task-value-dynamics": 346.15625
+    },
+    "fit_wall_seconds_by_arm": {
+      "direct-leaf": 398.57290970004397,
+      "reply-jepa": 477.74854120000964,
+      "task-value-dynamics": 432.0508131000097
+    },
+    "jepa_to_task_value_fit_wall_ratio": 1.1057693371113317,
+    "status": "completed"
+  },
+  "realized_search_compute": [
+    {
+      "arm": "direct-leaf",
+      "control": "direct-exact-leaf-value",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 636.5875,
+        "cpu_seconds": 0.187109375,
+        "decision_calls": 17.575,
+        "latent_evaluations": 623.3625,
+        "transitions": 2012.2375,
+        "wall_seconds": 0.20270167999915428
+      },
+      "totals": {
+        "branch_value_calls": 50927.0,
+        "cpu_seconds": 14.96875,
+        "decision_calls": 1406.0,
+        "latent_evaluations": 49869.0,
+        "transitions": 160979.0,
+        "wall_seconds": 16.216134399932344
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "direct-exact-leaf-value",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 627.75,
+        "cpu_seconds": 0.1734375,
+        "decision_calls": 17.575,
+        "latent_evaluations": 611.475,
+        "transitions": 1984.75,
+        "wall_seconds": 0.20520577748975483
+      },
+      "totals": {
+        "branch_value_calls": 50220.0,
+        "cpu_seconds": 13.875,
+        "decision_calls": 1406.0,
+        "latent_evaluations": 48918.0,
+        "transitions": 158780.0,
+        "wall_seconds": 16.416462199180387
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "task-value-dynamics",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 576.6375,
+        "cpu_seconds": 0.1689453125,
+        "decision_calls": 16.4,
+        "latent_evaluations": 565.05,
+        "transitions": 1823.475,
+        "wall_seconds": 0.18741996625249158
+      },
+      "totals": {
+        "branch_value_calls": 46131.0,
+        "cpu_seconds": 13.515625,
+        "decision_calls": 1312.0,
+        "latent_evaluations": 45204.0,
+        "transitions": 145878.0,
+        "wall_seconds": 14.993597300199326
+      }
+    },
+    {
+      "arm": "task-value-dynamics",
+      "control": "task-value-dynamics",
+      "game": "connect4-gravity-6x7",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 575.7625,
+        "cpu_seconds": 0.16484375,
+        "decision_calls": 16.575,
+        "latent_evaluations": 564.5125,
+        "transitions": 1821.2375,
+        "wall_seconds": 0.18851080874919718
+      },
+      "totals": {
+        "branch_value_calls": 46061.0,
+        "cpu_seconds": 13.1875,
+        "decision_calls": 1326.0,
+        "latent_evaluations": 45161.0,
+        "transitions": 145699.0,
+        "wall_seconds": 15.080864699935773
+      }
+    },
+    {
+      "arm": "direct-leaf",
+      "control": "direct-exact-leaf-value",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 387.575,
+        "cpu_seconds": 0.219140625,
+        "decision_calls": 16.4,
+        "latent_evaluations": 386.825,
+        "transitions": 1234.675,
+        "wall_seconds": 0.24357665624920627
+      },
+      "totals": {
+        "branch_value_calls": 31006.0,
+        "cpu_seconds": 17.53125,
+        "decision_calls": 1312.0,
+        "latent_evaluations": 30946.0,
+        "transitions": 98774.0,
+        "wall_seconds": 19.486132499936502
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "direct-exact-leaf-value",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 382.45,
+        "cpu_seconds": 0.225,
+        "decision_calls": 16.425,
+        "latent_evaluations": 381.675,
+        "transitions": 1222.85,
+        "wall_seconds": 0.2467071162580396
+      },
+      "totals": {
+        "branch_value_calls": 30596.0,
+        "cpu_seconds": 18.0,
+        "decision_calls": 1314.0,
+        "latent_evaluations": 30534.0,
+        "transitions": 97828.0,
+        "wall_seconds": 19.73656930064317
+      }
+    },
+    {
+      "arm": "reply-jepa",
+      "control": "task-value-dynamics",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 408.075,
+        "cpu_seconds": 0.2369140625,
+        "decision_calls": 16.425,
+        "latent_evaluations": 407.475,
+        "transitions": 1299.125,
+        "wall_seconds": 0.26188528374113956
+      },
+      "totals": {
+        "branch_value_calls": 32646.0,
+        "cpu_seconds": 18.953125,
+        "decision_calls": 1314.0,
+        "latent_evaluations": 32598.0,
+        "transitions": 103930.0,
+        "wall_seconds": 20.950822699291166
+      }
+    },
+    {
+      "arm": "task-value-dynamics",
+      "control": "task-value-dynamics",
+      "game": "reversi6",
+      "game_seat_observations": 80,
+      "means_per_game_seat": {
+        "branch_value_calls": 408.375,
+        "cpu_seconds": 0.2357421875,
+        "decision_calls": 16.35,
+        "latent_evaluations": 407.55,
+        "transitions": 1301.025,
+        "wall_seconds": 0.2604107812494476
+      },
+      "totals": {
+        "branch_value_calls": 32670.0,
+        "cpu_seconds": 18.859375,
+        "decision_calls": 1308.0,
+        "latent_evaluations": 32604.0,
+        "transitions": 104082.0,
+        "wall_seconds": 20.83286249995581
+      }
+    }
+  ],
+  "schema": "caissa-jepa-v29-development-match-analysis-v01",
+  "selection_screen": {
+    "all_gates_passed": false,
+    "baseline_analysis_sha256": "22a5e2cbe10b0dfba04b03d371709fb2a6549411cccce0cc6117e6c271dbb3f1",
+    "confirmatory": false,
+    "gates": {
+      "fit_wall_time_ratio_at_most_3_5": {
+        "passed": true,
+        "threshold": 3.5,
+        "value": 1.1057693371113317
+      },
+      "improvement_over_v28_at_least_0_05_each_game": {
+        "passed": false,
+        "threshold": 0.05,
+        "values": {
+          "connect4-gravity-6x7": -0.125,
+          "reversi6": 0.037500000000000006
+        }
+      },
+      "jepa_minus_task_value_at_least_0_05_each_game_and_macro": {
+        "passed": false,
+        "threshold": 0.05,
+        "values": {
+          "connect4-gravity-6x7": -0.1375,
+          "macro_average_across_two_games": -0.0625,
+          "reversi6": 0.0125
+        }
+      },
+      "planner_cpu_ratio_at_most_1_25_each_game": {
+        "passed": true,
+        "threshold": 1.25,
+        "values": {
+          "connect4-gravity-6x7": 1.0248815165876777,
+          "reversi6": 1.0049710024855012
+        }
+      }
+    },
+    "status": "reject_duration_only_candidate"
+  },
+  "status": "exploratory_only",
+  "task_value_control_planner_cpu_ratio_by_game": {
+    "connect4-gravity-6x7": 1.0248815165876777,
+    "reversi6": 1.0049710024855012
+  },
+  "uncertainty": {
+    "cluster_bootstrap": {
+      "interval": "unadjusted percentile 95% interval",
+      "multiplicity_adjusted": false,
+      "replicates": 20000,
+      "seed": 28094082
+    },
+    "cluster_t_interval": "unadjusted two-sided 95% t interval, df=19",
+    "interpretation": "exploratory; do not use for superiority claims",
+    "primary_unit": "checkpoint seed; paired match seeds averaged per cell",
+    "sampling_scope": "conditional on the two scheduled match seeds per checkpoint-seed/game/control cell; does not separately estimate match-seed or situation-sampling uncertainty"
+  }
+}

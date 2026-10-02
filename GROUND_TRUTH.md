@@ -1,5 +1,20 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-02; completed V2.9 and next research gate)
+
+- V2.9 completed its 60-fit panel and frozen development match. Independent review of the saved analyzer and raw schedule found no P1/P2 findings: 160 unique scheduled blocks in exact order, 40 per game/control cell, complete pairs, balanced JEPA seat swaps, no forfeits/censors, and transcript replay validation. Reviewer notes all matches begin at fixed standard initial positions, limiting starting-position generalization.
+- The pinned analysis artifact is `docs/validation/V29_DEVELOPMENT_MATCH_ANALYSIS_V01.json`, status `exploratory_only`; artifact SHA-256 is `e0c0c0dd512068d0917d9774cef23772e1543a2029c4e35fc807c5f16c8491b3`. JEPA-minus-task-value score was Connect4 -0.1375 (seed-cluster unadjusted t95% CI [-0.2480,-0.0270]), Reversi6 +0.0125 ([-0.1104,+0.1354]), macro -0.0625 ([-0.1296,+0.0046]). The frozen nomination gate fails. JEPA vs direct leaf was near parity (macro -0.00625). Planner CPU ratios vs task-value were 1.0249 and 1.0050. No claim of superiority, confirmation, equilibrium, exploitability, broad transfer, or Q1 readiness is supported.
+- A 2026-10-02 targeted primary-source search added Soemers et al. (arXiv:2102.12375) and Ben-Assayag & El-Yaniv (arXiv:2107.08387) on game/variant and small-to-large board transfer; and PCGrad (NeurIPS 2020), CAGrad (NeurIPS 2021), and JEPA Policy (arXiv:2609.09630) on gradient conflict/routing. These are prior art: neither transfer nor gradient routing can be the novelty claim by itself. The update is recorded in `docs/RELATED_WORK.md`; it remains a targeted, non-exhaustive search.
+- Independent reviewer diagnosis is explicitly hypothetical, not causal: the reply-set latent objective may interfere with shared encoder policy/value gradients. A new pre-implementation protocol, `docs/METHOD_V210_GRADIENT_DIAGNOSTIC.md`, specifies a train-only, no-optimizer-update gradient decomposition/alignment diagnostic and conservative stop/proceed gate. It does not authorize another model fit. Proceed to a routed intervention only if all gates pass and a separately reviewed development preregistration is frozen. If the diagnostic fails, stop this candidate without subgroup hunting.
+- `ROADMAP.md` now sequences diagnostics, mechanism decision, conditional development experiment, model selection, locked confirmation, and paper package, with explicit deliverables, acceptance criteria, relative effort, and kill criteria. Professor-facing result is updated in `docs/PROFESSOR_BRIEF_V2.md`.
+- In this continuation shell/PowerShell commands are run hidden/noninteractive in the background to keep the desktop available, per user's instruction. Existing V2.9 test verification remains 20/20 V2.9 and 96/96 V2.8 in Python 3.11.9 / NumPy 2.4.6; the artifact analyzer run and independent replay review completed. Latest source commit/remote hash before these documentation updates was `5a2b0561b8c05cc8d72a060b33798dd2925debbc`; working tree now contains only the intended result/documentation changes, pending test, vault sync, commit and normal push.
+- Obsidian destination remains the previously UI-discovered `D:\notes\vault_1\Caissa-JEPA\`. Use the existing hidden sync script and verify source/destination hashes, backup any differing note without overwriting its prior contents, and record final count/status here. Do not reopen Obsidian UI while honoring the screen-availability preference.
+- Obsidian sync completed at 2026-10-02 14:44 local time: copied 114 Markdown files, backed up 4 differing prior notes under `D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-144431-v28-hardening-preflight\`, with zero hash mismatches. Verified matching SHA-256 and presence of Ground Truth, roadmap, V2.10 method note, professor brief, and related-work review in the vault. Existing earlier Obsidian UI verification established that the Ground Truth page opens and is readable; this update stayed in the background so the desktop remains available. The machine-readable validation JSON is intentionally not mirrored by the Markdown-only vault sync.
+- The V2.10 helper and runner are implemented in `two_player/v210_gradient_diagnostic.py` and `tools/v210_gradient_alignment_diagnostic.py`, with tests in `tests/test_v210_gradient_diagnostic.py`. To preserve V2.9 checkpoint provenance, `two_player/v28_model.py` and its pinned source hash were not changed; decomposition evaluates shallow config views over the frozen model. The diagnostic uses 20 hash-verified V2.9 reply-JEPA checkpoints, 640 deterministic hash-selected train roots/game, and 10 batches/seed/game, with no optimizer, EMA, or checkpoint write. Targeted tests pass (V2.10 2/2, V2.8 model 15/15, V2.9 20/20) in the locked runtime, and `git diff --check` passes. An independent review is pending; do not launch until it reports the runner and data boundaries safe.
+- V2.10 review by the existing approved `gpt-6-luna/high` reviewer resolved all four initial P2 findings: receipt hash is panel-bound; V2.10 and data-loader source hashes are recorded; diagnostic metrics match the implemented encoder-only protocol; and checkpoint loading bypasses metadata/history, reading only ledger-hash-verified p_/t_ arrays. Unit test uses deliberately invalid metadata JSON. Reviewer found no P1/P2 and approved the train-only/no-update diagnostic. A first hidden launch exposed only an import bug before data access; the root constant was fixed and reviewer confirmed no new issue. The corrected launch then stopped before checkpoint or gradient evaluation because train support is 307 Connect4 roots and 1,490 Reversi6 roots, fewer than 640 needed/game. No gradient result exists. The feasibility receipt is `docs/validation/V210_DIAGNOSTIC_PREFLIGHT_01.json`; failed stderr is ignored under `chess_data`.
+- A support-only amendment `docs/V210_GRADIENT_DIAGNOSTIC_AMENDMENT_01.md` now freezes 300 hash-selected roots/game in ten non-overlapping batches of 30, retaining the 20 seeds and original 6/10 conflict gate. The smaller minibatch’s added gradient noise is a limitation. This change was made before any gradient outcome; the corrected root and batch count require independent review before a new diagnostic run.
+- The `dev03` amended launch passed sample support but stopped before parameter load/gradient because runner expected a data-audit source hash in the individual fit receipt rather than the panel ledger. The `dev04` launch passed support and panel-bound checkpoint/receipt hashes but requested the frozen model config from the result panel, which binds the separate input spec instead. Neither loaded checkpoint arrays or computed gradients. Receipts are `docs/validation/V210_DIAGNOSTIC_PREFLIGHT_02.json` and `_03.json`. Runner now checks the V2.9 fit-spec SHA against the panel and reads its config from that file; it preloads/verifies all 20 weights-only checkpoints before computing any gradient. This small provenance fix is under independent review; run only after review passes.
+
 Updated: 2026-10-02. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
 ## Current correction (2026-10-02; V2.9 supervisor review)
@@ -1312,3 +1327,52 @@ retain only `main`, commit verified milestones and push without force. The
 Obsidian vault previously verified is `D:\notes\vault_1\Caissa-JEPA\`; these
 new notes must be copied there with the existing relative structure and
 verified before ending this research continuation.
+
+### V2.10 gradient-alignment diagnostic completed (2026-10-02)
+
+The V2.10 no-update diagnostic completed on audited DEV09 train roots using 20
+hash-validated V2.9 reply-JEPA checkpoints, two games, 300 roots/game/seed, and
+ten disjoint batches of 30. The complete result is
+`docs/validation/V210_GRADIENT_DIAGNOSTIC_DEV01.json`; the ignored working output
+is `chess_data/v210_gradient_dev06/gradient_alignment.json`. It contains 400
+seed/game/batch rows and 12,000 root observations, with zero invalid/skipped
+roots, finite norms/cosines, reconciled branch counts, and maximum gradient-sum
+relative error 5.1516e-18. The committed-copy artifact SHA-256 is
+`f850feb6e867137429c888846d49b41aa56dd3d9148d18e273cd0d419d5c59e8`. No optimizer or EMA update occurred. Historical
+training metrics/loss curves and locked-final data were not accessed.
+
+The first full-compute attempt (`dev05`) calculated the batches but failed while
+assembling its result because the gate aggregation treated Boolean criteria as
+mappings; it wrote no artifact. A new unit test covers true and false criteria,
+the reviewer approved the correction, and `dev06` reran to a fresh output root.
+
+Independent review recomputed the frozen gate and found no P1/P2. Connect4's
+median seed cosine was -0.029318, seed-cluster 95% CI [-0.048282, 0.155975],
+with 13/20 seeds having conflicts in at least six of ten batches. Reversi6 was
+-0.040235, CI [-0.065150, 0.106376], and 12/20 persistent-conflict seeds. Each
+game failed all three predeclared criteria; conclusion:
+`stop_gradient_conflict_candidate`. The diagnostic does not support a causal
+claim about why V2.9 failed to beat task-value dynamics, and is not strength or
+JEPA-superiority evidence. The code path is therefore not being extended with
+gradient projection.
+
+The independent audit is `docs/V210_GRADIENT_DIAGNOSTIC_REVIEW_01.md`; the
+frozen method and support amendment remain
+`docs/METHOD_V210_GRADIENT_DIAGNOSTIC.md` and
+`docs/V210_GRADIENT_DIAGNOSTIC_AMENDMENT_01.md`. Roadmap now proposes a new,
+not-yet-frozen development candidate that weights reply-set JEPA prediction by
+minimax decision relevance, with identical branch schedules for a matched
+non-JEPA control. This is exploratory and has substantial prior-art risk from
+MuZero, VQ planning, and generic hard-branch objectives. Do not claim novelty or
+start a fit until a leakage-safe method and controls are frozen and reviewed.
+The user's ongoing target remains a reproducible JEPA advantage over strong
+matched baselines. All PowerShell commands continue to run hidden in the
+background. Obsidian Markdown sync passed to
+`D:\notes\vault_1\Caissa-JEPA\`: 116 Markdown files copied, 5 differing prior
+files backed up under `_sync_history/20261002-160151-v28-hardening-preflight/`,
+0 SHA-256 mismatches. The final Ground Truth refresh also copied all 116 files,
+backed up one prior version under
+`_sync_history/20261002-160240-v28-hardening-preflight/`, and had 0 mismatches.
+The sync script copies Markdown only; the full JSON result is retained in the
+repository validation artifact, and its summary is present in this note and
+the professor brief.

@@ -1,0 +1,19 @@
+{
+  "schema": "caissa-jepa-v210-gradient-diagnostic-preflight-v01",
+  "status": "stopped_support_infeasible_before_gradient_evaluation",
+  "date": "2026-10-02",
+  "attempt": "v210_gradient_diagnostic_dev02",
+  "reason": "The frozen requirement was 640 unique train roots per game, but the audited train split contains only 307 Connect4 roots and 1490 Reversi6 roots.",
+  "train_root_counts": {
+    "connect4-gravity-6x7": 307,
+    "reversi6": 1490
+  },
+  "gradient_batches_evaluated": 0,
+  "checkpoint_contents_loaded": 0,
+  "optimizer_updates": 0,
+  "ema_updates": 0,
+  "locked_final_access": false,
+  "result_artifact_written": false,
+  "stderr_log": "chess_data/v210_gradient_diagnostic_dev02.stderr.log",
+  "dataset_fingerprint": "cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40"
+}

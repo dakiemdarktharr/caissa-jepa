@@ -1,0 +1,17 @@
+{
+  "schema": "caissa-jepa-v210-gradient-diagnostic-preflight-v01",
+  "status": "stopped_receipt_schema_mismatch_before_gradient_evaluation",
+  "date": "2026-10-02",
+  "attempt": "v210_gradient_diagnostic_dev03",
+  "reason": "The runner looked for data_audit_code_sha256 in the per-fit receipt, but this identity is present in the panel ledger.",
+  "panel_bound_checkpoint_sha256_verified": true,
+  "panel_bound_receipt_sha256_verified": true,
+  "checkpoint_parameter_arrays_loaded": 0,
+  "gradient_batches_evaluated": 0,
+  "optimizer_updates": 0,
+  "ema_updates": 0,
+  "locked_final_access": false,
+  "result_artifact_written": false,
+  "stderr_log": "chess_data/v210_gradient_diagnostic_dev03.stderr.log",
+  "dataset_fingerprint": "cf1f408356058eae5224249010008c47a23a6d8f2a8c8530990388cc179b8c40"
+}

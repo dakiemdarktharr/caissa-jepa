@@ -1,6 +1,43 @@
 # CAISSA-JEPA: bản trao đổi nghiên cứu với giáo sư
 
-## Bước V2.9 kế tiếp — chưa chạy
+## Cập nhật mới nhất — V2.9 đã cho kết quả phát triển âm/mixed (02/10/2026)
+
+V2.9 hoàn tất 60/60 fit và 160 block ghép cặp (320 ván) trên Connect4-6x7 và
+Reversi6. So với task-value-dynamics trong cùng planner minimax hai ply, điểm
+ghép cặp của JEPA là **−0,1375** ở Connect4, **+0,0125** ở Reversi6 và **−0,0625**
+trung bình macro, trên 20 cụm seed checkpoint. Cổng đề cử đã khóa thất bại;
+không có forfeits/censors, hai ghế JEPA được cân bằng, và CPU planner chỉ cao
+hơn 2,5%/0,5% ở hai game. Khoảng tin cậy là exploratory, chưa hiệu chỉnh bội,
+và chỉ có điều kiện trên các seed/lịch đã chọn. Mọi ván bắt đầu từ trạng thái
+khởi đầu chuẩn nên kết quả chưa đại diện cho phân phối tình huống rộng.
+
+Kết luận trung thực: recipe ba epoch không cho thấy JEPA tốt hơn baseline;
+đây là bằng chứng chống lại cấu hình đã thử, không phải bác bỏ JEPA nói chung.
+Không tiếp tục tăng epoch đơn thuần. Reviewer độc lập không tìm thấy vấn đề
+P1/P2 trong artifact; họ đề xuất giả thuyết có thể kiểm tra rằng loss dự đoán
+latent trên reply-set có thể gây xung đột với gradient policy/value trên
+encoder dùng chung. Bước kế tiếp được đóng phạm vi thành một diagnostic không
+cập nhật trọng số; chỉ nếu gate định trước đạt mới viết protocol riêng cho
+conflict-projected JEPA. Gradient surgery và gradient routing đã có prior art,
+nên đây chưa phải novelty claim. Xem [method note](METHOD_V210_GRADIENT_DIAGNOSTIC.md),
+[roadmap](../ROADMAP.md), [analysis JSON](validation/V29_DEVELOPMENT_MATCH_ANALYSIS_V01.json)
+và [related work](RELATED_WORK.md).
+
+V2.10 completed a no-update, train-only gradient diagnostic using 20 frozen
+JEPA checkpoints, 300 roots per game and seed, and ten disjoint batches of 30.
+The independent audit verified all 400 seed/game/batch cells, 12,000 roots,
+zero invalid roots, source and panel hashes, and a maximum gradient-sum
+decomposition error of 5.2e-18. The predeclared gradient-conflict screen failed
+in both games: median encoder cosine was -0.029 in Connect4 and -0.040 in
+Reversi6; both seed-cluster 95% intervals included zero, and persistent-conflict
+seeds were 13/20 and 12/20 (threshold: 15/20). Therefore the gradient-conflict
+explanation is rejected for this candidate; no projection intervention is
+justified. This is a mechanism diagnostic, not a JEPA strength or superiority
+result. See [full diagnostic artifact](validation/V210_GRADIENT_DIAGNOSTIC_DEV01.json),
+[frozen method note](METHOD_V210_GRADIENT_DIAGNOSTIC.md), and
+[independent audit](V210_GRADIENT_DIAGNOSTIC_REVIEW_01.md).
+
+## Lịch sử V2.9 — phép thử underfit trước khi có kết quả
 
 V2.8 đã hoàn tất so sánh phát triển nhưng chưa cho thấy JEPA vượt task-value-
 dynamics. Thử nghiệm đã đóng băng tiếp theo chỉ đổi thời lượng huấn luyện từ
