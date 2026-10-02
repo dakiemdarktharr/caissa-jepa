@@ -1761,8 +1761,7 @@ The local `main` was at `bf48d5da61683bd949cd9b40b93b585b32d5191d` when this
 checkpoint preparation began. Only documentation and validation report files
 are intended for the next checkpoint; training code/data/checkpoints do not
 exist for V2.12. The current corrected rule-only pilot fails the old 2-second
-Reversi8 wall cap; no V2.12 training or matches are authorized. Git push is
-pending at this checkpoint-preparation stage.
+Reversi8 wall cap; no V2.12 training or matches are authorized.
 
 ### V2.12 v04 checkpoint update (2026-10-02)
 
@@ -1786,8 +1785,17 @@ novelty, data/split audits, and separate pre-fit review. The prior 2-second
 cap still fails, and the pilot has not begun. No V2.12 training code, training
 data, checkpoint, or result exists.
 The copy-only Obsidian sync was rerun after the v04 edits: 122 Markdown files
-copied, five differing prior vault files preserved in the sync-history backup,
-and zero content mismatches. Vault path:
+copied and zero content mismatches; differing prior vault files were preserved
+in sync-history backups. Vault path:
 `D:\notes\vault_1\Caissa-JEPA`. The desktop app inventory exposed no Obsidian
 window during this session, so filesystem copy/hash verification passed but
 opening the notes in the Obsidian UI could not be reverified.
+
+Checkpoint publication: documentation-only commit
+`ad345443be49b913355b58436efd5c7aff0845e7` was pushed normally to
+`origin/main` and verified with `git ls-remote`. At verification, local and
+remote branch inventories contained only `main` (plus remote HEAD alias), and
+the working tree was clean. No V2.12 code, data, training, matches, or new
+performance results were added. Documentation diff checks and independent
+protocol review passed; no executable tests were rerun for this documentation-
+only checkpoint.
