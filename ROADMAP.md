@@ -20,8 +20,11 @@ development grant after dataset re-audit, and pass the bounded local runtime
 pilot. The fresh grant has been issued, but pilot 01 stopped before fitting:
 available RAM was 1.17 GB against a 2 GB preflight gate. Its ignored status
 receipt is `chess_data/v29_fit_compute_pilot_01/pilot_status.json`; preserve it
-and use a fresh output root if resources later recover. Do not lower the gate,
-read training metrics, or open V08.
+and use a fresh output root if resources later recover. The system Python 3.11.9
+also lacks NumPy; the bundled Python 3.12 has 2.3.5, while the research lock
+requires 2.4.6. After memory recovers, prepare the ignored project `.venv` with
+locked NumPy 2.4.6 before a fresh pilot. Do not lower the gate, use the
+mismatched runtime, read training metrics, or open V08.
 
 The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
 macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall
