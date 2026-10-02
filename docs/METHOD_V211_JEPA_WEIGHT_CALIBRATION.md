@@ -1,6 +1,6 @@
 # V2.11 method: reply-set JEPA loss calibration
 
-**Status:** frozen pre-fit development/model-selection protocol and implementation, independently reviewed with no remaining P1/P2/P3 blockers. A V2.11 train-only grant is issued at `chess_data/v211_data_dev09_approval.json` (1,797 audited train records; SHA-256 `9d7d876fcb94ea67eb90fddb391cd5516f30acda8e25e3041140051134bb0adc`). The first local stable-memory screen failed; the supervised runner must meet its memory gate before fit. This protocol does not authorize confirmatory or locked-final evaluation.
+**Status:** frozen pre-fit development/model-selection protocol and implementation, independently reviewed with no remaining P1/P2/P3 blockers. A usable train-only grant must bind the exact method, panel specification, loader, and parent-grant hashes; see `GROUND_TRUTH.md` for issuance status. The supervised runner must meet its memory gate before fit. This protocol does not authorize confirmatory or locked-final evaluation.
 
 ## Research question and falsifiable hypothesis
 

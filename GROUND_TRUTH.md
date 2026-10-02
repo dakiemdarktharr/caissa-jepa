@@ -1517,3 +1517,57 @@ and the focused V2.11 suite pass; the suite is now 9/9. The initial 60-second
 RAM sample failed, so the next action is to start the corrected background
 supervisor and let its bounded 30-minute preflight either observe four stable
 samples above 2.0 GB and launch, or stop without fitting.
+
+### V2.11 resumed-session process audit (2026-10-02)
+
+Current source of truth was re-read at session continuation: `GROUND_TRUTH.md`,
+`ROADMAP.md`, `METHOD_SPEC.md`, the V2.11 method note and reviewer note. The
+worktree is clean on `main` at commit
+`dfe4b5495c4cf7e01ea09048124fa2b75663af24`, matching `origin/main`; local
+branch inventory contains only `main`. Computer Use reports no native app
+windows, so Obsidian cannot be opened in this session. Its previously verified
+vault path is `D:\notes\vault_1\Caissa-JEPA` and the previous Markdown sync had
+zero mismatches.
+
+The corrected supervisor PID 104236 is no longer present. Its ignored status
+artifact `chess_data/v211_fit_panel_dev01.supervisor.json` remains at
+`waiting_for_stable_memory`, with zero consecutive passes, 1,127,247,872 bytes
+available, no `fit_started`, and no return code. The corresponding output
+directory and `panel.json` do not exist; captured supervisor stdout/stderr are
+empty. Therefore the process ended without an authoritative terminal status;
+this is not evidence of a completed timeout or a fit. Preserve this stale
+status artifact and, after checking fresh machine memory, use a new output
+path such as `chess_data/v211_fit_panel_dev02` if another bounded wait is
+started. The V2.11 grant remains present at the hash recorded above; no fit or
+match has been observed.
+
+### V2.11 second supervisor attempt and stale-grant diagnosis (2026-10-02)
+
+The second corrected supervisor ran with a live tool-session handle and passed
+its four-sample memory gate: available physical RAM was 2,372,726,784;
+2,304,016,384; 2,543,095,808; and 2,467,213,312 bytes (84-85% reported load).
+The supervisor released child PID 70720 under the resource limits, then ended
+85.58 seconds later with return code 1 / `runner_failed`; peak working set was
+858,767,360 bytes. The traceback points to `load_train_split` rejecting the
+grant as stale/different from frozen scope. That helper did not return records
+to the fit loop; `chess_data/v211_fit_panel_dev02` and `panel.json` were never
+created, so no training update, checkpoint, or match occurred. The supervisor
+status artifact is terminal `failed`; preserve it, its stderr, and all grant
+artifacts. The failure happened because the method-note status paragraph was
+edited after grant creation, changing the method hash bound into the grant.
+
+The method note is now being stabilized with no self-referential grant hash;
+approval issuance status belongs here in Ground Truth. After this change is
+committed, issue a distinct fresh grant (preserving the stale first grant at
+`chess_data/v211_data_dev09_approval.json`) and use a new fit output root such
+as `chess_data/v211_fit_panel_dev03`. Before invoking it, rerun the focused
+protocol tests and verify the file-bound approval/method identities; never
+reuse the failed `dev02` artifact path. The learning hypothesis and all fit,
+match, resource, and nomination settings remain unchanged.
+
+The updated Ground Truth, roadmap, and frozen method note were copied to the
+verified vault in a Markdown-only sync: 118 files copied, three differing
+prior notes backed up under
+`D:\notes\vault_1\Caissa-JEPA\_sync_history\20261002-180054-v28-hardening-preflight\`,
+zero SHA-256 mismatches. The app inventory still has no native Obsidian window;
+the vault sync is verified by destination hashes.
