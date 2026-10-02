@@ -69,7 +69,7 @@ not altered after fitting began.
 
 ## Positioning decision and falsification
 
-Candidate empirical question, not a novelty claim: does explicit own-action/opponent-reply latent prediction improve bounded minimax planning over matched task-value and direct-leaf controls? The predictor conditions on each side's actual legal action and the planner uses max/min over exact legal branches. It models neither a named opponent's behavior nor an expected-response distribution, and it does not establish equilibrium guarantees. Latent approximation of nonterminal leaf values remains fallible. Exact transitions maintain legality and terminal authority; this is hybrid planning, not simulator-free MuZero. V2.9 did not establish a benefit, and opponent-conditioned latent planning already has close prior art in MuZero and VQ planning.
+Candidate empirical question, not a novelty claim: does recursive multi-step latent prediction over sequential actions from both roles improve a fixed four-ply max-min backup heuristic against matched task-value, raw-state dynamics and direct-leaf controls? The planner uses exact legal branches internally, while its approximate nonterminal leaf values are supervised on synthetic policy-mixture terminal outcomes; it is not a minimax-value estimator, opponent-specific response model, expected-response policy or equilibrium solver. Exact transitions maintain legality and terminal authority, so this is hybrid planning rather than simulator-free MuZero. V2.9 did not establish a benefit, and opponent-conditioned latent planning already has close prior art in MuZero and VQ planning. The instantiated study uses one shared checkpoint on Connect Four and Reversi, with board-size variants held out; this scope does not establish transfer to other game families.
 
 First isolate the auxiliary objective under the same exact-state search. Then separately compare using predicted latents at two-ply leaves against re-encoding exact states. These answer different questions. If only the former helps, claim representation regularization, not faster latent planning. Match both optimization examples/steps and measured wall time in separate tracks; equal parameter allocations alone are insufficient.
 
@@ -227,25 +227,29 @@ search added several sources that materially raise the novelty bar:
 | [Theoretical Foundations and Effective Algorithms for Policy-Aware Simulator Learning (Dann, Mansour & Mohri, 2026)](https://arxiv.org/abs/2605.29032) | Formulate strategic simulator robustness as a zero-sum minimax game against an adversarial policy, derive a critic-based bound and error-driven active data collection | Continuous-control tasks; ordinary prediction baselines; prediction error in strategically important regions and downstream performance; primary arXiv abstract inspected | This is the closest strategic model-learning prior found so far. The CAISSA question must be distinguished from policy-exploitation robustness in continuous control, not simply renamed as minimax-aware model fitting. |
 | [Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model (Schrittwieser et al., 2020)](https://arxiv.org/abs/1911.08265), [MiniZero comparative framework](https://arxiv.org/abs/2310.11305) | Learn planning representations and use search to master diverse games; MiniZero compares AlphaZero/MuZero-family variants | Go, chess, shogi, 57 Atari games; game/search baselines; strength, return and compute-related outcomes; primary arXiv abstracts inspected | Multi-game board-game planning and learned dynamics are not new. CAISSA needs a JEPA-specific advantage with matched search and at least one held-out game/variant, or a compelling negative-result benchmark contribution. |
 | [One-Step Next-Latent Prediction Is Not a World Model (Wang, Cai & Hong, 2026)](https://arxiv.org/abs/2609.36227) | Shows one-step latent regression identifies a conditional mean, not generally a roll-outable transition kernel; studies multi-step error and short-context prediction | Linear-Gaussian and nonlinear synthetic dynamics, hidden rotation; one-step versus multi-step prediction error; primary arXiv abstract inspected | Direct warning for our current predictor: a low two-ply latent MSE alone is not evidence of a usable recursive world model. Any V2.12 must measure open-loop rollout error, minimax action/rank stability and strength as a function of planning horizon. |
+| [Regret-Guided Search Control for Efficient Learning in AlphaZero (Tsai et al., ICLR 2026)](https://proceedings.iclr.cc/paper_files/paper/2026/hash/9e720fce64f91114c49cfd640d821da3-Abstract-Conference.html), [author code](https://github.com/rlglab/rgsc) | Learn regret values/rankings to prioritize high-regret states from self-play/search trees and restart AlphaZero training there | Go 9x9, Othello 10x10, Hex 11x11; ICLR primary abstract reports mean +77 Elo over AlphaZero and +89 over Go-Exploit, plus KataGo win-rate improvement in a trained-model setting | Board-game regret ranking and regret-guided state selection are now direct prior art. A future strategic/decision-aware JEPA cannot claim regret ranking or prioritizing hard states as new; compare against an appropriate RGSC-style control if that becomes the method. |
 | [A Sharp Analysis of Model-based RL with Self-Play (Liu et al., 2021)](https://proceedings.mlr.press/v139/liu21z.html), [Incentivize without Bonus: Provably Efficient Model-based Online Multi-agent RL for Markov Games (Yang et al., ICML 2025)](https://proceedings.mlr.press/v267/yang25j.html) | Study model-based learning and equilibrium exploration in zero-sum or multi-agent Markov games | Theoretical finite-horizon Markov games and model-based online RL; regret/sample complexity and equilibrium-related objectives; PMLR primary sources inspected | Strong game-theoretic controls and solution concepts exist. We must define behavioral opponent prediction separately from worst-case minimax planning and compare against appropriate game-theoretic methods when making equilibrium claims. |
 
-### Candidate direction, explicitly unverified
+### V2.12 candidate, explicitly unverified
 
 V2.11 suggests that raising the weight of the existing pair-conditioned target
-does not improve play. A new September 2026 preprint also cautions that one-step
-latent prediction need not define a roll-outable world model. The candidate
-question is therefore whether a **multi-step, alternating-player latent
-rollout JEPA** improves horizon-dependent minimax decision quality under equal
-compute. This is an architecture/training/planning hypothesis, not a method,
-novelty claim, or approved training protocol. Multi-step JEPA world models,
-MuZero-style latent planning, and value-aligned/policy-aware model learning
-already exist. Before code or fitting, the protocol must define sequential
-joint-action rollouts, target/masking/horizon losses, exact legal-tree handling,
-rollout stability, same-horizon non-JEPA controls, and a held-out board-size or
-game-variant transfer test. Kill the direction if its benefit comes only from
-extra search, recovers known JEPA-WM practice without a strategic distinction,
-or cannot beat task-value and direct-leaf controls at a predeclared decision
-metric.
+did not improve play. A 2026 analysis also cautions that one-step latent
+prediction need not define a roll-outable world model. V2.12 now specifies a
+multi-step predictor trained along recorded alternating-player action
+sequences and a four-ply max/min backup heuristic with mixture-outcome leaf
+values. Its falsifiable question is whether that complete candidate improves
+paired game score over five matched controls, with a shared checkpoint across
+Connect Four and Reversi and held-out board sizes. It predicts neither a named
+opponent nor a worst-case value function, and it is not an equilibrium method.
+The exact candidate and controls are in `METHOD_SPEC_V212.md`; the spec remains
+under independent review and the fixed 2.0-second Reversi8 rule-only cap
+failed. After v04 is independently accepted, only the narrowly scoped
+random-initialized, no-training inference/instrumentation pilot described in
+the spec may proceed; training and matches remain blocked. Multi-step JEPA world
+learning already exist, so neither novelty nor superiority is established.
+Kill this direction if the JEPA arm cannot clear the predeclared all-control
+gates, its advantage disappears under matched compute, or a closer prior-art
+comparison removes the claimed increment.
 
 Search limitations: searches used the exact title/topic terms recorded in this
 update and prioritized arXiv, PMLR, OpenReview, and author-maintained code. They

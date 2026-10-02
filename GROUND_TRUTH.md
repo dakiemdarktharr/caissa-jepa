@@ -1683,9 +1683,111 @@ controls/evaluation, and kill criteria. No V2.12 code or training has started;
 only a no-training feasibility/prior-art audit is allowed until an exact spec
 and protocol have been frozen and independently reviewed.
 
+The first no-training adapter audit passed on candidate held-out variants
+Connect Four 8×8/k4 and Reversi 8×8: both use the existing 198-feature/65-action
+shape; sampled legal transitions preserve side alternation; the initial legal
+two-ply branch counts were 64 and 12; and sampled trajectories reached eight
+plies. A separate 24-episode-per-variant random-play audit terminated every
+episode legally and exercised eight Reversi forced-pass transitions. These are
+rule/adapter smoke findings only; no trajectory split/audit, training,
+planning-depth benchmark, or learned-performance claim follows. Ignored audit
+scripts/logs are under `chess_data/v212_*`.
+
+`METHOD_SPEC_V212.md` v01 is now drafted as the candidate method/protocol. It
+defines recursive action-conditioned latent rollout at 1/2/4 plies, a
+four-ply finite-horizon max-min planner with exact legal transitions, task and
+anti-collapse losses, same-search controls, held-out-size evaluation, and a
+positive-margin/uncertainty nomination gate. It remains unimplemented and
+cannot be fit until independent review, multistep data-pipeline audit, and a
+resource pilot pass. Its own preconditions explicitly state that multi-step
+JEPA world models and minimax/value-aware model learning are prior art; any
+incremental novelty claim remains unverified.
+
 The user most recently requested that all commands/PowerShell run in the
 background so the desktop remains available. Processes for the V2.11 match,
 analysis and Obsidian synchronization were launched hidden; the match and
 analysis finished successfully. Match output, receipts, checkpoints and
 intermediate logs remain under ignored `chess_data/` and are excluded from Git
 and Obsidian.
+
+## V2.12 continuation: method review and compute gate (2026-10-02)
+
+`METHOD_SPEC_V212.md` v02 supersedes v01. It clarifies absolute-winner versus
+side-to-move utility, root-perspective max/min, exact masked task-loss
+definitions, the six required matched arms, exploratory (non-power) status of
+the development screen, and prohibits training while a compute cap is
+unverified. A prior independent review identified the same key gaps; v02 is
+being prepared for re-review. No V2.12 model code or training data exists.
+
+A corrected no-training depth-four exhaustive tree pilot completed with
+source/output consistency. Among 13 sampled Connect Four 8x8 roots, rule-only
+wall p90 was 0.350s (max 4,681 nodes); among 16 Reversi8 roots, p90 was 6.037s
+(max 28,009 nodes), exceeding the provisional 2s cap before learned-model
+calls. The raw output, source SHA-256, and sampling limitations are in
+`docs/validation/V212_NO_TRAIN_COMPUTE_AUDIT_01.md`; ignored artifacts are
+under `chess_data/v212_unpruned_budget_audit.*`. A representative random-weight
+model-call pilot is still required. The earlier constant-zero alpha-beta audit
+is not compute evidence because equal leaf values caused atypical pruning. No
+production training, resource grant, or match may start until the compute
+protocol is revised using no-outcome measurements and independently reviewed.
+
+All PowerShell/Python commands are now launched as hidden background
+processes, per the user's latest instruction, to leave the desktop available.
+
+### Draft v03 status (superseded by v04)
+
+`METHOD_SPEC_V212.md` v03 was a draft awaiting independent re-review. It resolves
+the v02 findings in the text by (a) defining the inference cap unit as entered
+search-state visits and counting exact transition calls separately; (b) using
+only the logged action sequence for 1/2/4-ply training targets; (c) explicitly
+calling terminal-outcome value labels synthetic policy-mixture outcomes and
+the planner a max/min backup heuristic rather than a minimax-value solver;
+(d) specifying crossed-bootstrap simultaneous intervals plus Holm-adjusted
+one-sided tests; and (e) deferring confirmatory episode generation/splitting
+until after nomination. The head-to-head metric, opponent suite, shared
+weights, architecture, and matched data/update/training-FLOP admission gate
+are now specified. These edits do not establish feasibility or novelty.
+
+Deep-search update: the official ICLR 2026 proceedings page for Regret-Guided
+Search Control for Efficient Learning in AlphaZero reports regret-value and
+ranking-guided state reuse across Go, Othello and Hex. This further raises
+novelty risk for any regret-weighted or high-regret-state JEPA variant. It is
+recorded in `docs/RELATED_WORK.md`; do not claim regret ranking or prioritized
+hard-state sampling as new. The current v03 candidate remains a hypothesis,
+and close overlap with multi-step JEPA-WM and policy-aware simulator learning
+still makes novelty unverified.
+
+The local `main` was at `bf48d5da61683bd949cd9b40b93b585b32d5191d` when this
+checkpoint preparation began. Only documentation and validation report files
+are intended for the next checkpoint; training code/data/checkpoints do not
+exist for V2.12. The current corrected rule-only pilot fails the old 2-second
+Reversi8 wall cap; no V2.12 training or matches are authorized. Git push is
+pending at this checkpoint-preparation stage.
+
+### V2.12 v04 checkpoint update (2026-10-02)
+
+Independent reviewer re-reviewed v03: no P1; P2 requested frozen game-balanced
+window sampling/update schedule and corrected compute-audit terminology; P3
+requested consistent positioning. `METHOD_SPEC_V212.md` v04 addresses these:
+928 fixed, distinct train windows per game; 50:50 game-balanced batches; three
+full epochs, 29 full minibatches each, 87 updates; same per-seed order across arms.
+The compute audit now calls its cap 500,000 materialized search-node visits
+(including root/terminal leaves) and explicitly notes transition calls were
+not separately measured. Related-work positioning now describes a max/min
+backup heuristic over synthetic mixture-outcome leaf values, not a minimax
+value estimator or opponent-specific response model. Zero-variance or
+incomplete/nonfinite inferential cells invalidate nomination. After §8 was
+clarified, the independent reviewer confirmed no P1/P2 protocol blockers for
+the narrowly scoped no-training instrumentation pilot only. It may measure
+random-initialized inference on synthetic legal roots after review; it bars
+labels, optimizer updates, trained checkpoints, game scores, or model
+selection. Training, matches and objective/training code remain gated by
+novelty, data/split audits, and separate pre-fit review. The prior 2-second
+cap still fails, and the pilot has not begun. No V2.12 training code, training
+data, checkpoint, or result exists.
+The copy-only Obsidian sync was rerun after the v04 edits: 122 Markdown files
+copied, five differing prior vault files preserved in the sync-history backup,
+and zero content mismatches. Vault path:
+`D:\notes\vault_1\Caissa-JEPA`. The desktop app inventory exposed no Obsidian
+window during this session, so filesystem copy/hash verification passed but
+opening the notes in the Obsidian UI could not be reverified.

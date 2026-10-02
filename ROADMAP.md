@@ -74,4 +74,38 @@ The candidate direction is now multi-step alternating-player latent rollout JEPA
 | 4 | Nomination and independent result audit | Continue only if candidate passes all-control per-game/macro margin, compute, uncertainty and held-out-variant gates; otherwise preserve negative result and kill this objective | Medium/large |
 | 5 | Locked confirmation and multi-game transfer, conditional on nomination | Predeclare primary metric/power/multiplicity/censoring/stopping; independent data/situations; no tuning after unlock | Large |
 
+V2.12 progress: the no-training adapter audit passed for 8×8 Connect Four and Reversi (feature/action dimensions, legal transitions, role alternation, 8-ply samples, and 24 full random episodes each; Reversi forced passes included). `METHOD_SPEC_V212.md` v01 now defines the candidate recursive action-conditioned 1/2/4-ply latent objective and four-ply max-min planner. Independent method/protocol review is the current gate. Passing this review will permit implementation work only; trajectory audit, resource pilot, and a separate pre-fit review are still required before training. No training, outcome data, or V2.12 performance result exists.
+
 Current evidence remains insufficient for a Q1-ready performance claim. The best professor-facing description is a rigorously audited negative development result for two JEPA training recipes (V2.9 and the V2.11 λ increase), plus a tested reproducible benchmark harness; the latter still needs broader games and independent replication before it is a paper contribution.
+
+## V2.12 current gate (2026-10-02)
+
+`METHOD_SPEC_V212.md` v02 is a candidate protocol, not an implementation or fit authorization. It closes reviewer questions about utility perspective, baseline definitions, objective weights, and development-versus-confirmatory claims. The corrected no-training depth-four pilot exceeds the provisional 2-second Reversi8 move cap (rule-only p90 6.037s over 16 roots, before model calls); Connect Four 8x8 p90 is 0.350s over 13 roots. The limited sample diagnoses a compute mismatch but does not estimate worst-case or all-root feasibility. A representative random-weight model-call pilot is still required. Do not fit while the fixed common compute budget is unverified. Revise only from no-outcome measurements, then obtain independent review.
+
+| Gate | Deliverable | Acceptance / kill criterion | Effort |
+| --- | --- | --- | --- |
+| 1 | Reproducible limited unpruned depth-four rules pilot, all variants | Source hash matches output; disclose sampled-root schedule, wall time and node cap; treat as diagnostic only; no outcome data | Small |
+| 2 | Revise compute cap from no-outcome evidence, then random-weight all-arm inference pilot | Freeze an incomplete-depth fallback and common node cap; pilot every game/variant/arm with full call/node/memory/wall accounting; no outcome-based cap changes | Medium |
+| 3 | Independent review of v04 method/compute/sampling manifest | No unresolved P1/P2 protocol blockers; review is not fit authorization until fresh data/split audits pass | Medium |
+| 4 | Adapter/data audit and reproducible trajectory pipeline | Replay, role/action, terminal-mask, deduplication, grouped split and leakage checks pass before any fit | Medium/large |
+| 5 | Separate pre-fit grant and bounded development experiment | Exact method/source/config/data/runtime/schedule hashes, reviewed resources, model-selection only; all controls pass or objective is killed | Large |
+
+The development sample count (20 model seeds and at least 40 paired situations
+per held-out variant) is an exploratory nomination screen, not a power claim.
+V2.12 method draft v03 adds a precise interpretation of policy-mixture outcome
+values, sequential trajectory targets, crossed-bootstrap familywise intervals,
+Holm tests, and measured training-FLOP gates. It awaits independent review and
+is not a training grant. V2.12 keeps high novelty risk: multi-step JEPA-WM,
+value-aligned world models, policy-aware simulator learning, regret-guided
+board-game search control, and learned planning across board games are
+established prior art. The incremental effect of latent matching remains
+untested. See `docs/RELATED_WORK.md`, including the ICLR 2026 RGSC update.
+
+Checkpoint update: v04 freezes the balanced two-game window bank (928 per
+game), shared per-seed minibatch schedule (87 updates across three epochs), and
+correct search-node-visit terminology in the rule-only audit. Related-work
+positioning is aligned with the outcome-mixture max/min heuristic. The
+2.0-second Reversi8 cap remains failed; do not train or match. After independent
+acceptance of v04, the narrowly specified no-training, random-weight
+instrumentation pilot may begin; objective/training code and fitted experiments
+remain gated by novelty, data/split audits, and separate pre-fit review.
