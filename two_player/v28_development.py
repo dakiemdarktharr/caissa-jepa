@@ -59,6 +59,7 @@ EXPECTED_P_HACKING_BOUNDARY = (
     "Any hyperparameter or objective change uses development/selection only, "
     "creates a new versioned specification before its next fit, and leaves "
     "V08 unopened.")
+_DEV09_REPLAY_CACHE: dict[tuple, tuple[list[dict], dict]] = {}
 
 
 def _sha256(path: Path) -> str:
@@ -251,13 +252,28 @@ def load_development_split(dataset_dir, split, approval_path):
         if (hashlib.sha256(raw).hexdigest() != identity.get("sha256")
                 or len(raw) != identity.get("bytes")):
             raise ValueError("Development dataset artifact bytes changed")
-    trajectories = (root / "trajectories.jsonl").read_text(encoding="utf-8").splitlines()
-    rows = [json.loads(line) for line in trajectories]
-    records, actual = v28_data.audit(rows)
+    cache_key = (
+        expected["dataset"]["manifest_sha256"],
+        expected["dataset"]["source_sha256"],
+        expected["dataset"]["records_sha256"],
+        expected["dataset"]["trajectories_sha256"],
+        expected["dataset"]["audit_sha256"],
+        expected["loader_sha256"],
+    )
+    cached = _DEV09_REPLAY_CACHE.get(cache_key)
+    if cached is None:
+        trajectories = (root / "trajectories.jsonl").read_text(
+            encoding="utf-8").splitlines()
+        rows = [json.loads(line) for line in trajectories]
+        records, actual = v28_data.audit(rows)
+    else:
+        records, actual = cached
     if (actual != manifest.get("audit")
             or v28_data.digest(records) != actual.get("records_fingerprint")
             or actual.get("status") != "PASSED"):
         raise ValueError("Development dataset replay audit failed")
+    if cached is None:
+        _DEV09_REPLAY_CACHE[cache_key] = (records, actual)
     locked = [row for row in records if row.get("split") == "locked-final"]
     if locked:
         raise ValueError("Development loader refuses nonempty locked-final data")

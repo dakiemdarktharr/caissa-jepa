@@ -37,6 +37,17 @@ setup tests. Final Python compilation and whitespace/diff checks pass. The
 V2.8 code gate is therefore ready for a fresh dev-only grant, pending final
 check-log inspection and commit.
 
+The one-fit resource pilot (seed 1009, outside the panel seeds) used 74.428 s
+wall and peaked at 790,220,800 bytes working set, below its 2 GiB guard. Most
+time was spent repeating the full data replay audit. A development-loader cache
+keyed by the exact manifest, source, artifact, audit and loader hashes is now
+implemented and independently reviewed; every call still hashes artifacts,
+checks its approval and re-digests cached rows. Focused and full V2.8 suites pass
+41/41 and 90/90 tests. This loader change makes approval V03 stale; issue a new
+version before preflight or fitting. Benchmark the cache in-process and keep the
+one-fit checkpoint out of all model comparisons; never inspect its loss for
+recipe selection.
+
 ### Planning-benefit search update (2026-10-01)
 
 The primary-source follow-up in `docs/RELATED_WORK.md` added offline JEPA

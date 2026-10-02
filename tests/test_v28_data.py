@@ -85,6 +85,14 @@ class V28DataTests(unittest.TestCase):
                 self.assertEqual(fingerprint, "b" * 64)
                 self.assertEqual(len(grant_sha), 64)
                 loader.assert_called_once()
+                validation, _, _ = load_development_split(
+                    data_dir, "validation", approval_path)
+                self.assertEqual(validation, [])
+                loader.assert_called_once()
+                (data_dir / "records.jsonl").write_bytes(records_bytes + b" ")
+                with self.assertRaisesRegex(ValueError, "artifact bytes changed"):
+                    load_development_split(data_dir, "train", approval_path)
+                (data_dir / "records.jsonl").write_bytes(records_bytes)
                 with self.assertRaisesRegex(ValueError, "refuses locked-final"):
                     load_development_split(data_dir, "locked-final", approval_path)
             manifest["audit"]["dataset_fingerprint"] = "e" * 64
