@@ -6,9 +6,10 @@ V2.8 đã hoàn tất so sánh phát triển nhưng chưa cho thấy JEPA vượ
 dynamics. Thử nghiệm đã đóng băng tiếp theo chỉ đổi thời lượng huấn luyện từ
 một lên ba epoch cho ba nhánh ghép cặp, dùng 20 seed, train split DEV09 đã audit
 và một lịch thi đấu phát triển mới. Grant chỉ cho phép fit development/train.
-Pilot tài nguyên đầu tiên dừng trước khởi tạo model vì RAM trống 1,17 GB thấp
-hơn ngưỡng 2 GB; chưa có checkpoint hay trận V2.9. Python 3.11.9 hiện có cũng
-thiếu NumPy 2.4.6 đúng theo lockfile. Đây là phép thử giả thuyết
+Hai pilot tài nguyên dừng trước khởi tạo model vì RAM khả dụng ở process
+preflight chỉ 1,17 GB và 1,32 GB, dưới ngưỡng 2 GB; chưa có checkpoint hay trận
+V2.9. Môi trường Python 3.11.9 + NumPy 2.4.6 đúng lockfile đã sẵn sàng, và 15
+test V2.9 / 96 test V2.8 đều pass trong đó. Đây là phép thử giả thuyết
 underfit; thay đổi thời lượng tự nó không phải novelty thuật toán. Ngưỡng
 pass/fail tự động được ghi trong
 `V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md`. Kể cả pass, kết quả chỉ đề cử

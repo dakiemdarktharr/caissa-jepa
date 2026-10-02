@@ -17,14 +17,14 @@ are in `docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md` and
 `docs/validation/V29_DEV_FIT_PANEL_V01.json`. Before any fit: finish independent
 review, run regression, commit/push the protocol, issue a new explicit
 development grant after dataset re-audit, and pass the bounded local runtime
-pilot. The fresh grant has been issued, but pilot 01 stopped before fitting:
-available RAM was 1.17 GB against a 2 GB preflight gate. Its ignored status
-receipt is `chess_data/v29_fit_compute_pilot_01/pilot_status.json`; preserve it
-and use a fresh output root if resources later recover. The system Python 3.11.9
-also lacks NumPy; the bundled Python 3.12 has 2.3.5, while the research lock
-requires 2.4.6. After memory recovers, prepare the ignored project `.venv` with
-locked NumPy 2.4.6 before a fresh pilot. Do not lower the gate, use the
-mismatched runtime, read training metrics, or open V08.
+pilot. The fresh grant has been issued, but two pilots stopped before fitting:
+RAM was 1.17 GB and 1.32 GB at process preflight against the 2 GB gate. Their
+ignored status receipts are under `chess_data/v29_fit_compute_pilot_01/` and
+`pilot_02/`; preserve them and use a fresh output root if resources later
+recover. The ignored `.venv` now has locked Python 3.11.9 + NumPy 2.4.6, and
+15 focused V2.9 / 96 V2.8 tests pass under it. Wait for stable memory above the
+gate. Do not lower the gate, use the mismatched runtime, read training metrics,
+or open V08.
 
 The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
 macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall

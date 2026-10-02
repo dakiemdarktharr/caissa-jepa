@@ -13,10 +13,11 @@ development comparison on Connect4-6x7 and Reversi6. JEPA did not show an
 observed advantage over task-value-dynamics (macro score contrast −0.01875;
 unadjusted 95% seed-cluster interval [−0.08248, 0.04498]). The next V2.9 probe
 is frozen and has a development-only train-split grant, but no fit or match has
-run: the first pilot stopped at 1.17 GB available RAM (below the 2 GB gate),
-and the installed Python 3.11.9 lacks the pinned NumPy 2.4.6. The ignored
-project environment must match the research lock before another pilot. V2.9
-changes only matched training duration from one to three epochs. This tests an under-training explanation;
+run: two pilots stopped before fitting as available RAM varied below the 2 GB
+gate (1.17 GB and 1.32 GB at process preflight). An ignored Python 3.11.9
+environment with pinned NumPy 2.4.6 is now ready, and V2.9's 15 tests plus
+V2.8's 96-test regression pass there. V2.9 changes only matched training
+duration from one to three epochs. This tests an under-training explanation;
 duration alone is not an algorithmic novelty claim. See [the V2.9 amendment](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md),
 [panel specification](docs/validation/V29_DEV_FIT_PANEL_V01.json), and
 [current Ground Truth](GROUND_TRUTH.md). A positive development screen would
@@ -167,7 +168,7 @@ V2.4 is a representation diagnostic rather than a strength comparison.
 | [V2.4 / order probe](docs/METHOD_V24_ORDER_PROBE.md) | Reused the 18 V2.3 checkpoints at both capacities; no new training. | Largest median order-bound ratio 0.002787, below the 0.10 materiality threshold. The proposed obstruction was not established. |
 | [V2.5 / grid05](docs/METHOD_V25.md) | Seven families; encoder 198→128→64; transition hidden 50, latent 64, 65 actions; batch 32 complete-reply groups; auxiliary coefficient 0.1; 160 epochs; rates 0.0003/0.001; 3 seeds; 42 runs. | Raw-tail (selected lr 0.0003) exact regret 0.202446 versus direct 0.203775 (95% interval for improvement −0.023899 to 0.026938); hybrid regret was worse. Not promoted. |
 | [V2.8 / supervised V02](docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md) | Development-only, 60 one-epoch fits; 20 matched seeds × reply-JEPA, task-value-dynamics, direct-leaf on audited DEV09. Shared two-ply max-min planner, 2 s / 500,000-transition caps. | 160 blocks / 320 games completed. JEPA−task-value macro −0.01875 (95% seed-cluster CI [−0.08248, 0.04498]); not evidence of advantage. See [analysis](docs/validation/V28_DEVELOPMENT_MATCH_ANALYSIS_V01.json). |
-| [V2.9 / three-epoch probe](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md) | Frozen pre-fit duration ablation: 60 fresh fits (20 seeds × 3 arms), three epochs, then 160 paired blocks / 320 games. Only duration changes. | Development-only grant issued. **Not yet fitted or evaluated**: preflight found 1.17 GB available RAM (2 GB gate) and Python 3.11.9 without locked NumPy 2.4.6. Automatic nomination gates are frozen; duration alone is not novelty or superiority. |
+| [V2.9 / three-epoch probe](docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md) | Frozen pre-fit duration ablation: 60 fresh fits (20 seeds × 3 arms), three epochs, then 160 paired blocks / 320 games. Only duration changes. | Development-only grant issued. **Not yet fitted or evaluated**: two preflights saw 1.17 GB and 1.32 GB RAM (2 GB gate). Locked Python 3.11.9 + NumPy 2.4.6 is ready; tests pass. Automatic nomination gates are frozen; duration alone is not novelty or superiority. |
 
 ### Figures
 
