@@ -17,7 +17,11 @@ are in `docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md` and
 `docs/validation/V29_DEV_FIT_PANEL_V01.json`. Before any fit: finish independent
 review, run regression, commit/push the protocol, issue a new explicit
 development grant after dataset re-audit, and pass the bounded local runtime
-pilot. Do not read training metrics or open V08.
+pilot. The fresh grant has been issued, but pilot 01 stopped before fitting:
+available RAM was 1.17 GB against a 2 GB preflight gate. Its ignored status
+receipt is `chess_data/v29_fit_compute_pilot_01/pilot_status.json`; preserve it
+and use a fresh output root if resources later recover. Do not lower the gate,
+read training metrics, or open V08.
 
 The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
 macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall
