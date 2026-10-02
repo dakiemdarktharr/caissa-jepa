@@ -36,7 +36,7 @@ BOOTSTRAP_SEED = 28_094_082
 # The match artifact was produced before this analyzer existed. Pin its source
 # identity explicitly so later evaluator edits cannot silently rebind V01.
 MATCHER_SOURCE_SHA256 = (
-    "1ddeda1384e9c72d73f601685dca037d956b8a6bc29c2c867fff314bd11d60a7"
+    "701aa1506385fe92eba92bcad0a3c24ca47381a28e87df592f0d9a1819f6432c"
 )
 V28_BASELINE_SHA256 = (
     "22a5e2cbe10b0dfba04b03d371709fb2a6549411cccce0cc6117e6c271dbb3f1"

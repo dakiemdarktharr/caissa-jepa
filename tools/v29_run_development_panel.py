@@ -88,6 +88,8 @@ def run_panel(dataset_dir, approval_path, output_root):
     model_sha = _sha256_source(ROOT / "two_player" / "v28_model.py")
     source_sha = _sha256_source(ROOT / "two_player" / "v28_data.py")
     panel_runner_sha = _sha256_source(Path(__file__))
+    supervisor_sha = _sha256_source(
+        ROOT / "tools" / "v29_development_panel_supervisor.py")
     lock_path = ROOT / "requirements-research-lock.txt"
     if not lock_path.is_file():
         raise FileNotFoundError("research runtime lockfile is required")
@@ -108,6 +110,7 @@ def run_panel(dataset_dir, approval_path, output_root):
         "model_code_sha256": model_sha,
         "trainer_code_sha256": trainer_sha,
         "panel_runner_code_sha256": panel_runner_sha,
+        "panel_supervisor_code_sha256": supervisor_sha,
         "data_audit_code_sha256": source_sha,
         "requirements_lock_sha256": _sha256_source(lock_path),
         "allowed_training_split": "train",

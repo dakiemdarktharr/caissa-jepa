@@ -638,6 +638,8 @@ def _validate_completed_development_ledger(root, panels):
                 ROOT / "two_player" / "v28_train.py")
             or ledger.get("panel_runner_code_sha256") != _sha_source(
                 ROOT / "tools" / "v29_run_development_panel.py")
+            or ledger.get("panel_supervisor_code_sha256") != _sha_source(
+                ROOT / "tools" / "v29_development_panel_supervisor.py")
             or ledger.get("data_audit_code_sha256") != _sha_source(
                 ROOT / "two_player" / "v28_data.py")
             or not requirements_lock.is_file()

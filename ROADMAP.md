@@ -14,17 +14,11 @@ The frozen panel covers 20 paired checkpoint seeds × 3 arms (60 fresh fits, 87
 updates each), followed by 160 paired blocks / 320 games on Connect4 gravity
 6×7 and Reversi6. The exact methods, schedule, and automatic nomination gates
 are in `docs/V29_THREE_EPOCH_DEVELOPMENT_AMENDMENT_01.md` and
-`docs/validation/V29_DEV_FIT_PANEL_V01.json`. Before any fit: finish independent
-review, run regression, commit/push the protocol, issue a new explicit
-development grant after dataset re-audit, and pass the bounded local runtime
-pilot. The fresh grant has been issued, but two pilots stopped before fitting:
-RAM was 1.17 GB and 1.32 GB at process preflight against the 2 GB gate. Their
-ignored status receipts are under `chess_data/v29_fit_compute_pilot_01/` and
-`pilot_02/`; preserve them and use a fresh output root if resources later
-recover. The ignored `.venv` now has locked Python 3.11.9 + NumPy 2.4.6, and
-15 focused V2.9 / 96 V2.8 tests pass under it. Wait for stable memory above the
-gate. Do not lower the gate, use the mismatched runtime, read training metrics,
-or open V08.
+`docs/validation/V29_DEV_FIT_PANEL_V01.json`.
+
+The development grant is issued. Two initial resource preflights stopped before fitting at 1.17 GB and 1.32 GB; pilot 03 then passed four 20-second stable-memory checks and completed one three-epoch JEPA fit in 65.619 s wall / 60.469 s CPU, peak working set 859 MB. It is compute-only evidence. Preserve all three pilot receipts and use a new root for the 60-fit panel. Twenty focused V2.9 tests and 96 V2.8 regression tests pass under bundled Python 3.12.14 / NumPy 2.3.5; `py_compile` and `git diff --check` pass. The frozen research lock requires Python 3.11.9 / NumPy 2.4.6, but the project venv launcher currently fails because its configured base interpreter is missing. Do not start the panel until the exact locked runtime is restored or the protocol is formally revised and re-reviewed.
+
+The Windows Job Object supervisor passed independent `gpt-6-luna/high` review with no P1/P2 findings. It requires a parent release handshake after child assignment, caps per-process and per-job commit plus per-process user CPU, enforces a wall cap, and samples a reactive free-RAM guard each second. The 1.3 GB commit cap and 4-hour CPU cap are protective policy choices, not empirically calibrated thresholds; pilot 03's working-set measurement does not establish peak commit. Require four fresh stable readings above 2 GB before running the panel. Do not lower the gate, read training metrics, or open V08.
 
 The nomination screen requires JEPA−task-value ≥+0.05 on each game and the
 macro, improvement of ≥+0.05 over V2.8 on each game, hash-bound summed fit wall

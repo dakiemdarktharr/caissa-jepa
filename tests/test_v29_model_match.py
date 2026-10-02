@@ -17,6 +17,7 @@ class V29DevelopmentMatcherTests(unittest.TestCase):
             (root / "two_player" / "games.py").read_bytes()).hexdigest()
         self.assertEqual(matcher_hash, analysis.MATCHER_SOURCE_SHA256)
         self.assertEqual(rules_hash, analysis.GAME_RULES_SOURCE_SHA256)
+        self.assertTrue((root / "tools" / "v29_development_panel_supervisor.py").is_file())
 
     def test_locked_schedule_access_is_blocked(self):
         with patch.object(sys, "argv", ["v29_model_match.py", "unused", "unused.jsonl"]):
