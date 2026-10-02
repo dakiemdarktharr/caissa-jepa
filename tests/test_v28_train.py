@@ -11,7 +11,8 @@ import numpy as np
 from tests.test_v28_model import observed_root
 from two_player.v28_model import Config, METHOD_VERSION, Model
 from two_player.v28_train import (RunConfig, _canonical_sha256, _train_epoch,
-                                  _runtime_identity, train_dataset)
+                                  _runtime_identity, train_dataset,
+                                  train_development_dataset)
 
 
 class V28TrainRuntimeTests(unittest.TestCase):
@@ -77,6 +78,33 @@ class V28TrainRuntimeTests(unittest.TestCase):
         for key in before:
             np.testing.assert_array_equal(model.params[key], before[key])
 
+    def test_development_fit_has_separate_scope_and_approval_identity(self):
+        records = [observed_root("reversi6")]
+        manifest = {"audit": {"audit_passed": True},
+                    "artifacts": {"records.jsonl": {"sha256": "a" * 64}},
+                    "training_approved": False}
+        config = Config(variant="reply-jepa", seed=23, latent=4, batch_size=2)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data_dir = root / "data"
+            data_dir.mkdir()
+            (data_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            checkpoint = root / "development.npz"
+            with patch("two_player.v28_train.load_development_split",
+                       return_value=(records, "b" * 64, "c" * 64)) as loader:
+                result = train_development_dataset(
+                    data_dir, checkpoint, approval_path=root / "approval.json",
+                    model_config=config, run_config=RunConfig(epochs=1, shuffle_seed=91))
+            loader.assert_called_once_with(data_dir, "train", root / "approval.json")
+            receipt = json.loads(checkpoint.with_suffix(".npz.receipt.json")
+                                 .read_text(encoding="utf-8"))
+            self.assertEqual(result["fit_scope"], "development-only")
+            self.assertEqual(receipt["fit_scope"], "development-only")
+            self.assertEqual(receipt["development_approval_sha256"], "c" * 64)
+            self.assertEqual(receipt["effective_run"]["fit_scope"], "development-only")
+            self.assertFalse(json.loads((data_dir / "manifest.json").read_text())[
+                "training_approved"])
+
     def test_resume_matches_uninterrupted_and_writes_hashed_receipt(self):
         records = [observed_root("connect4-gravity-6x7"),
                    observed_root("reversi6"), observed_root("connect4-gravity-6x7")]
@@ -109,13 +137,12 @@ class V28TrainRuntimeTests(unittest.TestCase):
                                       run_config=run_two)
                 train_dataset(data_dir, resumed, model_config=config,
                               run_config=run_two, resume=True)
-            identity = {"dataset_sha256": "a" * 64,
-                        "audit_sha256": _canonical_sha256(manifest["audit"]),
-                        "run_config_sha256": _canonical_sha256(
-                            {"method": METHOD_VERSION, "model": asdict(config),
-                             "run": asdict(run_two), "runtime": _runtime_identity(),
-                             "dataset_fingerprint": "b" * 64}),
-                        "split": "train"}
+            receipt_path = resumed.with_suffix(".npz.receipt.json")
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            self.assertEqual(receipt["run_config_sha256"],
+                             _canonical_sha256(receipt["effective_run"]))
+            identity = {key: receipt[key] for key in
+                        ("dataset_sha256", "audit_sha256", "run_config_sha256", "split")}
             left = Model.load(uninterrupted, config, identity)
             right = Model.load(resumed, config, identity)
             self.assertEqual(left.step, right.step)
@@ -123,13 +150,12 @@ class V28TrainRuntimeTests(unittest.TestCase):
                 for name in getattr(left, group_name):
                     np.testing.assert_array_equal(getattr(left, group_name)[name],
                                                   getattr(right, group_name)[name])
-            receipt_path = resumed.with_suffix(".npz.receipt.json")
-            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
             self.assertEqual(receipt["checkpoint_sha256"],
                              hashlib.sha256(resumed.read_bytes()).hexdigest())
             self.assertEqual(receipt["completed_epochs"], 2)
             self.assertIsNone(receipt["evaluation"])
             self.assertEqual(receipt["effective_run"]["runtime"], _runtime_identity())
+            self.assertEqual(receipt["fit_scope"], "approved-training")
             self.assertEqual(len(receipt["effective_run"]["runtime"][
                 "requirements_lock_sha256"]), 64)
 

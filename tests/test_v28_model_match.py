@@ -10,9 +10,13 @@ from unittest.mock import patch
 from two_player.games import BoardGame
 from two_player.v28_model import Config, METHOD_VERSION
 from tools.v28_match_power import CHECKPOINT_SEEDS, make_schedule
+from two_player.v28_development import (EXPECTED_DATA, EXPECTED_MODEL_CONFIG,
+                                        development_schedule)
 from tools.v28_model_match import (_play_game, _verify_game, play_paired_block,
                                    _load_locked_schedule, _validate_schedule,
-                                   run_schedule, PROTOCOL, LOCKED_BUDGET)
+                                   _validate_completed_development_ledger,
+                                   load_model_policy, run_schedule, PROTOCOL,
+                                   LOCKED_BUDGET)
 
 
 class FixedPolicy:
@@ -27,6 +31,35 @@ class FixedPolicy:
 
 
 class V28ModelMatchTests(unittest.TestCase):
+    def test_model_loader_rejects_receipt_run_metadata_tampering(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            checkpoint = root / "checkpoint.npz"
+            checkpoint.write_bytes(b"fixture checkpoint")
+            receipt = {
+                "schema": "caissa-jepa-v28-train-receipt-v1",
+                "method": METHOD_VERSION,
+                "evaluation": None,
+                "checkpoint_sha256": hashlib.sha256(
+                    checkpoint.read_bytes()).hexdigest(),
+                "fit_scope": "approved-training",
+                "effective_run": {"method": METHOD_VERSION,
+                                  "run": {"epochs": 1, "shuffle_seed": 701}},
+                "run_config_sha256": "0" * 64,
+                "dataset_fingerprint": "d" * 64,
+            }
+            receipt_path = root / "receipt.json"
+            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "run-configuration hash"):
+                load_model_policy(checkpoint, receipt_path)
+
+    def test_development_match_requires_completed_panel_ledger(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(ValueError, "completed panel.json"):
+                _validate_completed_development_ledger(directory, {})
+        with self.assertRaisesRegex(ValueError, "completed fit-panel ledger"):
+            run_schedule(development_schedule(), {}, "unused.jsonl")
+
     def test_primary_schedule_is_complete_and_hash_guarded(self):
         schedule = make_schedule(matches_per_checkpoint=1)
         self.assertEqual(len(schedule), 80)
@@ -127,29 +160,39 @@ class V28ModelMatchTests(unittest.TestCase):
                 panels[seed] = {}
                 for variant in ("reply-jepa", "task-value-dynamics", "direct-leaf"):
                     policy = FixedPolicy(variant)
-                    policy.config = Config(variant=variant, seed=seed, latent=4)
+                    policy.config = Config(variant=variant, seed=seed,
+                                           **EXPECTED_MODEL_CONFIG)
                     policy.step = 1
                     policy.training_state = {"completed_epochs": 1, "history": []}
                     policy._checkpoint_path = str(checkpoint)
                     policy._training_receipt_path = str(receipt_path)
                     policy._training_receipt = {
-                        "dataset_fingerprint": "d" * 64,
-                        "dataset_sha256": "a" * 64,
-                        "audit_sha256": "b" * 64,
+                        "dataset_fingerprint": EXPECTED_DATA["dataset_fingerprint"],
+                        "dataset_sha256": EXPECTED_DATA["records_sha256"],
+                        "audit_sha256": EXPECTED_DATA["audit_sha256"],
+                        "split": "train",
                         "run_config_sha256": "c" * 64,
                         "model_code_sha256": "e" * 64,
                         "trainer_code_sha256": "f" * 64,
+                        "fit_scope": "development-only",
+                        "development_approval_sha256": "9" * 64,
+                        "development_approval_path": str(root / "approval.json"),
                         "optimizer_step": 1,
                         "completed_epochs": 1,
                         "effective_run": {"method": METHOD_VERSION,
                                            "model": asdict(policy.config),
-                                           "run": {"epochs": 1, "shuffle_seed": 1},
+                                           "run": {"epochs": 1, "shuffle_seed": 701},
+                                           "fit_scope": "development-only",
+                                           "development_approval_sha256": "9" * 64,
                                            "runtime": {"python_version": "test"},
-                                           "dataset_fingerprint": "d" * 64}}
+                                           "dataset_fingerprint": EXPECTED_DATA[
+                                               "dataset_fingerprint"]}}
                     panels[seed][variant] = policy
-            schedule = make_schedule(matches_per_checkpoint=1)
+            schedule = development_schedule()
             output = root / "dev_matches.jsonl"
-            receipt = run_schedule(schedule, panels, output)
+            with patch("tools.v28_model_match._validate_completed_development_ledger"):
+                receipt = run_schedule(schedule, panels, output,
+                                       development_panel_root=root)
             self.assertEqual(receipt["block_count"], len(schedule))
             self.assertFalse(receipt["confirmatory"])
             rows = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
@@ -159,6 +202,10 @@ class V28ModelMatchTests(unittest.TestCase):
             saved = json.loads(output.with_suffix(".jsonl.receipt.json")
                                .read_text(encoding="utf-8"))
             self.assertEqual(saved["artifact_sha256"], receipt["artifact_sha256"])
+
+    def test_development_match_rejects_balanced_but_unfrozen_schedule(self):
+        with self.assertRaisesRegex(ValueError, "hash-pinned exploratory schedule"):
+            run_schedule(make_schedule(matches_per_checkpoint=1), {}, "unused.jsonl")
 
 
 if __name__ == "__main__":

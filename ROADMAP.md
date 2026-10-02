@@ -2,6 +2,41 @@
 
 ## Latest evaluator milestone (2026-10-01)
 
+### Development-fit gate correction (2026-10-02)
+
+The V03 9,600-block model-blind proxy run terminated without a receipt after
+3,581 outcome rows. An independent prefix audit parsed and replayed all
+3,581/3,581 rows with no mismatch; the final receipt is absent, the supervisor
+sidecar is stale, and the termination cause is unknown. Preserve the partial
+unchanged. Its two seats use the same bounded-search policy, so its variance
+does not estimate JEPA-versus-learned-control variance. The full proxy schedule
+is retired as a development-fit prerequisite. See
+`docs/V28_MODELBLIND_V03_INTERRUPTION_AUDIT_01.md`.
+
+The pre-outcome amendment `docs/V28_DEVELOPMENT_FIT_AMENDMENT_01.md` now
+allows bounded fits from the DEV09 **train split only**, after its strict audit
+and the reviewed V02 objective. Implement an explicit development-only
+authorization and receipt path while preserving `training_approved: false`
+and the fail-closed production trainer. First fit matched three-arm seed
+panels; diagnose held-out validation and choose recipes on the separate
+selection split. Use only the disjoint `--development` schedule for subsequent
+development matches. Keep the committed V08 schedule locked until recipe,
+compute, review, multiplicity and power gates are frozen anew.
+
+Before the first fit, an independent review found and the implementation now
+closes protocol gaps: the development grant is pinned to the exact DEV09
+fingerprints and directory; every panel-spec field and the 160-block schedule
+hash are validated; receipt effective-run metadata is recomputed against its
+configuration hash; and the match API requires a completed 60-checkpoint panel
+ledger whose checkpoint and receipt paths/bytes match the actual models. The
+reviewer found no remaining P1/P2 after these repairs. The panel runner does not
+resume after hard interruption; preserve the incomplete ledger and use a fresh
+output root. The V2.8 regression passes **90/90** tests; the full repository run
+passed 396/416 and had 20 errors from missing `PySide6` in legacy GUI/trainer
+setup tests. Final Python compilation and whitespace/diff checks pass. The
+V2.8 code gate is therefore ready for a fresh dev-only grant, pending final
+check-log inspection and commit.
+
 ### Planning-benefit search update (2026-10-01)
 
 The primary-source follow-up in `docs/RELATED_WORK.md` added offline JEPA

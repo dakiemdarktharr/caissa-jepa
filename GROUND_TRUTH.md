@@ -2,6 +2,16 @@
 
 Updated: 2026-10-01. Read this page first when resuming. Statements below distinguish inspected facts, historical receipts, proposed work, and research evidence.
 
+## Continuation delta (2026-10-02; V2.8 development gate hardening)
+
+- User-directed V2 target remains strict: demonstrate JEPA advantage over matched non-JEPA baselines before promoting a candidate. V2.8 DEV09 fits/matches are only exploratory development/model-selection evidence; no superiority, transfer, equilibrium, exploitability, novelty, or Q1-readiness claim is supported.
+- Re-reviewed DEV09 fit-gate code after independent review found receipt-hash, ledger, and model-to-ledger binding gaps. Current code binds the grant to the exact `chess_data/v28_data_dev09` path and pinned manifest/source/dataset/audit/records/trajectories hashes; validates every frozen panel field; forces the hash-pinned 160-block development schedule and inference budget; verifies `effective_run` against the trainer's canonical `run_config_sha256`; requires a completed 60-row `panel.json` ledger; and binds every model checkpoint and receipt path/hash to that ledger. The user-approved independent reviewer (`gpt-6-luna/high`) reports no remaining P1/P2 in the supported CLI/API path. Hard-interruption reconciliation is not implemented; partial ledgers are preserved and a retry must use a fresh output root.
+- Focused V2.8 regression passed 41 tests in 16.196 seconds after the receipt/ledger hardening; the broader V2.8 suite then passed **90 tests in 30.956 seconds** after the final direct-API ledger binding. The independent `gpt-6-luna/high` reviewer reports no remaining P1/P2 in the supported CLI/API flow. Full repository regression ran 416 tests in 160.890 seconds: 396 passed and 20 errored because the selected Python runtime lacks `PySide6` for legacy GUI/trainer setup tests. No V2.8 test failed. Final compile and diff checks were rerun after the last source edit; see the continuation check log before reporting exact status.
+- No fresh approval was issued, no training fit was started, and no checkpoint or learned-model outcome exists in this continuation. The old ignored DEV09 approval at `chess_data/v28_data_dev09_approval.json` is stale after source/specification changes and is retained unchanged. V03 remains an incomplete model-blind proxy prefix; it is not training or comparative evidence.
+- Working tree contains the uncommitted V2.8 development authorization/matcher/panel changes plus earlier uncommitted V2.8 trainer/docs changes. Branch inventory at continuation start was local `main` and `origin/main` only, both at `186f14a4f098c4e78ed2a50abaadaa5bad0a0cd3`; remote is `origin` at `https://github.com/dakiemdarktharr/caissa-jepa.git`. Do not commit/push until full regression and final review complete.
+- User's latest UI instruction is to run shell/PowerShell commands hidden in the background. Obsidian vault path is the previously discovered `D:\notes\vault_1\Caissa-JEPA\`; the desktop Obsidian page was not reopened in this continuation to keep the user's screen free. Earlier hash verification and visible reading are recorded in the history below. Mirror this new continuation delta after the milestone is stable.
+- Next gates: finish final check-log inspection; commit/push protocol hardening to `main`; issue a new uniquely named development-only approval (preserving V01); run loader preflight; then launch the frozen 60-fit panel at bounded local priority. Do not read V08 outcomes.
+
 ## Continuation delta (2026-10-01; follows the earlier latest-session delta)
 
 - The targeted search updated `docs/RELATED_WORK.md` and `ROADMAP.md` with a decision-focused prior-art comparison and stronger JEPA falsification panel. Initial interim Obsidian sync hashes and superseded vault copies are retained in the dated `_sync_history/2026-10-01-v28-v03-lit-update*` folders; see the latest verified sync record below for current files.
@@ -1232,3 +1242,35 @@ hash, and the working tree was clean. Only `main` remains locally and on the
 remote. At that prior session boundary, the four-hour-capped model-blind proxy
 run was still in progress; the later V02 interruption is recorded in the latest
 session delta and `docs/V28_MODELBLIND_V02_INTERRUPTION_AUDIT_01.md`.
+
+### V03 interruption and development-fit gate correction (2026-10-02)
+
+The repository was rechecked at `main`, clean and matching `origin/main` at
+`186f14a4f098c4e78ed2a50abaadaa5bad0a0cd3`; only `main` exists locally and
+remotely. The V03 supervisor, runner and watcher processes were absent. The
+temporary output contains 3,581 outcome rows plus a manifest for the planned
+9,600-block schedule. A separate audit parsed and replayed all 3,581 rows,
+matched their ordered schedule IDs and fields, found zero failures, and wrote
+`%TEMP%\caissa_v03_prefix_audit.json`. Partial artifact size/hash are recorded
+in `docs/V28_MODELBLIND_V03_INTERRUPTION_AUDIT_01.md`. No completion receipt
+exists; supervisor status is stale `running`; termination cause is unknown.
+The partial was not resumed or appended to and its outcome statistics were not
+used for selection.
+
+Review of the pilot objective found that its two seats use the same proxy
+policy; its variance cannot power the learned JEPA-versus-control contrast.
+Before viewing any learned result, `docs/V28_DEVELOPMENT_FIT_AMENDMENT_01.md`
+retired that full proxy run as a development-training prerequisite and opened
+a development-only fit gate on the already-passed DEV09 audit. The amendment
+requires a separately fingerprinted authorization, train-split-only fitting,
+development-scoped receipts/checkpoints, held-out diagnostics and the disjoint
+development schedule. It preserves the false production-training flag and
+keeps V08 locked. No development fit or model outcome has run yet.
+
+The active user instructions continue: work toward a method that beats strong
+matched non-JEPA controls; preserve negative evidence; make no Q1 promise;
+run shell/PowerShell work in the background to leave the display available;
+retain only `main`, commit verified milestones and push without force. The
+Obsidian vault previously verified is `D:\notes\vault_1\Caissa-JEPA\`; these
+new notes must be copied there with the existing relative structure and
+verified before ending this research continuation.

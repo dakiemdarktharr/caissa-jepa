@@ -25,6 +25,8 @@ if str(ROOT) not in sys.path:
 
 from two_player.games import BoardGame
 from two_player.v28_model import Config, METHOD_VERSION, Model, _model_code_sha256
+from two_player.v28_development import (EXPECTED_DATA, EXPECTED_MODEL_CONFIG,
+                                        EXPECTED_RUN_CONFIG, development_schedule)
 from tools.v28_match_power import (CHECKPOINT_SEEDS, COMPARISONS, GAMES,
                                    make_schedule)
 from two_player import v28_train
@@ -113,6 +115,45 @@ def load_model_policy(checkpoint_path, receipt_path):
     effective = receipt.get("effective_run")
     if not isinstance(effective, dict) or effective.get("method") != METHOD_VERSION:
         raise ValueError("receipt lacks the effective V2.8 run identity")
+    if _json_sha(effective) != receipt.get("run_config_sha256"):
+        raise ValueError("receipt effective run does not match its run-configuration hash")
+    if effective.get("dataset_fingerprint") != receipt.get("dataset_fingerprint"):
+        raise ValueError("receipt effective run dataset fingerprint mismatch")
+    if receipt.get("fit_scope") != effective.get("fit_scope"):
+        raise ValueError("receipt fit scope does not match effective run identity")
+    if (effective.get("fit_scope") == "development-only"
+            and receipt.get("development_approval_sha256") !=
+            effective.get("development_approval_sha256")):
+        raise ValueError("development receipt approval hash mismatch")
+    if effective.get("fit_scope") == "development-only":
+        approval_path = effective.get("development_approval_path")
+        if (not isinstance(approval_path, str) or not Path(approval_path).is_file()
+                or _sha_file(approval_path) != effective.get(
+                    "development_approval_sha256")):
+            raise ValueError("development approval artifact is missing or changed")
+        approval = json.loads(Path(approval_path).read_text(encoding="utf-8"))
+        data_identity = approval.get("dataset", {})
+        from two_player import v28_development as development
+        approval_code_current = (
+            approval.get("schema") == development.APPROVAL_SCHEMA
+            and approval.get("protocol") == development.PROTOCOL
+            and approval.get("scope") == "development-only"
+            and approval.get("training_approved_manifest") is False
+            and approval.get("loader_sha256") == development._sha256_source(
+                Path(development.__file__))
+            and approval.get("amendment_sha256") == development._sha256_source(
+                development.AMENDMENT)
+            and approval.get("panel_spec_sha256") == development._sha256_source(
+                development.PANEL_SPEC))
+        if not approval_code_current:
+            raise ValueError("development approval is stale for current review artifacts")
+        if data_identity != development.EXPECTED_DATA:
+            raise ValueError("development approval is not bound to pinned DEV09 data")
+        if (data_identity.get("records_sha256") != receipt.get("dataset_sha256")
+                or data_identity.get("audit_sha256") != receipt.get("audit_sha256")
+                or data_identity.get("dataset_fingerprint") !=
+                receipt.get("dataset_fingerprint")):
+            raise ValueError("development approval does not authorize receipt data")
     trainer_sha = hashlib.sha256(
         Path(v28_train.__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     if (receipt.get("model_code_sha256") != _model_code_sha256()
@@ -405,7 +446,7 @@ def play_paired_block(schedule_row, jepa, control, *, max_move_seconds=MAX_MOVE_
 
 def run_schedule(schedule, policy_panels, output_path, *, max_move_seconds=MAX_MOVE_SECONDS,
                  max_nodes=MAX_NODES_PER_MOVE, confirmatory=False,
-                 commitment_sha256=None):
+                 commitment_sha256=None, development_panel_root=None):
     """Run a supplied complete schedule; publish only a full atomic output."""
     _validate_schedule(schedule)
     if (not math.isfinite(max_move_seconds) or max_move_seconds <= 0
@@ -415,6 +456,10 @@ def run_schedule(schedule, policy_panels, output_path, *, max_move_seconds=MAX_M
         raise ValueError("confirmatory must be a boolean")
     if confirmatory and schedule != make_schedule():
         raise ValueError("confirmatory mode requires the exact frozen locked schedule")
+    if not confirmatory and schedule != development_schedule():
+        raise ValueError("development mode requires the exact hash-pinned exploratory schedule")
+    if not confirmatory and development_panel_root is None:
+        raise ValueError("development match requires its completed fit-panel ledger")
     if confirmatory and (not isinstance(commitment_sha256, str)
                          or len(commitment_sha256) != 64
                          or any(character not in "0123456789abcdef" for character in
@@ -423,7 +468,17 @@ def run_schedule(schedule, policy_panels, output_path, *, max_move_seconds=MAX_M
     if confirmatory and (max_move_seconds != LOCKED_BUDGET["max_move_seconds"]
                          or max_nodes != LOCKED_BUDGET["max_nodes_per_move"]):
         raise ValueError("confirmatory inference budget differs from frozen protocol")
+    if not confirmatory and (max_move_seconds != LOCKED_BUDGET["max_move_seconds"]
+                             or max_nodes != LOCKED_BUDGET["max_nodes_per_move"]):
+        raise ValueError("development inference budget differs from frozen protocol")
     _validate_panels(policy_panels)
+    fit_scopes = {model._training_receipt.get("fit_scope")
+                  for panel in policy_panels.values() for model in panel.values()}
+    expected_scope = "approved-training" if confirmatory else "development-only"
+    if fit_scopes != {expected_scope}:
+        raise ValueError(f"{expected_scope} checkpoints are required for this schedule mode")
+    if not confirmatory:
+        _validate_completed_development_ledger(development_panel_root, policy_panels)
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     temporary = output_path.with_suffix(output_path.suffix + ".tmp")
@@ -545,6 +600,82 @@ def _panel_from_root(root):
     return panels
 
 
+def _sha_source(path):
+    return hashlib.sha256(Path(path).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def _validate_completed_development_ledger(root, panels):
+    """Require the immutable panel receipt before development matches begin."""
+    from two_player.v28_development import (PANEL_SPEC, validate_development_spec)
+
+    root = Path(root).resolve()
+    ledger_path = root / "panel.json"
+    if not ledger_path.is_file():
+        raise ValueError("development match requires a completed panel.json ledger")
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    spec = validate_development_spec()
+    requirements_lock = ROOT / "requirements-research-lock.txt"
+    approval_path = Path(ledger.get("approval_path", "")).resolve()
+    expected_runs = {(seed, variant) for seed in CHECKPOINT_SEEDS
+                     for variant in ("reply-jepa", "task-value-dynamics", "direct-leaf")}
+    rows = ledger.get("runs")
+    if (ledger.get("schema") != "caissa-jepa-v28-development-fit-panel-result-v01"
+            or ledger.get("status") != "completed"
+            or ledger.get("expected_runs") != len(expected_runs)
+            or not isinstance(rows, list) or len(rows) != len(expected_runs)
+            or ledger.get("method") != METHOD_VERSION
+            or ledger.get("panel_spec_sha256") != _sha_source(PANEL_SPEC)
+            or ledger.get("dataset_manifest_sha256") != EXPECTED_DATA["manifest_sha256"]
+            or ledger.get("dataset_fingerprint") != EXPECTED_DATA["dataset_fingerprint"]
+            or ledger.get("records_sha256") != EXPECTED_DATA["records_sha256"]
+            or ledger.get("audit_sha256") != EXPECTED_DATA["audit_sha256"]
+            or ledger.get("model_code_sha256") != _sha_source(
+                ROOT / "two_player" / "v28_model.py")
+            or ledger.get("trainer_code_sha256") != _sha_source(
+                ROOT / "two_player" / "v28_train.py")
+            or ledger.get("panel_runner_code_sha256") != _sha_source(
+                ROOT / "tools" / "v28_run_development_panel.py")
+            or ledger.get("data_audit_code_sha256") != _sha_source(
+                ROOT / "two_player" / "v28_data.py")
+            or not requirements_lock.is_file()
+            or ledger.get("requirements_lock_sha256") != _sha_source(requirements_lock)
+            or not approval_path.is_file()
+            or _sha_file(approval_path) != ledger.get("approval_sha256")):
+        raise ValueError("development fit ledger is incomplete or stale")
+    seen = set()
+    approval_sha = ledger.get("approval_sha256")
+    if (not isinstance(approval_sha, str) or len(approval_sha) != 64
+            or ledger.get("allowed_training_split") != "train"
+            or ledger.get("locked_final_access") is not False):
+        raise ValueError("development fit ledger scope/approval is invalid")
+    for row in rows:
+        key = (row.get("seed"), row.get("variant"))
+        if key not in expected_runs or key in seen or row.get("status") != "completed":
+            raise ValueError("development fit ledger run inventory is invalid")
+        seen.add(key)
+        model = panels[key[0]][key[1]]
+        checkpoint = (root / str(key[0]) / key[1] / "checkpoint.npz").resolve()
+        receipt_path = checkpoint.with_suffix(checkpoint.suffix + ".receipt.json")
+        model_checkpoint = Path(getattr(model, "_checkpoint_path", "")).resolve()
+        model_receipt = Path(getattr(model, "_training_receipt_path", "")).resolve()
+        if (model_checkpoint != checkpoint or model_receipt != receipt_path
+                or _sha_file(model_checkpoint) != row.get("checkpoint_sha256")
+                or _sha_file(model_receipt) != row.get("receipt_sha256")
+                or Path(row.get("checkpoint", "")).resolve() != checkpoint
+                or Path(row.get("receipt", "")).resolve() != receipt_path
+                or row.get("checkpoint_sha256") != _sha_file(checkpoint)
+                or row.get("receipt_sha256") != _sha_file(receipt_path)
+                or row.get("completed_epochs") != 1
+                or row.get("optimizer_step") != model.step
+                or model._training_receipt.get("development_approval_sha256") != approval_sha
+                or model._training_receipt.get("dataset_fingerprint") !=
+                EXPECTED_DATA["dataset_fingerprint"]):
+            raise ValueError("development fit ledger row differs from checkpoint receipt")
+    if seen != expected_runs:
+        raise ValueError("development fit ledger omits planned checkpoints")
+    return ledger
+
+
 def _validate_schedule(schedule):
     if not isinstance(schedule, (list, tuple)) or not schedule:
         raise ValueError("match schedule must be a nonempty list")
@@ -592,6 +723,10 @@ def _validate_panels(policy_panels):
     global_step = None
     global_run = None
     global_data = None
+    development_approval_sha = None
+    development_config = {
+        **EXPECTED_MODEL_CONFIG,
+    }
     for seed, panel in policy_panels.items():
         if set(panel) != variants:
             raise ValueError("each checkpoint needs all three matched model arms")
@@ -609,6 +744,21 @@ def _validate_panels(policy_panels):
                                if key != "model"}
         data_reference = tuple(reference_receipt[field] for field in
                                ("dataset_fingerprint", "dataset_sha256", "audit_sha256"))
+        is_development = reference_receipt.get("fit_scope") == "development-only"
+        if is_development:
+            if (reference_epochs != 1
+                    or data_reference != (EXPECTED_DATA["dataset_fingerprint"],
+                                          EXPECTED_DATA["records_sha256"],
+                                          EXPECTED_DATA["audit_sha256"])
+                    or effective_reference.get("run") != EXPECTED_RUN_CONFIG
+                    or base_config != development_config):
+                raise ValueError("development checkpoint differs from the frozen fit panel")
+            approval_sha = reference_receipt.get("development_approval_sha256")
+            if (not isinstance(approval_sha, str) or len(approval_sha) != 64
+                    or (development_approval_sha is not None
+                        and approval_sha != development_approval_sha)):
+                raise ValueError("development panel does not share one approval identity")
+            development_approval_sha = approval_sha
         if global_config is None:
             global_config, global_epochs, global_step = base_config, reference_epochs, reference_step
             global_run, global_data = effective_reference, data_reference
@@ -628,6 +778,20 @@ def _validate_panels(policy_panels):
                     or model.training_state["completed_epochs"] != reference_epochs
                     or model.step != reference_step):
                 raise ValueError("checkpoint panel is not matched on seed/config/training")
+            if is_development and (
+                    receipt.get("fit_scope") != "development-only"
+                    or receipt.get("development_approval_sha256") !=
+                    development_approval_sha
+                    or receipt.get("dataset_fingerprint") != EXPECTED_DATA[
+                        "dataset_fingerprint"]
+                    or receipt.get("dataset_sha256") != EXPECTED_DATA["records_sha256"]
+                    or receipt.get("audit_sha256") != EXPECTED_DATA["audit_sha256"]
+                    or receipt.get("split") != "train"
+                    or receipt.get("effective_run", {}).get("run") != EXPECTED_RUN_CONFIG
+                    or {key: value for key, value in receipt.get(
+                        "effective_run", {}).get("model", {}).items()
+                        if key not in ("variant", "seed")} != development_config):
+                raise ValueError("development arm differs from frozen scope/data/config")
             if reference_receipt is not None and receipt is not None:
                 for field in ("dataset_fingerprint", "dataset_sha256", "audit_sha256",
                               "effective_run"):
@@ -652,8 +816,7 @@ def main():
                         help="use a disjoint small seed schedule; never a locked confirmation")
     args = parser.parse_args()
     if args.development:
-        schedule = make_schedule(matches_per_checkpoint=2, first_match_seed=34_000_000,
-                                 order_seed=28_094_081)
+        schedule = development_schedule()
         commitment_sha = None
     else:
         try:
@@ -663,7 +826,8 @@ def main():
     panels = _panel_from_root(args.runs_root)
     receipt = run_schedule(schedule, panels, args.output,
                            confirmatory=not args.development,
-                           commitment_sha256=commitment_sha)
+                           commitment_sha256=commitment_sha,
+                           development_panel_root=args.runs_root if args.development else None)
     print(json.dumps(receipt, sort_keys=True, indent=2, allow_nan=False))
 
 

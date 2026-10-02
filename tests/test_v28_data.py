@@ -1,12 +1,97 @@
+import hashlib
+import json
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from two_player.v28_data import (
     DATA_VERSION, POLICIES, SPLITS, V28_GAMES, _closure_keys,
-    choose_action, generate_trajectory, replay, trajectory_fingerprint,
+    _policy_family_hashes, audit, choose_action, digest, generate_trajectory,
+    replay, source_hash, trajectory_fingerprint,
 )
+from two_player.v28_development import load_development_split
 
 
 class V28DataTests(unittest.TestCase):
+    def test_development_loader_binds_exact_unapproved_data_and_split_scope(self):
+        with tempfile.TemporaryDirectory() as unpinned:
+            with self.assertRaisesRegex(ValueError, "exact audited DEV09"):
+                load_development_split(Path(unpinned) / "dataset", "train",
+                                       Path(unpinned) / "approval.json")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data_dir = root / "dataset"
+            data_dir.mkdir()
+            records = [{"split": "train"}]
+            audit_report = {"status": "PASSED", "dataset_fingerprint": "b" * 64,
+                            "records_fingerprint": digest(records)}
+            trajectories_bytes = b'{"fixture": true}\n'
+            records_bytes = b'{"split": "train"}\n'
+            (data_dir / "trajectories.jsonl").write_bytes(trajectories_bytes)
+            (data_dir / "records.jsonl").write_bytes(records_bytes)
+            manifest = {"schema": DATA_VERSION, "audit_passed": True,
+                        "training_approved": False,
+                        "source_sha256": source_hash(),
+                        "policy_family_hashes": _policy_family_hashes(),
+                        "audit": audit_report,
+                        "artifacts": {"records.jsonl": {"sha256": "c" * 64},
+                                      "trajectories.jsonl": {"sha256": "d" * 64}}}
+            manifest["artifacts"]["records.jsonl"] = {
+                "sha256": hashlib.sha256(records_bytes).hexdigest(),
+                "bytes": len(records_bytes)}
+            manifest["artifacts"]["trajectories.jsonl"] = {
+                "sha256": hashlib.sha256(trajectories_bytes).hexdigest(),
+                "bytes": len(trajectories_bytes)}
+            raw_manifest = json.dumps(manifest, sort_keys=True).encode("utf-8")
+            (data_dir / "manifest.json").write_bytes(raw_manifest)
+            amendment = (Path(__file__).resolve().parents[1] / "docs" /
+                         "V28_DEVELOPMENT_FIT_AMENDMENT_01.md")
+            panel_spec = (Path(__file__).resolve().parents[1] / "docs" /
+                          "validation" / "V28_DEV_FIT_PANEL_V01.json")
+            loader_source = (Path(__file__).resolve().parents[1] / "two_player" /
+                             "v28_development.py")
+            approval = {"schema": "caissa-jepa-development-fit-approval-v01",
+                        "scope": "development-only",
+                        "protocol": "V28_DEVELOPMENT_FIT_AMENDMENT_01",
+                        "fit_split": "train",
+                        "evaluation_splits": ["validation", "selection"],
+                        "training_approved_manifest": False,
+                        "dataset": {
+                            "manifest_sha256": hashlib.sha256(raw_manifest).hexdigest(),
+                            "source_sha256": manifest["source_sha256"],
+                            "dataset_fingerprint": "b" * 64,
+                            "audit_sha256": hashlib.sha256(json.dumps(
+                                manifest["audit"], sort_keys=True, separators=(",", ":"),
+                                allow_nan=False).encode("utf-8")).hexdigest(),
+                            "records_sha256": manifest["artifacts"]["records.jsonl"]["sha256"],
+                            "trajectories_sha256": manifest["artifacts"]["trajectories.jsonl"]["sha256"]},
+                        "amendment_sha256": hashlib.sha256(
+                            amendment.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+                        "panel_spec_sha256": hashlib.sha256(
+                            panel_spec.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+                        "loader_sha256": hashlib.sha256(
+                            loader_source.read_bytes().replace(b"\r\n", b"\n")).hexdigest()}
+            approval_path = root / "approval.json"
+            approval_path.write_text(json.dumps(approval), encoding="utf-8")
+            with patch("two_player.v28_development.DATASET_ROOT", data_dir.resolve()), \
+                    patch("two_player.v28_development.EXPECTED_DATA", approval["dataset"]), \
+                    patch("two_player.v28_development.validate_development_spec"), \
+                    patch("two_player.v28_development.v28_data.audit",
+                          return_value=(records, audit_report)) as loader:
+                records, fingerprint, grant_sha = load_development_split(
+                    data_dir, "train", approval_path)
+                self.assertEqual(records, [{"split": "train"}])
+                self.assertEqual(fingerprint, "b" * 64)
+                self.assertEqual(len(grant_sha), 64)
+                loader.assert_called_once()
+                with self.assertRaisesRegex(ValueError, "refuses locked-final"):
+                    load_development_split(data_dir, "locked-final", approval_path)
+            manifest["audit"]["dataset_fingerprint"] = "e" * 64
+            (data_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "exact audited DEV09"):
+                load_development_split(data_dir, "train", approval_path)
+
     def test_registered_games_match_candidate_scope_and_shared_tensor_contract(self):
         self.assertEqual(set(V28_GAMES), {"connect4-gravity-6x7", "reversi6"})
         self.assertEqual(set(POLICIES), {"uniform", "tactical", "positional", "bounded-search"})

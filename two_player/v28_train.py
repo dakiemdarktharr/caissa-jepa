@@ -20,6 +20,7 @@ import time
 import numpy as np
 
 from .v28_data import load_split
+from .v28_development import load_development_split
 from .v28_model import Config, METHOD_VERSION, Model, _model_code_sha256, build_batch
 
 
@@ -120,6 +121,35 @@ def train_dataset(dataset_dir, checkpoint_path, *, model_config=Config(),
     """
     dataset_dir = Path(dataset_dir)
     checkpoint_path = Path(checkpoint_path)
+    # This loader rejects training_approved=false, failed audits, source changes,
+    # locked-final data, and artifacts whose hashes no longer match.
+    records, dataset_fingerprint = load_split(dataset_dir, "train")
+    return _fit_records(dataset_dir, checkpoint_path, records, dataset_fingerprint,
+                        model_config=model_config, run_config=run_config,
+                        resume=resume, fit_scope="approved-training",
+                        development_approval_sha256=None,
+                        development_approval_path=None)
+
+
+def train_development_dataset(dataset_dir, checkpoint_path, *, approval_path,
+                              model_config=Config(), run_config=RunConfig(),
+                              resume=False):
+    """Fit the audited train split under a separately hashed dev-only grant."""
+    dataset_dir = Path(dataset_dir)
+    checkpoint_path = Path(checkpoint_path)
+    records, dataset_fingerprint, approval_sha = load_development_split(
+        dataset_dir, "train", approval_path)
+    return _fit_records(dataset_dir, checkpoint_path, records, dataset_fingerprint,
+                        model_config=model_config, run_config=run_config,
+                        resume=resume, fit_scope="development-only",
+                        development_approval_sha256=approval_sha,
+                        development_approval_path=str(Path(approval_path).resolve()))
+
+
+def _fit_records(dataset_dir, checkpoint_path, records, dataset_fingerprint, *,
+                 model_config, run_config, resume, fit_scope,
+                 development_approval_sha256, development_approval_path):
+    checkpoint_path = Path(checkpoint_path)
     receipt_path = checkpoint_path.with_suffix(checkpoint_path.suffix + ".receipt.json")
     if type(resume) is not bool:
         raise ValueError("resume must be a boolean")
@@ -127,15 +157,14 @@ def train_dataset(dataset_dir, checkpoint_path, *, model_config=Config(),
         raise FileExistsError("fresh run refuses an existing checkpoint")
     if resume and not checkpoint_path.is_file():
         raise FileNotFoundError("resume requested but checkpoint does not exist")
-
-    # This loader rejects training_approved=false, failed audits, source changes,
-    # locked-final data, and artifacts whose hashes no longer match.
-    records, dataset_fingerprint = load_split(dataset_dir, "train")
     manifest = json.loads((dataset_dir / "manifest.json").read_text(encoding="utf-8"))
     dataset_sha = manifest["artifacts"]["records.jsonl"]["sha256"]
     audit_sha = _canonical_sha256(manifest["audit"])
     effective_run = {"method": METHOD_VERSION, "model": asdict(model_config),
                      "run": asdict(run_config),
+                     "fit_scope": fit_scope,
+                     "development_approval_sha256": development_approval_sha256,
+                     "development_approval_path": development_approval_path,
                      "runtime": _runtime_identity(),
                      "dataset_fingerprint": dataset_fingerprint}
     identity = {"dataset_sha256": dataset_sha, "audit_sha256": audit_sha,
@@ -164,6 +193,8 @@ def train_dataset(dataset_dir, checkpoint_path, *, model_config=Config(),
                             dataset_sha, audit_sha, effective_run)
     _write_receipt(receipt_path, receipt)
     return {"method": METHOD_VERSION, "variant": model_config.variant,
+            "fit_scope": fit_scope,
+            "development_approval_sha256": development_approval_sha256,
             "dataset_fingerprint": dataset_fingerprint,
             "dataset_sha256": dataset_sha, "audit_sha256": audit_sha,
             "run_config_sha256": identity["run_config_sha256"],
@@ -177,6 +208,9 @@ def _make_receipt(model, checkpoint_path, identity, dataset_fingerprint,
                   dataset_sha, audit_sha, effective_run):
     return {"schema": "caissa-jepa-v28-train-receipt-v1",
             "method": METHOD_VERSION, "variant": model.config.variant,
+            "fit_scope": effective_run["fit_scope"],
+            "development_approval_sha256": effective_run[
+                "development_approval_sha256"],
             "dataset_fingerprint": dataset_fingerprint,
             "dataset_sha256": dataset_sha, "audit_sha256": audit_sha,
             "split": "train", "run_config_sha256": identity["run_config_sha256"],
@@ -220,11 +254,18 @@ def main():
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--shuffle-seed", type=int, default=701)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--development-approval", type=Path,
+                        help="fit only train split under a bound development-only approval")
     args = parser.parse_args()
     model_config = Config(variant=args.variant, seed=args.seed, latent=args.latent)
     run_config = RunConfig(epochs=args.epochs, shuffle_seed=args.shuffle_seed)
-    result = train_dataset(args.dataset, args.checkpoint, model_config=model_config,
-                           run_config=run_config, resume=args.resume)
+    if args.development_approval:
+        result = train_development_dataset(
+            args.dataset, args.checkpoint, approval_path=args.development_approval,
+            model_config=model_config, run_config=run_config, resume=args.resume)
+    else:
+        result = train_dataset(args.dataset, args.checkpoint, model_config=model_config,
+                               run_config=run_config, resume=args.resume)
     print(json.dumps(result, sort_keys=True, indent=2, allow_nan=False))
 
 
