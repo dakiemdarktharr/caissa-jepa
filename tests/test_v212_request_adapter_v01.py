@@ -20,6 +20,7 @@ from two_player.v212_request_adapter_v01 import (
     current_cgroup_info,
     run_move_request,
     verify_memory_scope,
+    verify_worker_scope,
 )
 
 
@@ -193,6 +194,35 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
         self.assertEqual(response["status"], "forfeit")
         self.assertEqual(response["reason"], "memory_cgroup_oom")
         self.assertEqual(response["cgroup_event_delta"]["oom_kill"], 1)
+
+    def test_scope_preflight_requires_child_to_inherit_exact_cgroup(self):
+        info = {
+            "path": "/user.slice/request.scope",
+            "memory_max": EXPECTED_MEMORY_MAX,
+            "memory_oom_group": 0,
+            "events": {"oom_kill": 0},
+        }
+        with patch(
+            "two_player.v212_request_adapter_v01.verify_memory_scope",
+            return_value=info,
+        ), patch(
+            "two_player.v212_request_adapter_v01._run_worker_process",
+            return_value={"timed_out": False, "returncode": 0,
+                          "reply": info},
+        ):
+            result = verify_worker_scope()
+        self.assertTrue(result["same_cgroup"])
+        self.assertEqual(result["parent"]["path"], result["worker"]["path"])
+        wrong_worker = {**info, "path": "/user.slice/unbounded.scope"}
+        with patch(
+            "two_player.v212_request_adapter_v01.verify_memory_scope",
+            return_value=info,
+        ), patch(
+            "two_player.v212_request_adapter_v01._run_worker_process",
+            return_value={"timed_out": False, "returncode": 0,
+                          "reply": wrong_worker},
+        ), self.assertRaisesRegex(RuntimeError, "did not inherit"):
+            verify_worker_scope()
 
 
 if __name__ == "__main__":
