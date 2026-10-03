@@ -33,12 +33,13 @@ See `docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md` and the frozen
 fail-closed auditor is implemented, its focused tests pass, and independent
 review accepted it for the synthetic-only contract. No data bank or trained
 model is authorized by this software-contract step.
-The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md` identifies
-an ambiguity in the variant-by-split matrix. Shared openings create a cross-split
-problem only if same-size episodes span train/development; the method's held-out
-development design may avoid that, but needs an explicit allocation rule. An
-independent reviewer accepted the note as a non-authorizing design document;
-reconcile the episode-split wording before freezing a generation protocol.
+The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`,
+`docs/METHOD_SPEC_V212_SPLIT_AMENDMENT_DRAFT_V05.md`, and
+`docs/V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` propose train-only fit windows on
+training sizes and 48 standalone development roots per held-out size.
+Independent review accepted these as design drafts, not a frozen protocol. The
+64-slot yield, occupancy bands, and symmetry uniqueness rule remain unverified
+before implementation.
 
 ## Research objective
 

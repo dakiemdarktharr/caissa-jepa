@@ -75,9 +75,10 @@ Before generating any candidate data, a new protocol version should bind:
   insufficient development roots: stop, preserve the failed audit receipt,
   and draft a new version rather than top up or alter counts silently.
 
-The next review should freeze the variant-by-split matrix and align the method
-spec's split language with it. Only then should an executable generator be
-implemented and independently reviewed. A generated corpus would still need
+The next review should assess the proposed method amendment in
+`METHOD_SPEC_V212_SPLIT_AMENDMENT_DRAFT_V05.md`. Only after its matrix and the
+held-out root schedule are frozen should an executable generator be implemented
+and independently reviewed. A generated corpus would still need
 replay, support, split, leakage, and license gates before any fit; this design
 does not authorize a fit, match, or outcome inspection.
 
@@ -88,8 +89,11 @@ provides reusable in-memory checks, but the H4 overlap detector is only a
 software fixture. V2.12 corpus feasibility and train/development disjointness
 remain untested. No support claim, leakage-free claim, or training readiness
 claim follows from the synthetic tests. Independent review found this note
-accurate as a non-authorizing design document and confirmed that the preferred
-matrix matches the substantive held-out-size evaluation design. Before a
-protocol can be frozen, reconcile whether held-out development roots are
-development episodes or standalone evaluation situations with the method's
-episode-split wording.
+accurate as a non-authorizing design document. The method amendment draft now
+proposes training episodes/windows on fit variants and standalone development
+roots on held-out sizes, explicitly replacing the ambiguous episode-split
+wording. The companion `V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` proposes a fixed
+48-root bank and fail-closed candidate schedule; independent review found it
+suitable for further design review, but the 64-slot yield, occupancy bands, and
+symmetry uniqueness rule remain unverified and must be frozen before any root
+generation.

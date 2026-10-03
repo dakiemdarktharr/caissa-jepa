@@ -1863,11 +1863,12 @@ and in-memory auditor are implemented in
 accepted that software-contract scope. This does not authorize data generation.
 Training, matches, and outcome access remain gated.
 
-The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md` records
-an unresolved split-matrix ambiguity. Shared standard openings would connect
-components only if same-size episodes crossed train/development; the current
-method instead describes held-out-size development roots, but does not freeze
-the allocation matrix. Independent review found the note accurate as a design
-document; before a protocol is frozen, the method must clarify whether held-out
-development roots are development episodes or standalone evaluation
-situations. The note authorizes no data generation.
+The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md` and
+`docs/METHOD_SPEC_V212_SPLIT_AMENDMENT_DRAFT_V05.md` propose train-only fit
+episodes/windows on training sizes and standalone development roots on held-out
+sizes. Independent review found the amendment explicit and consistent with the
+held-out evaluation design as a draft. The companion
+`docs/V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` proposes 48 roots per held-out
+variant; it is suitable for further review but not frozen. Candidate yield,
+occupancy bands, and canonical uniqueness rules remain unverified. These notes
+authorize no data or root generation.
