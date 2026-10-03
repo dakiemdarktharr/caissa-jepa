@@ -1892,3 +1892,17 @@ held-out evaluation design as a draft. The companion
 variant; it is suitable for further review but not frozen. Candidate yield,
 occupancy bands, and canonical uniqueness rules remain unverified. These notes
 authorize no data or root generation.
+
+
+### V2.12 root-schedule reconciliation draft (2026-10-03)
+
+The previous held-out root schedule proposal accepted the first 16 unique
+canonical boards per occupancy band, while the later sampling amendment
+proposes accepting the first 16 valid candidate slots regardless of repeated
+boards. Added `docs/V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` as a replacement design
+draft that aligns the schedule with the amendment's success-conditional
+first-passage slot estimand, fixed 64-slot yield bound, and stratified
+bootstrap proposal. Design 01 remains as historical context. The change
+resolves only the text-level conflict; independent review has not accepted the
+conditional target, PRNG independence assumptions, equal band weights, or
+inference procedure. No roots were generated and no method or data gate passed.
