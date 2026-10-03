@@ -350,3 +350,19 @@ extends to 8x8 Connect Four or Reversi. The BDD artifact repository had no
 license file in the inspected tree. These sources narrow the candidate-source
 gap only; exact-oracle integration, bounded-reference design for the other
 variants, scoring, generation, and fitting remain gated.
+
+
+## Reversi8 weak-solution scope check (2026-10-03)
+
+Takizawa's primary-source paper reports standard 8x8 Othello weakly solved as
+a draw from the initial position, with a strategy guaranteeing at least that
+result ([arXiv:2310.19387v3](https://arxiv.org/pdf/2310.19387)). It does not
+strongly solve arbitrary positions or publish complete action values for
+arbitrary roots; the author states the proposed semi-strong all-position
+challenge remains future work. This narrows Reversi8's theoretical opening
+status but does not close V2.12's per-root, all-legal-action regret oracle
+gap. The paper's modified Edax source is GPL-3.0 and its raw outputs are
+separate artifacts; neither was downloaded, run, or integrated. Source
+inspection suggests our 8x8 opening/pass/flip/terminal rules match standard
+Othello, but adapter equivalence and any license/provenance review remain
+required. No method, outcome, scoring, or generation gate changes.

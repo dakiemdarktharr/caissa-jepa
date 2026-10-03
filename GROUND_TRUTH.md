@@ -2172,3 +2172,11 @@ scoring, and training gates remain closed.
 ### V2.12 focused request and symmetry regression check (2026-10-03)
 
 The current `main` adapter already contains the corrected cgroup explanation: `memory.oom.group=0` avoids group OOM behavior but does not guarantee supervisor survival; its focused test asserts that wording. A focused run on the local working checkout passed all 7 request-adapter tests and both bounded symmetry tests (9 total). The adapter and test semantics match the verified remote versions for this check. The local checkout was not synchronized or edited during this continuation. This is software-contract regression evidence only: no cgroup OOM integration, request pilot, data generation, scoring, training, matches, or outcome inspection was performed. Independent review and integrated receipt validation remain open; all research gates remain closed.
+
+
+### V2.12 Reversi8 weak-solution prior-art check (2026-10-03)
+
+- Read Takizawa, *Othello is Solved*, arXiv:2310.19387v3. The result is a weak solution from the standard initial 8x8 position (draw plus a strategy guaranteeing at least a draw), not a strong solution for arbitrary reachable positions. The paper explicitly leaves all-position “semi-strong” solving as future work.
+- The proof uses targeted subproblems and a modified Edax engine; the source repository carries GPL-3.0 and analysis outputs are hosted separately. Nothing was downloaded, installed, run, or queried.
+- Static comparison with two_player/games.py suggests the Reversi8 opening, alternating turns, flips, forced passes, and terminal disc-count result align with standard Othello. This is not a verified adapter contract.
+- This gives an opening-position theoretical anchor, but not complete values for every legal action at the benchmark's sampled roots. Exact/bounded regret, generation, scoring, and training gates remain unchanged. Source: [paper](https://arxiv.org/pdf/2310.19387), [pinned modified Edax source](https://github.com/eukaryo/edax-reversi-AVX-v446mod2/tree/fbec6a324775b55cafe4a6d9691d92b3fdde2ffc).

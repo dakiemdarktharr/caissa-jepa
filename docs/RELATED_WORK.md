@@ -462,3 +462,29 @@ the 5-second request budget. A future evaluation must predeclare root-player
 W/D/L utility and keep remoteness secondary unless the method review chooses
 otherwise. Adapter/correctness/license/resource review remains outstanding;
 no code or table was run or downloaded.
+
+
+### Weak solution of standard 8x8 Othello (2023)
+
+Takizawa reports a **weak solution** of standard 8x8 Othello: the initial
+position is a draw under perfect play, with a strategy that guarantees at
+least a draw from that opening ([arXiv:2310.19387v3](https://arxiv.org/pdf/2310.19387)).
+The paper defines weak solving as an opening-position result plus a strategy;
+it explicitly says the work does not reach its proposed semi-strong category
+of calculating best play for all positions. The proof selected 2,587 positions
+with 50 empty squares and used exact/bounded-search support at 36-empty-square
+subproblems; it is not a table of complete per-action values for arbitrary
+reachable roots. The released modified Edax repository is GPL-3.0
+([source](https://github.com/eukaryo/edax-reversi-AVX-v446mod2/tree/fbec6a324775b55cafe4a6d9691d92b3fdde2ffc));
+raw analysis outputs are separately hosted on Figshare. No code or output was
+run or downloaded.
+
+The current Reversi8 implementation appears rule-compatible with standard
+Othello's 8x8 opening, alternating turns, flips, forced passes, and terminal
+stone-count result based on source inspection; a formal adapter equivalence
+check would still be required. This is useful exact-play prior art and an
+opening-position anchor, but it does not supply complete root-action scores
+for the protocol's sampled reachable positions or change the regret metric.
+Do not describe Reversi8 as an unsolved game; do not treat the weak opening
+solution as a strong solution, arbitrary-position oracle, or model-evaluation
+result. GPL-3.0 and artifact provenance also require review before any reuse.

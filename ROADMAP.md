@@ -495,3 +495,17 @@ search. Exact-root scoring therefore needs its own predeclared value semantics
 allocation, hard worker deadline, and full-action completeness contract. This
 is software-source evidence for Connect Four 6x7 only; 8x8 and both Reversi
 variants remain without a pinned exact oracle. It changes no method or gate.
+
+
+### 2026-10-03 Reversi8 weak-solution scope update
+
+Takizawa's 2023 primary-source result weakly solves standard 8x8 Othello
+from its initial position as a draw, with a strategy guaranteeing at least a
+draw. It does not solve arbitrary reachable positions or provide complete
+per-action values for the V2.12 sampled-root schedule. This removes any
+assumption that standard Reversi8's opening value is unknown, but does not
+close the all-actions regret-reference gate. The modified Edax source is
+GPL-3.0 and was not downloaded, run, or integrated. Our Reversi8 rules appear
+compatible by static inspection; formal adapter equivalence remains open. No
+evaluation or training gate changes. See docs/RELATED_WORK.md and
+docs/V212_RESEARCH_GATE.md.
