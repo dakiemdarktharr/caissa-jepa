@@ -1920,3 +1920,17 @@ bounded fixture coverage, not exhaustive state-space verification or a
 leakage/support result. Canonical edge reporting, root generation, data
 creation, matches, and training remain gated pending broader and independent
 review.
+
+
+### V2.12 expanded symmetry fixture coverage (2026-10-03)
+
+Expanded the symmetry property test to enumerate every distinct exact-rule
+state reachable through four legal plies for each of the four in-scope
+variants, then supplement with three deterministic legal paths through
+terminal states and the hand-built forced-pass fixture. Every declared mapping
+is checked over every legal action at those states for bijection and transition
+commutation, as well as terminal and canonical-key invariance. The symmetry
+test passed 2/2 in 19.7 seconds; combined with the synthetic trajectory
+auditor it passed 9/9 in 19.3 seconds. This remains shallow bounded software
+coverage, not an exhaustive later-game proof or a data/leakage result.
+Canonical edge reporting and all generation/training gates remain closed.
