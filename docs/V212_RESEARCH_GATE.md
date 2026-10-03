@@ -545,3 +545,17 @@ before outcomes whether 10,000 is acceptable under a declared precision
 reporting rule or whether a versioned larger/adaptive replicate plan is
 needed. No outcomes or bootstrap were computed; no gate changed. See the
 inference audit.
+
+
+### 2026-10-03 outer simulation precision requirement
+
+If independent review requires calibration simulation, freeze both the inner
+bootstrap B and the outer number R of independent synthetic datasets. Outer
+FWER, coverage, and power estimates are proportions with their own Monte Carlo
+error. For example, near a 5% rate, a normal 95% half-width of one percentage
+point takes about 1,825 outer datasets per scenario-method cell; half a point
+takes about 7,300. These are illustrations, not acceptance criteria. The
+reviewer must predeclare R/precision, uncertainty intervals, scenario/method
+multiplicity, and deterministic RNG streams before simulation. No simulation,
+roots, outcomes, or gate transition occurred. Details:
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

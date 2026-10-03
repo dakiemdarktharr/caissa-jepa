@@ -250,6 +250,34 @@ version and review a larger/adaptive replicate plan. Do not increase B after
 seeing which outcome decision it changes. No bootstrap or outcome was
 computed for this audit.
 
+## Outer simulation Monte Carlo error
+
+If a reviewer requires a design-matched calibration study, it will have two
+distinct replication counts: inner bootstrap replicates B used by the
+procedure on each synthetic dataset, and outer independent datasets R used
+to estimate familywise Type I error, interval coverage, or power. Precision
+of the inner bootstrap p-values does not make the estimated operating
+characteristics precise; the outer rates also have Monte Carlo error.
+
+For an operating characteristic estimated as a binary proportion p-hat from
+R independent datasets, its Monte Carlo standard error is approximately
+sqrt(p(1-p)/R). As an illustration only, if the true rate is near 0.05 (or
+coverage near 0.95), a normal 95% half-width of 0.01 requires about
+R = 1.96^2 × 0.05 × 0.95 / 0.01^2 ≈ 1,825 datasets per scenario-method cell;
+a half-width of 0.005 requires about 7,300. These are not proposed acceptance
+margins or a run authorization. The required R depends on the reviewer-set
+precision, actual rate, number of scenario/method cells, and any simultaneous
+reporting requirement. Use binomial uncertainty intervals and report them
+rather than reporting only point estimates.
+
+Before any such study, the reviewer should freeze the outer DGP scenarios,
+inner B or a precision-based B rule, deterministic independent RNG streams
+per scenario/replicate, R per cell, operating characteristics, and
+acceptance/uncertainty criteria. If comparing methods, define whether common
+random numbers are used and preserve paired seed/root factors within each
+generated dataset. This study remains unapproved and unrun; no roots,
+outcomes, or training were accessed.
+
 ## Primary sources
 
 - Baayen, Davidson, and Bates (2008), [Mixed-effects Modeling With Crossed Random Effects for Subjects and Items](https://doi.org/10.1016/j.jml.2007.12.005).
@@ -258,6 +286,7 @@ computed for this audit.
 - Roodman, MacKinnon, Nielsen, and Webb (2019), [Fast and Wild: Bootstrap Inference in Stata Using boottest](https://doi.org/10.1177/1536867X19830877).
 - MacKinnon, Nielsen, and Webb (2023), [Leverage, Influence, and the Jackknife in Clustered Regression Models](https://doi.org/10.1177/1536867X231212433) (two-way discussion; regression scope).
 - Bakshy and Eckles (2013), [Uncertainty in Online Experiments with Dependent Data: An Evaluation of Bootstrap Methods](https://arxiv.org/abs/1304.7406) (arXiv v4; Section 3.4/Figure 4 withdrawn).
+- Koehler, Brown, and Haneuse (2009), [On the Assessment of Monte Carlo Error in Simulation-Based Statistical Analyses](https://doi.org/10.1198/tast.2009.0030).
 - Andrews and Buchinsky (2000), [A Three-Step Method for Choosing the Number of Bootstrap Repetitions](https://doi.org/10.1111/1468-0262.00092).
 - Davidson and MacKinnon (2001), [Evaluation of a Three-Step Method for Choosing the Number of Bootstrap Repetitions](https://doi.org/10.1016/S0304-4076(01)00047-1).
 - McCullagh (2000), [Resampling and Exchangeable Arrays](https://doi.org/10.2307/3318577).

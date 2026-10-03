@@ -662,3 +662,15 @@ seed/root sampling uncertainty and inferential validity remain separate.
 Independent review should freeze a precision/reporting rule or revised B
 before outcomes. No results or bootstrap were computed, and the gate remains
 closed. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 outer simulation precision
+
+A future calibration study would need to separate inner bootstrap replicates
+from outer independent datasets. The latter determine Monte Carlo precision
+for estimated FWER, coverage, and power. Near 5%/95%, an illustrative
+95% half-width of one percentage point requires about 1,825 outer datasets
+per scenario-method cell; half a point requires about 7,300. Independent
+review must select the precision target, R, uncertainty intervals, and
+reproducible RNG streams before any simulation. No run is authorized or
+performed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

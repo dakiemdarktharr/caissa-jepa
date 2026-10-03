@@ -2277,3 +2277,10 @@ or gate changed.
 - The locked 10,000-replicate plus-one p-value can be sensitive to bootstrap Monte Carlo draws at the smallest Holm step: for 15 tests, cutoff is 0.05/15; 32 exceedances give about 0.003300 and 33 give about 0.003400. At an ideal tail probability equal to that cutoff, conditional Monte Carlo SE is about 0.000576, with an approximate 95% half-width of 0.00113.
 - This numerical error is separate from seed/root sampling uncertainty and does not establish or refute validity of the crossed bootstrap. Research on selecting B recommends choosing it for a declared accuracy target, but the cited studies do not set B for CAISSA's design. Independent review should disposition the current B or a versioned precision rule before outcomes; do not change B after seeing its effect on a result.
 - No p-values, bootstrap replicates, roots, or outcomes were computed. No gate changed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md, [Andrews & Buchinsky](https://doi.org/10.1111/1468-0262.00092), and [Davidson & MacKinnon](https://doi.org/10.1016/S0304-4076(01)00047-1).
+
+
+### Latest continuation delta (2026-10-03; simulation Monte Carlo precision)
+
+- A design-matched calibration study would have inner bootstrap replicates per synthetic dataset and outer independent datasets per DGP/method cell. Their Monte Carlo errors are distinct; accurate inner p-values do not by themselves make empirical FWER, coverage, or power precise.
+- For a binary operating characteristic near 0.05 or 0.95, approximate normal 95% half-width 0.01 requires about 1,825 outer datasets per cell; half-width 0.005 requires about 7,300. These illustrate the precision-cost relationship; they are not the selected R, acceptance margin, or permission to simulate.
+- If review authorizes a study, preregister R/precision, inner B, RNG stream derivation, uncertainty intervals, and scenario/method comparison rules. No simulation, roots, outcomes, or training occurred. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and [Koehler et al. (2009)](https://doi.org/10.1198/tast.2009.0030).
