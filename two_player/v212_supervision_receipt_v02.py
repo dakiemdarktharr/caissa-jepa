@@ -380,6 +380,8 @@ def assemble_receipt(*, requested_unit: str, request_boot_id: str,
             "unit_invocation_journal_markers": markers,
         },
         "manager": {"active_state": "inactive",
+                    "reported_active_state": manager_snapshot.get(
+                        "manager_active_state", manager_active_state),
                     "sub_state": manager_sub_state,
                     "result": manager_result, "main_status": main_status},
         "kernel_oom": {"candidate_record_count": candidate_count,

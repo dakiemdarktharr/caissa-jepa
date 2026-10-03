@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; live evidence adapter primitives)
+
+- Added `two_player/v212_live_supervision_v01.py` for bounded `systemctl show` parsing, exact unit/InvocationID/boot-bound snapshot normalization, fail-closed local cgroup counter reads, and private one-shot receipt persistence. The receipt destination is exclusively reserved before the assembler's atomic fsync-and-rename writer; failed persistence leaves a claim marker to require reconciliation. Raw systemd `ActiveState=failed` is retained while the existing receipt contract receives normalized post-exit state.
+- Ten new synthetic tests cover duplicate/malformed manager properties, active, failed and retained-success post-exit snapshots, local-counter provenance/path failures, receipt durability, no-overwrite, and private directory plus ancestor requirements. Combined with IPC and receipt suites, 49/49 pass; `git diff --check` passes. Independent final review found no remaining P1/P2 blocker after fixes for retained-success mapping, writable ancestors, and timestamp order.
+- This code does not run systemctl/journalctl, follow journal streams, schedule live counter samples, assemble the full receipt, launch a service, or prove same-invocation pre-cleanup persistence. It is groundwork only. No inference, service, OOM, training, project data, score, or outcome was run/read. Broader supervision and pilot gates remain closed; OOM fault testing still needs separate explicit authorization. See `docs/V212_LIVE_EVIDENCE_ADAPTER_01.md`.
+
 ## Latest continuation delta (2026-10-04; synthetic IPC primitive and normal-exit service smoke)
 
 - Added `two_player/v212_worker_ipc.py` with private request/response file creation and bounded fail-closed JSON-object reading. It does not start services, validate the application response schema, call the inference adapter, or assemble receipts. Independent static review found no remaining P1/P2 issue after tightening parent-path validation and failure cleanup.
