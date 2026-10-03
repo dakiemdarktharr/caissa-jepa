@@ -1,6 +1,20 @@
 # CAISSA-JEPA research roadmap
 
-Updated: 2026-10-02. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+Updated: 2026-10-03. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+
+## V2.12 checkpoint (2026-10-03)
+
+The v04-authorized random-weight, no-training compute pilot v02 completed
+1,152/1,152 cells to four plies; p90 wall time was 0.7970 s, p99 was 2.0148 s,
+and maximum was 3.7419 s. Twelve cells exceeded 2 seconds. The 16 roots per
+variant and three initializations broaden v01's four-root/one-initialization
+sample, but both remain synthetic, random-weight measurements from one host.
+The amended protocol and runner passed independent `gpt-6-luna/high` review.
+The v02 compute-only report also passed review. The 10,000-node/5-second
+planner cap proposal in `docs/V212_COMPUTE_BUDGET_AMENDMENT_05.md` passed
+independent review as a proposal only; it is not an operational budget until
+request-to-search headroom and the implementation pass pre-fit verification.
+No training or match is authorized. See `GROUND_TRUTH.md`, the [v01 pilot report](docs/validation/V212_RANDOM_WEIGHT_COMPUTE_PILOT_01.md), and the [v02 pilot report](docs/validation/V212_RANDOM_WEIGHT_COMPUTE_PILOT_02.md).
 
 ## Research objective
 

@@ -8,7 +8,8 @@ and its [amendments](docs/METHOD_AMENDMENTS.md) first. The primary-source
 including MuZero, SPR/EfficientZero and RePAIR. No planning advantage or Q1
 publication readiness has been established.
 
-Latest status (2026-10-02): V2.8 completed an exploratory 60-fit, 160-block
+Historical status snapshot (2026-10-02; superseded by the continuation below):
+V2.8 completed an exploratory 60-fit, 160-block
 development comparison on Connect4-6x7 and Reversi6. JEPA did not show an
 observed advantage over task-value-dynamics (macro score contrast −0.01875;
 unadjusted 95% seed-cluster interval [−0.08248, 0.04498]). The next V2.9 probe
@@ -30,6 +31,18 @@ duration alone is not an algorithmic novelty claim. See [the V2.9 amendment](doc
 [current Ground Truth](GROUND_TRUTH.md). A positive development screen would
 only nominate a separate model-selection study, not establish superiority or
 Q1 readiness.
+
+Current continuation (2026-10-03): the narrowly authorized V2.12 v04
+no-training random-weight compute pilot v02 completed 1,152/1,152 cells across
+four variants, six inference arms, and three paired initializations. All
+reached four plies; wall-time p90 was 0.7970 s and maximum was 3.7419 s, with
+12 cells above 2 seconds. Independent review accepted the report and the
+10,000-node/5-second planner-cap proposal as a proposal only. Request-to-search
+headroom and implementation still need pre-fit verification. This compute
+sample does not guarantee fitted-model runtime or establish playing strength.
+Fitting and match play remain gated. See
+[`GROUND_TRUTH.md`](GROUND_TRUTH.md) and the
+[V2.12 pilot v02 report](docs/validation/V212_RANDOM_WEIGHT_COMPUTE_PILOT_02.md).
 
 The current V2.8 planner candidate and its versioned amendments are documented in
 `docs/METHOD_V28_PLANNER_V01.md` through `V05_AMENDMENT.md`. The frozen exact-root

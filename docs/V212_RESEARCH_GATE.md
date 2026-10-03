@@ -1,5 +1,28 @@
 # V2.12 Research Gate: Multi-step Alternating-Player JEPA
 
+## Current checkpoint (2026-10-03)
+
+The v04 method review permitted only a random-initialized, no-training
+instrumentation pilot. Pilot v01 completed 96/96 variant/root/arm cells to
+depth four under the declared safety ceilings. Overall wall-time p90 was
+0.2689 s and maximum was 0.9901 s; no score, selected action, or outcome was
+recorded. The independent `gpt-6-luna/high` review found no blocker to the
+next no-training protocol-review step. This small sample does not set a common
+search budget or establish fitted-model compute or playing strength.
+
+The amended 1,152-cell v02 sampling plan and its no-training runner are frozen
+in `docs/V212_COMPUTE_PILOT_V02.md` after independent protocol and implementation
+review. The schedule uses one unique board at ply zero and five roots at each
+later ply. The pilot completed 1,152/1,152 cells to depth four; 12 exceeded
+2 seconds, and the maximum was 3.7419 seconds. Its receipt and report passed
+independent review. Candidate `docs/V212_COMPUTE_BUDGET_AMENDMENT_05.md`
+proposes a common 10,000-node/5-second planner cap, 6-second response deadline,
+and 25% pragmatic reserve. The proposal passed independent review but is not
+an operational cap; request-to-search headroom and implementation must pass
+separate pre-fit verification. Do not open training/outcome data, fit, or play
+matches; novelty, trajectory/replay, leakage, and separate pre-fit gates
+remain closed.
+
 Status: candidate research direction only. Not an implementation spec, training
 grant, frozen protocol, or novelty claim. No V2.12 fit is authorized by this
 note.
