@@ -254,3 +254,29 @@ must include the caller-observed response boundary; a final in-function clock
 sample alone does not prove scheduling-safe delivery by a hard external
 deadline. No pilot, training, data access, or outcome access occurred. The
 existing adapter remains unreviewed and must not be used for evaluation.
+
+
+## Request adapter v02 correction candidate (2026-10-04)
+
+The original v01 blob is preserved. New files
+`two_player/v212_request_adapter_v02.py` and
+`tests/test_v212_request_adapter_v02.py` add an outer request wrapper that
+measures elapsed time after the full v01-style supervisor processing returns,
+overwrites the earlier partial elapsed sample, and converts a late result to
+`response_watchdog_timeout` with no action. The new deterministic mocked-clock
+regression delays the post-worker cgroup audit beyond the configured deadline
+and asserts a forfeit.
+
+The exact remote v02 module/test blobs
+(`32e62834b7baf6a64695f2467e6539e531fd8144`,
+`58e660c30c2f58b0df8e56ac9ccfc4deb2f50215`) were tested in an isolated
+`/tmp` overlay with the matching remote `games.py` and `v212_pilot.py`
+dependencies. Result: 8/8 tests passed in 0.316 seconds.
+
+This closes the identified in-function accounting/classification gap only.
+The test mocks cgroup reads and worker execution; it is not a real cgroup,
+inference, or latency measurement. The wrapper cannot guarantee hard real-time
+delivery under OS scheduling. The eventual caller must enforce and record its
+own observed six-second response boundary; independent review, external OOM
+supervision, and receipt/report integration remain open. Do not run a pilot
+with v01 or v02 until those gates pass.
