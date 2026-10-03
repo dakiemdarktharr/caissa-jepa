@@ -1,0 +1,107 @@
+# V2.12 root-sampling and bootstrap amendment — draft 01
+
+**Status: proposal for independent review only.** This document proposes
+changes to the held-out development-root schedule and its resampling rule. It
+does not amend `METHOD_SPEC_V212.md`, replace root schedule design 01, freeze
+an evaluation schedule, or authorize root generation, scoring, fitting, match
+play, or outcome access.
+
+## Motivation
+
+`METHOD_SPEC_V212.md` §7 describes at least 40 independently generated
+reachable situations per held-out variant and resamples situation ids in its
+crossed bootstrap. `V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` instead proposes 64
+candidate slots per occupancy band and keeps the first 16 symmetry-unique
+roots. Rejection based on previously accepted state identity makes the
+accepted set dependent and changes the induced policy/prefix mixture. The
+development estimand and bootstrap unit therefore need to be stated together.
+
+## Proposed target population and sampling unit
+
+For each held-out variant (Connect Four 8x8/k4 and Reversi8), define three
+fixed occupancy strata `[0,1/3)`, `[1/3,2/3)`, and `[2/3,1)`. Within a stratum,
+the target is the distribution of the first eligible root reached by a
+predeclared policy-mixture rollout from `game.initial()`, conditional on the
+candidate slot producing a nonterminal root in that stratum at or after four
+legal plies. It is a policy-induced first-passage distribution, not a uniform
+sample of all reachable states or a uniform sample of unique board positions.
+
+The independent sampling unit is a candidate-slot id, not a unique board
+identity. A slot has its own predeclared policy-draw and action RNG streams,
+derived from the frozen protocol seed, variant, occupancy band, and slot id.
+The ordered policy pair is drawn independently and uniformly from the four
+pinned families for each slot and remains fixed through that rollout. Its
+validity predicate depends only on exact rules and the declared root criteria,
+never on a model score or outcome.
+
+## Proposed bounded schedule
+
+1. Freeze 64 candidate slots per variant and band, with the exact RNG version,
+   seed derivation, game/policy source hashes, and slot IDs, before generating
+   any candidate state.
+2. In each slot, stop at the first nonterminal state at ply four or later whose
+   occupancy lies in that slot's assigned band. Record terminal-before-band,
+   invalid transition, or no-eligible-root as an invalid slot with its reason.
+3. Accept the first 16 valid slots in schedule order within each band,
+   regardless of repeated raw or canonical board states. Keep slot IDs distinct
+   and report raw/canonical state multiplicities by band, policy pair, and
+   prefix length; do not deduplicate, reweight, or top up.
+4. If any band has fewer than 16 valid slots among its fixed 64, fail the
+   schedule before model scoring. Do not add seeds, slots, or replacement roots.
+5. Freeze and hash all 48 accepted slot receipts, the complete rejection
+   ledger, and the seat-assignment schedule before scoring. Receipts retain
+   exact state, player to move, prefix actions (including pass 64), slot seed,
+   policy pair, occupancy, prefix length, and rules/protocol/source hashes.
+
+Under the independent per-slot RNG design, accepting the first 16 slots whose
+validity predicate passes yields independent draws from the success-conditional
+distribution, provided the slot generators are identically specified within
+each stratum. Repeated states are repeated draws and remain separate sampling
+units. Because policy family can affect whether and when a slot reaches its
+band, the accepted policy-pair mixture may differ from the nominal uniform
+draw; report that induced mix without reweighting. Condition inference on the
+predeclared bounded schedule and its all-strata yield rule.
+
+## Proposed estimand and crossed bootstrap
+
+For each held-out variant, the primary contrast is the equal-weight mean of
+the three occupancy-stratum contrasts. The macro contrast remains the
+equal-weight mean of the two variant contrasts. This deliberately targets an
+equal phase mixture; it does not estimate performance under the natural
+occupancy frequency of complete games or under a named opponent.
+
+Retain METHOD_SPEC §7's 20 model seeds, five controls, paired seat assignments,
+15 candidate-control contrasts, 10,000 bootstrap replicates, max-|T| familywise
+intervals, centered one-sided tests, and Holm adjustment, subject to review of
+this amendment. Change the situation resampling step as follows:
+
+- Draw one resampled multiset of model-seed ids and share it across both
+  variants, all strata, and all paired arms.
+- Separately within each variant and occupancy stratum, resample the 16
+  accepted candidate-slot ids with replacement. Retain every candidate/control
+  and seat-assignment pairing within each seed/slot cell.
+- Compute each variant contrast as the fixed one-third weighted mean of its
+  three stratum contrasts, then macro as the fixed one-half weighted mean of
+  the variants. Calculate all familywise statistics and p-values over the
+  existing 15 contrasts without dropping a stratum or an incomplete cell.
+
+The exact public bootstrap seed and implementation hash must be frozen before
+scores are read. Any zero-variance contrast, missing cell, nonfinite replicate,
+or failed root-yield stratum invalidates nomination, as in §7. The original
+unstratified situation-id bootstrap is not interchangeable with this
+stratified estimand.
+
+## Required review and limits
+
+Independent statistical and method review must decide whether the
+success-conditional first-passage population and equal-band weighting answer
+the intended development question; whether retaining duplicate states as
+independent slot draws is acceptable; whether 64 fixed slots have sufficient
+yield; and whether the proposed stratified crossed bootstrap is valid for the
+paired design. If any choice changes, issue a new version before root
+generation. The existing root schedule and METHOD_SPEC v04 remain unchanged
+until that review and all other gates pass.
+
+Even if accepted and executed, this is an exploratory development screen. It
+does not support confirmatory inference, superiority, generalization outside
+the declared game/variant/sampling distributions, or Q1-readiness claims.

@@ -57,6 +57,12 @@ versioned resolution: keep duplicate candidate slots as repeated IID draws
 conditional on validity, and stratify the crossed bootstrap by the fixed
 occupancy bands. This still requires independent statistical/protocol review;
 the root schedule remains unchanged and unapproved.
+The candidate resolution is now specified for review in
+`docs/METHOD_SPEC_V212_ROOT_SAMPLING_AMENDMENT_DRAFT_01.md`: it defines the
+success-conditional first-passage distribution, treats slot IDs as sampling
+units, and proposes fixed one-third weighting with within-band bootstrap.
+This is a design proposal only; v04 and the existing root schedule remain
+unchanged pending independent review.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.
