@@ -365,3 +365,18 @@ but not predictive dynamics. The only defensible V2.12 question remains a
 controlled empirical increment over matched state/value baselines and a
 same-search exact-state control. No V2.12 fit, match, score, or gate change
 follows from this search.
+
+
+### Causal-JEPA and structured counterfactual-like queries (2026-10-03)
+
+Nam et al., [Causal-JEPA: Learning World Models through Object-Level Latent
+Masking](https://proceedings.mlr.press/v306/nam26c.html), ICML 2026, extends
+masked joint-embedding prediction to object-level latents. Its abstract says
+masked object states are inferred from surrounding context, creating
+“counterfactual-like” prediction queries; it reports counterfactual-reasoning
+and agent-control results. This is relevant to V2.12's unresolved question of
+how to represent counterfactual support, but it is not evidence that C-JEPA
+evaluates all legal action branches or learns exact rule-governed transitions
+in adversarial board games. It strengthens the need to distinguish structured
+masked queries from complete legal-action coverage. This source does not resolve
+the V2.12 protocol gap, establish novelty, or change any research gate.
