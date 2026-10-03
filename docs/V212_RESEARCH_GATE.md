@@ -460,3 +460,13 @@ requirement, not evidence of invalidity. Independent statistical review must
 decide whether a design-matched synthetic coverage/power study is required
 and predeclare scenarios and acceptance criteria. No root generation,
 scoring, training, or gate transition is authorized.
+
+
+A follow-on primary-source check found Owen and Eckles's multifactor product
+reweighting method as a candidate variance-estimation comparison; its results
+concern the mean under crossed random-effects conditions and do not establish
+the proposed confidence/test family. A 2026 proportional random-effect block
+bootstrap studies nested clustered mixed models, not the seed-by-root crossing,
+so it is not a drop-in substitute. These are reviewer options only. The
+source scope and required method disposition are in
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md; gates remain closed.

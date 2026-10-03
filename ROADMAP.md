@@ -582,3 +582,14 @@ statistical review to decide whether a design-matched synthetic coverage and
 power study is necessary and to freeze scenarios/acceptance criteria before
 running it. This is an open validation item; do not generate roots or read
 outcomes. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 bootstrap alternatives scan
+
+Owen and Eckles's product-factor reweighting is a candidate variance-method
+comparison for crossed random-effects data, but its mean-variance results do
+not validate the V2.12 familywise interval/test procedure. A newer proportional
+random-effect block bootstrap targets nested cluster mixed models and is not a
+drop-in method for seed × root-slot crossing. Independent statistical review
+must select/compare methods against the frozen estimand; no simulation, roots,
+or outcomes have been produced. See the inference audit draft.

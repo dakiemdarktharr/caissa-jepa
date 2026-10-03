@@ -1,6 +1,14 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; crossed-bootstrap alternatives scan)
+
+- Extended the source audit to Owen and Eckles (2012): product-factor reweighting covers arbitrary-order crossed random-effects data and studies variance estimation for the mean, under stated conditions. It is a plausible comparison against pigeonhole resampling in a design-matched simulation, but does not establish V2.12 max-|T| interval or Holm-test behavior.
+- Reviewed Tho, Chambers, and Welsh (2026-v2): its proportional random-effect block bootstrap reports finite-sample performance for nested cluster linear mixed models. That layout differs from crossed model-seed/root-slot outcomes; it is not a drop-in option without changing the model and estimand.
+- Updated the remote inference audit with these scopes and left method selection to independent statistical review. No simulation, root generation, scoring, or training occurred; no gate changed. Sources: [Owen & Eckles](https://arxiv.org/abs/1106.2125), [PREB](https://arxiv.org/abs/2510.07770).
+
+
+
 ## Latest continuation delta (2026-10-03; root-bootstrap source audit)
 
 - Checked the primary sources cited for the proposed stratified crossed bootstrap. Owen (2007) gives a mean-consistency result for row/column resampling in crossed random-effects models; MacKinnon, Nielsen, and Webb (2021) derive asymptotic conditions for specific two-way cluster-robust regression inference. Preston's rescaled bootstrap addresses stratified multistage sampling without replacement; MacKinnon and Webb (2018) address few treated clusters in linear treatment models.
