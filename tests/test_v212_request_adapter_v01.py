@@ -24,6 +24,28 @@ from two_player.v212_request_adapter_v01 import (
 
 
 class V212RequestAdapterV01Tests(unittest.TestCase):
+    def _scope_snapshots(self, events_after=None):
+        events_before = {"low": 0, "max": 0, "oom": 0,
+                         "oom_kill": 0, "oom_group_kill": 0}
+        scope = {"path": "/user.slice/request.scope",
+                 "memory_max": EXPECTED_MEMORY_MAX,
+                 "memory_oom_group": 0}
+        before = {**scope, "events": events_before}
+        after = {**scope, "events": events_after or events_before}
+        return before, after, scope
+
+    def _worker_reply(self, game, state, scope, *, depth=4,
+                      stop_reason="depth_4_complete"):
+        return {
+            "action": game.legal_actions(state)[0],
+            "completed_depth": depth,
+            "stop_reason": stop_reason,
+            "search_wall_seconds": 0.01,
+            "node_visits": 1,
+            "worker_cgroup_path": scope["path"],
+            "worker_memory_max": scope["memory_max"],
+        }
+
     def test_cgroup_reader_requires_a_finite_contained_v2_limit(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -51,15 +73,28 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "memory.oom.group must be 0"):
                 verify_memory_scope(1610612736, proc, root)
 
+            proc.write_text("0::/../../outside\n", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "escapes"):
+                current_cgroup_info(proc, root)
+
     def test_request_returns_a_legal_action_without_recording_it_in_counters(self):
         game = next(game for game in VARIANTS
                     if game.name == "connect4-gravity-6x7")
         state = game.initial()
         root = Root(game.name, 0, 1, _state_sha256(game, state), state)
-        response = run_move_request(
-            game, root, "direct-leaf-value", model_seed=1,
-            require_scope=False,
-        )
+        before, after, scope = self._scope_snapshots()
+        reply = self._worker_reply(game, state, scope)
+        with patch(
+            "two_player.v212_request_adapter_v01.verify_memory_scope",
+            side_effect=[before, after],
+        ), patch(
+            "two_player.v212_request_adapter_v01._run_worker_process",
+            return_value={"timed_out": False, "returncode": 0,
+                          "reply": reply},
+        ):
+            response = run_move_request(
+                game, root, "direct-leaf-value", model_seed=1,
+            )
         self.assertEqual(response["status"], "response")
         self.assertIn(response["action"], game.legal_actions(state))
         self.assertEqual(response["completed_depth"], 4)
@@ -71,14 +106,33 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
                     if game.name == "connect4-gravity-6x7")
         state = game.initial()
         root = Root(game.name, 0, 1, _state_sha256(game, state), state)
-        response = run_move_request(
-            game, root, "direct-leaf-value", model_seed=1,
-            require_scope=False, planner_seconds=0.001,
+        before, after, scope = self._scope_snapshots()
+        reply = self._worker_reply(
+            game, state, scope, depth=0, stop_reason="wall_cap"
         )
+        request_payload = {}
+
+        def delayed_worker(_command, payload, _deadline):
+            request_payload.update(payload)
+            time.sleep(0.02)
+            return {"timed_out": False, "returncode": 0, "reply": reply}
+
+        with patch(
+            "two_player.v212_request_adapter_v01.verify_memory_scope",
+            side_effect=[before, after],
+        ), patch(
+            "two_player.v212_request_adapter_v01._run_worker_process",
+            side_effect=delayed_worker,
+        ):
+            response = run_move_request(
+                game, root, "direct-leaf-value", model_seed=1,
+                planner_seconds=0.001,
+            )
         self.assertEqual(response["status"], "controlled_fallback")
         self.assertEqual(response["reason"], "wall_cap")
         self.assertEqual(response["completed_depth"], 0)
         self.assertEqual(response["action"], game.legal_actions(state)[0])
+        self.assertLess(request_payload["planner_deadline"], time.monotonic())
 
     def test_request_search_counters_match_frozen_search_on_complete_fixture(self):
         game = next(game for game in VARIANTS
@@ -121,21 +175,10 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
                     if game.name == "connect4-gravity-6x7")
         state = game.initial()
         root = Root(game.name, 0, 1, _state_sha256(game, state), state)
-        events_before = {"low": 0, "max": 0, "oom": 0,
-                         "oom_kill": 0, "oom_group_kill": 0}
-        events_after = {**events_before, "max": 1, "oom": 1, "oom_kill": 1}
-        scope = {"path": "/user.slice/request.scope",
-                 "memory_max": EXPECTED_MEMORY_MAX,
-                 "memory_oom_group": 0}
-        before = {**scope, "events": events_before}
-        after = {**scope, "events": events_after}
-        reply = {
-            "action": game.legal_actions(state)[0],
-            "completed_depth": 4,
-            "stop_reason": "depth_4_complete",
-            "worker_cgroup_path": scope["path"],
-            "worker_memory_max": scope["memory_max"],
-        }
+        events_after = {"low": 0, "max": 1, "oom": 1,
+                        "oom_kill": 1, "oom_group_kill": 0}
+        before, after, scope = self._scope_snapshots(events_after)
+        reply = self._worker_reply(game, state, scope)
         with patch(
             "two_player.v212_request_adapter_v01.verify_memory_scope",
             side_effect=[before, after],
@@ -146,7 +189,6 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
         ):
             response = run_move_request(
                 game, root, "direct-leaf-value", model_seed=1,
-                require_scope=True,
             )
         self.assertEqual(response["status"], "forfeit")
         self.assertEqual(response["reason"], "memory_cgroup_oom")
