@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; transient service placement)
+
+- After independent review, no-inference transient user services verified worker placement in sibling cgroups, effective `MemoryMax=128M`/`MemoryHigh=96M`, swap limit 0, runtime limit 10s, `Restart=no`, and `OOMPolicy=kill`. The worker saw the matching cgroup values; caller was outside the worker unit.
+- On successful exit, systemd retained `Result=success`/exit status only while the unit was retained, while `ControlGroup` and kernel cgroup files disappeared immediately. With `--collect`, the completed unit became `LoadState=not-found` and the cgroup evidence was gone. The synthetic `Result=success` for a not-found unit was not treated as persisted evidence.
+- All temporary units were verified absent after cleanup. This is stage-2 no-inference placement/lifecycle evidence only; no OOM, inference, project data, score, or pilot ran. OOM classification, caller survival, external monitoring, receipt integration, and request timing remain open. Logs: `/tmp/caissa_v212_placement_check.log`, `/tmp/caissa_v212_collect_check.log`.
+
 ## Latest continuation delta (2026-10-04; supervision design independent review)
 
 - The independent reviewer requested a lifecycle check for transient service cgroup files and unit result fields after worker exit/release, since manager garbage collection and cgroup teardown may remove evidence. The external supervision design now requires testing cgroup-file disappearance, capture timing, manager result retention, and a verified external monitor fallback; it fails closed if no OOM/timeout evidence can be captured. OOM validation still requires a separate authorization and earlier gates.
