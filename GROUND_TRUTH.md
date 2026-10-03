@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; LAMIR two-player game prior art)
+
+- Added the full-text-reviewed LAMIR study to the V2.12 novelty crosswalk. LAMIR establishes learned latent look-ahead and CFR+-based reasoning for two-player zero-sum imperfect-information games; its formalism also notes that sequential games can be represented with fictitious actions for the non-acting player.
+- This closes broad claims that latent look-ahead in alternating two-player games is new. The narrower candidate comparison remains the specific EMA-target JEPA objective and decision-rank/regret effect in deterministic, fully observed exact-rule games versus matched controls. This is a testable question, not a novelty finding or evidence of advantage.
+- No method or gate changed; no data, model, roots, scores, matches, or outcomes were generated or accessed. See `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md` and `docs/RELATED_WORK.md`. Source: [Kubíček & Lisý, arXiv:2510.05048](https://arxiv.org/abs/2510.05048), published at ICLR 2026.
+
 ## Latest continuation delta (2026-10-04; root-inference methods literature)
 
 - Checked primary methods literature on crossed/pigeonhole bootstrap, multiway clustering, few-cluster inference, and resampling-based multiple testing. These sources establish methods under their own assumptions; they do not calibrate the proposed V2.12 20-seed × 16-slot-per-band paired-score/max-|T| procedure or its conditional global-yield design.

@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 LAMIR prior-art crosswalk
+
+Added the already full-text-reviewed LAMIR study to the V2.12 novelty crosswalk. It establishes learned latent look-ahead and equilibrium-oriented reasoning in two-player zero-sum games; its formalism also represents sequential games using fictitious non-acting-player actions. This removes broad novelty claims around latent reasoning in alternating games. The remaining CAISSA question is limited to its specific EMA-target JEPA objective and decision-rank/regret effect in deterministic, fully observed exact-rule games against matched controls. This is a testable research question, not a novelty finding. No method or gate changed; no data, model, roots, score, match, or outcome was generated or accessed. See `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md` and `docs/RELATED_WORK.md`.
+
 ### 2026-10-04 root-sampling draft consistency reconciliation
 
 A fresh independent read-only review found stale references to the superseded Design01 schedule, canonical-window deduplication wording that conflicted with split amendment v05, and root-sampling text that still required symmetry-unique states. The split amendment, generation design, duplicate/overlap audit, v05 root-sampling draft, and review record now agree editorially that source-window IDs define fit-bank distinctness, canonical content is diagnostic, and repeated development-root slot states remain separate observations under Design02. The global six-stratum under-yield stop is proposed in both v05 and Design02, but remains unaccepted and has no chosen schedule-pass-probability threshold. This does not validate the changed estimand or inference. No roots, simulation, data, model, scoring, or outcomes were run/read; no gate changed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
