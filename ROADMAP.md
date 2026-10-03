@@ -4,6 +4,12 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
+A hard memory bound for a future pilot remains unverified. Keep RSS as sampled
+telemetry until a disposable bounded-unit check confirms a finite `memory.max`,
+descendant containment, supervisor behavior, and cleanup. `memory.high` is not
+a hard limit; see
+`docs/V212_HOST_MEMORY_CONTAINMENT_AUDIT_01.md` and its primary references.
+
 The follow-on source review found that the V02 RSS guard is sampled/cooperative,
 not a hard ceiling: the initial sample is not compared to the cap, periodic
 checks happen every 256 nodes, and an over-cap final check can escape the
