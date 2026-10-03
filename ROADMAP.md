@@ -2,6 +2,11 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 composite no-inference journal/receipt rehearsal
+
+The no-inference composite rehearsal validated a pre-armed journal follower, 12 live cgroup samples, worker invocation/unit/cgroup binding, separate replay of the retained historical OOM record, and a file+directory-fsynced atomic receipt before cleanup. Independent review accepted this composition prerequisite. It did not exercise live same-invocation OOM capture, positive counter changes, or failure handling; the broader supervision/pilot gate stays closed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md.
+
+
 ### 2026-10-04 kernel-attributed bounded worker-cgroup OOM trial
 
 One 64 MiB no-inference transient-service worker was killed during a bounded 256 MiB touch attempt. The external caller survived, the worker did not complete, and the kernel journal positively attributes the kill to CONSTRAINT_MEMCG with oom_memcg/task_memcg matching the worker unit and group-kill policy. The event-file monitor missed a positive local counter; the journal excerpt was copied only after teardown. This establishes one bounded worker-cgroup OOM/caller-survival observation, while pre-teardown receipt integration, counter capture, repeatability, ancestor headroom, request timing, inference, and the wider supervision gate remain open. No pilot/outcome gate changed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md.
