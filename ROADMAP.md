@@ -58,6 +58,15 @@ appeared only in an aggregator record; no primary Zenodo/DOI source was found,
 so its claimed results are excluded as unverified. These findings do not
 authorize fitting or root generation and do not change the current gate.
 
+A further primary-source check found PiJEPA (arXiv:2603.25981v1), which trains
+an autoregressive multi-step JEPA world model and plans over action sequences
+with policy-guided MPPI. Its single-agent continuous-robot task differs from
+V2.12's exact legal branches and max/min backup, but confirms that multi-step
+JEPA plus planning is established. The bounded comparison is recorded in
+`docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`; it narrows the defensible claim to
+an empirical incremental effect of latent matching over matched controls.
+This is not a novelty finding and does not change the no-fit gate.
+
 ## Research objective
 
 Falsifiable hypothesis: an EMA-target JEPA that predicts future latent states conditioned on both players' ordered actions can improve planning under a fixed compute budget over matched non-JEPA baselines, with the benefit retained across a declared family of deterministic, alternating-turn, fully observed, finite-action, zero-sum games. Current evidence does not support this hypothesis. The immediate aim is to determine whether there is a defensible mechanism worth testing, not to tune until a development win appears.

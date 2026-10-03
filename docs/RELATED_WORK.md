@@ -264,6 +264,7 @@ primary-source update, not a complete forward-citation or venue search.
 
 | Work and primary source | Method and evidence inspected | Consequence for CAISSA |
 | --- | --- | --- |
+| Chahe & Zhou (2026), [PiJEPA: Policy-Guided World Model Planning for Language-Conditioned Visual Navigation, arXiv:2603.25981v1](https://arxiv.org/abs/2603.25981) | Uses an Octo action prior to initialize MPPI over a separate JEPA world model. The paper's method section specifies a frozen visual encoder, action-conditioned predictor, autoregressive multi-step latent MSE, and image-goal latent-distance planning; abstract reports navigation experiments. Full method sections 3.1–3.4 inspected. | Directly overlaps JEPA latent rollout plus action-sequence planning, so those ingredients are not novel. It differs from V2.12's jointly trained EMA-target small-board model and exact legal discrete alpha-beta max/min; PiJEPA is single-agent continuous robot navigation with policy-guided MPPI and goal-distance scoring. This is adjacent prior art, not a zero-sum game result or a matched control. |
 | Alrasheed et al. (2026), [The Planning Limits of Latent World Models, arXiv:2609.39235](https://arxiv.org/abs/2609.39235), [full text](https://arxiv.org/html/2609.39235) | Tests action ranking and control across five frozen backbones, including V-JEPA 2/2.1, on Meta-World and BridgeData V2. With five-step imagined rollouts, reliable ranking is limited to targets about five to ten steps away; the authors also find a substantial horizon gap with a perfect simulator. | This is not adversarial board-game evidence, but it shows why prediction error alone cannot validate a short-horizon planner. V2.12 must report action-ranking/regret by imagined horizon, compare the learned rollout with exact transitions under identical search and leaf evaluation, and avoid attributing truncation error to JEPA. The current four-ply random-weight compute pilot says nothing about this question. |
 | Ma et al. (2026), [ReWAM: Reciprocal World Action Models for Interactive Autonomous Driving, arXiv:2609.39245](https://arxiv.org/abs/2609.39245), [full text](https://arxiv.org/html/2609.39245) | Couples future-world representations with role-specific action generators in a finite Level-k response hierarchy; learns conditional responses from demonstrations and evaluates on NAVSIM. | Reciprocal latent-grounded response modeling is now an additional adjacent prior-art threat. ReWAM learns amortized conditional surrogates for bounded best-response behavior in driving, not a deterministic finite zero-sum game's exact legal branches or worst-case max-min values. CAISSA must keep behavioral response modeling distinct from minimax search and cannot claim reciprocal action conditioning alone as novel. |
 
@@ -291,6 +292,13 @@ authors' arXiv papers/project page. The JEPA-Chess entry is retained solely to
 record and quarantine a discovery artifact that could otherwise be mistaken
 for verified prior art. None of these sources changes the V2.12 gate or
 supports a superiority claim.
+
+PiJEPA is an additional adjacent precedent: its primary arXiv full text confirms
+that multi-step action-conditioned JEPA rollouts can be coupled to a planner,
+while its action prior, continuous robot domain, and goal-distance MPPI objective
+differ from the exact-rule, two-player max/min study here. This further narrows
+the possible claim to an empirical incremental effect of latent matching under
+the V2.12 controls; it does not establish novelty or clear the gate.
 
 Unverified search lead (excluded from the matrix): Exa surfaced a purported
 Zenodo item titled [JEPA-Chess: Action-Conditioned Joint Embedding Predictive
