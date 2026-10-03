@@ -97,3 +97,18 @@ wording. The companion `V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` proposes a fixed
 suitable for further design review, but the 64-slot yield, occupancy bands, and
 symmetry uniqueness rule remain unverified and must be frozen before any root
 generation.
+
+
+## Exact source compatibility audit
+
+The follow-on static audit in
+docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md resolves one reuse
+question at source level. V2.8 has exact rules for V2.12's training-size
+Connect Four 6x7 and Reversi6 variants and a deterministic full-episode replay
+pattern, but it does not implement the V2.12 generation protocol. Its split
+policy maps training episodes only to the uniform/tactical ordered pairs,
+while V2.12 requires all 16 independently drawn ordered pairs; its record
+materializer only emits H1/H2 fields and applies V2.8 phase/duplicate rules.
+The synthetic V2.12 auditor is in-memory validation only, not a generator.
+Therefore a separate V2.12 generator and manifest are required after protocol
+review. No V2.8 data was read or repurposed and no feasibility result exists.

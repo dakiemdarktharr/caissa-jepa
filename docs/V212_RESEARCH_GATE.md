@@ -261,3 +261,23 @@ and specify a separate, fixed bounded reference for any larger-variant
 decision-regret claim. Do not run the unbudgeted exact solver on large games
 or silently substitute the legacy toy-game variants. This remains an
 unreviewed design gap; no model score, data, or pilot was produced.
+
+
+## V2.12 generation compatibility audit (2026-10-03)
+
+A static read of V2.8 source blob
+b252c703004f42af1574868e9d8c3fdd9a4b4f02 confirmed that it supports the
+V2.12 training-size game rules and replayable terminal episodes, but is not a
+compatible V2.12 corpus generator: train/validation policy assignment is
+limited to two opposite uniform/tactical pairs instead of the required 16
+ordered pairs; split-specific selection/locked policies differ; and its record
+materializer applies V2.8 phase/dedup rules and emits H1/H2 rather than V2.12
+H0-H4 windows with H1/H2/H4 targets. The V2.12 auditor only accepts episodes
+in memory and explicitly is not a generator. Evidence and function-level
+dispositions are in
+docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md.
+
+This proves an implementation incompatibility, not a data/leakage result or
+928-window feasibility failure. A separately reviewed V2.12 generator and
+manifest are required. No data or outcomes were inspected/generated, and
+generation, fitting, scoring, and matches remain gated.

@@ -2092,3 +2092,18 @@ nonterminal evaluator/config was found in the inspected V2.12 runner/game
 path, despite the method spec requiring one for larger bounded references.
 Keep exact solved and bounded-reference results separate; resolve the latter
 before model scoring. No solver, dataset, model, or pilot was run.
+
+
+## V2.12 data-generator compatibility finding (2026-10-03)
+
+A static source audit documents in
+docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md that V2.8's exact
+Connect Four 6x7 and Reversi6 rules and full-episode replay may be reused as
+implementation references, but its generator cannot produce V2.12-compliant
+training data unchanged. V2.8 train policy assignment covers only the two
+opposite uniform/tactical seat pairs, while V2.12 requires all 16 ordered
+policy pairs; V2.8 applies its own split/phase/duplicate rules and materializes
+H1/H2 records, not V2.12 H0-H4 windows with H1/H2/H4 targets. The synthetic
+V2.12 auditor does not generate data. This proves incompatibility only; data
+feasibility, leakage, and the 928-window quota remain untested. No corpus was
+read or created, and all generation/training gates remain closed.

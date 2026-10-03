@@ -435,3 +435,17 @@ reference heuristic. Exact solved roots and bounded-reference roots must be
 kept as distinct strata. Do not run the legacy exact solver over the larger
 variants or replace the frozen game scope. Reference configuration and
 independent review remain open; this was a static source audit only.
+
+
+### 2026-10-03 V2.8-to-V2.12 generation compatibility audit
+
+The source audit in docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md
+shows that V2.8 provides reusable exact training-size rules and a replayable
+full-episode pattern, but cannot directly produce V2.12-compliant data. Its
+train policy schedule covers only uniform/tactical opposite-seat pairs, its
+selection and locked policies are split-specific, and its materializer emits
+H1/H2 after a V2.8 phase cutoff under V2.8 duplicate rules. V2.12 requires a
+uniform draw over all 16 ordered policy pairs and H0-H4 windows with H1/H2/H4
+targets. The V2.12 auditor remains in-memory only. This is protocol/code
+incompatibility, not evidence of insufficient data or leakage; no data was
+generated or inspected. A separate reviewed V2.12 generator is required.
