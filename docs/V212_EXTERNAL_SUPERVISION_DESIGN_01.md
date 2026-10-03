@@ -1,6 +1,6 @@
 # V2.12 external worker supervision design 01
 
-**Status: research proposal only; partial read-only host capability preflight completed; independent review requested one lifecycle-evidence revision, now incorporated and pending re-review; not operationally validated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
+**Status: independent review accepted the revised design; stages 1–2 completed on lattice for no-inference placement and successful-exit evidence lifecycle. OOM supervision, inference, and receipt integration remain unvalidated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
 
 ## Candidate architecture
 
@@ -42,6 +42,14 @@ The existing disposable-scope tests established cgroup-v2 memory enforcement and
 A read-only lattice check observed systemd 262. The user manager responds to queries and reports version 262; `user@1000.service` is active with `Delegate=yes` and memory accounting enabled. The manager state query reports `degraded`, which was not diagnosed. The unified cgroup memory controller is available and enabled in the user-manager subtree. systemd reports an effective memory maximum/high of 16,092,520,448 bytes (about 15 GiB) for the user manager and its app slice; their direct `MemoryMax`/`MemoryHigh` properties are `infinity`. The caller currently runs in a child cgroup under that app slice.
 
 This indicates that the host has a functioning delegated cgroup-v2 user manager and a finite inherited effective memory ceiling. It does **not** show that a transient inference service can be started with the requested finite limit, that the worker's effective limit will be below the ancestor ceiling, or that sufficient live headroom exists. It also does not show worker-local OOM containment, caller survival, reliable unit-result/event capture, or cleanup. No transient unit was created, and no inference or OOM test ran. Continue to fail closed until a reviewed no-inference placement check verifies those properties.
+
+## No-inference placement and lifecycle check (2026-10-04)
+
+After independent review, two short transient user services ran only a Python process that reported its cgroup files and slept briefly. No project code/data, model, inference, memory-pressure allocator, OOM event, or outcome was involved. The services used `MemoryMax=128M`, `MemoryHigh=96M`, `MemorySwapMax=0`, `RuntimeMaxSec=10s`, `Restart=no`, and `OOMPolicy=kill`. While active, systemd reported `EffectiveMemoryMax=134217728` and `EffectiveMemoryHigh=100663296`; the worker read matching `memory.max`, `memory.high`, and `memory.swap.max`. Its unit cgroup was `app.slice/caissa-v212-placement-*.service`; the caller was in sibling `app.slice/flatpak-session-helper.service`. All three temporary units used across the placement/lifecycle checks were later `LoadState=not-found`, with no running unit left.
+
+The retained-unit case used `RemainAfterExit=yes`. After the worker exited successfully, `Result=success` and `ExecMainStatus=0` remained queryable while the unit was retained, but `ControlGroup=` was empty and the cgroup directory plus `memory.events.local` had already disappeared. The `--collect` case was observed active with the same finite limit; after completion, `LoadState=not-found` and the unit/cgroup files were gone. A synthetic `Result=success` returned alongside `LoadState=not-found` is not treated as stored execution evidence.
+
+This verifies placement, effective resource properties, caller/worker cgroup separation, and the successful-exit evidence lifecycle for trivial processes. It does not verify OOM result classification, caller survival under worker OOM, headroom under ancestor pressure, atomic receipt persistence, service startup contribution to a real request, or inference behavior. An OOM-stage design must capture the manager result while pinned or prove an external counter monitor works before cgroup teardown; no OOM test has been run.
 
 Primary references:
 
