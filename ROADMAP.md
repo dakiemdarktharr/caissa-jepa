@@ -67,6 +67,22 @@ JEPA plus planning is established. The bounded comparison is recorded in
 an empirical incremental effect of latent matching over matched controls.
 This is not a novelty finding and does not change the no-fit gate.
 
+The expanded 2026-10-03 source pass added Value-Guided JEPA Planning, H-JEPA,
+Delta-JEPA, WA-JEPA, and the game-domain ActSWM. These cover value-structured
+planning, action-sensitive latent geometry, joint world/action prediction, and
+multi-step JEPA planning in Minecraft. ActSWM is single-agent open-world control,
+not zero-sum board play, but removes any claim that action-sensitive JEPA
+planning in a game is new. The present candidate lacks those specialized
+mechanisms; more critically, none makes its simple multi-step JEPA loss novel.
+The V2.12 claim should remain an empirical test of policy-mixture outcome
+targets with exact legal max/min, and must beat matched value/state controls to
+support even that narrow claim. Before method freeze, a versioned design review
+could assess a diagnostic comparing same-root legal alternatives only when
+their exact-rule consequences differ, and pairing latent separation with
+exact-state, value, and ranking differences. Distinct legal actions need not
+map to distinct latents; latent distance alone is not evidence of useful
+sensitivity. See the updated [prior-art crosswalk](docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md).
+
 ## Research objective
 
 Falsifiable hypothesis: an EMA-target JEPA that predicts future latent states conditioned on both players' ordered actions can improve planning under a fixed compute budget over matched non-JEPA baselines, with the benefit retained across a declared family of deterministic, alternating-turn, fully observed, finite-action, zero-sum games. Current evidence does not support this hypothesis. The immediate aim is to determine whether there is a defensible mechanism worth testing, not to tune until a development win appears.

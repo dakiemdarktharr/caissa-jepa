@@ -162,6 +162,39 @@ PDF. A backward/forward-citation and venue search is still required before a
 submission novelty statement. No proposed loss or weighting scheme is designated
 novel by this search.
 
+### JEPA control-state, value-guidance, and world-action refresh (2026-10-03)
+
+A follow-up primary-source search tested for closer overlaps on control-state
+geometry, action sensitivity, and joint world/action prediction, and revisited
+the already-listed value-guided JEPA paper in full text. Full methods were
+inspected for the four additional preprints below. This remains a targeted
+search rather than a systematic review.
+
+The full-text revisit of Destrade et al. confirms its goal-conditioned reaching
+value shapes the JEPA embedding geometry used as an MPC cost; it is already
+listed in the 2026-10-02 matrix above. V2.12 instead uses policy-mixture
+terminal-outcome labels with a side-to-move value head inside exact-rule
+alternating max/min. These are different target and decision semantics, not
+evidence that value-aware JEPA is new.
+
+| Work and primary source | Method and evidence inspected | Relevance and distinction for CAISSA |
+| --- | --- | --- |
+| Zoabi, Ali & Wolf (2026), [Hamiltonian JEPA: Action-Conditioned World Models with an Inherited Control State, arXiv:2609.33497v1](https://arxiv.org/abs/2609.33497) | Separates perceptual and planner-facing state, uses an inherited-covariance control slice and phase-conditioned dissipative port-Hamiltonian dynamics; port-inverse consistency reweights rollout error toward action directions. Full method and abstract inspected. | Raises the bar for claims that generic latent geometry or prediction quality is enough for planning. V2.12 uses an ordinary small affine action-conditioned predictor and has no port-Hamiltonian state or action-direction reweighting; its novelty cannot be latent control-state design. The paper evaluates pixel-based continuous control, not exact symbolic adversarial games. |
+| Zhang et al. (2026), [Delta-JEPA: Learning Action-Sensitive World Models via Latent Difference Decoding, arXiv:2606.31232v1](https://arxiv.org/abs/2606.31232) | Adds a latent-difference action decoder that reconstructs the executed action from adjacent-embedding displacement, alongside latent forward prediction; reports planning and action-sensitivity studies on continuous-control tasks. Full method/abstract inspected. | Action sensitivity and action-conditioned latent planning are explicit prior art. V2.12 conditions its forward predictor on the supplied legal action but does not decode that action from latent displacement. An action-sensitivity objective would be a new method variant requiring a new version and matched controls, not an implicit property of the current JEPA loss. |
+| Wang et al. (2026), [WA-JEPA: Rethinking the Video JEPA Paradigm for World-Action Modeling in Autonomous Driving, arXiv:2608.20974v2](https://arxiv.org/abs/2608.20974) | Uses hybrid future masking, conditional flow matching over future latents, and a joint future-scene/action predictor; reports NAVSIM and HUGSIM results. Full method and abstract inspected. | Joint world/action prediction is another established planning-oriented JEPA direction. V2.12 predicts future states conditioned on recorded actions and has a root policy head, but does not jointly generate future actions with future-world tokens; it instead searches exact legal branches. WA-JEPA is driving and does not evaluate adversarial max/min. |
+| Gan et al. (2026), [ActSWM: Action-Sensitive World Models for Long-Horizon Planning in Open-World Games, arXiv:2607.26712v2](https://arxiv.org/abs/2607.26712) | Combines a frozen action readout trained from latent transitions with rollout-level separation between recorded-action and all-zero-action predictions to address action-insensitive autoregressive rollouts; evaluates step drift, closed-loop Minecraft tasks, and CEM action recovery. Full method/abstract inspected; detailed source summary is in `docs/V28_PRIOR_ART_DELTA_20260930.md`. | Closest game-domain JEPA planning precedent in this search. Minecraft is a single-agent open-world control task; ActSWM does not study alternating players, zero-sum utility, exact discrete board rules, or max/min. It nevertheless establishes that multi-step JEPA in a game environment and action-sensitive rollout objectives are prior art. A V2.12 diagnostic should compare legal alternatives from the same root only when their exact-rule consequences differ, and report latent separation alongside exact-state, value, and ranking differences. Distinct legal actions need not map to distinct latents, and latent distance alone does not establish useful sensitivity. |
+
+These sources narrow the plausible contribution further: V2.12 should be framed
+as a controlled test of whether its particular EMA-target multi-horizon loss
+adds value over matched value-/state-prediction controls in an exact-rule,
+two-player finite-horizon setting. ActSWM also motivates a diagnostic comparing
+same-root legal alternatives whose exact-rule consequences differ, with latent
+separation reported alongside exact-state, value, and ranking differences.
+Distinct legal actions need not map to distinct latents, and latent distance
+alone does not establish useful sensitivity. Any spec change must be versioned
+and reviewed. These papers do not establish that increment, and they do not
+alter any data, compute, or training gate.
+
 ### Planning-alignment and transfer update (2026-10-02)
 
 The follow-up search targeted JEPA objectives that align latent prediction with
