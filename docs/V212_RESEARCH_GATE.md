@@ -216,3 +216,24 @@ contrast must use legal game actions rather than importing ActSWM's all-zero
 action contrast. Do not retrofit these changes into reviewed v04 or use
 unreviewed outcomes to select them. Status remains no training, no matches,
 and no superiority/novelty claim.
+
+
+## 2026-10-03 bounded-reference decision-regret design proposal
+
+Source audit of the published compute-only runner found that
+run_root_arm carries an incumbent root alpha across root actions, uses its
+temporary values only to choose a move, then discards them. Later fail-low
+returns may be upper bounds, not exact action values. The frozen v02 receipt
+records no actions or values, so it cannot support a retrospective regret
+calculation. A new design-only proposal,
+docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md, defines
+per-action full-window scores, a bounded-reference regret estimand, exact vs
+bounded reference strata, all-legal-action completeness, and fail-closed
+missing/bound handling. It explicitly keeps reference values evaluation-only
+and does not assign a reference depth or heuristic.
+
+This proposal is not frozen or independently reviewed and changes no gate.
+Before model scoring, the reference heuristic/depth, diagnostic compute
+allocation, root/seat weighting, tie metric, and relationship to the primary
+match metric still require decision and review. No scores were extracted from
+the pilot receipt, no code was changed, and no data/model/pilot was run.

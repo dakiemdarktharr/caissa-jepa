@@ -2061,3 +2061,20 @@ JEPA control and freeze legal-root action scoring plus bounded-reference
 regret. Reviewed v04 remains unchanged; training, matches, and superiority or
 novelty claims remain unauthorized. Source comparison is in
 `docs/RELATED_WORK.md` and `docs/V212_RESEARCH_GATE.md`.
+
+
+## Decision-regret metric design draft (2026-10-03)
+
+Static source inspection found that the compute-only alpha-beta runner shares
+the incumbent alpha between root actions, uses the temporary root score map
+only for selection, and discards it. Later root-action values may be bounds;
+the frozen random-weight pilot receipt does not record actions or values.
+Therefore no retrospective decision-regret analysis can be derived from that
+receipt. A new design proposal is in
+docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md: it defines
+root-perspective regret against one common exact or explicitly bounded
+max-min reference, requires complete exact scores for every legal root action,
+labels missing/bound cases rather than converting them to point estimates, and
+keeps reference values out of training. This is a draft only; reference
+heuristic/depth and evaluation allocation are unresolved and require
+independent review. No scoring, code changes, or pilot were performed.

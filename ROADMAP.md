@@ -405,3 +405,18 @@ independently reviewed protocol must decide on an action-sensitive JEPA control
 and specify full legal-root scores and bounded-reference decision regret. The
 reviewed v04 method is unchanged. No training, match, or gate authorization
 follows from this search.
+
+
+### 2026-10-03 bounded-reference decision-regret design draft
+
+A source audit of two_player/v212_pilot.py confirms the current compute-only
+runner carries a root alpha between root actions, discards its temporary score
+map after move selection, and does not write action values to receipts. Later
+root values can be bounds, and the frozen v02 receipt cannot be reused for
+regret. Added docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md
+to propose complete per-legal-action full-window scores, bounded-reference
+regret, exact/bounded strata, and explicit missing/bound treatment. It also
+specifies reference-value leakage limits and synthetic-only implementation
+checks. The draft is not frozen or reviewed; reference depth/heuristic, compute
+allocation, seat/root weighting, ranking measure, and primary-vs-secondary
+status remain open. No code, data, outcomes, or pilot artifacts were changed.
