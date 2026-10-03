@@ -287,3 +287,10 @@ with v01 or v02 until those gates pass.
 Added `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md` as a research proposal based on the Linux cgroup v2 and systemd manuals. It proposes testing a uniquely named transient service for the worker while the request-owning caller remains outside that unit. Kernel cgroup semantics support only a worker-local OOM boundary; they do not prove protection from ancestor/host-wide pressure. The design also records systemd start/runtime and receipt-capture constraints.
 
 This is not an independent review, host capability check, or OOM-supervision result. Prior disposable tests exercised user scopes, not transient services; no service-local OOM test, request/inference, or receipt integration ran. The document defines staged preflight, placement, fault-injection, no-outcome integration, and review gates. No pilot/training/data/outcome gate changed.
+
+
+### Read-only lattice supervision preflight (2026-10-04)
+
+A read-only host check found systemd 262; the user manager answered queries and reported `user@1000.service` active, `Delegate=yes`, and memory accounting enabled. The user manager's health query returned `degraded`, not investigated. Cgroup v2 exposes and enables the memory controller in the delegated user subtree. systemd reports an inherited effective memory maximum/high of 16,092,520,448 bytes (about 15 GiB); direct user-service and app-slice `MemoryMax`/`MemoryHigh` are unlimited. The caller is currently under the user app slice.
+
+This is a capability/ancestry observation only. No transient service was created, so the worker unit's effective finite limit, worker/caller separation within sibling units, available headroom, OOM classification, caller survival, receipt capture, and cleanup remain unverified. No inference or OOM fault test ran. The manager's degraded state is an unresolved environmental observation and is not evidence of a project failure. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`; stages 2–5 remain gated.
