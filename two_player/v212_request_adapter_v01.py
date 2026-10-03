@@ -241,10 +241,9 @@ def _worker_main() -> int:
             state_sha256=request["root_state_sha256"],
             state=State(tuple(request["board"]), request["player"]),
         )
-        if request["require_scope"]:
-            scope = verify_memory_scope(request["expected_memory_max"])
-            if scope["path"] != request["expected_cgroup_path"]:
-                raise RuntimeError("worker did not inherit the request cgroup")
+        scope = verify_memory_scope(request["expected_memory_max"])
+        if scope["path"] != request["expected_cgroup_path"]:
+            raise RuntimeError("worker did not inherit the request cgroup")
         rss_before_model = _sample_rss_bytes()
         model = RandomInferenceModel(request["arm"], request["model_seed"])
         rss_after_model = _sample_rss_bytes()
@@ -254,12 +253,8 @@ def _worker_main() -> int:
             request["node_cap"], request["rss_cap_bytes"],
             max(rss_before_model, rss_after_model),
         )
-        reply["worker_cgroup_path"] = (
-            scope["path"] if request["require_scope"] else None
-        )
-        reply["worker_memory_max"] = (
-            scope["memory_max"] if request["require_scope"] else None
-        )
+        reply["worker_cgroup_path"] = scope["path"]
+        reply["worker_memory_max"] = scope["memory_max"]
         sys.stdout.write(json.dumps(reply, separators=(",", ":")))
         return 0
     except Exception as error:  # Send a bounded error marker, never a traceback.
@@ -302,7 +297,7 @@ def _run_worker_process(command: list[str], payload: dict[str, Any],
 
 
 def run_move_request(game: BoardGame, root: Root, arm: str,
-                     model_seed: int, *, require_scope: bool = True,
+                     model_seed: int, *,
                      node_cap: int = NODE_CAP,
                      planner_seconds: float = PLANNER_SECONDS,
                      response_seconds: float = RESPONSE_SECONDS,
@@ -326,22 +321,16 @@ def run_move_request(game: BoardGame, root: Root, arm: str,
         raise ValueError("request root has no legal action")
     fallback_action = legal[0]
 
-    if require_scope:
-        scope = verify_memory_scope()
-        expected_path = scope["path"]
-        expected_max = scope["memory_max"]
-        before_events = scope["events"]
-        cgroup_record = {
-            "path": expected_path,
-            "memory_max": expected_max,
-            "memory_oom_group": scope["memory_oom_group"],
-            "events_before": before_events,
-        }
-    else:
-        expected_path = ""
-        expected_max = EXPECTED_MEMORY_MAX
-        before_events = {}
-        cgroup_record = None
+    scope = verify_memory_scope()
+    expected_path = scope["path"]
+    expected_max = scope["memory_max"]
+    before_events = scope["events"]
+    cgroup_record = {
+        "path": expected_path,
+        "memory_max": expected_max,
+        "memory_oom_group": scope["memory_oom_group"],
+        "events_before": before_events,
+    }
 
     payload = {
         "variant": game.name,
@@ -358,7 +347,6 @@ def run_move_request(game: BoardGame, root: Root, arm: str,
         "rss_cap_bytes": rss_cap_bytes,
         "expected_cgroup_path": expected_path,
         "expected_memory_max": expected_max,
-        "require_scope": require_scope,
     }
     command = [sys.executable, "-m", "two_player.v212_request_adapter_v01",
                "--worker"]
@@ -367,21 +355,20 @@ def run_move_request(game: BoardGame, root: Root, arm: str,
     )
     elapsed = max(0.0, time.monotonic() - request_started)
     scope_delta = {}
-    if require_scope:
-        try:
-            after_scope = verify_memory_scope()
-            if after_scope["path"] != expected_path:
-                raise RuntimeError("request supervisor left its bounded cgroup")
-            scope_delta = {
-                key: after_scope["events"].get(key, 0) - before_events.get(key, 0)
-                for key in after_scope["events"]
-            }
-            cgroup_record["events_after"] = after_scope["events"]
-            cgroup_record["events_delta"] = scope_delta
-        except (OSError, RuntimeError, ValueError):
-            return {"status": "forfeit", "reason": "cgroup_audit_failure",
-                    "action": None, "request_wall_seconds": elapsed,
-                    "cgroup": cgroup_record}
+    try:
+        after_scope = verify_memory_scope()
+        if after_scope["path"] != expected_path:
+            raise RuntimeError("request supervisor left its bounded cgroup")
+        scope_delta = {
+            key: after_scope["events"].get(key, 0) - before_events.get(key, 0)
+            for key in after_scope["events"]
+        }
+        cgroup_record["events_after"] = after_scope["events"]
+        cgroup_record["events_delta"] = scope_delta
+    except (OSError, RuntimeError, ValueError):
+        return {"status": "forfeit", "reason": "cgroup_audit_failure",
+                "action": None, "request_wall_seconds": elapsed,
+                "cgroup": cgroup_record}
     oom_delta = scope_delta.get("oom_kill", 0) + scope_delta.get("oom_group_kill", 0)
     if oom_delta > 0:
         return {"status": "forfeit", "reason": "memory_cgroup_oom",
@@ -413,7 +400,7 @@ def run_move_request(game: BoardGame, root: Root, arm: str,
                 "worker_error": reply["worker_error"],
                 "cgroup_event_delta": scope_delta,
                 "cgroup": cgroup_record}
-    if require_scope and (
+    if (
         reply.get("worker_cgroup_path") != expected_path
         or reply.get("worker_memory_max") != expected_max
     ):
