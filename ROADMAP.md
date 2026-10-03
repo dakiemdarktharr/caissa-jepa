@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 synthetic worker release-token verifier
+
+Added `two_player/v212_release_token_v01.py`: the worker blocks on the verified release FIFO, reads one bounded token through EOF, validates canonical sorted JSON and its digest, binds nonce/unit/invocation/boot/cgroup/source-manifest identity, and compares the live cgroup memory limit files. Fixture tests cover mismatch, malformed/duplicate/oversized input, FIFO substitution, empty EOF and blocking readiness. Combined IPC/token tests pass 30/30; independent static review found no remaining blocker. This is helper-level no-inference verification only: there is no controller/service integration or internal FIFO-read timeout, and the future caller deadline/service runtime must bound that wait. No service, adapter, inference, OOM, training, data, score, or outcome ran. Next: mocked service/controller failure-path protocol; review before any live service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ### 2026-10-04 release-FIFO IPC primitive
 
 Added an optional private mode-0600 release FIFO to `two_player/v212_worker_ipc.py`, with device/inode/type/owner/mode checks around the caller's nonblocking writer open, a one-shot 4096-byte bounded write contract, and substitution-safe cleanup. Its readiness test exercises a blocking reader open; the 21-case focused IPC suite passes, including concurrent duplicate-open rejection. This is transport groundwork only: no worker token verification, service launch, cgroup/property gate, receipt integration, or failure-path service protocol exists yet. No inference, OOM, training, data, score, or outcome ran. Next: implement a synthetic no-inference armed worker and mocked failure-path tests; obtain independent review before any live service. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.

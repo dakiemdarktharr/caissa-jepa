@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; synthetic worker release-token verifier)
+
+- Added `two_player/v212_release_token_v01.py`: a worker-side blocking FIFO consumer and strict versioned token verifier. It checks FIFO identity, bounded one-message-to-EOF input, canonical sorted JSON, duplicate/extra fields, digest, request nonce, service unit, systemd invocation, boot ID, exact cgroup path, expected source-manifest SHA-256, and live `memory.max`, `memory.high`, and `memory.swap.max` fixture values.
+- The combined FIFO/token suites pass 30/30; `git diff --check` passes. Independent static review found no remaining helper-level blocker. The FIFO read has no internal timeout and depends on a future controller deadline/service runtime. No controller/service integration, adapter call, inference, OOM, training, project data, score, or outcome was run/accessed. Research and pilot gates remain closed.
+- Next: implement and test the mocked no-inference service/controller failure protocol, then independently review before a live normal-exit service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ## Latest continuation delta (2026-10-04; release-FIFO IPC primitive)
 
 - Added an optional mode-0600 release FIFO to `two_player/v212_worker_ipc.py`. The caller-side helper checks the private directory and FIFO identity before and after nonblocking writer open, enforces one writer and one bounded write of at most 4096 bytes, checks the opened descriptor, and refuses cleanup after FIFO substitution. Existing workspaces remain unchanged unless the FIFO option is explicitly enabled. The readiness test uses a blocking reader open and verifies the read unblocks only after release.

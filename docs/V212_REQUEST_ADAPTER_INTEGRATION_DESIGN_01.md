@@ -15,16 +15,29 @@ default workspace path remains unchanged when the FIFO option is off. The
 focused IPC suite passes 21/21 tests, including sequential and concurrent
 duplicate-open rejection and duplicate-write rejection.
 
-This is only a caller-side transport primitive. No worker-side blocking/read
-barrier, release-token schema or digest verification, systemd property/cgroup
-verification, receipt binding, service launch, failure-path service harness,
-adapter call, inference, or OOM behavior has been implemented or tested. It does
-not satisfy the armed-worker gate by itself; do not treat it as supervision or
-pilot evidence. The next step is a synthetic no-inference worker protocol and
-mocked failure-path coverage, followed by independent review before any live
-service smoke.
+## Implementation progress: synthetic worker release verifier (2026-10-04)
 
-Updated: 2026-10-04. **Status: independently reviewed design only; not an implementation or authorization to run inference/OOM.**
+Added `two_player/v212_release_token_v01.py`. Its worker-side read blocks on the
+identity-checked FIFO barrier, consumes a single bounded payload through EOF,
+and rejects empty, oversized, substituted, or malformed input. The strict
+sorted-JSON schema rejects duplicate/extra fields and verifies the SHA-256
+digest, request nonce, service unit, invocation ID, boot ID, exact cgroup path,
+expected source-manifest digest, and live `memory.max`, `memory.high`, and
+`memory.swap.max` values before returning. Fixture-backed tests cover binding
+mismatches, digest/limit mismatch, path traversal, missing cgroup evidence,
+blocking-open/read-to-EOF behavior, empty EOF, FIFO substitution, and the
+4097-byte boundary. The combined IPC/token suites pass 30/30 tests.
+
+This helper has no internal timeout: a live controller must enforce the
+service/caller deadline and terminate a worker whose release FIFO stays open
+without progress. The helper is not wired to model imports or a service. No
+systemd property verifier, receipt binding, service launch, failure-path service
+harness, adapter call, inference, or OOM behavior has been implemented or
+tested. These synthetic helpers are not supervision or pilot evidence. Next is
+the mocked no-inference service/controller failure protocol, followed by
+independent review before any live service smoke.
+
+Updated: 2026-10-04. **Status: design plus partial, synthetic IPC/token helper implementation; no service integration and no authorization to run inference/OOM.**
 
 ## Decision
 
