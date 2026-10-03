@@ -6,8 +6,10 @@
 inside the existing mode-0700 workspace. It records and checks the FIFO's
 device/inode/owner/type/mode/link identity during nonblocking writer open,
 checks the opened descriptor before a single-use bounded write (maximum 4096
-bytes), closes/consumes the writer after any send attempt, and refuses cleanup
-if the path was substituted. The readiness regression uses a blocking
+bytes), closes/consumes the writer once a one-shot send is accepted (including
+later payload/write failure), and refuses cleanup if the path was substituted.
+Calls rejected before consuming the one-shot state leave descriptor ownership
+with the caller. The readiness regression uses a blocking
 `O_RDONLY` FIFO open and confirms its subsequent read blocks until release. The
 default workspace path remains unchanged when the FIFO option is off. The
 focused IPC suite passes 21/21 tests, including sequential and concurrent

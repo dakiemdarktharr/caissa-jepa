@@ -423,7 +423,8 @@ def open_release_writer(workspace: WorkerIPCWorkspace) -> int | None:
     ``None`` means that the worker has not reached its read barrier yet.
     A returned descriptor is identity-checked on both sides of the open.
     If the caller does not pass it to ``write_release``, the caller must close
-    it; ``write_release`` consumes and closes it on every attempted send.
+    it; once ``write_release`` accepts the one-shot send, it consumes and
+    closes the descriptor even if payload validation or the write then fails.
     """
     if (workspace.release_path is None or workspace.release_identity is None
             or workspace.release_path != workspace.directory / RELEASE_NAME
