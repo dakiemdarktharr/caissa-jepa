@@ -1,6 +1,6 @@
 # V2.12 external worker supervision design 01
 
-**Status: independent review accepted the revised design; stages 1–2 completed on lattice for no-inference placement and successful-exit evidence lifecycle. OOM supervision, inference, and receipt integration remain unvalidated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
+**Status: stages 1–2 placement/lifecycle checks passed for no-inference workers; the bounded OOM probe produced an ambiguous manager-classified OOM/SIGKILL result with zero local oom/oom_kill counters. Local OOM containment remains unvalidated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
 
 ## Candidate architecture
 
@@ -58,3 +58,16 @@ Primary references:
 - [systemd resource-control manual](https://github.com/systemd/systemd/blob/main/man/systemd.resource-control.xml): `MemoryMax=`, effective limits, and `MemoryHigh=`.
 - [systemd service manual](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml): `RuntimeMaxSec=` starts after activation and does not apply to oneshot units; OOM result/exit status and restart behavior.
 - [systemd unit manual](https://github.com/systemd/systemd/blob/main/man/systemd.unit.xml): transient unit garbage collection and loss of unloaded execution-result state.
+## Bounded transient-service OOM probe (2026-10-04; ambiguous)
+
+A gated Python worker passed pre-release checks for a sibling cgroup, effective MemoryMax=64M, MemorySwapMax=0, memory.oom.group=1, Restart=no, OOMPolicy=kill, and readable memory.events.local. It attempted to touch 256 MiB. systemd reported Result=oom-kill with ExecMainStatus=9; the external controller remained alive and the worker did not create its completion marker. The unit was verified LoadState=not-found after cleanup.
+
+The last sampled worker-local memory.events.local had max=3, but oom=0, oom_kill=0, and oom_group_kill=0. Per the kernel cgroup-v2 documentation, these counters distinguish approaching the max boundary from OOM/allocation-failure and killed-process events. systemd documents OOMPolicy=kill for processes terminated by the kernel OOM killer or systemd-oomd. Thus the manager result is an OOM-classified observation, but the available evidence does not identify the worker's memory.max as the cause; local containment is not demonstrated, and stage 3 is not passed. Independent review reached the same disposition.
+
+Before repeating fault injection, validate the event/result capture path during a no-inference stage-2 run: observe local counters and manager properties while the cgroup exists, persist the event deltas and result before teardown, and demonstrate attribution to the worker cgroup. Investigate kernel-local versus ancestor/global and systemd-oomd causes. Obtain independent review of the capture-path evidence before another OOM test. No inference, training, project data, or outcomes were used. Probe log: /tmp/caissa_v212_oom_probe.log.
+
+Primary references:
+
+- [Linux kernel cgroup v2 event definitions](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+- [systemd service OOMPolicy](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml)
+- [systemd process result meanings](https://github.com/systemd/systemd/blob/main/man/systemd.exec.xml)
