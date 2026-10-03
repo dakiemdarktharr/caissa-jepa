@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; composite no-inference journal/receipt rehearsal)
+
+- A tracked controller armed a journalctl follower before a unique transient service, sampled local cgroup events 12 times while live, and captured three journal records carrying cursor/boot/monotonic metadata. The worker marker's invocation ID matched systemd's InvocationID and the exact unit/cgroup; normal-exit Result=success was captured after cgroup teardown.
+- The assembler separately replayed the previous worker-cgroup kernel OOM entry as a historical fixture and correctly matched CONSTRAINT_MEMCG plus oom_memcg/task_memcg. It explicitly did not treat that entry as an OOM from the current normal-exit invocation.
+- A versioned receipt was file-fsynced, atomically replaced, and directory-fsynced before cleanup; a separate post-cleanup record verified LoadState=not-found. Independent review accepts the no-inference composition prerequisite. No live OOM journal event, same-invocation OOM receipt, positive counter transition, or failure path was tested. Broader operational supervision and pilot gates remain closed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md; receipts/logs under /tmp/caissa_v212_receipt_composite_v02*.
 ## Latest continuation delta (2026-10-04; kernel-attributed bounded worker-cgroup OOM trial)
 
 - After the stage-2 capture-path check was accepted by independent review, one bounded 64 MiB transient-service worker attempted a 256 MiB allocation. systemd recorded Result=oom-kill/ExecMainStatus=9; the external caller survived and the completion marker was absent.
