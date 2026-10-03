@@ -71,3 +71,10 @@ Primary references:
 - [Linux kernel cgroup v2 event definitions](https://docs.kernel.org/admin-guide/cgroup-v2.html)
 - [systemd service OOMPolicy](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml)
 - [systemd process result meanings](https://github.com/systemd/systemd/blob/main/man/systemd.exec.xml)
+
+
+### No-inference event/result capture-path check (2026-10-04)
+
+A gated normal-exit transient service repeated the sibling-cgroup and finite-limit preflight (128 MiB effective max, swap 0, memory.oom.group=1, Restart=no, OOMPolicy=kill). The external controller captured 14 samples of the worker's memory.events.local while the cgroup existed. After normal worker exit, the controller captured SubState=exited, Result=success, ExecMainStatus=0, and empty ControlGroup; the cgroup event file was absent. It wrote the receipt before cleanup and verified the transient unit was not-found afterward. No allocation stress or OOM event occurred. Log: /tmp/caissa_v212_capture_preflight_v2.log.
+
+Independent review accepts this as the stage-2 placement/lifecycle/capture-order prerequisite. It validates ordinary sampling and result capture only; all event counters stayed zero, so it does not validate nonzero-event detection or OOM attribution. Stage 3 must explicitly test whether a local OOM counter can be captured before teardown. If only the manager result is observed, classify it as a manager-classified OOM with local source uncorroborated.
