@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; external supervision design)
+
+- Added [external worker supervision design 01](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md) from current Linux cgroup v2 and systemd primary documentation. It proposes a transient systemd service for an isolated worker while the request caller remains outside the unit, with explicit checks for ancestor/host OOM, deadline accounting, unit-result capture, receipt integrity, and cleanup.
+- This is a design proposal, not a host capability check, independent review, OOM test, or operational result. Earlier disposable tests exercised cgroup scopes only; no transient-service worker, request/inference, or receipt integration ran.
+- The only authorized next decision is review of the design and staged validation plan. No pilot, training, data generation, match, or outcome gate changed. Sources: [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html), [systemd-run](https://github.com/systemd/systemd/blob/main/man/systemd-run.xml), [resource control](https://github.com/systemd/systemd/blob/main/man/systemd.resource-control.xml), [service units](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml).
+
+
 ## Latest continuation delta (2026-10-04; request adapter v02 candidate)
 
 - Preserved v01 and added versioned v02 to account for full function-processing latency; a late result is classified as a forfeit. Added a mocked-clock regression for delayed post-worker cgroup handling.
