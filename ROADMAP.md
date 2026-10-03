@@ -805,3 +805,18 @@ Rates of about 0.366, 0.383, and 0.418 correspond to 90%, 95%, and 99% pass
 probability. This is analytic sensitivity, not an observed yield, selected
 threshold, simulation, or gate transition; actual stratum rates and
 dependencies remain unknown. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-04 Othello sequence-model prior-art refresh
+
+Full-text review of Yuan and Søgaard's Othello World Model study added a
+direct board-game sequence-model precedent: autoregressive models predict
+recorded Othello moves and their internal features are probed/aligned for
+board structure. Reported one-hop error is below 0.1% for non-pretrained
+models at the full synthetic-data scale, while multi-step generation remains
+harder. These outcomes are next-move/representation measures, not full
+legal-action values, adversarial planning, or decision regret. This removes
+broad novelty around learning board structure from Othello histories but does
+not test V2.12's narrow objective-attributed question. No local data/code or
+outcomes were accessed; no method or gate changed. See
+`docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.

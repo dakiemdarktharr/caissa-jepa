@@ -573,3 +573,18 @@ sensitivity only: stratum rates and dependencies are unknown, no roots or
 validity rates were observed, and no threshold was selected. The global
 yield-failure rule and all V2.12 gates remain open. See the inference audit
 draft.
+
+
+### 2026-10-04 Othello sequence-model prior-art update
+
+Full-text review of Yuan and Søgaard's Othello World Model study found
+autoregressive next-move models trained on 132,588 championship games and a
+23,796,010-game synthetic corpus, with held-out game sequences. Their reported
+one-hop next-move error can be below 0.1% for non-pretrained models on the full
+synthetic training scale; the authors state multi-step generation remains
+challenging. Their representation probes/alignment concern board structure,
+not complete legal-action values, adversarial max/min, or decision regret.
+This narrows broad board-state-from-game-history claims but leaves the fixed-
+compute V2.12 decision-quality question open. No data, model, code, scores,
+root schedule, or outcomes were accessed; no method or gate changed. See
+`docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.

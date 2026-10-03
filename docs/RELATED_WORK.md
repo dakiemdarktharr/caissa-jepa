@@ -1,6 +1,6 @@
 # Research positioning and search record
 
-Search date: 2026-10-01 (targeted refresh). Status: scoped review for design v1, **not an exhaustive systematic literature review or a verified novelty claim**. Sources below are original papers, author repositories or official dataset hosts. Abstract-only entries are explicitly distinguished from full-text inspection. No published score is a local result.
+Initial search: 2026-10-01; targeted primary-source refreshes through 2026-10-04. Status: scoped review for design v1, **not an exhaustive systematic literature review or a verified novelty claim**. Sources below are original papers, author repositories or official dataset hosts. Abstract-only entries are explicitly distinguished from full-text inspection. No published score is a local result.
 
 ## Search method and limits
 
@@ -607,6 +607,33 @@ The repository is MIT-licensed; this audit did not download or run its code or
 data, and its reported experiments were not independently reproduced.
 Sources: [paper](https://arxiv.org/abs/2605.30100) and
 [author repository](https://github.com/Benjamin-Walker/Chess-World-Model).
+
+
+### Sequence-trained Othello representations (2025)
+
+Yuan and Søgaard's *Revisiting the Othello World Model Hypothesis* trains
+GPT-2, BART, T5, Flan-T5, LLaMA-2, Mistral, and Qwen2.5 variants to predict
+the next move from Othello move histories. The source reports 132,588
+championship games and 23,796,010 synthetic games, with 10,000 games from
+each dataset held out for testing and another 10,000 for validation. The
+primary move metric is top-1 next-move error, counting an illegal predicted
+move as an error; a separate experiment checks two successive generated
+moves. With the full synthetic data, the non-pretrained models report less
+than 0.1% one-hop error, while the paper says multi-step generation remains
+challenging. It also uses representation alignment and latent-move
+projections to argue that board layout and spatial relations appear in the
+learned features. These are author-reported results, not reproduced here.
+
+This is direct Othello board-history representation and next-move prior art,
+and it further rules out broad claims that learning board structure from
+legal game sequences is new. Its next-move target is a recorded move, not a
+complete legal-action value/ranking set; its two-hop legality check is not
+adversarial look-ahead or decision-regret evaluation. The model is an
+autoregressive sequence predictor, not a JEPA transition objective, and the
+study does not compare a fixed-compute minimax planner. Therefore it does not
+answer whether V2.12's latent matching changes max/min action quality against
+matched controls. Source: [Yuan & Søgaard, arXiv:2503.04421](https://arxiv.org/abs/2503.04421),
+[full text](https://arxiv.org/html/2503.04421).
 
 A separate exact-title search surfaced a 2026 aggregator entry titled
 *JEPA-Chess: Action-Conditioned Joint Embedding Predictive Architectures for

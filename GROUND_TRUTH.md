@@ -2417,3 +2417,9 @@ or gate changed.
 
 - Derived exact binomial-tail sensitivity for the proposed global rule requiring at least 16 valid candidates among 64 in all six variant × occupancy strata. Under a common independent per-slot validity rate, all-six schedule yield is about 0.361 at p=0.30, 0.821 at p=0.35, and 0.976 at p=0.40; rates about 0.366, 0.383, and 0.418 correspond to 90%, 95%, and 99% pass probability.
 - These figures are analytical illustrations, not measured slot validity, Monte Carlo simulation, a selected yield target, or authorization. Actual stratum-specific rates and dependence are unknown; independent review must disposition the yield/failure contract. No roots, scores, outcomes, or gate transition occurred. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### Latest continuation delta (2026-10-04; Othello sequence-model prior art)
+
+- Full-text review of Yuan and Søgaard's Othello World Model paper found autoregressive next-move training and separate representation alignment/projection analyses on Othello game histories. Its reported very low one-hop error at full synthetic-data scale and harder multi-hop prediction narrow broad claims to learning board structure from board-game histories.
+- The paper does not evaluate JEPA latent matching, full legal-action values, fixed-compute adversarial max/min, or decision regret. It does not establish or refute a V2.12 planning effect. No code/data were downloaded or run, no CAISSA data or outcomes were accessed, and no method/gate changed. See docs/RELATED_WORK.md and docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md; source: [Yuan & Søgaard](https://arxiv.org/abs/2503.04421).
