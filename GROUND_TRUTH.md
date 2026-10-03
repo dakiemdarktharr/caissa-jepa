@@ -1,5 +1,16 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; file-backed transient-service IPC design)
+
+- Verified against official systemd v262 source that `systemd-run --wait --remain-after-exit` and `--pipe --remain-after-exit` are rejected; `--collect` discards the unit, while garbage collection removes manager result fields. v262 supports file-backed stdin/stdout.
+- Revised the supervision design to replace the pinned-D-Bus assumption with a tentative mode-0700 per-request directory, exclusive mode-0600 request/response files, `StandardOutput=truncate:`, and a `LimitFSIZE=65536` response-growth ceiling. The worker's only writable destination must be its inherited response descriptor, or an independently bounded area; `LimitFSIZE` is not a disk quota. The caller still must poll under a monotonic deadline and capture evidence before unit cleanup. Exact open/write behavior, races, partial output, counter sampling, and cleanup need tests. This is a candidate only; no transient service, inference, OOM test, or pilot ran. Gates remain closed.
+- Updated `docs/V212_COMPUTE_PILOT_V03.md` to reflect its completed independent static review while preserving the runtime restrictions. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md` for official systemd v262 source/manual links.
+
+## Earlier continuation delta (2026-10-04; systemd worker IPC/lifecycle constraint; design superseded below)
+
+- Checked the official systemd v262 CLI implementation against the external-supervision design: `systemd-run` rejects `--wait` with `--remain-after-exit`, rejects `--pipe` with `--remain-after-exit`, and `--collect` unloads the unit. The v262 unit contract also says garbage-collected units lose manager execution results except journal data.
+- This rules out one tempting CLI composition for simultaneously streaming a request/response and retaining manager result fields. The pinned-D-Bus direction in this historical entry was superseded by the tentative file-backed IPC candidate above; neither path has been implemented or runtime-verified. No service, inference, OOM test, or pilot was run. Existing gates remain closed. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`; sources are linked to the official v262 implementation/manual.
+
 ## Latest continuation delta (2026-10-04; V03 pilot RSS fail-closed candidate)
 
 - Preserved the executed V02 implementation and added a V03 candidate that checks sampled RSS at entry, every 256 search nodes, and exit; an over-cap sample returns a compute-only row and causes the runner to stop the schedule.

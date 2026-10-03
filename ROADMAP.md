@@ -2,6 +2,14 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 file-backed transient-service IPC design
+
+Official systemd v262 source confirms `systemd-run` rejects `--wait`/`--pipe` when combined with `--remain-after-exit`, and unit GC drops manager results. The revised candidate uses private file-backed stdin/stdout and retains the unit with `--remain-after-exit`, then has the caller capture evidence and receipt before cleanup. This is unimplemented and unverified; next: independent review and synthetic failure-path tests before any host service. No inference, OOM test, or pilot ran. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`.
+
+### 2026-10-04 systemd worker IPC/lifecycle constraint
+
+The installed systemd 262 CLI rejects combining `--wait` with `--remain-after-exit` and `--pipe` with `--remain-after-exit`; `--collect` unloads the unit, and garbage collection drops manager execution results. Thus the service adapter cannot rely on a single `systemd-run` command for both request/response streaming and retained manager evidence. This earlier pinned-D-Bus direction is superseded by the tentative file-backed IPC candidate above; neither is implemented or runtime-verified. No service, inference, OOM test, or pilot ran; supervision and pilot gates stay closed. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`.
+
 ### 2026-10-04 V03 compute-pilot RSS guard candidate
 
 Added a versioned no-training V03 implementation candidate while preserving the executed V02 sources/receipt: RSS is checked at entry, every 256 visited nodes, and exit; a known crossing returns a diagnostic row without another sampler call. The runner writes an fsynced per-cell progress journal and only emits a complete aggregate receipt after full schedule verification. Any failure after receipt linking is marked `publication_uncertain` in the journal/CLI, and its existing path blocks reruns pending reconciliation. Eleven V03 tests, including V02 counter parity, RSS-stop runner journaling, and post-link publication failures, and the combined V02/V03 suite pass 17/17. The latest code revisions passed independent static review. RSS is still cooperative, V03 has not been run, and external supervision gates remain closed. See `docs/V212_COMPUTE_PILOT_V03.md`.

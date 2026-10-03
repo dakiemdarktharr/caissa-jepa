@@ -10,6 +10,73 @@ The kernel documents that an OOM event invoked in a cgroup does not kill tasks o
 
 A worker service may use `MemoryMax=` and a finite `RuntimeMaxSec=` after checking that the installed manager accepts and enforces those properties. The outer caller must retain its own monotonic request clock and enforce the existing absolute request/response deadline; a service runtime limit starts only after the unit becomes active and cannot account for all dispatch/startup latency. No timeout value is frozen by this design note.
 
+## systemd-run lifecycle constraint (2026-10-04)
+
+The host reports systemd 262, so its matching `v262` source is the relevant
+CLI contract. `systemd-run` rejects `--wait` together with
+`--remain-after-exit`; it also rejects `--pipe`/PTY stdio with
+`--remain-after-exit`. `--collect` explicitly unloads the unit after it runs.
+Separately, unit garbage collection unloads an inactive unit unless it remains
+referenced, and unloading discards manager execution results other than data
+already stored in the journal. These constraints are visible in the
+[systemd v262 `run.c` option validation](https://github.com/systemd/systemd/blob/v262/src/run/run.c#L3189-L3289)
+and the [v262 unit garbage-collection contract](https://github.com/systemd/systemd/blob/v262/man/systemd.unit.xml#L3128-L3165).
+
+Therefore the tempting `systemd-run --wait --pipe --remain-after-exit` design
+cannot both stream a request/response and retain the completed unit for result
+capture. A more compatible candidate is file-backed IPC in a mode-0700
+per-request temporary directory. Create the bounded request exclusively with
+mode 0600. Before dispatch, also create an empty response file using
+`O_CREAT|O_EXCL|O_WRONLY|O_NOFOLLOW` and mode 0600; verify it is a regular file
+owned by the caller with one link. Configure `StandardInput=file:<request>` and
+`StandardOutput=truncate:<response>`, with stderr set to `null`, then start
+with `--remain-after-exit` without `--wait`, `--pipe`, or `--collect`. systemd
+opens `truncate:` paths before executing the worker, so the response file is
+truncated at service startup. Recheck device/inode, owner, mode, link count,
+regular-file type, and size after completion before parsing. This protects
+against stale/partial output and detects path substitution; the threat model
+must explicitly exclude untrusted same-UID processes that can access the
+private directory.
+
+Set `LimitFSIZE=65536` as a per-process response-growth ceiling, and require
+the worker to treat a failed/short stdout write as fatal. Linux delivers
+`SIGXFSZ` when a process tries to extend a file past `RLIMIT_FSIZE`; if caught
+or ignored, the write fails with `EFBIG`. The caller must still enforce a
+strict 64-KiB file-size and exact-schema/one-response check: a signal or
+nonzero exit, oversized file, partial/malformed response, or deadline expiry
+is invalid/no-action, never a fallback. `LimitFSIZE=` maps to `ulimit -f` in
+bytes in systemd's v262 resource-limit table, and systemd documents that the
+manager opens stdio paths before invoking the executable
+([v262 `systemd.exec`](https://github.com/systemd/systemd/blob/v262/man/systemd.exec.xml#L3028-L3157);
+[Linux `getrlimit(2)`](https://www.man7.org/linux/man-pages/man2/getrlimit.2.html)).
+
+The caller would poll the unique unit under its existing monotonic response
+deadline, capture invocation/manager state, effective limits, cgroup samples
+and live journal evidence, persist the receipt, then stop/unload the unit and
+remove the private files. The worker must never write its response to the
+journal. Keep `truncate:` attached to exactly one worker command: systemd may
+reopen the path for additional command lines and truncate it again. A bounded
+stdout file limits bytes in that one file, not total disk use. Before
+integration, the service must enforce and verify a filesystem policy that
+leaves the worker no writable path other than its inherited response
+descriptor (including temporary/cache locations), or provide an independently
+bounded writable area. Treat the worker's trusted-code assumption as an
+explicit deployment prerequisite; `LimitFSIZE` alone is not a disk quota.
+systemd v262 documents the file/FIFO/socket stdio choices in
+[`systemd.exec`](https://github.com/systemd/systemd/blob/v262/man/systemd.exec.xml#L3028-L3157)
+and `systemd-run`'s remain-after-exit option in its
+[v262 source](https://github.com/systemd/systemd/blob/v262/src/run/run.c).
+
+This file-backed sequence is a design candidate, not a verified command line
+or an integrated adapter. Before any host service is created, tests and an
+independent review must resolve systemd's exact handling of the precreated
+response inode, failed/short writes at the file-size limit, start-job races,
+timeout/kill/reap classification, result capture before unit release,
+event-sampling lifecycle, no-restart semantics, and cleanup failure. A D-Bus
+client with separately bounded IPC remains an alternative if the CLI lifecycle
+cannot meet those requirements. No command was run to create a unit, and no
+host service, inference, OOM test, or pilot was run for this audit.
+
 ## Response and evidence contract
 
 The caller should treat each service invocation as one request and accept exactly one bounded, schema-validated response. Keep worker stdout reserved for the response, stderr for bounded diagnostics, and reject missing, duplicate, malformed, late, illegal-action, or non-finite responses as no-action/forfeit according to the reviewed protocol. Never replace an OOM or timeout with a fallback that could be mistaken for a completed search.

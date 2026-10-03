@@ -1,8 +1,9 @@
 # V2.12 random-weight compute pilot V03
 
-**Status: versioned implementation candidate; not independently reviewed and
-not run.** V03 addresses the RSS guard/reporting gap found in V02 while keeping
-the V02 source and receipt unchanged. This remains a no-training, no-outcome
+**Status: versioned implementation candidate; independently static-reviewed,
+not run, and not cleared for runtime use.** V03 addresses the RSS
+guard/reporting gap found in V02 while keeping the V02 source and receipt
+unchanged. This remains a no-training, no-outcome
 compute instrument using synthetic reachable roots and random initialization.
 It is not an evaluation pilot authorization or evidence of model performance.
 
@@ -52,10 +53,9 @@ final samples close the specific missing comparison/exception paths but cannot
 prevent a rapid allocation between samples or an external OOM kill. A real
 future pilot still requires the independently enforced worker memory limit,
 supervisor survival, event/result attribution, durable receipt integration,
-caller-observed deadlines, and independent review specified in
+caller-observed deadlines, and external operational gates specified in
 `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`. This V03 code remains a candidate
-pending review of the latest revisions and must not be run as a substitute for
-it.
+that cannot substitute for those gates.
 
 Focused tests use one deterministic synthetic root, random initial weights,
 mocked RSS sequences, and temporary files. They check search-counter parity
