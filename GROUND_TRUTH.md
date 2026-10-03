@@ -1,6 +1,14 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-03; counterfactual-support count audit)
+## Latest continuation delta (2026-10-03; cgroup memory and OOM policy audit)
+
+- The current compute-budget amendment v05 calls sampled RSS a hard process safety stop, but the code samples process RSS and the host audit says that sampling is not a hard limit. Linux cgroup v2 documents `memory.max` as the hard-limit/OOM mechanism and `memory.high` as throttling/reclaim.
+- The adapter requires `memory.oom.group=0` with an error claiming this makes the supervisor survive. Kernel semantics do not guarantee that: zero avoids indivisible group killing, but any eligible process in the cgroup may still be selected. The lattice child OOM probe showed one surviving-parent case only.
+- Added an unreviewed v06 compute-budget correction draft and clarified the adapter error message/test. Proposed node/time caps are unchanged; no operational budget, pilot, or fit authorization follows.
+- Scratch verification copied exact remote adapter/test blobs (Git blob IDs `9dbf3b75dd5526d1577e7c9cdfd3dcf4313543cf` and `3df288c070da39ef98146ee85bb6a9337266c22c`) to `/tmp`, changed only the OOM wording/assertion, and passed the seven adapter tests in 0.331 seconds. Log: `/tmp/caissa_v212_oom_audit.log`. The project worktree was not edited.
+- The next runtime gate needs external OOM supervision/receipt handling, actual `memory.peak` availability evidence, and separate worker-OOM/watchdog integration tests, all without training or outcome access.
+
+## Prior continuation delta (2026-10-03; counterfactual-support count audit)
 
 - Further self-audit found “multiple independent episodes” in the support draft was stronger than the implemented definition, which only counted distinct episode IDs. The draft now reports distinct IDs, declared seeds, policy-pair/seat diversity, and repeated trajectory/prefix content separately; it makes no statistical-independence claim.
 - Remote-only documentation update based on source-level protocol review. No code, local checkout state, data, pilot, or experiment artifact changed; no tests or outcome access were performed.
