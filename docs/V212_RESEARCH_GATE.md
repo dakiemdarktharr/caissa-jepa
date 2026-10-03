@@ -317,3 +317,36 @@ bounds still need independent adapter review and contract validation before
 any evaluation use. Do not treat this as closing the overall oracle gap; it
 does not change any scoring, generation, or training gate. See the detailed
 [decision-regret design](V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md).
+
+## Exact Connect Four oracle source audit (2026-10-03)
+
+A second primary-source pass identified a stronger interface candidate for
+only the V2.12 Connect Four 6x7 training variant. The MIT-licensed Rust
+repository [benjaminrall/connect-four-ai](https://github.com/benjaminrall/connect-four-ai),
+pinned here to `28a112adaf3ff89ee23fb09411fa592b6597010e`, exposes
+`Solver::get_all_move_scores`. Source says this returns an exact
+side-to-move remoteness score for every playable column and `None` for full
+columns; it assumes the position is valid and nonterminal. This is a better
+API candidate than the previously recorded Thill Java framework, not a
+validated oracle. The upstream's own no-book `begin-hard` benchmark reports
+5.09 s average for that test set; it is author evidence on a different
+machine/task, not an estimate for our roots. The call has no deadline, and
+its internal positions are not commensurate with the V2.12 10,000-node cap.
+
+The score sign is relative to the side to move and the magnitude encodes
+remoteness. Before use, freeze conversion to root-player utility, including
+whether the primary regret uses W/D/L only and remoteness is secondary. Review
+reachable-history conversion, legal-column bijection, terminal exclusion,
+all-action completeness, output status, dependencies/license provenance, and
+an external hard process deadline. Keep any reference-evaluation compute
+allocation separate from the planner's 5-second proposal. No engine was
+installed/run and no positions or scores were queried.
+
+Pascal Pons's AGPL-3.0-or-later solver also has an exact all-action
+`analyze` API; its license requires separate review before integration. A
+2025 preprint reports a strongly solved 7x6 W/D/L table requiring 89.6 GB and
+128 GB RAM at generation, with 47 hours on one CPU core. Neither source
+extends to 8x8 Connect Four or Reversi. The BDD artifact repository had no
+license file in the inspected tree. These sources narrow the candidate-source
+gap only; exact-oracle integration, bounded-reference design for the other
+variants, scoring, generation, and fitting remain gated.

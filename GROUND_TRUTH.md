@@ -2143,3 +2143,27 @@ runtime remain unverified. Treat the source as a candidate only. It does not
 close the overall exact-reference gap and does not authorize root/model
 scoring, data generation, training, or matches. No local files were changed;
 see the updated remote decision-regret design and research gate.
+
+## Exact Connect Four reference-source audit (2026-10-03)
+
+A primary-source pass found several standard-board exact references. The
+MIT-licensed Rust `connect-four-ai` at pinned upstream commit
+`28a112adaf3ff89ee23fb09411fa592b6597010e` exposes per-legal-column exact
+scores, but assumes a valid nonterminal state, scores from side-to-move, and
+encodes win/loss remoteness. Its no-book hard-opening benchmark averages
+5.09 s by the author's report; this is not our measurement, and its API has no
+call deadline. Pascal Pons's solver exposes exact per-column analysis under
+AGPL-3.0-or-later. Böck (2025) reports a 89.6 GB strongly solved W/D/L table
+built in 47 h using 128 GB RAM. The BDD repository had no license file in the
+inspected tree. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`
+and `docs/RELATED_WORK.md`.
+
+These sources narrow the candidate-oracle gap for Connect Four 6x7 only.
+They do not cover 8x8 or Reversi and do not establish an integrated,
+resource-bounded oracle. The 10,000 planner-node/5-second V2.12 proposal is
+not comparable to third-party internal counters/timing. Exact regret still
+needs reviewed root-player W/D/L normalization, a decision about whether
+remoteness is secondary, complete legal-action results, and an independent
+hard-deadline/resource contract. No solver was run, installed, or queried;
+no scores, roots, data, models, or outcomes were produced. All generation,
+scoring, and training gates remain closed.

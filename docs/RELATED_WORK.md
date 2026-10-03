@@ -429,3 +429,36 @@ versioned, independently reviewed protocol must resolve whether to add an
 action-sensitive arm and must define full legal-root scoring and decision
 regret against a bounded exact-search reference. No current method/spec gate
 changes from this literature review.
+
+### Exact Connect Four solution and oracle prior art (2025–2026)
+
+The standard 7x6 Connect Four game has strong-solver prior art beyond the
+small legacy games. Böck's 2025 preprint reports a BDD-based exact W/D/L
+solution table of 89.6 GB, generated in 47 hours on one CPU core with 128 GB
+RAM, plus alpha-beta search for fastest wins/slowest losses
+([paper](https://arxiv.org/abs/2507.05267); [author artifact repository](https://github.com/markus7800/Connect4-Strong-Solver)).
+The repository documents per-move W/D/L queries against the table and a
+separate remoteness search. No license file was present in the inspected
+repository tree; its code/artifact is not approved for reuse by this audit.
+
+For a lighter exact action-value interface, the MIT-licensed Rust
+[connect-four-ai](https://github.com/benjaminrall/connect-four-ai) source at
+commit `28a112adaf3ff89ee23fb09411fa592b6597010e` provides
+`get_all_move_scores` over playable columns. Its documentation says scores
+are exact, side-to-move remoteness values; its `begin-hard` no-book benchmark
+is author-reported and averages 5.09 s. The pinned source and API have not
+been independently run or integrated. Pascal Pons's earlier solver also
+exposes exact scores per move, but its source is AGPL-3.0-or-later
+([pinned repository](https://github.com/PascalPons/connect4/tree/d6ba50d8aaf2308c769d9bf2abd42d90f34baf41)).
+These are software/evaluation precedents, not learned-world-model methods.
+They eliminate any claim that standard-board exact Connect Four evaluation
+is itself novel; they do not establish novelty or value for JEPA.
+
+These sources only narrow the full-game oracle gap for standard Connect Four
+6x7. They do not cover Connect Four 8x8 or Reversi. Rust internal search
+positions are not the V2.12 planner's 10,000-node accounting; its no-deadline
+API and author-reported seconds-scale hard positions cannot be assumed to fit
+the 5-second request budget. A future evaluation must predeclare root-player
+W/D/L utility and keep remoteness secondary unless the method review chooses
+otherwise. Adapter/correctness/license/resource review remains outstanding;
+no code or table was run or downloaded.

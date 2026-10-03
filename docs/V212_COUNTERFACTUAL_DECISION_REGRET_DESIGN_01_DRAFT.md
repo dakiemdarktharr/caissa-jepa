@@ -180,3 +180,43 @@ keep exact-solved values separate from any bounded reference. Preserve the
 upstream [MIT license](https://github.com/MarkusThill/Connect-Four/blob/2a58844594ac022846385dd3ddc8bbbf0a26eae5/LICENSE)
 notice if code is ever copied. This does not close the overall V2.12 oracle
 gap or authorize scoring, root generation, data generation, or training.
+
+
+## Exact-reference candidate comparison and utility semantics (2026-10-03)
+
+A follow-up primary-source audit found a more direct standard-board API than
+the Java candidate above. At pinned commit
+[`benjaminrall/connect-four-ai@28a112adaf3ff89ee23fb09411fa592b6597010e`](https://github.com/benjaminrall/connect-four-ai/tree/28a112adaf3ff89ee23fb09411fa592b6597010e),
+the Rust MIT-licensed core exposes `Solver::get_all_move_scores`: it returns
+one exact remoteness score for each playable column and `None` for full
+columns, after solving each successor. The source assumes a valid, non-won
+position. Its repository describes the standard 7x6 board and publishes
+author-run benchmarks, including a 5.09 s average for its `begin-hard`
+no-book position set; this is not a CAISSA measurement and is not independent
+verification. The API has no per-call deadline. Its exact solver is therefore
+a plausible evaluation-only candidate for reachable Connect Four 6x7 roots,
+subject to adapter, correctness, and resource review. The output is from the
+side-to-move perspective and folds win/loss remoteness into signed values; the
+frozen diagnostic must decide whether the primary exact-regret utility is
+W/D/L only, with remoteness secondary, before reading scores.
+
+Pascal Pons's pinned [Connect4 Game Solver](https://github.com/PascalPons/connect4/tree/d6ba50d8aaf2308c769d9bf2abd42d90f34baf41)
+also exposes per-column exact scores through `Solver::analyze(P, false)`
+and `main -a`, but is AGPL-3.0-or-later; do not copy or integrate it without
+separate license/provenance review. Both search sources are fixed to standard
+7x6 Connect Four and do not cover the 8x8 variant or Reversi. The 2025
+preprint [Strongly Solving 7x6 Connect-Four on Consumer Grade Hardware](https://arxiv.org/abs/2507.05267)
+reports an exact W/D/L BDD table of 89.6 GB, produced in 47 hours on one CPU
+core with 128 GB RAM; its [author repository](https://github.com/markus7800/Connect4-Strong-Solver)
+describes querying W/D/L and remoteness separately. The repository has no
+license file in the inspected tree; do not reuse its code or large artifact
+until provenance, license, and storage are resolved.
+
+This materially narrows the exact-oracle source gap for one training-size
+variant, but it does not establish an integrated or cap-compatible oracle.
+The Rust solver's internal node accounting is not the V2.12 planner's 10,000
+search-node budget, and no request-to-reference latency, resource containment,
+value normalization, or adapter test was run. Keep this separate from the
+5-second candidate planner budget, exact-solved from bounded-reference
+strata, and all score/generation/training gates. No external engine was
+installed or run.

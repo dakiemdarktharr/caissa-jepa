@@ -476,3 +476,22 @@ normalization, reachability/turn/terminal contracts, correctness, licensing
 provenance, and bounded-runtime checks remain open before any use. It does
 not authorize scoring or change the research gate; see
 `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+An exact-oracle literature/source check narrowed, but did not close, the
+Connect Four 6x7 reference gap. The MIT-licensed Rust
+[connect-four-ai](https://github.com/benjaminrall/connect-four-ai) at pinned
+commit `28a112adaf3ff89ee23fb09411fa592b6597010e` provides exact all-playable-
+column scores, but they are side-to-move remoteness values and the API has no
+call deadline. Its published author benchmark averages 5.09 s on a difficult
+opening-position set; that is not a CAISSA measurement. Pascal Pons's
+all-action solver is AGPL-3.0-or-later, while a 2025 BDD strong solution
+reports 89.6 GB table size, 47 h and 128 GB RAM. No external engine/artifact
+was installed, run, or downloaded.
+
+The 10,000 V2.12 planner-node / 5-second request proposal cannot be transferred
+to a solver's separate internal node counter or seconds-scale worst-case
+search. Exact-root scoring therefore needs its own predeclared value semantics
+(root-player W/D/L, with remoteness secondary unless reviewed), compute
+allocation, hard worker deadline, and full-action completeness contract. This
+is software-source evidence for Connect Four 6x7 only; 8x8 and both Reversi
+variants remain without a pinned exact oracle. It changes no method or gate.
