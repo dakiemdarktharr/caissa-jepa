@@ -364,3 +364,22 @@ A no-inference probe in a disposable 1.5-GiB lattice scope confirmed
 scope was removed. Its 5.5-MB metadata-only reading is not an inference
 working-set estimate. v06 still needs independent review, OOM supervision, and
 integrated receipt/timing tests before any pilot.
+
+
+### V2.12 external OOM-observer feasibility probe (2026-10-03)
+
+A fresh 64-MiB no-swap transient systemd **service** touched 128 MiB and was
+OOM-killed while its caller remained in the distinct
+`flatpak-session-helper.service` cgroup. The service reported
+`memory.max=67108864`; `systemd-run --wait --pipe --service-type=exec` returned
+nonzero with `Result=oom-kill`, status 9, and 64-MiB peak. The caller captured
+the same `Result`, `ExecMainStatus`, and `MemoryPeak` with
+`systemctl --user show`, then used `reset-failed`; the unit was removed.
+Post-exit cgroup event files were unavailable, so the verified external signal
+is systemd unit metadata, not `memory.events`. This is a disposable mechanism
+test only; it does not integrate the V2.12 adapter or validate deadlines,
+watchdogs, durable receipts, or all OOM cases. Before any pilot, the adapter
+still needs a reviewed bounded-service launcher, retained result capture,
+receipt persistence, cleanup checks, and separate watchdog/OOM tests. No pilot,
+training, data, matches, or outcome evaluation occurred. Amendment v06 and the
+1.5-GiB resource proposal remain drafts pending independent review.

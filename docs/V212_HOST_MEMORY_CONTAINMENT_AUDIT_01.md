@@ -1,6 +1,6 @@
 # V2.12 process memory containment design note 01
 
-**Status: primary-document design note; no workload was launched.** This
+**Status: primary-document design note; no V2.12 pilot workload was launched. Disposable host probes are documented below.** This
 specifies what a future compute pilot would need to verify before describing
 its memory budget as an operating-system-enforced bound. It does not test the
 pilot runner, start a cgroup, or authorize a pilot, data generation, training,
@@ -112,3 +112,27 @@ A no-inference process in a disposable 1.5-GiB user scope observed
 was subsequently confirmed inactive and not found. This verifies interface
 availability and cleanup only; it is not model memory evidence and does not
 verify peak reset behavior or guarantee the supervisor survives OOM selection.
+
+
+## External transient-service OOM observation on lattice (2026-10-03)
+
+A second disposable test used a transient **service** with
+`MemoryMax=64M` and `MemorySwapMax=0`. The external caller's cgroup was
+`.../app.slice/flatpak-session-helper.service`; the 128-MiB page-touching
+worker reported a distinct unit cgroup and `memory.max=67108864`. The worker
+was killed with status 9. `systemd-run --wait --pipe --service-type=exec`
+reported `Finished with result: oom-kill`; before cleanup,
+`systemctl --user show` independently reported `Result=oom-kill`,
+`ExecMainStatus=9`, and `MemoryPeak=67108864`. The failed unit remained loaded
+until the external caller ran `reset-failed`, after which it was
+`not-found/inactive`. The launch command returned nonzero for the OOM-killed
+service, with the result property identifying the cause.
+
+The cgroup path and event files were no longer available after the failed
+service teardown; this test therefore validates systemd result/status/peak
+capture, not post-exit `memory.events` capture. Preserve failed-unit metadata
+until classification and receipt persistence are complete; do not enable
+`--collect` prematurely. This is a host mechanism probe, not adapter or pilot
+integration. It does not prove watchdog behavior, hard-deadline compliance,
+receipt durability, repeated-job cleanup, or every OOM-victim scenario. No
+V2.12 request, inference, model, data, match, or outcome process was launched.

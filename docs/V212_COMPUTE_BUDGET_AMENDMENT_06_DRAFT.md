@@ -84,3 +84,31 @@ and `ActiveState=inactive` after exit. This verifies that the interface is
 exposed in a 1.5-GiB scope on lattice and that cleanup completed. The tiny
 metadata probe is not a model working-set or headroom measurement, and it did
 not verify peak reset semantics or OOM-supervisor survival.
+
+
+## External transient-service OOM observer probe (2026-10-03)
+
+A disposable 64-MiB no-swap transient **service** was launched with
+`systemd-run --user --wait --pipe --service-type=exec`; its process touched
+128 MiB of pages. The calling supervisor ran in
+`/user.slice/user-1000.slice/user@1000.service/app.slice/flatpak-session-helper.service`,
+while the worker reported a separate transient-service cgroup under
+`app.slice/caissa-v212-oom-child-audit-b-20261003.service` with
+`memory.max=67108864`. systemd reported `Result=oom-kill`, main process
+`status=9/KILL`, and a 64-MiB peak. The caller then read the retained failed
+unit's `Result=oom-kill`, `ExecMainStatus=9`, and `MemoryPeak=67108864` using
+`systemctl --user show`. After capturing those properties it ran
+`reset-failed`; the unit was `not-found/inactive`. The nonzero
+`systemd-run` exit is therefore accompanied by an explicit OOM classification,
+not treated as an unexplained runner failure.
+
+This demonstrates one lattice-host path for observing a worker OOM from a
+caller outside the bounded service. The service cgroup had already disappeared
+when the caller queried `ControlGroup`, so this run did **not** retrieve
+post-exit `memory.events`; systemd's retained result/status/peak were the
+observed receipt fields. Do not use `--collect` before capturing them, since
+the failed unit must remain inspectable. A future adapter may use this pattern
+as an implementation candidate, subject to a versioned design and review. It
+does not verify adapter integration, response deadlines, watchdog termination,
+receipt persistence, repeated-run cleanup, or all OOM-victim cases. The 1.5-GiB
+proposal and all pilot/training gates remain unchanged.

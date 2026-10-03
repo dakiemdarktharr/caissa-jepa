@@ -2013,3 +2013,25 @@ and `memory.oom.group=0`, and the scope was removed. No request worker ran in
 that scope and no pilot batch, data generation, training, match, or outcome
 inspection occurred. The adapter awaits independent review and has no integrated
 pilot receipt; runtime headroom and cleanup remain unverified.
+
+
+## V2.12 external OOM observer probe (2026-10-03)
+
+A disposable 64-MiB, no-swap transient systemd service touched 128 MiB. Its
+cgroup was distinct from the external caller's user-session service cgroup;
+the worker's `memory.max` was 67,108,864 bytes. systemd killed the worker
+(status 9) and surfaced `Result=oom-kill` through both `systemd-run --wait
+--pipe --service-type=exec` output and the retained unit's
+`systemctl --user show` properties; the recorded peak was 64 MiB. The caller
+captured result/status/peak, ran `reset-failed`, and verified the unit was
+`not-found/inactive`. The command's nonzero exit was specifically classified
+as OOM. By the time status was queried, the cgroup path/event files were gone,
+so this test did not capture post-exit `memory.events`.
+
+This verifies one host-level external OOM-observation and cleanup path. It is
+not V2.12 adapter integration, a request/inference pilot, or evidence of
+response deadlines, watchdog handling, receipt persistence, repeated-job
+cleanup, or universal supervisor survival. Preserve failed unit metadata until
+a receipt is stored; do not collect the unit first. No data, model, training,
+match, or outcome was used. The compute proposal remains unapproved pending
+independent review.
