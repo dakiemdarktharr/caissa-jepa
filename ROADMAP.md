@@ -8,8 +8,10 @@ A precision clarification in the review-only outer-simulation audit separates
 marginal operating-characteristic rates from paired method differences. For
 methods evaluated on the same generated outer datasets, estimate the replicate-
 level paired difference and its Monte Carlo error directly; do not infer it by
-subtracting marginal intervals. Common datasets pair methods within replicate,
-while independent outer streams separate replicates. The required R and
+subtracting marginal intervals. Pairing does not guarantee lower Monte Carlo
+error: its variance effect depends on the covariance of paired method outcomes.
+Common datasets pair methods within replicate, while independent outer streams
+separate replicates. The required R and
 decision/uncertainty criteria remain for independent review to freeze before
 any simulation. No simulation or gate change follows from this note.
 

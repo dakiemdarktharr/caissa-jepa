@@ -276,6 +276,10 @@ also estimate the paired difference directly: for replicate r, define
 D_r = I(method A meets the criterion) - I(method B meets the criterion), so
 D_r is in {-1, 0, 1}; its Monte Carlo standard error is the sample SD of D
 divided by sqrt(R). This uses the covariance induced by the shared datasets.
+Equivalently, the variance of a paired difference contains
+-2 Cov(I_A, I_B); common random numbers do not guarantee variance reduction,
+because the induced covariance can be negative. Here their purpose is to
+preserve the comparison pairing and estimate its Monte Carlo error correctly.
 Do not infer the precision of that difference by subtracting two marginal
 intervals or by treating the methods as independent. Common random numbers
 here mean applying every method to the same generated dataset in each outer
@@ -284,7 +288,10 @@ scenario/replicate and each method's inner resampling procedure deterministic
 streams, and state whether inner resamples are shared or separate. If
 decisions span multiple scenarios or method contrasts, freeze how their
 uncertainty will be reported and how Monte Carlo precision affects the
-decision before running.
+decision before running. Glasserman and Yao (1992) express the same covariance
+term for simulated system differences and show variance-reduction guarantees
+only under stated conditions; Wright and Ramsay (1979) document a case where
+common random numbers induced negative correlation and increased variance.
 
 Before any such study, the reviewer should freeze the outer DGP scenarios,
 inner B or a precision-based B rule, deterministic independent RNG streams
@@ -304,6 +311,8 @@ and unrun; no roots, outcomes, or training were accessed.
 - MacKinnon, Nielsen, and Webb (2023), [Leverage, Influence, and the Jackknife in Clustered Regression Models](https://doi.org/10.1177/1536867X231212433) (two-way discussion; regression scope).
 - Bakshy and Eckles (2013), [Uncertainty in Online Experiments with Dependent Data: An Evaluation of Bootstrap Methods](https://arxiv.org/abs/1304.7406) (arXiv v4; Section 3.4/Figure 4 withdrawn).
 - Koehler, Brown, and Haneuse (2009), [On the Assessment of Monte Carlo Error in Simulation-Based Statistical Analyses](https://doi.org/10.1198/tast.2009.0030).
+- Glasserman and Yao (1992), [Some Guidelines and Guarantees for Common Random Numbers](https://doi.org/10.1287/mnsc.38.6.884); variance reduction depends on covariance and stated system conditions.
+- Wright and Ramsay (1979), [On the Effectiveness of Common Random Numbers](https://doi.org/10.1287/mnsc.25.7.649); reports a simulation case where CRN induced negative correlation and increased variance.
 - Andrews and Buchinsky (2000), [A Three-Step Method for Choosing the Number of Bootstrap Repetitions](https://doi.org/10.1111/1468-0262.00092).
 - Davidson and MacKinnon (2001), [Evaluation of a Three-Step Method for Choosing the Number of Bootstrap Repetitions](https://doi.org/10.1016/S0304-4076(01)00047-1).
 - McCullagh (2000), [Resampling and Exchangeable Arrays](https://doi.org/10.2307/3318577).
