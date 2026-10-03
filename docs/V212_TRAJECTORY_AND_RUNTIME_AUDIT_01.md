@@ -335,3 +335,14 @@ The controller's held memory.events.local descriptor retained only a zero-valued
 The journal evidence was copied to a local filtered receipt after unit cleanup, so pre-teardown versioned receipt integration is still open. Also unvalidated: reliable counter-change capture, repeated-trial reliability, ancestor/host pressure and headroom, request timing, and inference. Keep the broader supervision/pilot gates closed. Logs: /tmp/caissa_v212_oom_probe_v2.log and /tmp/caissa_v212_oom_probe_v2_journal.log.
 
 Primary references: [Linux kernel cgroup v2 event definitions](https://docs.kernel.org/admin-guide/cgroup-v2.html), [systemd service OOMPolicy](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml).
+
+
+### Composite no-inference journal/receipt rehearsal (2026-10-04)
+
+A tracked controller started a journalctl follower before launching a unique transient user service. The normal-exit worker passed the 128 MiB/swap-zero/OOM-group preflight; the controller sampled memory.events.local 12 times while live and captured three matching journal records with cursor, boot ID, monotonic timestamp, and invocation metadata. The worker marker's invocation ID matched systemd's live InvocationID and the exact unit/cgroup. After normal exit and cgroup-file removal, the controller captured Result=success/ExecMainStatus=0.
+
+The assembler separately replayed the retained kernel OOM record from the earlier bounded worker trial as a historical fixture; it matched CONSTRAINT_MEMCG and both worker cgroup fields. The receipt labels that record as historical and does not attribute it to the current normal-exit invocation. The controller wrote a versioned JSON receipt using file fsync, atomic replacement, and directory fsync before unit cleanup; a separate post-cleanup record confirmed LoadState=not-found. Independent review accepts this as the no-inference composition prerequisite.
+
+This does not test a live OOM journal event, a same-invocation OOM receipt, positive counter-transition capture, or follower/partial-write failure handling. The historical fixture is parser evidence only. Same-invocation OOM capture, receipt integration, repeatability, ancestor/host headroom, request timing, and inference remain unvalidated; keep the broader supervision and pilot gates closed. Logs/receipts: /tmp/caissa_v212_receipt_composite_v02.log, /tmp/caissa_v212_receipt_composite_v02.pre-cleanup.receipt.json, /tmp/caissa_v212_receipt_composite_v02.post-cleanup.receipt.json.
+
+Primary references: [systemd journalctl v262](https://github.com/systemd/systemd/blob/v262/man/journalctl.xml), [systemd journal fields v262](https://github.com/systemd/systemd/blob/v262/man/systemd.journal-fields.xml), [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html).
