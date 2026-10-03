@@ -145,16 +145,19 @@ writer, score, dataset, optimizer, or training checkpoint.
 deadline/fallback logic, response-action validation, worker timeout/kill/reap,
 OOM event classification, and counter equivalence with the frozen search.
 Together with the symmetry, frozen V02 pilot, and synthetic trajectory-auditor
-tests, the focused suite passed 19/19. The cgroup preflight helper also ran in a
-real disposable 1.5 GiB scope and read `memory.oom.group=0`; no request worker
-or inference ran in that scope. Request orchestration unit tests use a mocked
-cgroup boundary, while search equivalence tests use in-memory synthetic roots.
-This is software verification only, not an end-to-end runtime measurement.
+tests, the focused suite passed 20/20. A no-inference subprocess scope preflight
+ran in a real disposable 1.5 GiB scope and verified the spawned preflight worker
+had the same cgroup path as its parent, `memory.max=1610612736`, and
+`memory.oom.group=0`; the scope was removed afterward. No request/inference
+worker ran there. Request orchestration unit tests use a mocked cgroup boundary,
+while search equivalence tests use in-memory synthetic roots. This is software
+verification only, not an end-to-end runtime measurement.
 
 The adapter has not received independent review and has not been launched as a
 pilot. Its per-request fresh model construction, worker startup, actual
-six-second wall response, worker cgroup inheritance under inference load, and
-receipt/report integration remain unmeasured. No training-data or outcome
+six-second wall response, worker behavior under inference load, and receipt/report
+integration remain unmeasured. The no-inference subprocess preflight verifies
+only cgroup inheritance and does not measure request execution or headroom. No training-data or outcome
 artifact was read or created. Do not use the adapter for evaluation until
 independent review and a separate no-outcome integration run are accepted.
 
