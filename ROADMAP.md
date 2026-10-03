@@ -623,3 +623,16 @@ comparison is required. Preserve paired arms, fixed stratum weights, and all
 15 contrasts in any comparison. This is a research requirement, not a method
 selection or gate change; no simulation, roots, outcomes, or training occurred.
 See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 crossed mixed-model comparator
+
+Crossed random-effects models can represent seed and root-slot dependence,
+and Kenward–Roger provides a small-sample fixed-effect adjustment for Gaussian
+linear mixed models. These sources do not validate CAISSA's discrete/bounded
+paired score, stratum-weighted 15-contrast family, or simultaneous decision
+rule. If considered, the alternative needs a reviewed model and a
+design-matched comparison against the existing bootstrap, with assumptions and
+familywise criteria frozen first. No model was selected, no simulation or
+data/root access occurred, and no gate changed. See
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

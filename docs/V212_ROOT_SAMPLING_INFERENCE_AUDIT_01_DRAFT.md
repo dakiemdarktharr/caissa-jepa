@@ -158,8 +158,38 @@ stratum weights, and the full 15-contrast family, and must include sharp-null
 and heterogeneous-effect scenarios with criteria frozen first. No method is
 selected by this scan; no simulation or root schedule was run.
 
+## Crossed mixed-effects models as a model-based comparator
+
+The literature also supplies a structurally closer model family. Baayen,
+Davidson, and Bates describe linear mixed models with crossed subject and item
+effects, including random slopes, to generalize over both sampled dimensions.
+Kenward and Roger propose a small-sample adjusted covariance estimator and
+scaled Wald statistic with an approximate F distribution for fixed effects in
+Gaussian mixed models; they report good performance in a range of small-sample
+settings.
+
+This makes a crossed mixed-effects analysis a plausible reviewer comparator,
+not a validated replacement. The cited work does not establish calibration for
+CAISSA's bounded/discrete paired game scores, 20 seeds × 16 roots per
+occupancy stratum, three fixed-weight occupancy strata, 15 related contrasts,
+or the proposed familywise decision rule. To map it to the study, a new
+versioned protocol would have to define the response scale/likelihood,
+arm-by-seed and arm-by-root random slopes and their covariance constraints,
+fixed stratum weighting, missing/incomplete cells, variance-boundary handling,
+and simultaneous intervals/tests across the 15 contrasts. Kenward–Roger's
+approximation alone does not supply that full familywise procedure.
+
+Independent review may compare such a preregistered model-based analysis with
+the crossed pairs/product-weight bootstrap in a design-matched synthetic
+study, using the already identified null and heterogeneous-effect scenarios.
+The model and acceptance criteria must be frozen before simulation. This
+source scan neither selects the mixed model nor authorizes a fit, simulation,
+or outcome access.
+
 ## Primary sources
 
+- Baayen, Davidson, and Bates (2008), [Mixed-effects Modeling With Crossed Random Effects for Subjects and Items](https://doi.org/10.1016/j.jml.2007.12.005).
+- Kenward and Roger (1997), [Small Sample Inference for Fixed Effects from Restricted Maximum Likelihood](https://doi.org/10.2307/2533558).
 - MacKinnon, Nielsen, and Webb (2021), [Wild Bootstrap and Asymptotic Inference With Multiway Clustering](https://doi.org/10.1080/07350015.2019.1677473).
 - Roodman, MacKinnon, Nielsen, and Webb (2019), [Fast and Wild: Bootstrap Inference in Stata Using boottest](https://doi.org/10.1177/1536867X19830877).
 - MacKinnon, Nielsen, and Webb (2023), [Leverage, Influence, and the Jackknife in Clustered Regression Models](https://doi.org/10.1177/1536867X231212433) (two-way discussion; regression scope).

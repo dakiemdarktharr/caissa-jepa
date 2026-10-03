@@ -500,3 +500,18 @@ compare methods while preserving paired arms, fixed stratum weights, and the
 15-contrast family. No method choice or gate transition follows; no roots,
 simulation, outcomes, or training occurred. Scope details:
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 crossed mixed-model comparator scan
+
+Crossed subject/item mixed-effects models provide a closer structural analogy
+for seed × root sampling than nested-cluster models. Kenward–Roger offers a
+small-sample adjustment for fixed-effect inference in Gaussian mixed models.
+Neither source validates CAISSA's paired game-score estimand or its 15-contrast
+family. A model-based comparator would require a new reviewed specification
+for outcome likelihood, crossed arm-specific slopes, fixed stratum weights,
+missing cells, boundary behavior, and simultaneous inference. Independent
+review may decide whether to compare it in a predeclared synthetic study;
+there is no model selection or simulation authorization here. Gate remains
+unchanged. Details:
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
