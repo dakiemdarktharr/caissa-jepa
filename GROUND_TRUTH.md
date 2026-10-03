@@ -1,5 +1,15 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-03; request scope and related-work update)
+
+- The latest remote checkpoint before this delta was `6c671e3e4e57abc3310a8f8563568f2add7b7e6d` on `main`; updates were made only to research documentation through the authenticated GitHub integration. No local checkout, source code, generated data, or experiment state was changed.
+- The request adapter focused suite passed 20/20 after adding a bounded parent/child scope-inheritance test; compile and `git diff --check` passed. Frozen V02 pilot files remain unchanged.
+- A no-inference subprocess preflight inside a disposable lattice 1.5 GiB scope verified parent and spawned preflight worker had the same cgroup path, `memory.max=1610612736`, and `memory.oom.group=0`. The scope was removed. This did not execute a request, model inference, or pilot cell.
+- A targeted first-party literature check added Nam et al., Causal-JEPA (ICML 2026/PMLR), as adjacent work on object-level masking and counterfactual-like prediction queries. It does not evaluate complete legal-action branches or exact adversarial board-game transitions, so the V2.12 counterfactual-support protocol gap remains open.
+- Adapter independent review, end-to-end request timing/headroom, report/receipt integration, trajectory generation and split audits remain open. No data generation, training, match, or outcome inspection occurred. Do not treat this checkpoint as pilot authorization.
+
+## Prior latest continuation delta (2026-10-03; V2.12 RSS guard-path audit)
+
 ## Latest continuation delta (2026-10-03; V2.12 RSS guard-path audit)
 
 - At continuation start, verified `/home/koi/src/caissa-jepa`, branch `main`, HEAD and `origin/main` `e5b02d0ddb91abf824a3df3dd3b0194a4f643627`, clean; remote is `https://github.com/dakiemdarktharr/caissa-jepa.git`.
