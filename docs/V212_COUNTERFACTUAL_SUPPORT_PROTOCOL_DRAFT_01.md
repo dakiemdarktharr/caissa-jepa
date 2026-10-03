@@ -100,6 +100,31 @@ terminal/pass edges, alpha-beta cutoffs, and budget-stopped branches. Label
 full-tree counterfactual coverage. Keep node visits, distinct states, edges,
 model calls, and exact transition calls as separate counts.
 
+#### Root action score semantics under alpha-beta
+
+The current compute-only runner carries the incumbent root `alpha` between
+root actions, records each returned value in a temporary iteration map, and
+discards that map after choosing the action. A later root action whose branch
+fails low may therefore have only an upper bound, not an exact depth-limited
+minimax value; a completed search iteration does not make every root-action
+entry an exact score. This follows from the current
+[`run_root_arm` implementation](https://github.com/dakiemdarktharr/caissa-jepa/blob/main/two_player/v212_pilot.py)
+and the standard alpha-beta bound semantics described by
+[Knuth and Moore (1975)](https://doi.org/10.1016/0004-3702(75)90019-3).
+The frozen compute-only pilot does not publish these temporary values, so this
+is a future diagnostic contract issue, not a correction to pilot results or
+the selected-action contract.
+
+For any future all-root-action diagnostic, report each entry's status as
+`exact`, `upper_bound`, `lower_bound`, or `missing` and retain its search
+window/bound provenance. Do not rank bounds as point estimates or calculate
+point-valued regret from them. Report pairwise order only when the available
+bounds establish it; otherwise mark the comparison unresolved. If the intended
+metric requires exact scores for all legal root actions, the protocol must
+predeclare a full-window per-action or exhaustive diagnostic, its distinct
+compute accounting, and its failure rule. Decide this before fitting or model
+scoring; no diagnostic budget or estimand is frozen by this clarification.
+
 ### 3. Training-support match for evaluation branches
 
 On training-size variants only, attach each frozen evaluation edge to its raw
