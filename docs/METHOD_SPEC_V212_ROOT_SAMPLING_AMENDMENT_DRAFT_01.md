@@ -107,10 +107,24 @@ proposed here; it supports preserving the fixed occupancy strata as a design
 feature, not direct transplantation of its weights or validity results. See
 [Preston (2009)](https://www150.statcan.gc.ca/n1/pub/12-001-x/2009002/article/11044-eng.pdf).
 
+MacKinnon, Nielsen, and Webb derive conditions for asymptotic t-statistic
+validity under two-way cluster-robust variance estimation in regression
+models. Those conditions are a reminder that crossed resampling validity is
+design- and dependence-specific; their results do not establish this
+candidate/control score bootstrap. See [MacKinnon, Nielsen, and Webb
+(2021)](https://doi.org/10.1080/07350015.2019.1677473). MacKinnon and Webb
+document few-treated-cluster problems for cluster-robust and wild-bootstrap
+inference in linear treatment models. This is a different setting, so it is
+cautionary context rather than a direct result about the CAISSA design. See
+[MacKinnon and Webb (2018)](https://doi.org/10.1111/ectj.12107).
+
 Neither source establishes coverage for CAISSA-JEPA's paired outcomes,
 conditional first-passage slot distribution, small number of model seeds,
 familywise max statistic, or nomination thresholds. Those remain open for
-independent statistical review.
+independent statistical review. Increasing to 10,000 bootstrap replicates
+reduces Monte Carlo error in the estimated resampling distribution; it does
+not increase the number of independent seed/root sampling units or by itself
+establish finite-sample coverage.
 
 ## Required review and limits
 

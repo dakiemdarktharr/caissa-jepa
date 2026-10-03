@@ -63,8 +63,10 @@ success-conditional first-passage distribution, treats slot IDs as sampling
 units, and proposes fixed one-third weighting with within-band bootstrap.
 This is a design proposal only; v04 and the existing root schedule remain
 unchanged pending independent review. The draft cites crossed and
-stratified-bootstrap method analogues with explicit limits; neither validates
-the proposed small-sample max-T/Holm procedure.
+stratified-bootstrap method analogues and small-cluster cautions with explicit
+limits; none validates the proposed small-sample max-T/Holm procedure. The
+10,000 replicates improve resampling precision, not the number of independent
+seeds or root slots.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.
