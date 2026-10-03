@@ -485,3 +485,18 @@ independent statistical review must decide and predeclare criteria. The
 source's withdrawn Section 3.4/Figure 4 imbalance result is excluded. No
 simulation, roots, outcomes, training, or gate transition occurred. See
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 few-factor inference scope check
+
+A primary-source review of multiway wild-cluster methods and cluster-robust
+practice confirms that small cluster counts complicate inference and that
+regression-based alternatives depend on a specified score/variance model and
+bootstrap-cluster choice. The literature does not directly validate the
+proposed 20-seed × 16-root-slot, stratified paired bootstrap or its
+max-|T|/Holm family. Independent statistical review should disposition the
+per-stratum factor counts and determine whether a design-matched study should
+compare methods while preserving paired arms, fixed stratum weights, and the
+15-contrast family. No method choice or gate transition follows; no roots,
+simulation, outcomes, or training occurred. Scope details:
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

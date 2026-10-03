@@ -609,3 +609,17 @@ criteria first. This does not validate CAISSA's procedure or authorize
 simulation; no roots, scores, or training were produced. Details:
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and
 [Bakshy & Eckles](https://arxiv.org/abs/1304.7406).
+
+
+### 2026-10-03 few-factor inference scope
+
+The new review of multiway wild-cluster/bootstrap and cluster-robust sources
+finds further evidence that small factor counts warrant method-specific
+diagnostics. The cited alternatives are regression/score-based and make
+bootstrap-dimension choices; they do not validate the proposed paired,
+stratified 20-seed × 16-root-slot bootstrap or max-|T|/Holm family. Independent
+review should assess the per-stratum counts and decide whether a design-matched
+comparison is required. Preserve paired arms, fixed stratum weights, and all
+15 contrasts in any comparison. This is a research requirement, not a method
+selection or gate change; no simulation, roots, outcomes, or training occurred.
+See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

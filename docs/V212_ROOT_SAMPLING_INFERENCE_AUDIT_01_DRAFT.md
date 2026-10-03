@@ -123,8 +123,46 @@ recommendation does not itself authorize a simulation or settle whether one is
 required; independent review must decide. No simulation or root schedule has
 been run.
 
+## Few-factor regime and regression-based alternatives
+
+A second primary-source scan adds a small-factor caution. MacKinnon, Nielsen,
+and Webb's multiway wild-bootstrap work derives asymptotic validity for
+specified two-way cluster-robust regression statistics under explicit
+conditions; it does not establish finite-sample accuracy for every crossed
+design. Roodman et al.'s implementation paper explains that one wild-cluster
+weighting dimension cannot preserve dependence along multiple dimensions
+simultaneously, and the choice of bootstrap clustering matters. The
+cluster-robust practice literature warns that conventional two-way
+cluster-robust inference can be unreliable when either cluster count is small
+or clusters are heterogeneous; it discusses applying a one-way restricted
+wild-cluster bootstrap along the smaller/more unbalanced dimension.
+
+These results sharpen, but do not resolve, the V2.12 issue: each occupancy
+stratum has only 20 seed clusters crossed with 16 sampled root-slot clusters.
+The cited methods target regression coefficients, score vectors, and
+cluster-robust variance estimators. V2.12 instead proposes paired arm
+contrasts, stratified reweighting of both crossed factors, max-|T| intervals,
+and centered tests with Holm adjustment. Therefore, wild-cluster bootstrap,
+multiway CRVE, or jackknife methods are not drop-in replacements. They are
+reviewer comparison candidates only if a regression/score formulation can be
+shown to preserve the reviewed estimand and simultaneous-inference target.
+No source found here gives a universal “safe” cluster-count threshold or
+validates this finite-sample CAISSA procedure.
+
+Independent review should explicitly address whether 20 × 16 per stratum is
+adequate for the chosen inferential method and whether a design-matched
+simulation must compare (i) the proposed two-factor pairs bootstrap and
+product-factor reweighting and (ii) any regression-based alternative that has
+a defensible mapping. Any comparison must preserve paired arms, fixed
+stratum weights, and the full 15-contrast family, and must include sharp-null
+and heterogeneous-effect scenarios with criteria frozen first. No method is
+selected by this scan; no simulation or root schedule was run.
+
 ## Primary sources
 
+- MacKinnon, Nielsen, and Webb (2021), [Wild Bootstrap and Asymptotic Inference With Multiway Clustering](https://doi.org/10.1080/07350015.2019.1677473).
+- Roodman, MacKinnon, Nielsen, and Webb (2019), [Fast and Wild: Bootstrap Inference in Stata Using boottest](https://doi.org/10.1177/1536867X19830877).
+- MacKinnon, Nielsen, and Webb (2023), [Leverage, Influence, and the Jackknife in Clustered Regression Models](https://doi.org/10.1177/1536867X231212433) (two-way discussion; regression scope).
 - Bakshy and Eckles (2013), [Uncertainty in Online Experiments with Dependent Data: An Evaluation of Bootstrap Methods](https://arxiv.org/abs/1304.7406) (arXiv v4; Section 3.4/Figure 4 withdrawn).
 - Owen (2007), [The Pigeonhole Bootstrap](https://arxiv.org/abs/0712.1111).
 - Owen and Eckles (2012), [Bootstrapping Data Arrays of Arbitrary
