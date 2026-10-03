@@ -102,3 +102,13 @@ reviewed control plane. The adapter's exception text and tests now avoid
 claiming guaranteed supervisor survival. See the kernel's
 [cgroup v2 memory documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
 and the unreviewed `docs/V212_COMPUTE_BUDGET_AMENDMENT_06_DRAFT.md`.
+
+
+## Lattice memory.peak availability (2026-10-03)
+
+A no-inference process in a disposable 1.5-GiB user scope observed
+`memory.max=1610612736`, `memory.peak` present,
+`memory.oom.group=0`, and a 5,529,600-byte current/peak reading. The scope
+was subsequently confirmed inactive and not found. This verifies interface
+availability and cleanup only; it is not model memory evidence and does not
+verify peak reset behavior or guarantee the supervisor survives OOM selection.
