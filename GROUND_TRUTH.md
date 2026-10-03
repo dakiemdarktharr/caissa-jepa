@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; no-inference event/result capture check)
+
+- A gated 128 MiB transient service verified the sibling-cgroup/finite-limit preflight. The controller captured 14 worker-local memory.events.local samples while the cgroup existed, then captured SubState=exited, Result=success, ExecMainStatus=0, and empty ControlGroup after normal exit; the cgroup file was gone. It persisted the receipt and verified the unit not-found after cleanup. No OOM occurred. Log: /tmp/caissa_v212_capture_preflight_v2.log.
+- Independent review accepted this as the stage-2 placement/lifecycle/capture-order prerequisite. It does not validate a nonzero event transition or OOM attribution; stage 3 must capture a positive worker-local OOM counter before teardown. If only systemd Result=oom-kill is captured, report the source as uncorroborated. No inference, training, project data, or outcomes were involved.
+
 ## Latest continuation delta (2026-10-04; bounded transient-service OOM probe — ambiguous)
 
 - A gated worker in a transient user service passed preflight: separate worker/caller cgroups, effective MemoryMax=64M, MemorySwapMax=0, memory.oom.group=1, Restart=no, and OOMPolicy=kill. It attempted a 256 MiB allocation. systemd reported Result=oom-kill and ExecMainStatus=9; the external controller remained alive and the worker completion marker was absent.
