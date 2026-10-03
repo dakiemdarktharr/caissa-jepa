@@ -4,11 +4,15 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
-A hard memory bound for a future pilot remains unverified. Keep RSS as sampled
-telemetry until a disposable bounded-unit check confirms a finite `memory.max`,
-descendant containment, supervisor behavior, and cleanup. `memory.high` is not
-a hard limit; see
-`docs/V212_HOST_MEMORY_CONTAINMENT_AUDIT_01.md` and its primary references.
+The lattice session verified the cgroup enforcement mechanism in
+disposable user scopes: a 1.5 GiB `memory.max` was finite and inherited by a
+child; a separate 64 MiB no-swap scope killed an over-limit child and recorded
+`oom_kill=1`; both cgroups were removed after cleanup. The V2.12 pilot worker
+is not yet wired into this scope, so a hard memory bound is not operational for
+the pilot. Keep sampled RSS as telemetry until a versioned wrapper records and
+verifies the actual worker cgroup, `memory.max`, watchdog/OOM distinction, and
+receipt cleanup. `memory.high` is not a hard limit; see
+`docs/V212_HOST_MEMORY_CONTAINMENT_AUDIT_01.md`.
 
 A source audit also found that V2.12-04 calls for counterfactual coverage but
 does not define its branch population, denominator, or missing-support
