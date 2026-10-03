@@ -332,3 +332,14 @@ This is a measurement-contract clarification only: frozen pilot receipts
 contain compute counters, not these scores, and no pilot result changes. See
 `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md`; the draft remains
 unreviewed and authorizes no model scoring or data generation.
+
+
+### 2026-10-03 support-count independence clarification
+
+The counterfactual-support draft now defines episode support as distinct
+source episode IDs, not statistically independent samples. It requires
+separate declared-seed and policy-pair/seat diversity plus duplicate
+trajectory/prefix diagnostics, replacing “multiple independent episodes” with
+multiple distinct episode IDs. This avoids inflating the evidential meaning of
+support counts when policy behavior is deterministic or episode content repeats.
+The summaries remain descriptive, with no sufficiency threshold or gate change.
