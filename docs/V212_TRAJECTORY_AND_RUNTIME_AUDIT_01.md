@@ -221,3 +221,36 @@ request-to-response measurement or a multi-cell pilot. The local untracked
 adapter/test copies differ from remote only in the OOM-error wording and its
 assertion; they were not used for the remote result and were left untouched.
 No project corpus, model-training data, match score, or outcome was read.
+
+
+## Post-worker response-deadline source audit (2026-10-04)
+
+The exact remote adapter blob `two_player/v212_request_adapter_v01.py`
+(`3303a1441d3e6807a2b5e6eb81dffb0e22f18223`) was reviewed with its pinned
+remote `games.py` and `v212_pilot.py` dependencies. In
+`run_move_request`, `elapsed` is sampled immediately after
+`_run_worker_process`; only afterward does the parent reread and validate its
+cgroup, classify OOM/worker status, validate the returned action/depth, and
+construct the response. There is no later clock check. Thus the reported
+`request_wall_seconds` omits post-worker supervisor handling, and the adapter
+can return status `response` even if that handling crosses the six-second
+response deadline.
+
+A deterministic no-inference probe against the exact remote blob used a
+synthetic legal Connect Four root, mocked the worker to consume 0.05 seconds,
+and advanced a mocked monotonic clock by 0.20 seconds during the post-worker
+cgroup audit. With a 0.10-second response deadline, the function returned
+`status=response` and reported 0.05 seconds although the simulated return
+clock was 0.25 seconds. The remote adapter/dependency blob hashes were checked
+before the probe. This establishes a missing post-worker deadline check in the
+adapter contract; it is not an actual cgroup run, inference measurement, or
+evidence about a real request's latency.
+
+Before this adapter can support the reviewed end-to-end budget, issue a
+versioned correction, measure and classify the complete supervisor-side
+response path, add a regression test that delays post-worker validation past
+the deadline, and obtain independent review. The integrated no-outcome run
+must include the caller-observed response boundary; a final in-function clock
+sample alone does not prove scheduling-safe delivery by a hard external
+deadline. No pilot, training, data access, or outcome access occurred. The
+existing adapter remains unreviewed and must not be used for evaluation.
