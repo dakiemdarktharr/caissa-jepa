@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 JEPA Arcade two-player prior art
+
+Added the JEPA Arcade author model card as artifact-level prior art for action-conditioned JEPA representations in two-player Atari games. Its reported state-probe metrics and hand-written controller do not establish strategic strength or search benefit. This closes broad “JEPA in two-player games” novelty language while leaving only the narrower exact-rule adversarial decision-quality comparison open. The GitHub code link was not independently inspectable in this pass, and the card's claims remain author-reported. No method/gate changed; see `docs/RELATED_WORK.md` and the V2.12 novelty crosswalk.
+
 ### 2026-10-04 root-schedule yield sensitivity
 
 Added a closed-form sensitivity for the proposed six-stratum schedule requiring at least 16 valid roots among 64 candidates per stratum. Under hypothetical equal, independent per-slot validity, a common validity rate near 0.3834 implies about 95% whole-schedule yield; this is not an observed rate, accepted target, or feasibility result. The analysis highlights why reviewer disposition must specify whether a schedule-pass probability is required and how stratum heterogeneity/dependence is handled. No roots, data, outcomes, or inferential calibration were generated. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_01.md`.

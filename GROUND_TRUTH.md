@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; JEPA Arcade two-player prior art)
+
+- Added the JEPA Arcade author model card: an action-conditioned latent predictor/state head applied to two-player Atari Pong, Tennis, and Boxing, with a hand-written controller. Reported state-probe correlations and state loss are not game-strength, minimax, regret, or matched-baseline evidence; the card notes heuristic/epsilon-random training data and privileged RAM use.
+- This closes broad novelty wording that JEPA has not been used in two-player games. It does not test exact-rule symbolic board states or JEPA's incremental decision effect under alternating max/min. The linked GitHub code was not independently inspected, and no peer-reviewed paper was identified in this pass; metrics remain author-reported.
+- No method or gate changed; no project data, outcomes, model, or experiment was accessed or generated. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`. Source: [JEPA Arcade model card](https://huggingface.co/sauravvvv/jepa-arcade).
+
 ## Latest continuation delta (2026-10-04; root-schedule yield sensitivity)
 
 - Added a closed-form sensitivity for the proposed rule of at least 16 valid slots among 64 candidates in each of six strata. With hypothetical equal and independent slot validity, `q≈0.3834` yields about 95% whole-schedule pass probability; this is not an observed rate, accepted target, or feasibility result.

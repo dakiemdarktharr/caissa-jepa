@@ -563,6 +563,32 @@ Source: [Kubíček & Lisý, arXiv:2510.05048](https://arxiv.org/abs/2510.05048),
 whose paper identifies itself as published at ICLR 2026.
 
 
+### JEPA Arcade: action-conditioned JEPA in two-player arcade games (author artifact)
+
+The [JEPA Arcade model card](https://huggingface.co/sauravvvv/jepa-arcade)
+describes a 13M-parameter pixel encoder and action-conditioned autoregressive
+latent predictor for Pong, Tennis, and Boxing in two-player PettingZoo Atari
+environments. It reports SIGReg anti-collapse regularization and supervised
+state-head training, including privileged Atari RAM for labels/own-body state;
+the playing controller is a hand-written policy over the decoded state. The
+card's reported validation evidence is state-probe correlation and state-loss
+reduction, not head-to-head strength, minimax planning, regret, or a comparison
+against a matched non-JEPA model. It also warns that the collector uses heuristic
+plus epsilon-random policies and does not characterize behavior outside that
+distribution.
+
+This author-hosted artifact is direct evidence against a broad claim that
+action-conditioned JEPA representations have not been applied to two-player
+games. It does not test discrete symbolic board states, known exact transition
+rules, recursive 1/2/4-ply targets, or alternating max/min decision quality.
+The inspected source was the model card; its linked [code repository](https://github.com/saurav-34/lepong)
+was not independently reviewed in this pass, and no peer-reviewed paper was
+identified. Treat all model-card metrics and descriptions as author-reported.
+The narrow V2.12 hypothesis therefore remains an empirical comparison against
+matched exact-state and task-prediction controls, not an established novelty
+claim.
+
+
 ### Code World Models for General Game Playing (ICLR 2026)
 
 Lehrach et al., *Code World Models for General Game Playing*, use an LLM to
