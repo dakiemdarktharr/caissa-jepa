@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 multimodal JEPA videogame prior-art update
+
+A primary-source search added Campese and Moschitti's ICML 2026 workshop study of multimodal JEPA pretraining on Pokémon Red, with a frozen representation used by PPO. Its abstract reports held-out starting-state results and an offline trajectory-diversity finding. This broadens the established JEPA-in-games context, but it is not evidence for action-conditioned exact-rule minimax planning in a two-player zero-sum game. Full-text access was blocked in this source pass, so details beyond the official abstract/first page remain unverified. No method or gate changed. See `docs/RELATED_WORK.md`.
+
 ### 2026-10-04 EB-JEPA action-conditioned planning prior-art update
 
 A primary-source review of Terver et al.'s EB-JEPA paper and official repository found AC-video-JEPA: action-conditioned multi-step latent prediction with goal-conditioned MPPI/CEM planning in Two Rooms. The authors report 97±2% success on randomized-wall navigation and 1±1% when removing inverse-dynamics supervision, alongside substantial variance/covariance and temporal-similarity ablation effects. This removes standalone novelty claims for action-conditioned JEPA planning and inverse-action auxiliary losses. Its continuous 2D goal-navigation results do not establish anything about deterministic adversarial board games or V2.12 performance. It informs reviewer disposition of the existing inverse-action factorial only; no method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md`.
