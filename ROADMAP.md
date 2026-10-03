@@ -12,9 +12,11 @@ both cgroups were removed after cleanup. A new fail-closed request adapter,
 `memory.oom.group=0`, verifies that its worker inherits the same path, applies
 absolute 5-second planner and 6-second response deadlines, kills a timed-out
 worker group, and distinguishes OOM events from watchdog timeouts. The focused
-suite passes 19/19. However, only its cgroup preflight helper ran inside the
-real 1.5 GiB scope; no request worker or multi-cell pilot ran there. The adapter
-has no report/receipt writer and awaits independent review. Keep RSS as sampled
+suite passes 20/20. A no-inference subprocess preflight inside the real 1.5 GiB
+scope verified that the worker inherited the parent's exact cgroup path,
+`memory.max=1610612736`, and `memory.oom.group=0`; the disposable scope was
+removed. No request/inference worker or multi-cell pilot ran. The adapter has no
+report/receipt writer and awaits independent review. Keep RSS as sampled
 telemetry and the budget as a proposal until an integrated no-outcome run and
 receipt review pass. `memory.high` is not a hard limit; see
 `docs/V212_HOST_MEMORY_CONTAINMENT_AUDIT_01.md`.
@@ -304,3 +306,14 @@ positioning is aligned with the outcome-mixture max/min heuristic. The
 acceptance of v04, the narrowly specified no-training, random-weight
 instrumentation pilot may begin; objective/training code and fitted experiments
 remain gated by novelty, data/split audits, and separate pre-fit review.
+
+
+### 2026-10-03 targeted related-work update
+
+The ICML 2026 paper [Causal-JEPA](https://proceedings.mlr.press/v306/nam26c.html)
+uses object-level latent masking to create counterfactual-like prediction
+queries and reports results on reasoning and agent-control tasks. This is
+adjacent prior art for structured prediction queries, but it does not establish
+coverage of every legal action or exact counterfactual transition in a
+zero-sum board game. The current V2.12 counterfactual-support protocol gap
+therefore remains open; no method, data, or training gate changes.
