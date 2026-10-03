@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 release-FIFO IPC primitive
+
+Added an optional private mode-0600 release FIFO to `two_player/v212_worker_ipc.py`, with device/inode/type/owner/mode checks around the caller's nonblocking writer open, a one-shot 4096-byte bounded write contract, and substitution-safe cleanup. Its readiness test exercises a blocking reader open; the 21-case focused IPC suite passes, including concurrent duplicate-open rejection. This is transport groundwork only: no worker token verification, service launch, cgroup/property gate, receipt integration, or failure-path service protocol exists yet. No inference, OOM, training, data, score, or outcome ran. Next: implement a synthetic no-inference armed worker and mocked failure-path tests; obtain independent review before any live service. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ### 2026-10-04 request-adapter integration design review
 
 Static comparison found that the existing v02 request adapter still uses a same-cgroup pipe worker and caller-side hierarchical counters, so the new transient-service collector cannot be substituted as a command-only change. Added and independently reviewed `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`: it requires a no-compute armed worker, a nonce/invocation/cgroup/effective-limit-bound release FIFO handshake, fail-closed response/receipt handling, and exact verified source bytes. Review findings on start ordering, release snapshot contents, token replay, and source TOCTOU were resolved in the design. No adapter code or inference ran, and no gate changed. Next safe implementation step: synthetic no-inference armed/release service plus failure-path tests. OOM stage 3 still needs separate explicit authorization; no-outcome request integration remains behind the staged design gates.

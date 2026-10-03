@@ -7,12 +7,14 @@ its supervision receipt has been persisted.
 """
 from __future__ import annotations
 
+import errno
 import json
 import math
 import os
 from pathlib import Path
 import stat
 import tempfile
+import threading
 from dataclasses import dataclass
 from typing import Any, Mapping
 
@@ -20,6 +22,8 @@ from typing import Any, Mapping
 MAX_IPC_BYTES = 65_536
 REQUEST_NAME = "request.json"
 RESPONSE_NAME = "response.json"
+RELEASE_NAME = "release.fifo"
+MAX_RELEASE_BYTES = 4096
 
 
 class WorkerIPCError(ValueError):
@@ -40,6 +44,17 @@ class FileIdentity:
                    stat.S_IMODE(result.st_mode), result.st_nlink)
 
 
+@dataclass
+class _ReleaseWriterState:
+    lock: threading.Lock
+    claimed: bool = False
+    consumed: bool = False
+
+    @classmethod
+    def create(cls) -> "_ReleaseWriterState":
+        return cls(threading.Lock())
+
+
 @dataclass(frozen=True)
 class WorkerIPCWorkspace:
     directory: Path
@@ -50,6 +65,9 @@ class WorkerIPCWorkspace:
     directory_device: int
     directory_inode: int
     request_bytes: int
+    release_path: Path | None = None
+    release_identity: FileIdentity | None = None
+    release_writer_state: _ReleaseWriterState | None = None
 
 
 def _write_all(fd: int, payload: bytes) -> None:
@@ -105,6 +123,18 @@ def _validate_file_stat(result: os.stat_result, *, expected_owner: int,
         raise WorkerIPCError(f"{label} must have exactly one link")
 
 
+def _validate_fifo_stat(result: os.stat_result, *, expected_owner: int,
+                        label: str = "release FIFO") -> None:
+    if not stat.S_ISFIFO(result.st_mode):
+        raise WorkerIPCError(f"{label} is not a FIFO")
+    if result.st_uid != expected_owner:
+        raise WorkerIPCError(f"{label} owner does not match caller")
+    if stat.S_IMODE(result.st_mode) != 0o600:
+        raise WorkerIPCError(f"{label} mode is not 0600")
+    if result.st_nlink != 1:
+        raise WorkerIPCError(f"{label} must have exactly one link")
+
+
 def _validate_parent_path(base: Path) -> None:
     if not base.is_absolute():
         raise WorkerIPCError("IPC parent path must be absolute")
@@ -136,7 +166,8 @@ def _validate_parent_path(base: Path) -> None:
 
 def create_workspace(request: Mapping[str, Any], *,
                      parent: Path | None = None,
-                     max_bytes: int = MAX_IPC_BYTES) -> WorkerIPCWorkspace:
+                     max_bytes: int = MAX_IPC_BYTES,
+                     with_release_fifo: bool = False) -> WorkerIPCWorkspace:
     """Create a mode-0700 directory and exclusive 0600 request/response files."""
     if type(max_bytes) is not int or not 1 <= max_bytes <= MAX_IPC_BYTES:
         raise ValueError("max_bytes must be between 1 and the IPC hard limit")
@@ -168,6 +199,14 @@ def create_workspace(request: Mapping[str, Any], *,
         created.append(directory / REQUEST_NAME)
         response_stat = _create_file(directory, RESPONSE_NAME)
         created.append(directory / RESPONSE_NAME)
+        release_stat = None
+        if with_release_fifo:
+            release_path = directory / RELEASE_NAME
+            os.mkfifo(release_path, 0o600)
+            created.append(release_path)
+            os.chmod(release_path, 0o600, follow_symlinks=False)
+            release_stat = os.lstat(release_path)
+            _validate_fifo_stat(release_stat, expected_owner=os.getuid())
         dir_fd = os.open(directory, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
         try:
             os.fsync(dir_fd)
@@ -182,6 +221,11 @@ def create_workspace(request: Mapping[str, Any], *,
             directory_device=dir_stat.st_dev,
             directory_inode=dir_stat.st_ino,
             request_bytes=len(encoded),
+            release_path=(directory / RELEASE_NAME) if with_release_fifo else None,
+            release_identity=(FileIdentity.from_stat(release_stat)
+                              if release_stat is not None else None),
+            release_writer_state=(_ReleaseWriterState.create()
+                                  if release_stat is not None else None),
         )
     except BaseException as primary:
         cleanup_errors: list[OSError] = []
@@ -233,7 +277,20 @@ def cleanup_workspace(workspace: WorkerIPCWorkspace) -> None:
                                 label=f"{name} file")
             if FileIdentity.from_stat(current) != identity:
                 raise WorkerIPCError(f"{name} file identity changed before cleanup")
-        for name in (REQUEST_NAME, RESPONSE_NAME):
+        if (workspace.release_path is None) != (workspace.release_identity is None):
+            raise WorkerIPCError("release FIFO identity is incomplete")
+        if workspace.release_path is not None:
+            if workspace.release_path != workspace.directory / RELEASE_NAME:
+                raise WorkerIPCError("release FIFO path does not match its directory")
+            current = os.stat(RELEASE_NAME, dir_fd=directory_fd,
+                              follow_symlinks=False)
+            _validate_fifo_stat(current, expected_owner=os.getuid())
+            if FileIdentity.from_stat(current) != workspace.release_identity:
+                raise WorkerIPCError("release FIFO identity changed before cleanup")
+        names = [REQUEST_NAME, RESPONSE_NAME]
+        if workspace.release_path is not None:
+            names.append(RELEASE_NAME)
+        for name in names:
             os.unlink(name, dir_fd=directory_fd)
         os.fsync(directory_fd)
     except WorkerIPCError:
@@ -358,3 +415,113 @@ def read_response(workspace: WorkerIPCWorkspace, *,
         raise
     except OSError as exc:
         raise WorkerIPCError("response file could not be safely read") from exc
+
+
+def open_release_writer(workspace: WorkerIPCWorkspace) -> int | None:
+    """Open the workspace release FIFO without blocking.
+
+    ``None`` means that the worker has not reached its read barrier yet.
+    A returned descriptor is identity-checked on both sides of the open.
+    If the caller does not pass it to ``write_release``, the caller must close
+    it; ``write_release`` consumes and closes it on every attempted send.
+    """
+    if (workspace.release_path is None or workspace.release_identity is None
+            or workspace.release_path != workspace.directory / RELEASE_NAME
+            or workspace.release_writer_state is None):
+        raise WorkerIPCError("workspace has no verified release FIFO")
+    state = workspace.release_writer_state
+    with state.lock:
+        if state.claimed:
+            raise WorkerIPCError("release FIFO writer is one-shot")
+        return _open_release_writer_once(workspace, state)
+
+
+def _open_release_writer_once(workspace: WorkerIPCWorkspace,
+                              state: _ReleaseWriterState) -> int | None:
+    directory_fd = -1
+    try:
+        directory_fd = os.open(
+            workspace.directory,
+            os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+            | getattr(os, "O_NOFOLLOW", 0))
+        directory_info = os.fstat(directory_fd)
+        if (directory_info.st_dev != workspace.directory_device
+                or directory_info.st_ino != workspace.directory_inode
+                or directory_info.st_uid != os.getuid()
+                or stat.S_IMODE(directory_info.st_mode) != 0o700):
+            raise WorkerIPCError("private IPC directory identity changed")
+        before = os.stat(RELEASE_NAME, dir_fd=directory_fd,
+                         follow_symlinks=False)
+        _validate_fifo_stat(before, expected_owner=os.getuid())
+        if FileIdentity.from_stat(before) != workspace.release_identity:
+            raise WorkerIPCError("release FIFO identity changed")
+        try:
+            fd = os.open(RELEASE_NAME,
+                         os.O_WRONLY | os.O_NONBLOCK
+                         | getattr(os, "O_NOFOLLOW", 0),
+                         dir_fd=directory_fd)
+        except OSError as exc:
+            if exc.errno == errno.ENXIO:
+                return None
+            raise
+        state.claimed = True
+        try:
+            opened = os.fstat(fd)
+            after = os.stat(RELEASE_NAME, dir_fd=directory_fd,
+                            follow_symlinks=False)
+            _validate_fifo_stat(opened, expected_owner=os.getuid(),
+                                label="opened release FIFO")
+            _validate_fifo_stat(after, expected_owner=os.getuid())
+            if (FileIdentity.from_stat(opened) != workspace.release_identity
+                    or FileIdentity.from_stat(after) != workspace.release_identity):
+                raise WorkerIPCError("release FIFO identity changed during open")
+            return fd
+        except BaseException:
+            os.close(fd)
+            raise
+    except WorkerIPCError:
+        raise
+    except OSError as exc:
+        raise WorkerIPCError("release FIFO could not be safely opened") from exc
+    finally:
+        if directory_fd >= 0:
+            os.close(directory_fd)
+
+
+def write_release(workspace: WorkerIPCWorkspace, fd: int, payload: bytes) -> None:
+    """Write one bounded release message to a verified, already-open FIFO."""
+    if (workspace.release_identity is None
+            or workspace.release_writer_state is None):
+        raise WorkerIPCError("workspace has no verified release FIFO")
+    state = workspace.release_writer_state
+    with state.lock:
+        if not state.claimed or state.consumed:
+            raise WorkerIPCError("release FIFO writer is one-shot")
+        # Any attempted send consumes the one-shot channel, including failures.
+        state.consumed = True
+    try:
+        if not isinstance(payload, bytes) or not 1 <= len(payload) <= MAX_RELEASE_BYTES:
+            raise WorkerIPCError("release payload must be 1..4096 bytes")
+        _write_release_once(workspace, fd, payload)
+    finally:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+
+
+def _write_release_once(workspace: WorkerIPCWorkspace, fd: int,
+                        payload: bytes) -> None:
+    try:
+        opened = os.fstat(fd)
+        _validate_fifo_stat(opened, expected_owner=os.getuid(),
+                            label="opened release FIFO")
+        if FileIdentity.from_stat(opened) != workspace.release_identity:
+            raise WorkerIPCError("opened release FIFO identity changed")
+        written = os.write(fd, payload)
+        if written != len(payload):
+            raise WorkerIPCError("release FIFO write was partial")
+    except WorkerIPCError:
+        raise
+    except OSError as exc:
+        raise WorkerIPCError("release FIFO write failed") from exc

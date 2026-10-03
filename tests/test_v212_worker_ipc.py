@@ -2,6 +2,8 @@ import json
 import os
 import stat
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -58,6 +60,147 @@ class WorkerIPCTests(unittest.TestCase):
             ipc.cleanup_workspace(workspace)
         self.assertTrue(workspace.directory.exists())
         self.assertTrue(workspace.response_path.exists())
+
+    def test_optional_release_fifo_is_private_and_removed_during_cleanup(self):
+        workspace = create_workspace({"request_schema": "test.v1"},
+                                     parent=self.parent,
+                                     with_release_fifo=True)
+        self.assertEqual(workspace.release_path,
+                         workspace.directory / ipc.RELEASE_NAME)
+        info = os.lstat(workspace.release_path)
+        self.assertTrue(stat.S_ISFIFO(info.st_mode))
+        self.assertEqual(stat.S_IMODE(info.st_mode), 0o600)
+        self.assertEqual(info.st_uid, os.getuid())
+        self.assertEqual(info.st_nlink, 1)
+        ipc.cleanup_workspace(workspace)
+        self.assertFalse(workspace.directory.exists())
+
+    def test_release_writer_returns_none_until_worker_opens_fifo(self):
+        workspace = create_workspace({"request_schema": "test.v1"},
+                                     parent=self.parent,
+                                     with_release_fifo=True)
+        opening = threading.Event()
+        opened = threading.Event()
+        received = []
+        failures = []
+
+        def worker_barrier():
+            try:
+                opening.set()
+                reader = os.open(workspace.release_path, os.O_RDONLY)
+                opened.set()
+                received.append(os.read(reader, ipc.MAX_RELEASE_BYTES))
+                os.close(reader)
+            except BaseException as exc:
+                failures.append(exc)
+
+        worker = threading.Thread(target=worker_barrier, daemon=True)
+        worker.start()
+        self.assertTrue(opening.wait(1))
+        writer = None
+        try:
+            deadline = time.monotonic() + 1
+            while writer is None and time.monotonic() < deadline:
+                writer = ipc.open_release_writer(workspace)
+                if writer is None:
+                    time.sleep(0.001)
+            self.assertIsNotNone(writer)
+            self.assertTrue(opened.wait(1))
+            payload = b'{"release_schema":"test.v1"}'
+            ipc.write_release(workspace, writer, payload)
+            worker.join(timeout=1)
+            self.assertFalse(worker.is_alive())
+            self.assertEqual(failures, [])
+            self.assertEqual(received, [payload])
+            with self.assertRaisesRegex(WorkerIPCError, "one-shot"):
+                ipc.open_release_writer(workspace)
+            with self.assertRaisesRegex(WorkerIPCError, "one-shot"):
+                ipc.write_release(workspace, writer, payload)
+        finally:
+            if writer is not None and workspace.release_writer_state is not None \
+                    and not workspace.release_writer_state.consumed:
+                os.close(writer)
+            worker.join(timeout=1)
+
+    def test_release_open_rejects_fifo_substitution(self):
+        workspace = create_workspace({"request_schema": "test.v1"},
+                                     parent=self.parent,
+                                     with_release_fifo=True)
+        workspace.release_path.unlink()
+        os.mkfifo(workspace.release_path, 0o600)
+        with self.assertRaisesRegex(WorkerIPCError, "identity changed"):
+            ipc.open_release_writer(workspace)
+
+    def test_concurrent_release_writer_opens_are_one_shot(self):
+        workspace = create_workspace({"request_schema": "test.v1"},
+                                     parent=self.parent,
+                                     with_release_fifo=True)
+        reader = os.open(workspace.release_path,
+                         os.O_RDONLY | os.O_NONBLOCK)
+        start = threading.Barrier(3)
+        opened = []
+        rejected = []
+
+        def try_open():
+            start.wait()
+            try:
+                opened.append(ipc.open_release_writer(workspace))
+            except WorkerIPCError as exc:
+                rejected.append(str(exc))
+
+        threads = [threading.Thread(target=try_open) for _ in range(2)]
+        for thread in threads:
+            thread.start()
+        start.wait()
+        for thread in threads:
+            thread.join(timeout=1)
+        try:
+            self.assertTrue(all(not thread.is_alive() for thread in threads))
+            self.assertEqual(len(opened), 1)
+            self.assertEqual(len(rejected), 1)
+            self.assertIn("one-shot", rejected[0])
+        finally:
+            for fd in opened:
+                os.close(fd)
+            os.close(reader)
+
+    def test_release_cleanup_rejects_fifo_substitution(self):
+        workspace = create_workspace({"request_schema": "test.v1"},
+                                     parent=self.parent,
+                                     with_release_fifo=True)
+        workspace.release_path.unlink()
+        os.mkfifo(workspace.release_path, 0o600)
+        with self.assertRaisesRegex(WorkerIPCError, "identity changed"):
+            ipc.cleanup_workspace(workspace)
+        self.assertTrue(workspace.request_path.exists())
+        self.assertTrue(workspace.response_path.exists())
+
+    def test_release_writer_rejects_oversize_and_partial_write(self):
+        workspace = create_workspace({"request_schema": "test.v1"},
+                                     parent=self.parent,
+                                     with_release_fifo=True)
+        reader = os.open(workspace.release_path,
+                         os.O_RDONLY | os.O_NONBLOCK)
+        writer = ipc.open_release_writer(workspace)
+        try:
+            with self.assertRaisesRegex(WorkerIPCError, "1..4096"):
+                ipc.write_release(workspace, writer, b"x" * 4097)
+        finally:
+            os.close(reader)
+
+        other = create_workspace({"request_schema": "test.v1"},
+                                 parent=self.parent,
+                                 with_release_fifo=True)
+        other_reader = os.open(other.release_path, os.O_RDONLY | os.O_NONBLOCK)
+        other_writer = ipc.open_release_writer(other)
+        try:
+            with patch.object(ipc.os, "write", return_value=1), \
+                    self.assertRaisesRegex(WorkerIPCError, "partial"):
+                ipc.write_release(other, other_writer, b"{}")
+            with self.assertRaisesRegex(WorkerIPCError, "one-shot"):
+                ipc.write_release(other, other_writer, b"{}")
+        finally:
+            os.close(other_reader)
 
     def test_request_writer_retries_short_writes_and_rejects_zero_progress(self):
         writes = []

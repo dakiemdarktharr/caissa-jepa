@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; release-FIFO IPC primitive)
+
+- Added an optional mode-0600 release FIFO to `two_player/v212_worker_ipc.py`. The caller-side helper checks the private directory and FIFO identity before and after nonblocking writer open, enforces one writer and one bounded write of at most 4096 bytes, checks the opened descriptor, and refuses cleanup after FIFO substitution. Existing workspaces remain unchanged unless the FIFO option is explicitly enabled. The readiness test uses a blocking reader open and verifies the read unblocks only after release.
+- The focused IPC suite passes 21/21; `git diff --check` passes. Sequential and concurrent duplicate opens and duplicate writes are rejected. This does not implement release-token parsing/digest/cgroup checks, service launch, worker-local supervision, receipt binding, or failure-path service protocol. No service, adapter, inference, OOM, training, project data, score, or outcome was run/accessed. Research and pilot gates remain closed.
+- Next: implement a synthetic no-inference armed worker protocol and mocked failure-path tests, then obtain independent review before any live service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ## Latest continuation delta (2026-10-04; request-adapter integration design review)
 
 - Read the current v01/v02 request adapters against the new live receipt collector and staged supervision requirements. The existing v02 request path still launches a pipe-based worker in the caller's cgroup and samples the caller's hierarchical counters; simply wrapping that path in a transient unit would not provide the required worker-local evidence or caller/worker boundary.

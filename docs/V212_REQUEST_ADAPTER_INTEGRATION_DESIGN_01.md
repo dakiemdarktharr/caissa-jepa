@@ -1,5 +1,27 @@
 # V2.12 request-adapter integration design 01
 
+## Implementation progress: private release-FIFO primitive (2026-10-04)
+
+`two_player/v212_worker_ipc.py` now optionally creates a mode-0600 release FIFO
+inside the existing mode-0700 workspace. It records and checks the FIFO's
+device/inode/owner/type/mode/link identity during nonblocking writer open,
+checks the opened descriptor before a single-use bounded write (maximum 4096
+bytes), closes/consumes the writer after any send attempt, and refuses cleanup
+if the path was substituted. The readiness regression uses a blocking
+`O_RDONLY` FIFO open and confirms its subsequent read blocks until release. The
+default workspace path remains unchanged when the FIFO option is off. The
+focused IPC suite passes 21/21 tests, including sequential and concurrent
+duplicate-open rejection and duplicate-write rejection.
+
+This is only a caller-side transport primitive. No worker-side blocking/read
+barrier, release-token schema or digest verification, systemd property/cgroup
+verification, receipt binding, service launch, failure-path service harness,
+adapter call, inference, or OOM behavior has been implemented or tested. It does
+not satisfy the armed-worker gate by itself; do not treat it as supervision or
+pilot evidence. The next step is a synthetic no-inference worker protocol and
+mocked failure-path coverage, followed by independent review before any live
+service smoke.
+
 Updated: 2026-10-04. **Status: independently reviewed design only; not an implementation or authorization to run inference/OOM.**
 
 ## Decision
