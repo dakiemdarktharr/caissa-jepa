@@ -2189,3 +2189,11 @@ The current `main` adapter already contains the corrected cgroup explanation: `m
 - The authors report near-zero/negative elite-stage CEM Spearman for all variants, including DA-LeWM, despite positive random-stage gains. They report one training run per configuration and three evaluation seeds. Treat as preprint evidence, not independent replication.
 - A root-player decision-regret question under adversarial finite-horizon backup remains only a candidate distinction; novelty is unresolved. Before fitting, independent review must decide whether to add an inverse-action control and how to avoid treating logged policy goal-actions as optimal decisions.
 - No local files, CAISSA code, data, outcomes, or gates changed. Source: [arXiv paper](https://arxiv.org/abs/2608.18746).
+
+
+### V2.12 inverse-action control design checkpoint (2026-10-03)
+
+- The v04 predictor already receives exact actions, and all arms already share a recorded-root-action policy loss. DA-LeWM's inverse head is therefore a distinct auxiliary-pressure control, not evidence that current v04 lacks action conditioning.
+- Added docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md on the remote branch. It proposes, for independent review only, a factorial crossing the six v04 arms with inverse-action loss on/off, using exact observed state transitions, legal masks, and action 64 for forced pass. It explicitly labels this as potentially redundant and gives no outcome or performance prediction.
+- The draft rejects logged future-action sequences as optimal labels: they represent behavior-policy choices, may be non-unique for a state/goal pair, and do not encode minimax value. A future goal-action behavior-control would need a separate estimand.
+- No current method, data, code, tests, root schedule, or gate changed. No training, scoring, match, or outcome access occurred. Independent review must decide the extra factorial's necessity, compute parity, loss scale, and multiplicity before any fitting.

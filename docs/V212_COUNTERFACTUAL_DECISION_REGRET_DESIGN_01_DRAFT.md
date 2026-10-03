@@ -247,3 +247,18 @@ action head is an appropriate control and specify any behavior-derived
 goal-action targets so they do not get misrepresented as adversarially optimal.
 No new control is added to V2.12 by this note; doing so requires a versioned
 method amendment and review.
+
+
+## Possible inverse-action auxiliary control
+
+A separate review proposal,
+[V2.12 inverse-action control design 01](V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md),
+considers crossing the frozen v04 arms with a training-only inverse-action
+loss over exact observed transitions. The current predictor already receives
+actions, and every arm has a behavior-policy action head; therefore this would
+test incremental representation pressure rather than establish action
+conditioning. The proposed all-arm factorial preserves compute matching and
+reports the inverse-loss main effect and interaction with JEPA family. It does
+not yet pass independent review or authorize an objective change. Goal-action
+targets from policy-mixture trajectories remain behavior labels, not minimax
+targets. Training and outcome gates remain closed.

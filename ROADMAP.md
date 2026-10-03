@@ -528,3 +528,16 @@ inverse-action control and whether logged goal-actions would only encode
 behavior imitation. No method/data/training gate changes. See
 docs/RELATED_WORK.md, docs/V212_RESEARCH_GATE.md, and the decision-regret
 design draft.
+
+
+### 2026-10-03 candidate inverse-action control design
+
+Added docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md for independent
+review. V2.12 v04 already conditions its predictor on actions and predicts
+recorded root actions; the draft asks whether DA-LeWM-style inference of the
+action from adjacent latents adds useful auxiliary pressure. It proposes a
+matched factorial across all six existing arms and explicitly treats the
+objective as potentially redundant. Logged future actions are not minimax
+labels, so a goal-action imitation head is excluded unless separately
+justified as behavior modeling. No method amendment, data generation, fitting,
+scoring, or gate change is authorized.

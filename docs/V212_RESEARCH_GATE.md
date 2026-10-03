@@ -392,3 +392,18 @@ authors report one training run per configuration and three evaluation seeds,
 so training-seed uncertainty is not established. The paper is a preprint and
 was not independently reproduced. No CAISSA method, data, scoring, or training
 gate changes; novelty remains high-risk and all outcome gates stay closed.
+
+
+## Candidate inverse-action control after DA-LeWM (2026-10-03)
+
+The current v04 model is already action-conditioned in its predictor and
+behavior-supervised at the root. DA-LeWM adds inverse-action prediction from
+consecutive latents, a distinct auxiliary that could alter representation
+geometry. A separate
+[design draft](V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md) proposes a
+six-arm-by-two-level factorial to test this factor without treating logged
+future actions as optimal labels. It is a proposal only, not a v04 amendment.
+Reviewers must decide whether its cost, estimand, loss weight, initialization,
+compute parity, and multiplicity are acceptable before any future fit.
+No goal-action imitation head is presumed appropriate for adversarial
+decision quality. No data, training, scoring, or match gate changes.
