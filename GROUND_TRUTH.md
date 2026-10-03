@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; supervision design independent review)
+
+- The independent reviewer requested a lifecycle check for transient service cgroup files and unit result fields after worker exit/release, since manager garbage collection and cgroup teardown may remove evidence. The external supervision design now requires testing cgroup-file disappearance, capture timing, manager result retention, and a verified external monitor fallback; it fails closed if no OOM/timeout evidence can be captured. OOM validation still requires a separate authorization and earlier gates.
+- The review accepted the bounded cgroup-local OOM, ancestor-pressure, deadline, and partial preflight claims, subject to re-review of the corrected draft. No service, OOM fault, inference, or pilot ran. See [review record](docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md) and [revised design](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md).
+
 
 ## Latest continuation delta (2026-10-04; read-only supervision preflight)
 
