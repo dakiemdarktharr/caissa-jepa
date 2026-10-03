@@ -296,6 +296,41 @@ def _run_worker_process(command: list[str], payload: dict[str, Any],
             "reply": parsed}
 
 
+def _scope_preflight_worker_main() -> int:
+    try:
+        info = verify_memory_scope()
+        sys.stdout.write(json.dumps(info, separators=(",", ":")))
+        return 0
+    except Exception as error:
+        sys.stdout.write(json.dumps({"worker_error": type(error).__name__}))
+        return 1
+
+
+def verify_worker_scope(timeout_seconds: float = 2.0) -> dict[str, Any]:
+    """Verify the adapter's subprocess inherits the caller's bounded cgroup.
+
+    This is a no-inference preflight: the child only reads cgroup metadata.
+    """
+    if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
+        raise ValueError("preflight timeout must be finite and positive")
+    started = time.monotonic()
+    parent = verify_memory_scope()
+    command = [sys.executable, "-m", "two_player.v212_request_adapter_v01",
+               "--scope-preflight-worker"]
+    supervised = _run_worker_process(command, {}, started + timeout_seconds)
+    if (supervised.get("timed_out") or supervised.get("returncode") != 0
+            or "reply" not in supervised):
+        raise RuntimeError("cgroup preflight worker did not complete")
+    child = supervised["reply"]
+    if (child.get("path") != parent["path"]
+            or child.get("memory_max") != parent["memory_max"]
+            or child.get("memory_oom_group") != parent["memory_oom_group"]):
+        raise RuntimeError("worker did not inherit the exact bounded cgroup")
+    return {"parent": parent, "worker": child,
+            "same_cgroup": True,
+            "wall_seconds": max(0.0, time.monotonic() - started)}
+
+
 def run_move_request(game: BoardGame, root: Root, arm: str,
                      model_seed: int, *,
                      node_cap: int = NODE_CAP,
@@ -447,5 +482,7 @@ def run_move_request(game: BoardGame, root: Root, arm: str,
     }
 
 
+if __name__ == "__main__" and "--scope-preflight-worker" in sys.argv:
+    raise SystemExit(_scope_preflight_worker_main())
 if __name__ == "__main__" and "--worker" in sys.argv:
     raise SystemExit(_worker_main())
