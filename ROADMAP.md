@@ -449,3 +449,17 @@ uniform draw over all 16 ordered policy pairs and H0-H4 windows with H1/H2/H4
 targets. The V2.12 auditor remains in-memory only. This is protocol/code
 incompatibility, not evidence of insufficient data or leakage; no data was
 generated or inspected. A separate reviewed V2.12 generator is required.
+
+
+### 2026-10-03 behavior-policy semantics and RNG audit
+
+A source-level policy audit was added to
+docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md. It records the exact
+uniform, tactical, positional, and bounded-search behavior, including the
+192-node/depth-four search cap and handcrafted leaf score. These are synthetic
+data-generation policies, not expert targets or the V2.12 evaluation oracle.
+V2.8's policy-pair mapping is split/episode parity and its action RNG is one
+SeedSequence stream; V2.12 requires a separately frozen draw across all 16
+ordered seat-policy pairs and an explicit seed contract. No episodes or policy
+actions were generated; exact source/config hashes and edge-case tests remain
+pre-generation requirements.

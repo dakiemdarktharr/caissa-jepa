@@ -112,3 +112,18 @@ materializer only emits H1/H2 fields and applies V2.8 phase/duplicate rules.
 The synthetic V2.12 auditor is in-memory validation only, not a generator.
 Therefore a separate V2.12 generator and manifest are required after protocol
 review. No V2.8 data was read or repurposed and no feasibility result exists.
+
+
+## Follow-on behavior-policy definition audit
+
+The source compatibility audit has now recorded the actual V2.8 semantics for
+uniform, tactical, positional, and bounded-search. In particular, tactical is
+an immediate-win/one-reply-threat filter; positional is a stochastic
+handcrafted heuristic with temperature 0.75; bounded-search is depth-four
+alpha-beta with a 192-node cap and may stop before scoring every legal root
+action. These are behavior policies for synthetic episode generation, not
+expert labels or game-theoretic references. The V2.8 episode RNG derives from
+seed/episode/board dimensions while policy-pair assignment is split/episode
+parity; V2.12 requires a separately frozen ordered-pair draw and seed contract.
+See docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md. No generation or
+policy execution occurred.

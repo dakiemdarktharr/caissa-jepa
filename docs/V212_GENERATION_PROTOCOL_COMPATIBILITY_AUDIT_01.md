@@ -47,3 +47,43 @@ This is a compatibility finding, not evidence of data leakage or an
 insufficient 928-window corpus: no corpus was inspected. V2.12 data feasibility
 remains unknown. No generation, training, scoring, match, or outcome access is
 authorized by this audit.
+
+
+## Behavior-policy source semantics and freeze requirements
+
+The V2.8 policy implementations are defined in the same audited source blob:
+
+- uniform: samples uniformly from the current exact legal-action tuple.
+- tactical: chooses uniformly among immediate winning actions if any; otherwise
+  chooses among actions for which a one-reply scan finds no opponent immediate
+  terminal win; if every legal action permits such a win, it falls back to all
+  legal actions.
+- positional: takes an immediate win if available; otherwise samples from a
+  softmax (temperature 0.75) over a handcrafted score. Connect Four scores
+  open k-segments and center preference; Reversi scores corners, edges,
+  mobility, and disc difference.
+- bounded-search: depth-four negamax/alpha-beta with a 192-node cap and the
+  same handcrafted score at nonterminal/cap leaves. The node counter is
+  per action decision. Once the cap is reached, the root loop can stop before
+  scoring the rest of the legal actions; it chooses among the scored subset
+  and randomizes exact ties. Legal-action order, terminal handling, heuristic,
+  cap, depth, tie RNG, and RNG seed are therefore part of this policy's
+  behavioral distribution.
+
+These four policies are data-generating behavior sources, not expert labels.
+In particular, bounded-search is neither full-game minimax nor the fixed
+bounded-reference evaluator required by the decision-regret design. Its
+heuristic and node cap belong to the policy's action-selection distribution.
+The current generator creates one NumPy SeedSequence stream for action draws
+from seed, episode, rows, and columns; policy-pair selection itself is a
+split/episode parity rule, not an independent uniform draw over 16 pairs.
+V2.12 must freeze its own pair-draw schedule and RNG stream derivation as well
+as source/config hashes. The method's terminal mixture outcome is not a
+minimax value target.
+
+Before any V2.12 generator implementation is reviewed, the protocol must bind
+the exact source blobs/configs for all four policies, map the V2.12
+uniform-random name to the code's uniform behavior explicitly, define separate
+or joint seed streams, pin legal-action ordering and tie behavior, and test
+the edge semantics on synthetic in-memory fixtures. These audits/tests remain
+proposed; none was run here. This does not authorize generation.

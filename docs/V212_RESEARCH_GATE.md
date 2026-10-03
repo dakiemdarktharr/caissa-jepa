@@ -281,3 +281,17 @@ This proves an implementation incompatibility, not a data/leakage result or
 928-window feasibility failure. A separately reviewed V2.12 generator and
 manifest are required. No data or outcomes were inspected/generated, and
 generation, fitting, scoring, and matches remain gated.
+
+
+## V2.12 behavior-policy provenance audit (2026-10-03)
+
+The compatibility audit now records each V2.8 behavior policy's actual source
+semantics and the generation RNG boundary. The 192-node depth-four
+bounded-search family may stop before all legal root actions are scored and
+uses its own handcrafted positional leaf score. It is a data-generating
+policy, not expert supervision or the game-theoretic reference. V2.8 also
+derives policy pairs from split/episode parity and uses a single action RNG
+stream; V2.12 requires an independently frozen draw over all 16 ordered pairs
+and a pinned RNG/seed derivation. A V2.12 manifest must bind code/config hashes,
+legal-action order, cap/depth, tie behavior, and RNG policy before generation.
+No policy was executed and no data were generated.

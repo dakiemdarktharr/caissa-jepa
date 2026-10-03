@@ -2107,3 +2107,17 @@ H1/H2 records, not V2.12 H0-H4 windows with H1/H2/H4 targets. The synthetic
 V2.12 auditor does not generate data. This proves incompatibility only; data
 feasibility, leakage, and the 928-window quota remain untested. No corpus was
 read or created, and all generation/training gates remain closed.
+
+
+## Behavior-policy source audit (2026-10-03)
+
+The V2.8 generator's four policy names now have a source-backed semantic
+description in docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md.
+Uniform samples legal actions; tactical filters immediate wins and one-ply
+opponent wins; positional samples from a handcrafted board heuristic;
+bounded-search is depth-four alpha-beta capped at 192 nodes and may stop before
+scoring every legal action. These define the synthetic behavior distribution;
+none is an expert label or the V2.12 bounded-reference oracle. V2.8 assigns
+policy pairs from split/episode parity and uses one action RNG stream, while
+V2.12 needs its own frozen 16-pair draw and RNG derivation. This is source
+inspection only. No policies, data, models, or roots were generated.
