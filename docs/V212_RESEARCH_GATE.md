@@ -185,3 +185,34 @@ claim**. Next permitted internal work is a no-training audit of current adapter
 capacity, candidate multistep data generation, prior-art definitions, and
 resource requirements; then the exact method/protocol can be frozen and
 independently reviewed before any fit.
+
+
+## 2026-10-03 action-sensitive world-model literature refresh
+
+A targeted primary-source audit added AD-WM (Qiu et al., arXiv:2609.30264v2)
+and ActSWM (Gan et al., arXiv:2607.26712v2) to
+`docs/RELATED_WORK.md`. AD-WM trains observed one-step latent transitions
+with action-recovery objectives, then evaluates candidate counterfactuals
+through CEM and shared-sequence elite-regret diagnostics. ActSWM directly
+combines multi-step JEPA rollouts, an action-contrastive recorded-versus-zero
+rollout loss, and a frozen action readout, with Minecraft planning and offline
+action-recovery evaluations. Both are arXiv preprints; the reported results
+were not independently reproduced here. Their continuous/open-world control
+settings are materially different from exact-rule adversarial board games,
+but they eliminate action sensitivity, counterfactual planning comparison,
+and multi-step action-aware JEPA as standalone novelty claims.
+
+This changes the pre-fit comparison requirement. The remaining plausible
+increment is an empirical result about finite-horizon, exact-rule, alternating
+zero-sum max-min decisions under matched compute. METHOD_SPEC_V212-04 currently
+supervises only recorded trajectory branches and contains no counterfactual
+branch training term; its support-count draft does not show that a latent
+predictor ranks every legal alternative correctly. Before any fit or model
+scoring, a new reviewed protocol version must decide whether to add a
+compute-matched action-sensitive JEPA control, define full legal-root action
+scores with exact/bounded-search reference values and bound provenance, and
+predeclare decision-regret metrics on fixed reachable roots. Any branch
+contrast must use legal game actions rather than importing ActSWM's all-zero
+action contrast. Do not retrofit these changes into reviewed v04 or use
+unreviewed outcomes to select them. Status remains no training, no matches,
+and no superiority/novelty claim.

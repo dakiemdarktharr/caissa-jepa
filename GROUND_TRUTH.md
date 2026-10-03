@@ -2035,3 +2035,29 @@ cleanup, or universal supervisor survival. Preserve failed unit metadata until
 a receipt is stored; do not collect the unit first. No data, model, training,
 match, or outcome was used. The compute proposal remains unapproved pending
 independent review.
+
+
+## Research update: action-sensitive JEPA and counterfactual planning prior art (2026-10-03)
+
+Primary-source review of two recent arXiv preprints materially narrows V2.12's
+novelty scope. AD-WM (Qiu et al., arXiv:2609.30264v2) combines factual latent
+transition prediction with action-recovery objectives and evaluates CEM
+candidate selection using shared-sequence counterfactual diagnostics and elite
+regret. ActSWM (Gan et al., arXiv:2607.26712v2) combines multi-step JEPA
+rollouts with action-contrastive rollout separation and a frozen action
+readout, and reports Minecraft planning plus offline gameplay action recovery.
+Neither paper tests exact legal transitions and finite-horizon worst-case
+max-min decisions in deterministic alternating two-player games; both are
+preprints and their results were not independently reproduced in this audit.
+The sources eliminate standalone novelty claims around multi-step JEPA,
+action-aware dynamics, counterfactual planning, or cross-game action recovery.
+
+The remaining candidate is an empirical, compute-matched question about
+minimax decision regret in the narrowly declared board-game scope. V2.12-04
+still trains only on recorded trajectory branches; its support-count proposal
+does not prove action ranking over complete legal sets. Before any fit/model
+scoring, a versioned independent review must decide on an action-sensitive
+JEPA control and freeze legal-root action scoring plus bounded-reference
+regret. Reviewed v04 remains unchanged; training, matches, and superiority or
+novelty claims remain unauthorized. Source comparison is in
+`docs/RELATED_WORK.md` and `docs/V212_RESEARCH_GATE.md`.

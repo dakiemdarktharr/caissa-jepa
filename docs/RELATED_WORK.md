@@ -380,3 +380,52 @@ evaluates all legal action branches or learns exact rule-governed transitions
 in adversarial board games. It strengthens the need to distinguish structured
 masked queries from complete legal-action coverage. This source does not resolve
 the V2.12 protocol gap, establish novelty, or change any research gate.
+
+
+### Action-discriminative multi-step JEPA and counterfactual planning (2026-10-03)
+
+Two 2026 arXiv preprints directly narrow the action-aware-planning claim.
+Qiu et al., [AD-WM: Action-Discriminative World Models for Counterfactual
+Model Predictive Control](https://arxiv.org/abs/2609.30264) (v2, 2026-09),
+train residual latent transitions on observed successors and add predictor-level
+action-recovery objectives. At inference, the latent model is rolled out for
+CEM candidate selection. Their planning-facing diagnostics compare predicted
+and realized costs on a shared candidate bank, including global rank
+correlation and normalized regret of the predicted elite set. The paper
+reports improved results over its matched LeWM baseline on four of five
+simulation environments and on a robot-transfer task; these are author-reported
+preprint results and were not independently reproduced in this audit. This
+makes action-discriminative JEPA dynamics, counterfactual candidate comparison,
+and planner-facing regret diagnostics established prior art. Its continuous
+robotic goal-reaching/CEM setting does not test exact finite legal action sets,
+alternating adversarial players, or worst-case zero-sum max-min decisions.
+
+Gan et al., [ActSWM: Action-Sensitive World Models for Long-Horizon Planning in
+Open-World Games](https://arxiv.org/abs/2607.26712) (v2, 2026-08), are still
+closer to the proposed multi-step objective. ActSWM combines JEPA-style
+multi-step latent rollout prediction with (a) a contrast between recorded and
+all-zero future action rollouts and (b) a frozen action readout that encourages
+recoverable actions from predicted latent transitions. It evaluates closed-
+loop CEM planning in Minecraft tasks and action recovery from offline
+Counter-Strike 2, GTA V, and Apex Legends gameplay. These author-reported
+preprint experiments establish multi-step action-sensitive JEPA planning and
+cross-game action recovery as prior art, but do not evaluate exact legal
+transitions in alternating, deterministic, two-player zero-sum games or
+minimax decision regret. Its all-zero contrast must not be copied literally
+into CAISSA: a zero action may be illegal or semantically special in a board
+game.
+
+Together these papers mean novelty cannot rest on multi-step JEPA, action
+sensitivity/action recovery, counterfactual planning comparisons, or
+cross-game action recoverability. The only plausible incremental empirical
+question currently left is narrower: whether a frozen learned latent model
+improves exact-rule, finite-horizon max-min decision quality in the declared
+game scope at equal measured compute, beyond matched value/dynamics controls
+and an action-sensitive JEPA control. That is a benchmark claim to test, not
+an algorithmic novelty claim. The V2.12 v04 objective trains on recorded
+trajectory branches and has no counterfactual-branch loss, so support coverage
+alone cannot establish arbitrary legal-action ranking. Before any fit, a
+versioned, independently reviewed protocol must resolve whether to add an
+action-sensitive arm and must define full legal-root scoring and decision
+regret against a bounded exact-search reference. No current method/spec gate
+changes from this literature review.

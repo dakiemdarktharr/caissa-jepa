@@ -383,3 +383,25 @@ still needs a reviewed bounded-service launcher, retained result capture,
 receipt persistence, cleanup checks, and separate watchdog/OOM tests. No pilot,
 training, data, matches, or outcome evaluation occurred. Amendment v06 and the
 1.5-GiB resource proposal remain drafts pending independent review.
+
+
+### 2026-10-03 action-sensitive world-model prior-art update
+
+A targeted primary-source search added two close arXiv preprints to
+`docs/RELATED_WORK.md`: AD-WM (action-recovery regularization plus CEM-facing
+counterfactual/elite-regret diagnostics) and ActSWM (multi-step JEPA rollouts,
+recorded-versus-zero action contrast, frozen action readout, Minecraft planning,
+and offline gameplay action recovery). Both are author-reported preprints and
+were not independently reproduced. They do not instantiate exact-rule,
+alternating-player, zero-sum max-min board games, but they remove standalone
+novelty claims for multi-step JEPA, action sensitivity, counterfactual planning
+comparison, or cross-game action recovery.
+
+The research gate now narrows the remaining question to empirical decision
+quality for finite-horizon exact-rule max-min search at matched compute. The
+v04 training objective only supervises recorded branches; support summaries do
+not establish legal-action ranking. Before any fit, a newly versioned and
+independently reviewed protocol must decide on an action-sensitive JEPA control
+and specify full legal-root scores and bounded-reference decision regret. The
+reviewed v04 method is unchanged. No training, match, or gate authorization
+follows from this search.
