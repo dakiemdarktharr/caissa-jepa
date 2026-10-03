@@ -178,3 +178,30 @@ no episode or policy was executed and no data were read/generated. Independent
 review of the completed, versioned protocol is still required before generator
 implementation. The separate held-out-root schedule and statistical review
 remain distinct gates.
+
+## Source-derived episode-quota lower bound (not a quota)
+
+The exact adapters give a simple optimistic lower bound for the proposed 928
+source-window bank. Under the Draft v05 rule that every nonterminal action
+start is eligible, one complete episode yields at most one source window per
+legal ply:
+
+- Connect Four 6×7 has 42 cells; each legal action places one disc and there
+  are no pass actions, so a terminal episode has at most 42 plies/windows.
+- Reversi6 starts with four occupied squares and has 32 empty squares. Every
+  placement consumes one empty square. A nonterminal pass (action 64) is
+  available only when the current player has no placement and the opponent
+  does; the subsequent turn therefore has a placement. Thus passes cannot
+  exceed placements, which cannot exceed 32, giving at most 64 plies/windows.
+
+Consequently, even in the impossible-to-assume best case where every episode
+reaches its maximum length and every action-start window is eligible, 928
+windows require at least `ceil(928/42)=23` Connect Four episodes and
+`ceil(928/64)=15` Reversi6 episodes. These bounds assume Draft v05's
+terminal-only eligibility and source-window identity. Early termination,
+short trajectories, invalid replay/quarantine, or stricter eligibility can
+only increase the required episode count. The bounds say nothing about
+expected usable windows, wall time, disk size, per-policy support, or the
+probability of meeting the bank size. They are not episode quotas and do not
+replace the required resource measurement and independent review. No game was
+played and no episode/window was materialized for this arithmetic.

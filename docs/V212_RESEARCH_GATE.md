@@ -659,3 +659,13 @@ independently accepted. See `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`.
 This does not show that a corpus is infeasible or contaminated. The synthetic
 auditor stays fixture-only; no episode/policy/data was run or accessed and no
 generation/training gate advanced.
+
+### 2026-10-04 static episode quota lower bound
+
+Under the unaccepted Draft v05 window eligibility, exact-rule structure bounds
+one complete Connect Four 6×7 episode by 42 action-start windows and one
+Reversi6 episode by 64. This yields only optimistic lower bounds of 23 and 15
+episodes, respectively, to reach 928 source windows. It is not a quota,
+expected yield, or resource measurement; early endings and audit failures raise
+the actual requirement. No games or data were generated. See
+`docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`.

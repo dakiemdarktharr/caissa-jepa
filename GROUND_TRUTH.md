@@ -13,6 +13,11 @@
 - Recorded five grouped prerequisite areas in `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`: split matrix and episode quota; RNG/manifest streams and policy-support semantics; the exact 928-window/terminal-mask/minibatch contract; content keys separate from lineage and overlap dispositions; and atomic manifest/receipt/failure semantics with `training_approved: false`.
 - This is a protocol-readiness finding, not evidence of corpus leakage or insufficiency. No trajectories, policies, labels, or data were executed/read/generated; no gate advanced.
 
+## Latest continuation delta (2026-10-04; static episode quota bound)
+
+- Source-level rules imply a best-case lower bound, conditional on v05 eligibility: at most 42 action-start windows per complete Connect Four 6×7 episode and at most 64 per Reversi6 episode (32 placements plus at most 32 forced passes). Thus 928 source windows require at least 23 and 15 episodes respectively, even under unattainable maximum-length assumptions.
+- Recorded the derivation in `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`. This is not a quota, feasibility estimate, or resource measurement; real episode counts can only be higher. No game was played and no episode/window data were generated.
+
 ## Latest continuation delta (2026-10-04; root-sampling review disposition)
 
 - Independent static review found the first-valid-slot IID argument coherent only under the draft's slot-local validity, IID-within-variant×occupancy-band, and no-adaptive/identity/outcome-rejection assumptions. Repeated boards can remain distinct draws under that target.

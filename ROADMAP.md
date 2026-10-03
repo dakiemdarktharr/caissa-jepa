@@ -30,6 +30,10 @@ Primary methods sources show that two-way/crossed resampling has asymptotic resu
 
 Independent static review found the current protocol drafts insufficient for production-generator implementation. Before code, freeze/review the split-matrix amendment and numeric episode quotas/resource basis; pair/action/policy RNG streams and support disposition; the 928-window source-ID, no-replacement, terminal-only and nonempty-target minibatch contract; H0–H4 key versus lineage and overlap rules; and atomic manifest/receipt/partial-failure semantics. Recorded as explicit prerequisites in `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`. The synthetic auditor remains fixture-only; no policy, episode, data, or generator was run, and no gate advanced.
 
+### 2026-10-04 static episode quota lower bound
+
+Rule-source arithmetic under Draft v05 eligibility gives at most 42 action-start windows per complete Connect Four 6×7 episode and 64 per Reversi6 episode, so 928 source windows imply optimistic minima of 23 and 15 episodes. Passes are bounded by placements because a nonterminal Reversi pass is legal only when the opponent can place next. These are structural lower bounds only, not resource-based quotas or proof of feasibility; actual episodes can contribute fewer windows. No games or data were generated. See `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`.
+
 ### 2026-10-04 synthetic receipt-assembler contract
 
 Added a versioned, fail-closed receipt assembler and 26 synthetic tests binding systemd unit/invocation/ControlGroup/boot snapshots, worker-local event counters, and normalized kernel OOM evidence. Static independent review found no remaining blocking attribution issue after strict post-active time windows and input validation. This is not a live collector or adapter integration: the current request adapter still lacks caller isolation and worker-specific OOM evidence. No service, OOM fault test, inference, data, or outcome run occurred. Keep the supervision and pilot gates closed; any new OOM injection still needs separate explicit authorization. See `docs/V212_RECEIPT_ASSEMBLER_DESIGN_01.md`.
