@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; bounded transient-service OOM probe — ambiguous)
+
+- A gated worker in a transient user service passed preflight: separate worker/caller cgroups, effective MemoryMax=64M, MemorySwapMax=0, memory.oom.group=1, Restart=no, and OOMPolicy=kill. It attempted a 256 MiB allocation. systemd reported Result=oom-kill and ExecMainStatus=9; the external controller remained alive and the worker completion marker was absent.
+- The last captured worker-local memory.events.local showed max=3 but oom=0, oom_kill=0, and oom_group_kill=0. The transient unit was verified LoadState=not-found after cleanup. Logs: /tmp/caissa_v212_oom_probe.log; the prior controller failure is preserved separately as /tmp/caissa_v212_oom_probe.attempt1.log.
+- Independent review classified the source as ambiguous: systemd's OOM result establishes a manager-classified OOM/SIGKILL observation, but does not attribute it to the worker's memory.max; max alone is not an OOM-kill counter, and no positive local OOM event was captured. OOMPolicy=kill covers kernel OOM and systemd-oomd handling. Do not claim demonstrated cgroup-local containment or mark the OOM gate passed.
+- Before another fault injection, verify the event/result capture path under a no-inference stage-2 run, preserve worker-local event deltas and manager result before cgroup teardown, distinguish kernel-local from ancestor/global/systemd-oomd causes, and obtain independent review. No inference, training, project data, outcomes, or method/gate advancement occurred.
 ## Latest continuation delta (2026-10-04; transient service placement)
 
 - After independent review, no-inference transient user services verified worker placement in sibling cgroups, effective `MemoryMax=128M`/`MemoryHigh=96M`, swap limit 0, runtime limit 10s, `Restart=no`, and `OOMPolicy=kill`. The worker saw the matching cgroup values; caller was outside the worker unit.
