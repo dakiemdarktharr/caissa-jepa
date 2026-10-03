@@ -4,6 +4,18 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
+The follow-on source review found that the V02 RSS guard is sampled/cooperative,
+not a hard ceiling: the initial sample is not compared to the cap, periodic
+checks happen every 256 nodes, and an over-cap final check can escape the
+per-depth handler before the runner writes a receipt. Existing pilot tests do
+not exercise RSS-cap paths. V02's completed cells remain valid as measured
+compute evidence (max sampled RSS 50,212,864 bytes versus a 1.5 GiB cap), but no
+future cap-stressed run should rely on this path as hard containment. A
+versioned pilot update, RSS branch tests, and an OS/process memory bound are
+required before describing RSS as a hard cap. See
+`docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md`; no V02 rerun or training is
+authorized by this finding.
+
 The v04-authorized random-weight, no-training compute pilot v02 completed
 1,152/1,152 cells to four plies; p90 wall time was 0.7970 s, p99 was 2.0148 s,
 and maximum was 3.7419 s. Twelve cells exceeded 2 seconds. The 16 roots per

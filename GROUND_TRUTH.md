@@ -1,6 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-03; adversarial board-game prior-art check)
+## Latest continuation delta (2026-10-03; V2.12 RSS guard-path audit)
+
+- At continuation start, verified `/home/koi/src/caissa-jepa`, branch `main`, HEAD and `origin/main` `e5b02d0ddb91abf824a3df3dd3b0194a4f643627`, clean; remote is `https://github.com/dakiemdarktharr/caissa-jepa.git`.
+- Read-only source review confirmed the V02 RSS check is sampled/cooperative rather than a hard ceiling. The entry sample records but does not enforce the cap; checks occur every 256 nodes; if an over-cap condition remains at the unconditional final sample, `PilotBudgetStop` escapes its handler and the V02 runner does not write an aggregate receipt. Focused tests exercise node cap but not RSS entry/periodic/final paths. No process memory watchdog is present.
+- This does not invalidate the completed V02 report: its maximum sampled RSS is 50,212,864 bytes versus the 1.5 GiB cap, and no over-cap event was reported. Before any future cap-stressed pilot, make a versioned guard/reporting change, test all RSS paths, and verify an OS/process memory bound if claiming a hard cap. Do not mutate or rerun the hash-bound V02 report in place. Request-to-response watchdog and data-generation gates remain open; no training or data creation occurred.
+- Details are in `docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md`. Background source review PIDs/logs: `91281` (`/tmp/caissa_cont3_source_review.log`), `91312` and `91350` (`/tmp/caissa_cont3_implreview.log`, `/tmp/caissa_cont3_implreview2.log`), `91541` and `91597` (`/tmp/caissa_cont3_rss_audit.log`, `/tmp/caissa_cont3_budgettests.log`).
+
+## Prior continuation delta (2026-10-03; adversarial board-game prior-art check)
 
 - At continuation start, verified checkout `/home/koi/src/caissa-jepa`, branch `main`, HEAD and `origin/main` `87450b311ace159514d33f5a92d834b1b02e7074`, clean; remote remains `https://github.com/dakiemdarktharr/caissa-jepa.git`.
 - A targeted Exa search ran 13 queries across JEPA-in-games, adversarial board-game world models, and latent planning/transfer, requesting 92 results before deduplication. This is a lead-generation/search pass, not a systematic review.

@@ -56,6 +56,34 @@ search, enforce a separate response watchdog, validate the emitted legal
 action, and account for controlled fallbacks separately from timeouts and
 forfeits. It must also state whether RSS overshoot is bounded or sampled-only.
 
+### Follow-on RSS guard-path review (2026-10-03)
+
+A read-only review of `run_root_arm`, the V02 runner, and their focused tests
+found an additional reporting/safety gap in the existing pilot code path:
+
+- The initial RSS sample is recorded as `peak_sampled_rss_bytes` but is not
+  compared with `rss_cap_bytes`. Later checks occur every 256 entered nodes.
+- A periodic over-cap sample raises `PilotBudgetStop` inside the iterative-
+  depth `try` and can set `stop_reason="rss_cap"`. After leaving that handler,
+  `run_root_arm` unconditionally calls `sample_memory()` again outside the
+  handler. If the cap is still exceeded, the exception escapes rather than
+  returning the diagnostic row. The V02 runner does not catch it around
+  `run_root_arm`, so it exits before writing the aggregate receipt.
+- The existing focused pilot tests cover node-cap stopping, but contain no
+  RSS-cap entry, periodic, or final-sample cases. There is no process-level
+  memory watchdog in this path.
+
+This is a code-path finding, not evidence that the completed V02 cells crossed
+the cap: the reviewed receipt reports a maximum sampled RSS of 50,212,864 bytes
+against the 1.5 GiB cap. It does mean the Python check is sampled/cooperative,
+not a hard memory ceiling, and an actual over-cap run may terminate without an
+auditable per-cell stop receipt. Do not edit the hash-bound V02 implementation
+in place or rerun its frozen report. A future pilot version needs entry-time
+cap handling, a single structured over-cap result or an explicitly fail-stop
+receipt, tests for each RSS path, and a separately verified OS/process memory
+bound if the cap is to be described as hard. The end-to-end request watchdog
+remains a separate requirement.
+
 ## Required next no-training work
 
 Before fitting, freeze a V2.12 generation/audit protocol that:
@@ -102,4 +130,8 @@ protocol and in-memory synthetic auditor pass their focused software-contract
 tests and were independently accepted for that synthetic-only scope. This
 cannot certify corpus splits or operational timing. Data generation, training,
 matches, and outcome access remain gated. The 10,000-node/5-second/6-second
-limits remain a reviewed proposal until the full pre-fit gates pass.
+limits remain a reviewed proposal until the full pre-fit gates pass. The
+follow-on RSS source check adds a versioned pilot guard/reporting fix and
+specific RSS tests to the open work before any future cap-stressed pilot; it
+does not invalidate the completed V02 measurements, which stayed well below
+the sampled RSS cap.
