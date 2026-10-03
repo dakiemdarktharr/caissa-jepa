@@ -255,3 +255,22 @@ update and prioritized arXiv, PMLR, OpenReview, and author-maintained code. They
 are not a systematic database search and do not establish that no other
 opponent-conditioned JEPA or strategic world-model method exists. Novelty
 remains unverified.
+
+### Planning-range and reciprocal-response refresh (2026-10-03)
+
+A targeted arXiv search after the v02 compute review found two September 2026
+preprints that sharpen the scope and evaluation requirements. This is a
+primary-source update, not a complete forward-citation or venue search.
+
+| Work and primary source | Method and evidence inspected | Consequence for CAISSA |
+| --- | --- | --- |
+| Alrasheed et al. (2026), [The Planning Limits of Latent World Models, arXiv:2609.39235](https://arxiv.org/abs/2609.39235), [full text](https://arxiv.org/html/2609.39235) | Tests action ranking and control across five frozen backbones, including V-JEPA 2/2.1, on Meta-World and BridgeData V2. With five-step imagined rollouts, reliable ranking is limited to targets about five to ten steps away; the authors also find a substantial horizon gap with a perfect simulator. | This is not adversarial board-game evidence, but it shows why prediction error alone cannot validate a short-horizon planner. V2.12 must report action-ranking/regret by imagined horizon, compare the learned rollout with exact transitions under identical search and leaf evaluation, and avoid attributing truncation error to JEPA. The current four-ply random-weight compute pilot says nothing about this question. |
+| Ma et al. (2026), [ReWAM: Reciprocal World Action Models for Interactive Autonomous Driving, arXiv:2609.39245](https://arxiv.org/abs/2609.39245), [full text](https://arxiv.org/html/2609.39245) | Couples future-world representations with role-specific action generators in a finite Level-k response hierarchy; learns conditional responses from demonstrations and evaluates on NAVSIM. | Reciprocal latent-grounded response modeling is now an additional adjacent prior-art threat. ReWAM learns amortized conditional surrogates for bounded best-response behavior in driving, not a deterministic finite zero-sum game's exact legal branches or worst-case max-min values. CAISSA must keep behavioral response modeling distinct from minimax search and cannot claim reciprocal action conditioning alone as novel. |
+
+Design implication: retain the current falsifiable question only as a possible
+game-specific empirical increment over matched controls. Required tests already
+listed in `docs/V212_RESEARCH_GATE.md` should be interpreted at each declared
+rollout horizon, including exact-transition/oracle comparisons. The v02
+compute envelope is random-weight instrumentation; neither it nor the reviewed
+5-second proposal establishes a trained model's plannable range or operating
+budget. No training or match gate changes as a result of this search.

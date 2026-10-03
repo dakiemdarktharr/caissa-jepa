@@ -16,6 +16,16 @@ independent review as a proposal only; it is not an operational budget until
 request-to-search headroom and the implementation pass pre-fit verification.
 No training or match is authorized. See `GROUND_TRUTH.md`, the [v01 pilot report](docs/validation/V212_RANDOM_WEIGHT_COMPUTE_PILOT_01.md), and the [v02 pilot report](docs/validation/V212_RANDOM_WEIGHT_COMPUTE_PILOT_02.md).
 
+A 2026-10-03 targeted primary-source refresh added the September preprints
+`The Planning Limits of Latent World Models` and `ReWAM` to
+`docs/RELATED_WORK.md`. They reinforce two existing requirements: measure
+decision ranking/regret at each imagined horizon, and distinguish learned
+behavioral response models from exact-rule worst-case max/min search. They do
+not change the research gate or authorize fitting. The next permitted internal
+work is the no-training audit of the candidate multistep trajectory generator,
+prior-art distinctions, and request-to-search resource headroom, followed by a
+frozen method/protocol review before any fit.
+
 ## Research objective
 
 Falsifiable hypothesis: an EMA-target JEPA that predicts future latent states conditioned on both players' ordered actions can improve planning under a fixed compute budget over matched non-JEPA baselines, with the benefit retained across a declared family of deterministic, alternating-turn, fully observed, finite-action, zero-sum games. Current evidence does not support this hypothesis. The immediate aim is to determine whether there is a defensible mechanism worth testing, not to tune until a development win appears.

@@ -1818,3 +1818,32 @@ is cleared; no pilot has started; training and matches remain gated. The user
 requested that these current statuses be pushed to GitHub and then the active
 goal paused. This documentation-only status update contains no executable
 changes or experiment results.
+
+### V2.12 continuation: expanded compute checkpoint and literature refresh (2026-10-03)
+
+This entry supersedes the earlier pause checkpoint above. The v02 random-weight,
+no-training pilot completed 1,152/1,152 depth-four cells. Its independently
+reviewed report and the separately reviewed 10,000-node/5-second candidate
+budget are recorded in `docs/validation/V212_RANDOM_WEIGHT_COMPUTE_PILOT_02.md`
+and `docs/V212_COMPUTE_BUDGET_AMENDMENT_05.md`; the budget is only a proposal.
+No data labels, training, matches, or outcome inference were used. Focused tests
+passed 9/9, source compilation passed, and an independent reviewer verified
+both pilot receipts and recomputed summaries. Ignored raw receipts, summaries,
+and `.venv` remain excluded from Git.
+
+A targeted 2026-10-03 primary-source search added Alrasheed et al.,
+`The Planning Limits of Latent World Models` (arXiv:2609.39235), and Ma et al.,
+`ReWAM` (arXiv:2609.39245), to `docs/RELATED_WORK.md`. These are adjacent
+robotics results, not evidence for or against CAISSA's finite zero-sum game
+hypothesis. They reinforce the need for horizon-specific action-ranking/regret
+tests and for a strict distinction between behavioral response prediction and
+worst-case max/min search. Novelty remains unverified; training and matches
+remain gated.
+
+Commit `0db171df` contained the reviewed code/docs checkpoint; the configured
+shell push lacked credentials. The authenticated GitHub integration published
+the identical Git tree as commit `d3a668c99f3aa719c39836828795366e7ecc2771`
+with parent `2cfb6947c7ba7f0261d4e4c53bd7e956731ef7e8`. Remote `main` was
+verified at that commit and then fetched locally; local `main` now matches
+`origin/main`. No generated pilot data, caches, or environment files were
+published.
