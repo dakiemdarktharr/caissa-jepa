@@ -121,6 +121,23 @@ preservation on all in-scope variants. Those tests would verify code
 properties only; they would not authorize canonical deduplication, data
 generation, or training.
 
+## Focused symmetry software-contract test
+
+Added `tests/test_v212_symmetry_properties.py`. It exercises every declared
+spatial mapping for the four V2.12 variants against deterministic in-memory
+legal paths, checking mapping bijectivity, complete legal-action-set
+bijection at each fixture state, transition commutation for each legal action,
+terminal-result preservation, and canonical-key invariance under spatial and
+side-to-move role transformations. A separate hand-built Reversi rules fixture
+checks forced-pass action 64 and its transition under all D4 mappings.
+
+The suite passed two tests (3.6 seconds on the initial run); together with
+`tests.test_v212_trajectory_audit`, the focused run passed 9/9. These are
+bounded fixture checks, not exhaustive enumeration of all reachable states
+and not evidence that a generated corpus is leakage-free. They do not enable
+canonical edge summaries, root generation, fitting, or match play. Independent
+review and broader adversarial state coverage remain open.
+
 ## Implementation boundary and required review
 
 Keep the current synthetic fixture unchanged for its frozen positive/fault
