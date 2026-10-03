@@ -8,9 +8,10 @@ earlier unique-root proposal.
 
 ## Target and estimand
 
-Use 48 candidate-slot observations per held-out-size variant: Connect Four
-8x8/k4 and Reversi8. Allocate 16 accepted slots to each of three fixed board
-occupancy bands: `[0,1/3)`, `[1/3,2/3)`, and `[2/3,1)`. Occupancy is occupied
+Use 48 accepted slot observations per held-out-size variant: Connect Four
+8x8/k4 and Reversi8. Generate a fixed 192-candidate schedule per variant
+(64 slots in each band), accepting 16 valid slots from each of three fixed
+board occupancy bands: `[0,1/3)`, `[1/3,2/3)`, and `[2/3,1)`. Occupancy is occupied
 board cells divided by board area; Reversi's four initial discs count as
 occupied. A forced pass advances the legal-ply count but leaves occupancy
 unchanged.
