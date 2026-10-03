@@ -47,9 +47,12 @@ require it.
 Within each band, accept the first 16 valid slots in slot-ID order,
 irrespective of repeated raw or symmetry-canonical board states. A repeated
 board is a repeated draw, not a rejected slot. Do not deduplicate, reweight,
-top up, adapt the policy mixture, widen bands, or replace roots. If any band
-has fewer than 16 valid slots among its fixed 64, fail the entire variant
-schedule before scoring and preserve the complete candidate/rejection ledger.
+top up, adapt the policy mixture, widen bands, or replace roots. Proposed
+fail-closed choice for review: if any band in either variant has fewer than 16
+valid slots among its fixed 64, fail the complete two-variant schedule before
+scoring and preserve the complete candidate/rejection ledger. This is stricter
+than the earlier per-variant wording and must be accepted or revised
+explicitly in the method review.
 
 The schedule therefore yields 48 accepted slot IDs per variant, or 96 across
 both variants. Before scoring, freeze and hash all candidate outcomes, invalid
@@ -117,7 +120,8 @@ Reviewers must decide whether:
 
 Until those questions are accepted in a versioned independent protocol review,
 design 02 remains unapproved, design 01's unique-root rule is not operative as a
-replacement, and no roots may be generated. Passing this design review would
+replacement, and no roots may be generated. The proposed global stop on any
+under-yielding band across both variants remains unresolved. Passing this design review would
 permit only the separately reviewed implementation work specified by the
 generation protocol. It would not establish feasibility, statistical power,
 performance, superiority, confirmatory readiness, or permission to fit.

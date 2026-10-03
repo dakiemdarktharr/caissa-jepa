@@ -96,8 +96,10 @@ review, not empirical verification of a generator or approval to run it.
 For each held-out variant, the primary contrast is the equal-weight mean of
 the three occupancy-stratum contrasts. The macro contrast remains the
 equal-weight mean of the two variant contrasts. This deliberately targets an
-equal phase mixture; it does not estimate performance under the natural
-occupancy frequency of complete games or under a named opponent.
+equal occupancy-band mixture; it does not estimate performance under the
+natural occupancy frequency of complete games or under a named opponent.
+Calling these bands comparable game phases across Connect Four and Reversi
+would require separate justification.
 
 Retain METHOD_SPEC §7's 20 model seeds, five controls, paired seat assignments,
 15 candidate-control contrasts, 10,000 bootstrap replicates, max-|T| familywise

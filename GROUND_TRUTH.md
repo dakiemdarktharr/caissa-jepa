@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; root-sampling review disposition)
+
+- Independent static review found the first-valid-slot IID argument coherent only under the draft's slot-local validity, IID-within-variant×occupancy-band, and no-adaptive/identity/outcome-rejection assumptions. Repeated boards can remain distinct draws under that target.
+- The proposal changes v04 §7's target, sampling unit, equal-weighting, and bootstrap. It is not v04-compatible and is not calibrated for finite-sample coverage or familywise error with 20 seeds and 16 slots per band. Added a replacement §7 v05 draft and review record; v04 remains current until independent method/statistical review accepts or rejects the change.
+- Follow-up review found the v05 draft must explicitly retain v04's fresh/disjoint locked-confirmation situations/seeds and no-replacement/no-censoring loss treatment of timeouts and invalid moves. It also found that the proposed global two-variant yield stop is stricter than design 02's earlier per-variant wording; both documents now identify the global stop as unresolved, not accepted.
+- No calibration simulation, roots, scores, training, or outcomes were generated or accessed. Independent method/statistical review must freeze the estimand, slot/RNG/yield contract, bootstrap/failure rules, and decide whether design-matched calibration is required before any root generation. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md` and `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md`.
+
 ## Latest continuation delta (2026-10-04; synthetic invocation-bound receipt assembler)
 
 - Added `two_player/v212_supervision_receipt_v02.py` with typed/versioned active-worker and post-exit manager snapshots, exact unit/InvocationID/ControlGroup/boot binding, strict post-active event windows, typed `memory.events.local` samples, normalized kernel OOM proof plus message digest, and bounded atomic receipt writing.

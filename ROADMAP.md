@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 root-sampling and inference review
+
+Independent static review found the design-02 first-valid-slot argument coherent under its explicit IID/slot-local assumptions, but the proposal materially changes v04 §7's target, sampling unit, occupancy-band weights, and bootstrap. It is not compatible with current v04 and its max-|T|/centered-bootstrap/Holm procedure is not finite-sample calibrated by cited sources for 20 seeds × 16 slots per band. Added a replacement §7 v05 draft and review record; v04 remains current. A follow-up review required carrying forward v04's fresh/disjoint locked-confirmation schedule and no-replacement/no-censoring forfeit rules, and called out v05's global two-variant under-yield stop as an unresolved choice relative to design 02. Before any roots or scores, independent method/statistical review must accept or reject the changed estimand and slot/RNG/yield/seat/bootstrap/failure contract, and decide whether a design-matched calibration is required. If required, freeze scenarios, numerical tolerances, and failure disposition before simulation. No simulation, roots, outcomes, or training occurred. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md` and `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md`.
+
 ### 2026-10-04 synthetic receipt-assembler contract
 
 Added a versioned, fail-closed receipt assembler and 26 synthetic tests binding systemd unit/invocation/ControlGroup/boot snapshots, worker-local event counters, and normalized kernel OOM evidence. Static independent review found no remaining blocking attribution issue after strict post-active time windows and input validation. This is not a live collector or adapter integration: the current request adapter still lacks caller isolation and worker-specific OOM evidence. No service, OOM fault test, inference, data, or outcome run occurred. Keep the supervision and pilot gates closed; any new OOM injection still needs separate explicit authorization. See `docs/V212_RECEIPT_ASSEMBLER_DESIGN_01.md`.
