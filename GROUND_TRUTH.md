@@ -2197,3 +2197,14 @@ The current `main` adapter already contains the corrected cgroup explanation: `m
 - Added docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md on the remote branch. It proposes, for independent review only, a factorial crossing the six v04 arms with inverse-action loss on/off, using exact observed state transitions, legal masks, and action 64 for forced pass. It explicitly labels this as potentially redundant and gives no outcome or performance prediction.
 - The draft rejects logged future-action sequences as optimal labels: they represent behavior-policy choices, may be non-unique for a state/goal pair, and do not encode minimax value. A future goal-action behavior-control would need a separate estimand.
 - No current method, data, code, tests, root schedule, or gate changed. No training, scoring, match, or outcome access occurred. Independent review must decide the extra factorial's necessity, compute parity, loss scale, and multiplicity before any fitting.
+
+
+### Inverse-action draft weighting clarification (2026-10-03)
+
+Clarified that the proposed inverse-action loss is averaged over transition
+slots in the frozen v04 windows. Overlapping windows may repeat a source
+transition; the draft now requires counts for slots, transition IDs, repeat
+frequency, and distinct state/action/successor content. Repeated slots are
+training exposures, not independent observations, and are not silently
+deduplicated. This only clarifies the unreviewed proposal; no data, method,
+or gate changed.

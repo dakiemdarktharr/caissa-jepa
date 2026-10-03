@@ -34,9 +34,14 @@ z_(t+1)=f_theta(x(s_(t+1),p_(t+1))). Add one shared categorical head
     q_psi(a_t | z_t, z_(t+1), p_t, game)
 
 with a 65-action output and a legal-action mask from the exact adapter at
-s_t. Use mean cross-entropy over observed transitions. The target is the
-recorded action only; no terminal outcome, reference score, minimax label, or
-unrecorded counterfactual action enters this loss. Include observed forced-pass
+s_t. Use mean cross-entropy over transition slots in the selected v04 windows.
+A slot, not an episode, is the training exposure unit; preserve v04 window
+sampling and report total slots, source transition IDs, per-ID repeat counts,
+and distinct (state, action, successor) fingerprints. Overlapping windows may
+repeat a source transition; do not call repeated slots independent
+observations or silently deduplicate them. The target is the recorded action
+only; no terminal outcome, reference score, minimax label, or unrecorded
+counterfactual action enters this loss. Include observed forced-pass
 transitions with fixed action id 64. The head is training-only and discarded
 for planning.
 
