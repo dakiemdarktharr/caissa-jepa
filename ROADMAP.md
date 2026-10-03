@@ -4,7 +4,7 @@ Updated: 2026-10-04. This is an adaptive research plan, not a promise of a posit
 
 ### 2026-10-04 file-backed transient-service IPC design
 
-Official systemd v262 source confirms `systemd-run` rejects `--wait`/`--pipe` when combined with `--remain-after-exit`, and unit GC drops manager results. The revised candidate uses private file-backed stdin/stdout and retains the unit with `--remain-after-exit`, then has the caller capture evidence and receipt before cleanup. This is unimplemented and unverified; next: independent review and synthetic failure-path tests before any host service. No inference, OOM test, or pilot ran. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`.
+Official systemd v262 source confirms `systemd-run` rejects `--wait`/`--pipe` when combined with `--remain-after-exit`, and unit GC drops manager results. Added and independently reviewed a file-only bounded IPC helper; its 13 synthetic cases plus the 26 receipt-assembler cases pass 39/39. A trivial no-inference transient service then verified file-backed stdin/stdout, retained success state, worker/caller separation, effective cgroup/resource limits, and cleanup. It did not persist a same-invocation receipt or test timeout/race/OOM behavior; one worker-side cgroup-file lookup failure remains unexplained and is preserved in Ground Truth. Next: implement a caller-owned manager/journal/cgroup collector that persists the no-inference receipt before cleanup, then independently review it. Do not run an OOM test without separate explicit authorization. No inference, training, project data, or pilot ran. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`.
 
 ### 2026-10-04 systemd worker IPC/lifecycle constraint
 

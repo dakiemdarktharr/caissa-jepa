@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; synthetic IPC primitive and normal-exit service smoke)
+
+- Added `two_player/v212_worker_ipc.py` with private request/response file creation and bounded fail-closed JSON-object reading. It does not start services, validate the application response schema, call the inference adapter, or assemble receipts. Independent static review found no remaining P1/P2 issue after tightening parent-path validation and failure cleanup.
+- The new 13-case IPC suite plus the 26-case synthetic receipt-assembler suite pass 39/39; `git diff --check` passes. The broader request-adapter module was not run in the available Python because `numpy` is unavailable.
+- One no-inference transient-service smoke verified file-backed stdin/stdout, retained normal-exit manager result, separate caller/worker cgroups, effective `MemoryMax=128 MiB`, `MemoryHigh=96 MiB`, swap 0, `LimitFSIZE=65536`, matching live cgroup files, zero `oom_kill`, and final `LoadState=not-found`. It used one synthetic request and produced one 109-byte JSON response; no receipt was assembled or persisted.
+- Preserve one observed failure: reading cgroup files from inside the worker by joining `/sys/fs/cgroup` to its own `/proc/self/cgroup` yielded `FileNotFoundError`; supervisor-visible `/proc/<MainPID>/cgroup` matched the manager `ControlGroup` and enabled the successful placement check. The root cause is unknown. No inference, OOM fault test, training, data, model, scores, or outcomes were accessed or produced. Stage 3/pilot gates remain closed. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`.
+
 ## Latest continuation delta (2026-10-04; file-backed transient-service IPC design)
 
 - Verified against official systemd v262 source that `systemd-run --wait --remain-after-exit` and `--pipe --remain-after-exit` are rejected; `--collect` discards the unit, while garbage collection removes manager result fields. v262 supports file-backed stdin/stdout.

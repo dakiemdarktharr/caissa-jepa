@@ -67,15 +67,68 @@ systemd v262 documents the file/FIFO/socket stdio choices in
 and `systemd-run`'s remain-after-exit option in its
 [v262 source](https://github.com/systemd/systemd/blob/v262/src/run/run.c).
 
-This file-backed sequence is a design candidate, not a verified command line
-or an integrated adapter. Before any host service is created, tests and an
-independent review must resolve systemd's exact handling of the precreated
-response inode, failed/short writes at the file-size limit, start-job races,
+This file-backed sequence remains a design candidate, not an integrated
+request adapter. The normal-exit smoke below verifies the precreated response
+inode and `truncate:` behavior for one trivial worker. Before integrating the
+request adapter, synthetic failure-path tests and an independent review must
+resolve failed/short writes at the file-size limit, start-job races,
 timeout/kill/reap classification, result capture before unit release,
 event-sampling lifecycle, no-restart semantics, and cleanup failure. A D-Bus
 client with separately bounded IPC remains an alternative if the CLI lifecycle
-cannot meet those requirements. No command was run to create a unit, and no
-host service, inference, OOM test, or pilot was run for this audit.
+cannot meet those requirements. The smoke created one short-lived host user
+service; it performed no inference and induced no OOM.
+
+## File-backed IPC primitive and no-inference smoke check (2026-10-04)
+
+Added `two_player/v212_worker_ipc.py`, a file-only helper that creates a
+mode-0700 per-request directory and exclusive mode-0600 request/response
+files, rejects unsafe parent-path components, fsyncs file and directory
+entries, and reads only one bounded UTF-8 JSON object. Response reading checks
+the original device/inode/owner/mode/link count before and after an
+`O_NOFOLLOW` open, enforces the byte ceiling, detects concurrent file changes,
+rejects duplicate JSON keys and non-finite numbers, and fails closed on path
+replacement. It does not launch systemd, call the request adapter, validate
+the application response schema, or write a supervision receipt; the caller
+must keep files until unit cleanup and receipt persistence.
+
+Its synthetic test module covers 13 creation/read failure paths, including
+unsafe writable ancestors, interruption and failed cleanup. Those tests plus
+the existing 26 synthetic receipt-assembler tests pass 39/39. An independent
+static review found no remaining P1/P2 issue in the helper. This does not
+validate service-manager pathname races or replace an exact application-schema
+check in the future adapter.
+
+A subsequent single no-inference transient user service used
+`StandardInput=file:<request>` and
+`StandardOutput=truncate:<response>` with `--remain-after-exit`, a 128 MiB
+`MemoryMax`, 96 MiB `MemoryHigh`, zero swap, and `LimitFSIZE=65536`. It read a
+synthetic JSON request and returned a 109-byte schema-tagged JSON object. The
+caller observed `Result=success`, exit status zero, a retained exited unit,
+`EffectiveMemoryMax=134217728`, `EffectiveMemoryHigh=100663296`, and the
+requested file-size limit. While the worker was active, manager
+`ControlGroup` matched the caller-visible `/proc/<MainPID>/cgroup`, differed
+from the caller cgroup, and its live `memory.max`, `memory.high`,
+`memory.swap.max`, and `memory.events.local` files matched the limits with
+zero `oom_kill`. After stop, the unit was `LoadState=not-found` and no matching
+unit or temporary IPC directory remained. The filtered summary is local at
+`/tmp/caissa_v212_file_ipc_smoke.log`; the log and synthetic files are not
+repository artifacts.
+
+Preserve one failed diagnostic path: an earlier worker-side attempt to locate
+its cgroup files by joining `/sys/fs/cgroup` with its own `/proc/self/cgroup`
+returned `FileNotFoundError`. The successful smoke used supervisor-visible
+`/proc/<MainPID>/cgroup` and manager `ControlGroup` for placement, then read
+the cgroup files from the supervisor. The observed failure does not identify
+why the worker-side path did not resolve, so do not infer a cgroup-namespace
+cause.
+
+This smoke verifies file-backed stdio, retained manager result, placement,
+effective limits, and cleanup for one normal-exit trivial worker only. It did
+not assemble or persist a same-invocation journal/counter receipt, exercise
+timeouts or races, launch inference, or induce OOM. The file-backed caller
+adapter and live receipt collector remain unimplemented; stage 3 and the pilot
+gate stay closed. No training, project data, model, game score, or outcome was
+read or produced.
 
 ## Response and evidence contract
 
