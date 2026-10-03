@@ -1847,3 +1847,18 @@ with parent `2cfb6947c7ba7f0261d4e4c53bd7e956731ef7e8`. Remote `main` was
 verified at that commit and then fetched locally; local `main` now matches
 `origin/main`. No generated pilot data, caches, or environment files were
 published.
+
+The read-only V2.12 trajectory/runtime audit is in
+`docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md`. It confirms that the V2.8
+generator can replay full legal episodes, but it only materializes H1/H2 and
+its split overlap keys do not cover every V2.12 H0–H4 context/window state and
+H1/H2/H4 target. No production V2.12 multi-step window materializer/generation
+protocol exists, and the proposed request-time
+budget is not wired through setup, search stop, and response handling. This is
+an audit-coverage gap, not a finding that existing data leaks. No data or
+outcome artifacts were opened or generated. A frozen synthetic-only protocol
+and in-memory auditor are implemented in
+`docs/V212_TRAJECTORY_AUDIT_PROTOCOL_V01.md` and
+`two_player/v212_trajectory_audit.py`; focused tests pass and independent review
+accepted that software-contract scope. This does not authorize data generation.
+Training, matches, and outcome access remain gated.
