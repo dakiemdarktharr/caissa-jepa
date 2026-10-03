@@ -618,3 +618,27 @@ author repository during this pass. This is a search lead only: the claimed
 verifiable primary source is located. This is distinct from the existing
 [CCranney/JEPA-chess development repository](https://github.com/CCranney/JEPA-chess),
 which does not establish a completed benchmark or strength result.
+
+
+
+### Action-conditioned JEPA for reinforcement learning (ESANN 2025)
+
+Kenneweg, Kenneweg, and Hammer adapt JEPA to image-based reinforcement
+learning in CartPole. The context encoder receives three frames, the EMA
+target encoder receives the following three-frame window, and a shallow MLP
+predictor is conditioned on the one-hot action. They train a PPO actor-critic
+on the encoder representation and compare four combinations of JEPA loss,
+actor/critic gradient flow, and variance regularization over five runs of
+100,000 environment steps. The authors report that joint JEPA and task-gradient
+training learns fastest; JEPA-only encoder training collapses without
+regularization, while the variance regularizer prevents collapse but learns
+more slowly. These are author-reported CartPole results, not independent
+replications.
+This establishes action-conditioned JEPA representation learning for RL as
+prior art. It does not test multi-step learned dynamics planning, exact
+symbolic board states, alternating adversarial decisions, or decision regret.
+V2.12 must therefore frame its open question as the incremental contribution
+of recursive latent matching under exact-rule max/min search against matched
+dynamics/value controls, not the first use of action-conditioned JEPA in RL.
+Source: [Kenneweg et al., ESANN 2025 proceedings](https://www.esann.org/sites/default/files/proceedings/2025/ES2025-19.pdf);
+[DOI](https://doi.org/10.14428/esann/2025.es2025-19).

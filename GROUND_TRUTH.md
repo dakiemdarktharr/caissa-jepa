@@ -1,6 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; JEPA-for-RL prior art)
+
+- Added Kenneweg et al.'s ESANN 2025 action-conditioned JEPA for image-based CartPole RL: one-hot action prediction with EMA targets and PPO task gradients; the paper reports collapse without task gradients/variance regularization in some configurations.
+- This closes any broad claim that action-conditioned JEPA representations for reinforcement learning are new. It does not assess recursive multi-step JEPA under exact-rule adversarial board-game search or decision regret.
+- Updated Related Work and the novelty crosswalk. No method or gate changed; no code, dataset, simulation, root generation, scoring, or training was run. Source: [ESANN proceedings](https://www.esann.org/sites/default/files/proceedings/2025/ES2025-19.pdf), [DOI](https://doi.org/10.14428/esann/2025.es2025-19).
+
+
 ## Latest continuation delta (2026-10-03; chess state-tracking prior art)
 
 - Added Walker and Lyons' Chess-World-Model as adjacent prior art: exact full-state reconstruction from legal chess move sequences, with held-out human-game and uniformly random legal-play evaluation. It narrows broad state-tracking novelty but does not test JEPA planning or decision quality.
