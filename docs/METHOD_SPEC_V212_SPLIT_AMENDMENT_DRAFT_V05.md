@@ -113,6 +113,9 @@ and pre-fit review gates also pass.
    without changing the source-window sampling unit?
 5. Can the state/key audit reuse the synthetic auditor after adding a corpus
    receipt adapter, while keeping synthetic and real-data approvals separate?
+   How should production handling replace or scope its unconditional duplicate
+   rejection so canonical-equivalent content is reported diagnostically as
+   specified above, while cross-split overlap still fails closed?
 
 This draft's preferred allocation is not a scientific result. It is a proposal
 to make the current holdout and fit boundaries executable and auditable before

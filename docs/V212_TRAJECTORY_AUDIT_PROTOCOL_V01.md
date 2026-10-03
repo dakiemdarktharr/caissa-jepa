@@ -19,8 +19,11 @@ data-feasibility or leakage-free-dataset result.
   trajectory, a training label, checkpoint, match, or locked-final artifact.
 - Use fixed, documented fixture constants. Do not sample weights, instantiate
   an optimizer, or call training/model-selection code.
-- The auditor returns a pass/fail result and expected window/mask counts only.
-  It writes no files and does not set any training-approval flag.
+- The API returns `AuditResult.windows` alongside pass/fail and expected
+  window/mask counts so tests can assert the synthetic fixture contract. These
+  windows are in-memory fixture outputs only; they are never corpus or
+  model-facing inputs and do not make this a production materializer. The
+  auditor writes no files and does not set any training-approval flag.
 - Pin source/rules/protocol hashes in the test result if a report is produced.
 
 ## Required fixture cases

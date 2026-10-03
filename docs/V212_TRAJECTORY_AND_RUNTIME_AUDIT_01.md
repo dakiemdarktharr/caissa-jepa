@@ -9,9 +9,13 @@ assessment, not evidence of leakage or a method failure.
 
 ## Finding
 
-The repository has reusable exact-rule and full-episode replay code, but no
-V2.12 multi-step window materializer or V2.12 generation protocol. The existing
-V2.8 audit cannot certify a V2.12 four-ply window bank: it materializes H1/H2
+The repository has reusable exact-rule and full-episode replay code, plus a
+no-I/O synthetic V2.12 window auditor. Given caller-supplied complete episode
+fixtures, `two_player/v212_trajectory_audit.py::audit_trajectories` constructs
+H0–H4 windows and terminal masks in memory for software-contract assertions.
+This helper is not a seed/policy-bound episode generator, corpus pipeline, or
+production materializer; no V2.12 generation protocol exists. The existing V2.8
+audit cannot certify a V2.12 four-ply window bank: it materializes H1/H2
 records, and its overlap-key construction checks observed targets through two
 plies plus a two-ply legal-reply closure. Consequently it does not test whether
 H3 intermediate context states or H4 target states overlap across split
@@ -23,8 +27,8 @@ dataset leaks.
 | Area | Existing support | V2.12 gap |
 | --- | --- | --- |
 | Exact trajectory replay | `two_player/v28_data.py::replay` regenerates a declared policy/seed episode, replays each action through exact rules, and checks the terminal label. | V2.12 must bind its own game/rules/code version, policy mixture, seed schedule, and episode identity; dev09's manifest cannot be reused as an implicit V2.12 grant. |
-| Model-facing targets | `_build_records_unchecked` validates H1/H2 and emits `next`/`future2`. | V2.12 requires materialized sequence windows through four plies, target horizons 1/2/4, explicit actor roles, and counts for valid/terminal-masked targets at each horizon. |
-| Split/leakage checks | The existing pipeline hashes full trajectories and groups several raw/canonical states and legal two-ply branches before assigning components. | Audit identities must cover all V2.12 H0–H4 context/window states and target horizons H1/H2/H4, role/symmetry transform, and episode lineage before window extraction. The current path-target keys stop at H2; the reply closure stops at depth two. |
+| Model-facing targets | `_build_records_unchecked` validates H1/H2 and emits `next`/`future2`. The synthetic V2.12 helper constructs H0–H4 windows and terminal masks from supplied episodes. | A production V2.12 pipeline must bind source episodes and materialized sequence windows through four plies, target horizons 1/2/4, explicit actor roles, and valid/terminal-masked counts at each horizon. |
+| Split/leakage checks | The existing pipeline hashes full trajectories and groups several raw/canonical states and legal two-ply branches before assigning components. The synthetic helper checks fixture H0–H4 state/window overlap. | A production audit must cover raw, role-normalized, and symmetry-normalized H0–H4 context/window states and H1/H2/H4 targets, plus episode lineage, before extraction. Current V2.8 path-target keys stop at H2; reply closure stops at depth two. |
 | Protocol coverage | `GENERATION_PROTOCOLS` contains `unit-diagnostic` and `dev09-v1`; dev09 uses 48 episodes per game/split and splits train/validation/selection. | There is no V2.12 protocol ID or locked-final assignment, no frozen realized policy-by-seat schedule bound to episode IDs/seeds, and no evidence that 928 eligible windows per training game remain after component quarantine. V2.12 evaluation includes held-out board sizes absent from the V2.8 generator; its training sizes match. |
 | Fail-closed behavior | Existing manifests keep `training_approved` false and the loader refuses data unless it is explicitly true. | Preserve this guard. A future V2.12 audit pass must not set training approval; only a separate reviewed grant can do that. |
 | Runtime budget | V02 measures search-call instrumentation. `two_player/v212_pilot.py::run_root_arm` implements search-local node/deadline stops and retains the last completed iteration, with a first-legal fallback state. | V02 observed no cap stops, and its timing starts inside `run_root_arm`, excluding setup/dispatch. No move-serving adapter verifies the amendment's request-anchored 5-second planner and 6-second response deadlines, pre-search setup/dispatch, returned legal action, or process-forfeit behavior. The proposal is not operational. |
@@ -44,19 +48,25 @@ Before fitting, freeze a V2.12 generation/audit protocol that:
    valid/masked counts without replacing missing targets with zeros;
 5. reports candidate, duplicate, illegal, terminal-short, quarantined, and
    retained episode/window counts by game, split, policy family, seat, and ply;
-6. verifies policy/source/code/rules/config fingerprints and fails closed on a
+6. reports canonical-equivalent within-split window content as a diagnostic
+   under draft v05; do not reuse the synthetic auditor's unconditional
+   duplicate-window rejection as a production policy without an explicit,
+   reviewed reconciliation;
+7. verifies policy/source/code/rules/config fingerprints and fails closed on a
    mismatch; and
-7. verifies the existing search-local stops/fallbacks, then separately measures
+8. verifies the existing search-local stops/fallbacks, then separately measures
    request-to-search setup and fallback/response handling with the same
    request-anchored clock and common caps, using random weights and synthetic
    roots only.
 
 The implemented software-contract check uses a tiny in-memory synthetic fixture
 with known legal paths, a forced-pass case, terminal boundaries, deliberate
-duplicate windows, and deliberate H4-only cross-split overlap. Each fault is
-rejected before model-facing windows are returned. No old labels or locked-final
-artifacts were read. Any future corpus feasibility work requires a separate
-reviewed generation protocol.
+duplicate windows, and deliberate H4-only cross-split overlap. These returned
+windows exist only for synthetic fixture assertions. The fixture deliberately
+rejects duplicate windows; draft v05 instead calls for reporting canonical
+equivalent content diagnostically. No old labels or locked-final artifacts were
+read. Any future corpus feasibility work requires a separate reviewed
+generation protocol and an explicit duplicate-policy reconciliation.
 
 ## Decision
 

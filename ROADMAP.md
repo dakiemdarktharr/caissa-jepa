@@ -24,10 +24,14 @@ behavioral response models from exact-rule worst-case max/min search. They do
 not change the research gate or authorize fitting. The next permitted internal
 work is the no-training audit of the candidate multistep trajectory generator,
 prior-art distinctions, and request-to-search resource headroom, followed by a
-frozen method/protocol review before any fit. A static source audit found no
-V2.12 multi-step window materializer and found that the current V2.8 leak-key
-audit covers H1/H2 plus two-ply reply closure, not every V2.12 H0–H4
-context/window state and H1/H2/H4 target.
+frozen method/protocol review before any fit. A static source audit found a
+no-I/O synthetic V2.12 helper that constructs H0–H4 windows from caller-supplied
+episodes for fixture assertions, but no production/corpus generator or V2.12
+generation protocol. The current V2.8 leak-key audit covers H1/H2 plus two-ply
+reply closure, not every V2.12 H0–H4 context/window state and H1/H2/H4 target.
+The synthetic helper rejects canonical duplicate windows, while draft v05 calls
+for reporting equivalent content diagnostically; production reuse requires an
+explicit reviewed policy.
 See `docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md` and the frozen
 `docs/V212_TRAJECTORY_AUDIT_PROTOCOL_V01.md`. The in-memory synthetic
 fail-closed auditor is implemented, its focused tests pass, and independent
