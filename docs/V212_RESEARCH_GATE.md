@@ -156,6 +156,20 @@ This direction is not yet shown to be novel. Existing work includes I-JEPA and
 V-JEPA 2, multi-step JEPA-WM studies, MuZero/AlphaZero, value-aligned world
 models, policy-aware simulator learning formulated as minimax, and recent
 next-latent critiques. The related-work matrix is in `docs/RELATED_WORK.md`.
+The September 2026 Semigroup-JEPA preprint directly demonstrates recursive
+multi-step latent rollout training that updates the encoder, although in
+gravity-conditioned physical systems rather than alternating legal game
+transitions. Therefore neither recursive JEPA training nor improved open-loop
+prediction can serve as the method novelty by itself. A defensible increment
+would have to survive matched recurrent-JEPA and decision-aware non-JEPA
+controls and improve predeclared minimax decision measures under equal
+measured compute. Action-Conditioned Predictive Consistency is adjacent prior
+art for evaluating paired rollouts and downstream plan-cost stability, but its
+planning-cost bound assumes squared distance to a fixed goal embedding and its
+experiments use CEM in visual-control tasks; it does not guarantee minimax
+value or action-ranking stability for V2.12. Its visual-perturbation setting
+also does not directly apply to exact symbolic game states. Full source notes
+and scope limits are in `docs/RELATED_WORK.md`.
 Before implementation, write a complete method specification that explains
 exactly what differs from each closest work. Kill or reframe the algorithmic
 claim if the method is simply standard multi-step JEPA-WM plus a minimax

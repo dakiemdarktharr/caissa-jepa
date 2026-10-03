@@ -41,6 +41,14 @@ Independent review accepted these as design drafts, not a frozen protocol. The
 64-slot yield, occupancy bands, and symmetry uniqueness rule remain unverified
 before implementation.
 
+A second targeted literature pass added Semigroup-JEPA and Action-Conditioned
+Predictive Consistency to `docs/RELATED_WORK.md`. Recursive rollout JEPA is
+direct prior art, so V2.12 can only support a game-specific empirical
+increment after matched JEPA and decision-aware baselines. A JEPA-Chess title
+appeared only in an aggregator record; no primary Zenodo/DOI source was found,
+so its claimed results are excluded as unverified. These findings do not
+authorize fitting or root generation and do not change the current gate.
+
 ## Research objective
 
 Falsifiable hypothesis: an EMA-target JEPA that predicts future latent states conditioned on both players' ordered actions can improve planning under a fixed compute budget over matched non-JEPA baselines, with the benefit retained across a declared family of deterministic, alternating-turn, fully observed, finite-action, zero-sum games. Current evidence does not support this hypothesis. The immediate aim is to determine whether there is a defensible mechanism worth testing, not to tune until a development win appears.

@@ -274,3 +274,31 @@ rollout horizon, including exact-transition/oracle comparisons. The v02
 compute envelope is random-weight instrumentation; neither it nor the reviewed
 5-second proposal establishes a trained model's plannable range or operating
 budget. No training or match gate changes as a result of this search.
+
+### Recursive JEPA and rollout-diagnostic refresh (2026-10-03)
+
+This targeted primary-source pass searched for recursive action-conditioned
+JEPA objectives, rollout diagnostics, and direct symbolic/game precedents. It
+does not constitute a systematic review or establish novelty.
+
+| Work and primary source | Method and evidence inspected | Consequence for CAISSA |
+| --- | --- | --- |
+| Liu et al. (2026), [Semigroup-JEPA, arXiv:2609.10464](https://arxiv.org/abs/2609.10464), [author project and results](https://sg-jepa.github.io/) | Extends LeWorldModel with a gravity-conditioned predictor and trains encoder plus predictor through a discounted recursive multi-step latent rollout with SIGReg. The authors report longer-horizon prediction gains on synthetic 2D physics and improved control on 3D robotics. | Recursive multi-step latent prediction and training through rollout loss are established JEPA mechanisms. The preprint's explanation of where the gain comes from is internally mixed: its abstract/linear-feature account emphasizes encoder features that remain predictable under recursion, while an encoder/predictor reset ablation attributes the effect primarily to the predictor. Treat the mechanism attribution as unresolved. The method uses physical dynamics and a supplied gravity parameter rather than alternating legal board-game actions and worst-case max/min search; any contribution here must be a measured game-theoretic increment over matched multi-step JEPA and task-value controls. Recursion itself is not novel. |
+| An et al. (2026), [Action-Conditioned Predictive Consistency, arXiv:2608.12939](https://arxiv.org/abs/2608.12939), [full text](https://arxiv.org/html/2608.12939v1) | Defines a frozen-model diagnostic comparing clean and visually perturbed inputs after rolling both forward under the same action sequence. Its prediction-error bound is samplewise; the planning-cost bound assumes squared distance to a fixed goal embedding and applies to the evaluated candidate pool. Experiments use CEM in visual-control tasks. | This is an adjacent evaluation method, not a new training objective or board-game result. It reinforces that action-conditioned rollout diagnostics should be tied to downstream cost/ranking and that low latent error alone is insufficient. Its fixed-goal bound is an analogy, not a guarantee for minimax value or action ranking in V2.12. Visual perturbation robustness does not transfer directly to exact symbolic board states; V2.12's relevant tests remain horizon-wise latent error, minimax ranking/regret, exact-transition comparison, and game outcomes. |
+
+Search quality note: Semigroup-JEPA and ACPC were inspected through the
+authors' arXiv papers/project page. The JEPA-Chess entry is retained solely to
+record and quarantine a discovery artifact that could otherwise be mistaken
+for verified prior art. None of these sources changes the V2.12 gate or
+supports a superiority claim.
+
+Unverified search lead (excluded from the matrix): Exa surfaced a purported
+Zenodo item titled [JEPA-Chess: Action-Conditioned Joint Embedding Predictive
+Architectures for Discrete Logical State Tracking](https://exa.ai/library/publication/5zmflyz8r3g).
+Exact-title and source-targeted searches did not locate a canonical Zenodo
+record, DOI, author manuscript, or repository, so its reported method/results
+are not treated as evidence. The independently reachable
+[CCranney/JEPA-chess repository](https://github.com/CCranney/JEPA-chess)
+remains an experimental repository with no independently verified playing-
+strength result, as noted above. Recheck the unverified lead against a primary
+record before any submission novelty statement.
