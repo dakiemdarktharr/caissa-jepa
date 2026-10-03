@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 synthetic receipt-assembler contract
+
+Added a versioned, fail-closed receipt assembler and 26 synthetic tests binding systemd unit/invocation/ControlGroup/boot snapshots, worker-local event counters, and normalized kernel OOM evidence. Static independent review found no remaining blocking attribution issue after strict post-active time windows and input validation. This is not a live collector or adapter integration: the current request adapter still lacks caller isolation and worker-specific OOM evidence. No service, OOM fault test, inference, data, or outcome run occurred. Keep the supervision and pilot gates closed; any new OOM injection still needs separate explicit authorization. See `docs/V212_RECEIPT_ASSEMBLER_DESIGN_01.md`.
+
 ### 2026-10-04 multimodal JEPA videogame prior-art update
 
 A primary-source search added Campese and Moschitti's ICML 2026 workshop study of multimodal JEPA pretraining on Pokémon Red, with a frozen representation used by PPO. Its abstract reports held-out starting-state results and an offline trajectory-diversity finding. This broadens the established JEPA-in-games context, but it is not evidence for action-conditioned exact-rule minimax planning in a two-player zero-sum game. Full-text access was blocked in this source pass, so details beyond the official abstract/first page remain unverified. No method or gate changed. See `docs/RELATED_WORK.md`.

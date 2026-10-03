@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; synthetic invocation-bound receipt assembler)
+
+- Added `two_player/v212_supervision_receipt_v02.py` with typed/versioned active-worker and post-exit manager snapshots, exact unit/InvocationID/ControlGroup/boot binding, strict post-active event windows, typed `memory.events.local` samples, normalized kernel OOM proof plus message digest, and bounded atomic receipt writing.
+- The 26-case suite and static independent review pass. Evidence remains synthetic: no live journal/cgroup collector integration, same-invocation OOM receipt, request adapter integration, OOM fault test, or inference run was performed. The current adapter v02 still uses a same-cgroup worker and does not gain caller isolation or worker-specific OOM attribution from this assembler. OOM fault injection remains behind separate explicit authorization. See `docs/V212_RECEIPT_ASSEMBLER_DESIGN_01.md`.
+
 ## Latest continuation delta (2026-10-04; multimodal JEPA game-domain prior art)
 
 - Added Campese and Moschitti's ICML 2026 workshop study of offline multimodal JEPA pretraining on Pokémon Red: pixels plus engineered RAM features, followed by a frozen encoder for PPO. The authors report higher cumulative reward on 48 held-out starting states than several representation baselines and report a trajectory-diversity advantage over expert-policy provenance in their tested comparison.
