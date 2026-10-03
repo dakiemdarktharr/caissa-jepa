@@ -3,6 +3,10 @@
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
 
+## External supervision preflight (2026-10-04)
+
+Read-only lattice checks confirm systemd 262, an active delegated user manager, and the cgroup-v2 memory controller enabled in its subtree. The user manager reports `degraded`. Its inherited effective memory ceiling is about 15 GiB; direct user-service/app-slice memory limits are unlimited. This advances only the capability/ancestry survey. The finite worker-service limit, live headroom, caller survival under worker-local OOM, receipt capture, and cleanup remain unverified. No unit or worker was started; no OOM test or inference ran. Next: resolve the manager health observation if relevant, then obtain independent review before a no-inference transient-service placement check. Keep the pilot closed.
+
 ## External supervision research update (2026-10-04)
 
 Added [V2.12 external worker supervision design 01](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md), a primary-source-backed proposal to test a transient systemd service as a worker-local cgroup boundary with the caller outside that unit. Linux cgroup semantics do not guarantee supervisor survival under ancestor or host-wide OOM, and systemd service runtime does not cover all request startup latency. The proposal requires capability/ancestry preflight, no-inference placement verification, a separately authorized disposable OOM fault test, caller-observed no-outcome integration, receipt validation, and independent review. No experiment ran and no runtime, pilot, training, or data gate passed. Keep the pilot closed.
