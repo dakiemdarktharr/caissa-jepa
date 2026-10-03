@@ -186,6 +186,38 @@ The model and acceptance criteria must be frozen before simulation. This
 source scan neither selects the mixed model nor authorizes a fit, simulation,
 or outcome access.
 
+## Interaction-dominated variance and finite-factor geometry
+
+Owen and Eckles derive product-factor bootstrap variance for the mean under a
+crossed random-effects model, not a general confidence/test guarantee. For two
+factors with unit-variance weights, the interaction-only variance component
+is multiplied by about three; their paper explicitly notes that this extreme
+case overestimates the true mean variance by roughly 3×. Their near-correct
+relative-variance result instead assumes the main-effect components are
+positive and bounded, with main effects dominating and duplication ratios
+small. They also note that in a complete rectangular design the maximum
+proportional duplication is the inverse of the smaller factor count.
+
+For the proposed complete 20-seed × 16-root-slot grid within one occupancy
+stratum, those design ratios are epsilon = max(1/20, 1/16) = 1/16 and
+eta = max(1/20, 1/16) = 1/16. These are descriptive consequences of the
+planned grid, not evidence that the asymptotic approximation is accurate at
+these counts. The number and relative size of seed, root, and seed × root
+variance components are unknown until data exist. Owen and Eckles also cite
+McCullagh's result that no exact unbiased resampling bootstrap exists for the
+crossed-random-effects mean-variance problem in the broad class studied.
+
+This narrows the simulation question: if independent review requires a
+design-matched study, it should include both main-effect-dominated and
+seed × root-interaction-dominated variance regimes, under null and
+heterogeneous/nonzero contrast scenarios. Compare variance/coverage and the
+full familywise rule separately; a variance approximation for one mean does
+not validate max-|T| intervals or Holm-adjusted tests. The product-factor
+method is a candidate comparator, not the declared winner; the proposed
+pairs bootstrap is not identical to Owen-Eckles reweighting. No variance
+components have been observed and no simulation, roots, or outcomes were
+accessed.
+
 ## Primary sources
 
 - Baayen, Davidson, and Bates (2008), [Mixed-effects Modeling With Crossed Random Effects for Subjects and Items](https://doi.org/10.1016/j.jml.2007.12.005).
@@ -194,11 +226,10 @@ or outcome access.
 - Roodman, MacKinnon, Nielsen, and Webb (2019), [Fast and Wild: Bootstrap Inference in Stata Using boottest](https://doi.org/10.1177/1536867X19830877).
 - MacKinnon, Nielsen, and Webb (2023), [Leverage, Influence, and the Jackknife in Clustered Regression Models](https://doi.org/10.1177/1536867X231212433) (two-way discussion; regression scope).
 - Bakshy and Eckles (2013), [Uncertainty in Online Experiments with Dependent Data: An Evaluation of Bootstrap Methods](https://arxiv.org/abs/1304.7406) (arXiv v4; Section 3.4/Figure 4 withdrawn).
+- McCullagh (2000), [Resampling and Exchangeable Arrays](https://doi.org/10.2307/3318577).
 - Owen (2007), [The Pigeonhole Bootstrap](https://arxiv.org/abs/0712.1111).
 - Owen and Eckles (2012), [Bootstrapping Data Arrays of Arbitrary
   Order](https://arxiv.org/abs/1106.2125).
-- MacKinnon, Nielsen, and Webb (2021), [Wild Bootstrap and Asymptotic
-  Inference With Multiway Clustering](https://doi.org/10.1080/07350015.2019.1677473).
 - Preston (2009), [Rescaled Bootstrap for Stratified Multistage
   Sampling](https://www150.statcan.gc.ca/n1/pub/12-001-x/2009002/article/11044-eng.pdf).
 - MacKinnon and Webb (2018), [The Wild Bootstrap for Few (Treated)

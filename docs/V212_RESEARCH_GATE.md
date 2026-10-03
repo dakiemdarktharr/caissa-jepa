@@ -515,3 +515,19 @@ review may decide whether to compare it in a predeclared synthetic study;
 there is no model selection or simulation authorization here. Gate remains
 unchanged. Details:
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 crossed interaction-component bootstrap check
+
+Owen and Eckles's product-factor bootstrap targets variance of a mean. Under
+their two-factor model, an interaction-only component is inflated by roughly
+3×; their near-correct result relies on main-effect components dominating
+under stated conditions. For the proposed complete 20 × 16 grid per occupancy
+stratum, the design's duplication ratios are each 1/16, but this does not
+verify the variance-component conditions or finite-sample calibration.
+Independent review should decide whether any required synthetic study includes
+main-effect- and seed × root-interaction-dominated regimes, under null and
+nonzero heterogeneous effects, and evaluates the whole familywise procedure.
+No variance components are known; no simulation, roots, outcomes, or training
+occurred. This refines the validation question only; the gate remains closed.
+See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

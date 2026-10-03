@@ -636,3 +636,17 @@ design-matched comparison against the existing bootstrap, with assumptions and
 familywise criteria frozen first. No model was selected, no simulation or
 data/root access occurred, and no gate changed. See
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 interaction-component bootstrap evidence
+
+Owen and Eckles find that two-factor product reweighting can overstate mean
+variance by about 3× when only the crossed interaction component is present;
+near-correctness relies on main-effect variance dominating. The proposed
+20-seed × 16-slot grid has epsilon = eta = 1/16 per occupancy stratum, a
+design descriptor that does not establish those variance assumptions or
+finite-sample coverage. If an inference simulation is required, reviewer
+should decide whether to test both main-effect- and interaction-dominated
+variance regimes and evaluate the full familywise procedure. This neither
+selects a bootstrap nor authorizes simulation. No data, roots, or outcomes were
+accessed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
