@@ -3,6 +3,10 @@
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
 
+## Supervision design review revision (2026-10-04)
+
+Independent review requested an explicit test of transient unit/cgroup evidence lifetime. The revised design requires measuring when `memory.events.local` disappears, verifying manager OOM/result fields through unit release, and proving the selected receipt path before cleanup; it specifies an external monitor fallback and fail-closed behavior if evidence is unavailable. The design awaits re-review. No unit or worker has been started. Keep OOM injection, inference, and pilot closed until each stated gate is met.
+
 ## External supervision preflight (2026-10-04)
 
 Read-only lattice checks confirm systemd 262, an active delegated user manager, and the cgroup-v2 memory controller enabled in its subtree. The user manager reports `degraded`. Its inherited effective memory ceiling is about 15 GiB; direct user-service/app-slice memory limits are unlimited. This advances only the capability/ancestry survey. The finite worker-service limit, live headroom, caller survival under worker-local OOM, receipt capture, and cleanup remain unverified. No unit or worker was started; no OOM test or inference ran. Next: resolve the manager health observation if relevant, then obtain independent review before a no-inference transient-service placement check. Keep the pilot closed.
