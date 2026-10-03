@@ -561,3 +561,28 @@ not established novelty or evidence of a JEPA advantage. V2.12's planner is a
 max/min heuristic and must not be described as a Nash-equilibrium solver.
 Source: [Kubíček & Lisý, arXiv:2510.05048](https://arxiv.org/abs/2510.05048),
 whose paper identifies itself as published at ICLR 2026.
+
+
+### Code World Models for General Game Playing (ICLR 2026)
+
+Lehrach et al., *Code World Models for General Game Playing*, use an LLM to
+synthesize an executable Python model of a game from its natural-language
+rules and sampled trajectories. The code exposes legal actions, transitions,
+observations/rewards, and termination; MCTS is used for perfect-information
+games and ISMCTS for imperfect-information games, optionally with generated
+leaf-value and hidden-state inference functions. Their ten-game evaluation
+includes five perfect-information games, among them Connect Four, plus four
+novel games; the paper reports matching or outperforming Gemini 2.5 Pro in
+nine of ten games. The official ICLR 2026 proceedings page and the arXiv
+paper are primary sources; results are author-reported, not reproduced here.
+
+This is adjacent evidence that game-model construction plus classical search
+is an established general-game approach, including Connect Four. It is not a
+neural latent dynamics learner or JEPA objective: its central model is
+LLM-generated executable code, and the comparison is against a general LLM
+policy rather than matched learned-dynamics controls. Its trajectory-derived
+tests verify sampled behavior, not correctness over every unseen reachable
+state. It therefore narrows broad “model-based planning in new games” claims,
+but does not resolve CAISSA's specific JEPA decision-quality question or
+validate the V2.12 proposal. Sources: [ICLR 2026 proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html);
+[arXiv:2510.04542](https://arxiv.org/abs/2510.04542).

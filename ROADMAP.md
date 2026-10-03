@@ -557,3 +557,15 @@ as a new method or JEPA advantage. LAMIR's paper-reported exploitability and
 head-to-head results were not reproduced. The v04 scope, method, and all
 research gates are unchanged. See docs/RELATED_WORK.md and
 docs/V212_RESEARCH_GATE.md.
+
+
+### 2026-10-03 executable game-model prior art
+
+Code World Models for General Game Playing (ICLR 2026) synthesizes executable
+Python game models from rules and sample trajectories and plans with MCTS or
+ISMCTS; its 10-game study includes Connect Four. This means broad game-model
+plus search and general game-playing scope are established. Its LLM-generated
+code differs from CAISSA's learned JEPA latents and is not a matched neural
+control; sampled-trajectory tests also leave unseen-state correctness open.
+This narrows positioning but does not answer the V2.12 empirical comparison.
+No gate changes. See docs/RELATED_WORK.md and docs/V212_RESEARCH_GATE.md.

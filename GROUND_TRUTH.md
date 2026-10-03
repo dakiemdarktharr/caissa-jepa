@@ -1,6 +1,14 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; executable game-model prior-art check)
+
+- Read Lehrach et al., *Code World Models for General Game Playing* (ICLR 2026), from the official proceedings and primary arXiv source. It synthesizes executable Python rules/transition/legal-action models from game descriptions and sample trajectories, then uses MCTS for perfect-information games and ISMCTS for imperfect-information games. Its ten-game suite includes Connect Four and four paper-created games; it reports matching/beating Gemini 2.5 Pro on nine of ten.
+- This further closes broad claims to model-based search or general game-model planning. It is materially distinct from CAISSA: LLM-generated executable code rather than learned neural latent dynamics/JEPA, and a general-LLM policy baseline rather than compute-matched learned-dynamics controls. The paper's trajectory-derived checks do not guarantee unseen-state rule correctness. No CAISSA benchmark/result is implied.
+- No gates, code, data, outcomes, training, or local checkout changed. Obsidian remains deferred. Sources: [official ICLR proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html), [arXiv](https://arxiv.org/abs/2510.04542).
+
+
+
 ## Latest continuation delta (2026-10-03; LAMIR game-model prior-art refresh)
 
 - Read the primary-source paper by Kubíček and Lisý, *Look-ahead Reasoning with a Learned Model in Imperfect Information Games* (LAMIR), arXiv:2510.05048; the paper identifies itself as published at ICLR 2026.

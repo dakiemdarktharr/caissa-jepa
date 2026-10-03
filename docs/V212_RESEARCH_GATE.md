@@ -429,3 +429,18 @@ reproduced here. V2.12 still uses a finite-horizon max/min heuristic, not an
 equilibrium solver. No method, implementation, gate, data, training, scoring,
 or outcome status changes. Prior-art source:
 [arXiv:2510.05048](https://arxiv.org/abs/2510.05048).
+
+
+## Executable code world models in general games (2026-10-03)
+
+The ICLR 2026 paper *Code World Models for General Game Playing* uses an LLM
+to synthesize executable rule-transition/legal-action code from game rules
+and sampled trajectories, then plans with MCTS/ISMCTS. Its ten-game suite
+includes Connect Four and four paper-created games; the reported comparison
+matches or beats Gemini 2.5 Pro on nine of ten games. This reinforces that
+game-model-plus-search and game generality are not sufficient novelty claims.
+The method is code synthesis, not a learned JEPA latent predictor, and its
+comparison is not a matched latent-dynamics control. Passing trajectory-based
+tests does not establish correctness on unsampled states. No CAISSA gate or
+claim status changes. Sources: [ICLR proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html)
+and [arXiv:2510.04542](https://arxiv.org/abs/2510.04542).
