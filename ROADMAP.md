@@ -48,15 +48,15 @@ gravity-preserving maps for each Connect Four variant; D4 for Reversi), but
 `canonical_key` does not return its minimizing map and no adapter-wide
 legal-action/transition property suite exists. Canonical edge metrics remain
 disabled pending those code-property checks and independent protocol review.
-The same root-schedule review must also reconcile §7's independent-situation
-bootstrap with the proposal to keep only the first 16 symmetry-unique roots
-from 64 candidate slots per band. Rejection makes accepted roots dependent and
-can change their induced policy/prefix distribution; the development estimand
-and resampling unit must be frozen before scoring. The audit now proposes a
-versioned resolution: keep duplicate candidate slots as repeated IID draws
-conditional on validity, and stratify the crossed bootstrap by the fixed
-occupancy bands. This still requires independent statistical/protocol review;
-the root schedule remains unchanged and unapproved.
+The earlier design-01 root schedule kept only the first 16
+symmetry-unique roots from 64 candidate slots per band, which changes the
+accepted distribution. The conflict now has a candidate written resolution
+in `docs/V212_DEV_ROOT_SCHEDULE_DESIGN_02.md`: retain repeated states as
+separate valid slot draws, define the success-conditional first-passage
+estimand, and stratify the crossed bootstrap by occupancy band. Design 02
+aligns with the root-sampling amendment but is not frozen; independent
+statistical/protocol review must accept the target, RNG assumptions, yield
+rule, and inference procedure before generation or scoring.
 The candidate resolution is now specified for review in
 `docs/METHOD_SPEC_V212_ROOT_SAMPLING_AMENDMENT_DRAFT_01.md`: it defines the
 success-conditional first-passage distribution, treats slot IDs as sampling
