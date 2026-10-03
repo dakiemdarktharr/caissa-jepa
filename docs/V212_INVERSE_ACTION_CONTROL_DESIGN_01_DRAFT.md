@@ -93,3 +93,8 @@ contracts only and do not authorize corpus generation.
 
 The design is not accepted by this note. The present data, split/leakage,
 compute, novelty, independent-review, and outcome gates remain closed.
+
+
+### EB-JEPA inverse-dynamics evidence (2026-10-04)
+
+The EB-JEPA AC-video-JEPA study provides an adjacent empirical reason to keep inverse-action supervision under review: on Two Rooms with randomized walls, the authors report 97±2% success for the full model and 1±1% when the inverse-dynamics term is removed, attributing the ablation to collapse from spurious correlations. This supports the relevance of the proposed factorial as a control candidate, but not its necessity or expected effect in CAISSA. EB-JEPA uses continuous 2D goal navigation and visual states; V2.12 has exact symbolic board states, deterministic rules, and alternating adversarial max/min search. Keep the coefficient, compute parity, and inclusion decision open for independent review; do not amend v04 or fit on this evidence. Sources: [paper](https://arxiv.org/abs/2602.03604) and [author code/results](https://github.com/facebookresearch/eb_jepa/tree/main/examples/ac_video_jepa).
