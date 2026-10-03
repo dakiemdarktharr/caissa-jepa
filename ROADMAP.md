@@ -45,9 +45,13 @@ content diagnostics, and symmetry-distinct development roots now have separate
 proposed dispositions; all remain subject to independent protocol review.
 The source inventory in that audit records the declared in-scope maps (two
 gravity-preserving maps for each Connect Four variant; D4 for Reversi), but
-`canonical_key` does not return its minimizing map and no adapter-wide
-legal-action/transition property suite exists. Canonical edge metrics remain
-disabled pending those code-property checks and independent protocol review.
+`canonical_key` does not return its minimizing map. A bounded
+`tests/test_v212_symmetry_properties.py` suite now checks each declared map's
+legal-action bijection and transition commutation on deterministic in-memory
+fixtures for all four in-scope variants, including a forced-pass Reversi case.
+It is not exhaustive over reachable states; canonical edge metrics remain
+disabled pending broader/adversarial code-property review and independent
+protocol review.
 The earlier design-01 root schedule kept only the first 16
 symmetry-unique roots from 64 candidate slots per band, which changes the
 accepted distribution. The conflict now has a candidate written resolution
