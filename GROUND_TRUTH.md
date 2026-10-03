@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; JEPA planning prior-art refresh)
+
+- Reviewed primary arXiv full texts for JEPA-TTT v1 (persistent predictor adaptation across dynamics shifts), the point-cloud JEPA planning study v2, and decision-metric alignment for latent MPC.
+- These add adjacent action-conditioned JEPA planning and planning-alignment evidence, but none studies V2.12's deterministic two-player exact-rule max/min setup or isolates its fixed EMA-target loss against matched controls. This narrows positioning; it is not a novelty finding or evidence for V2.12.
+- Updated Related Work and the draft prior-art crosswalk with source scope, reported baselines/results, and limits. No method/gate changed; no code, data, root schedule, outcomes, training, or pilot ran.
+
 
 ## Latest continuation delta (2026-10-03; exact remote adapter test)
 
