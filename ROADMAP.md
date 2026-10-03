@@ -509,3 +509,22 @@ GPL-3.0 and was not downloaded, run, or integrated. Our Reversi8 rules appear
 compatible by static inspection; formal adapter equivalence remains open. No
 evaluation or training gate changes. See docs/RELATED_WORK.md and
 docs/V212_RESEARCH_GATE.md.
+
+
+### 2026-10-03 decision-metric JEPA prior-art update
+
+Wang et al. (arXiv:2608.18746v1) introduce Plan-Real/CEM-stage rank
+diagnostics and DA-LeWM with inverse-action and demonstration-conditioned
+goal-action heads. These results remove standalone novelty claims for
+action-conditioned JEPA planning, these auxiliary losses, and generic
+candidate-rank metrics. Their single-agent Euclidean-goal CEM robotics tasks
+do not test CAISSA's proposed complete legal-action, root-player max/min
+regret question; that distinction remains a hypothesis, not established
+novelty. A negative result in the paper is also relevant: elite-stage rank
+agreement remains near zero or negative for all variants, including DA-LeWM,
+despite random-stage gains. The paper is a preprint with one training run per
+configuration. Before any fit, independently review whether to add an
+inverse-action control and whether logged goal-actions would only encode
+behavior imitation. No method/data/training gate changes. See
+docs/RELATED_WORK.md, docs/V212_RESEARCH_GATE.md, and the decision-regret
+design draft.

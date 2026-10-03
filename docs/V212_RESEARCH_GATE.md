@@ -366,3 +366,29 @@ separate artifacts; neither was downloaded, run, or integrated. Source
 inspection suggests our 8x8 opening/pass/flip/terminal rules match standard
 Othello, but adapter equivalence and any license/provenance review remain
 required. No method, outcome, scoring, or generation gate changes.
+
+
+## Decision-metric alignment prior-art update (2026-10-03)
+
+Wang et al. (arXiv:2608.18746v1) introduce Plan-Real and CEM-stage Spearman
+for ranking candidate plans by latent cost versus environment cost, and
+DA-LeWM adds inverse-action and demonstration-conditioned goal-action losses
+to an action-conditioned JEPA-style world model. This closes standalone
+novelty claims for action-conditioned JEPA planning, inverse-action auxiliary
+losses, goal-action supervision, and generic planner-rank diagnostics. Their
+evidence is single-agent Euclidean-goal CEM on four robotics tasks, not
+two-player zero-sum max/min over complete legal-action sets. A potentially
+distinct CAISSA question remains empirical and unverified: root-player
+decision regret/ranking under finite-horizon adversarial backup at matched
+compute. Even there, adaptation of the DA-LeWM inverse-action control needs
+independent review before fitting; a logged future-action target could
+measure behavior imitation rather than decision quality.
+
+The paper reports that CEM-stage Spearman is near zero or negative at the
+elite stage for all compared variants, including DA-LeWM, despite positive
+random-stage lift. This is a useful negative precedent: aggregate/global
+ranking does not guarantee ranking among optimizer-selected candidates. Its
+authors report one training run per configuration and three evaluation seeds,
+so training-seed uncertainty is not established. The paper is a preprint and
+was not independently reproduced. No CAISSA method, data, scoring, or training
+gate changes; novelty remains high-risk and all outcome gates stay closed.

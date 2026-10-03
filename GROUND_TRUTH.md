@@ -2180,3 +2180,12 @@ The current `main` adapter already contains the corrected cgroup explanation: `m
 - The proof uses targeted subproblems and a modified Edax engine; the source repository carries GPL-3.0 and analysis outputs are hosted separately. Nothing was downloaded, installed, run, or queried.
 - Static comparison with two_player/games.py suggests the Reversi8 opening, alternating turns, flips, forced passes, and terminal disc-count result align with standard Othello. This is not a verified adapter contract.
 - This gives an opening-position theoretical anchor, but not complete values for every legal action at the benchmark's sampled roots. Exact/bounded regret, generation, scoring, and training gates remain unchanged. Source: [paper](https://arxiv.org/pdf/2310.19387), [pinned modified Edax source](https://github.com/eukaryo/edax-reversi-AVX-v446mod2/tree/fbec6a324775b55cafe4a6d9691d92b3fdde2ffc).
+
+
+### V2.12 decision-metric JEPA prior-art update (2026-10-03)
+
+- Reviewed Wang et al., *Decision-Metric Alignment in Latent World Models: Diagnostics and Action-Conditioned Objectives for MPC Planning*, arXiv:2608.18746v1 (submitted 2026-08-19). It introduces Plan-Real and CEM-stage Spearman and DA-LeWM, which adds inverse-action and demonstration-conditioned goal-action heads to an action-conditioned LeWM predictor.
+- The overlap closes standalone novelty claims around action-conditioned JEPA planning, inverse/goal-action auxiliary objectives, and generic candidate-rank diagnostics. The study is single-agent Euclidean-goal CEM over four robotics tasks; it does not evaluate complete legal root actions under alternating two-player zero-sum max/min.
+- The authors report near-zero/negative elite-stage CEM Spearman for all variants, including DA-LeWM, despite positive random-stage gains. They report one training run per configuration and three evaluation seeds. Treat as preprint evidence, not independent replication.
+- A root-player decision-regret question under adversarial finite-horizon backup remains only a candidate distinction; novelty is unresolved. Before fitting, independent review must decide whether to add an inverse-action control and how to avoid treating logged policy goal-actions as optimal decisions.
+- No local files, CAISSA code, data, outcomes, or gates changed. Source: [arXiv paper](https://arxiv.org/abs/2608.18746).

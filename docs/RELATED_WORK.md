@@ -488,3 +488,40 @@ for the protocol's sampled reachable positions or change the regret metric.
 Do not describe Reversi8 as an unsolved game; do not treat the weak opening
 solution as a strong solution, arbitrary-position oracle, or model-evaluation
 result. GPL-3.0 and artifact provenance also require review before any reuse.
+
+
+### Decision-metric alignment and action-conditioned JEPA planning (2026)
+
+Wang et al., *Decision-Metric Alignment in Latent World Models*, distinguish
+task-variable decodability from whether a planner's latent cost ranks
+candidate plans in the same order as environment outcomes. Their Plan-Real
+Spearman and CEM-stage Spearman diagnostics evaluate ranking over random
+plans and candidates as CEM concentrates its proposal. Their DA-LeWM adds
+inverse-dynamics and demonstration-conditioned goal-action heads to an
+action-conditioned LeWM predictor; the heads are discarded at inference, so
+the base MPC planner and planning-time compute remain fixed. The authors
+report improved convergence and online success across PushT, Reacher, Cube,
+and TwoRoom, with similar probe scores ([arXiv:2608.18746v1](https://arxiv.org/abs/2608.18746)).
+This is a recent preprint, not independently reproduced here.
+
+The result materially narrows CAISSA-JEPA novelty claims: action-conditioned
+JEPA dynamics, inverse-action/goal-action auxiliary supervision, and
+planner-candidate rank diagnostics are established prior art and cannot be
+claimed as standalone contributions. The benchmark and objective differ:
+DA-LeWM uses single-agent Euclidean goal-distance MPC with CEM on four
+robotics tasks, whereas CAISSA targets deterministic, fully observed,
+alternating zero-sum games and ranks complete legal root actions after
+finite-horizon max/min backup. That difference motivates a narrower
+empirical question; it does not itself establish novelty.
+
+The paper also reports a relevant negative result: on PushT, its CEM-stage
+Spearman falls to approximately zero or below for every compared variant at
+the elite stage, including action-supervised DA-LeWM (Table 3). Thus its
+global/random-plan ranking lift does not establish local ranking quality
+among the plans the optimizer ultimately selects. The paper reports one
+training run per configuration and evaluation over three seeds, limiting
+evidence about training-seed variability. Before any CAISSA fit, independent
+review must assess a DA-LeWM-style inverse-action control and whether any
+goal-action target is meaningful for policy-mixture trajectories without
+confounding behavior imitation with adversarial decision quality. The present
+V2.12 spec does not include this control; no method or gate is amended here.

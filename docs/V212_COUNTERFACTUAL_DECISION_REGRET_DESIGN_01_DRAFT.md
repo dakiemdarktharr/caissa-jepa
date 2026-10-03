@@ -220,3 +220,30 @@ value normalization, or adapter test was run. Keep this separate from the
 5-second candidate planner budget, exact-solved from bounded-reference
 strata, and all score/generation/training gates. No external engine was
 installed or run.
+
+
+## Decision-metric alignment and action-conditioned objectives prior art
+
+A close 2026 preprint, Wang et al., *Decision-Metric Alignment in Latent
+World Models* ([arXiv:2608.18746v1](https://arxiv.org/abs/2608.18746)), introduces Plan-Real Spearman
+and CEM-stage Spearman for latent-cost versus environment-cost ordering and
+DA-LeWM, which adds inverse-dynamics and demonstration-conditioned
+goal-action heads to an action-conditioned JEPA-style predictor. It establishes
+that action-conditioned JEPA planning, these auxiliary objectives, and
+planner-rank diagnostics are not independently novel claims. Its single-agent
+Euclidean-goal CEM setup differs from this draft's complete legal root-action
+scores and root-perspective max/min decision regret in deterministic
+two-player games; the empirical gap remains a hypothesis, not a novelty
+finding.
+
+A reported negative is relevant to metric design: CEM-stage rank correlation
+is near zero or below at the elite stage for every variant, including the
+action-supervised DA-LeWM, despite positive random-stage gains. Global
+candidate ranking can therefore hide failure in the planner's selected
+neighborhood. The paper has one training run per configuration and three
+evaluation seeds and is not independently reproduced here. Before scoring or
+fitting, independent review should determine whether a board-game inverse
+action head is an appropriate control and specify any behavior-derived
+goal-action targets so they do not get misrepresented as adversarially optimal.
+No new control is added to V2.12 by this note; doing so requires a versioned
+method amendment and review.
