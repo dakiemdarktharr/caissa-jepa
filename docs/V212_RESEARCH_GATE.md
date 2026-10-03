@@ -647,3 +647,15 @@ acceptance: the reviewer may accept, revise, or reject the recommendation
 and must freeze the scenario grid, numerical tolerances, outer Monte Carlo
 precision, and failure response before any simulation. v04 remains current;
 no roots, simulations, scores, training, or outcomes were generated/read.
+
+### 2026-10-04 production generator readiness review
+
+Independent static review found no reviewed production-generation contract.
+Do not implement a corpus generator until the v04/v05 split disposition,
+numeric episode quotas/resource basis, RNG and manifest streams, 928-window
+and terminal-target/minibatch semantics, identity-versus-lineage key/overlap
+rules, and atomic artifact/receipt/failure behavior are versioned and
+independently accepted. See `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`.
+This does not show that a corpus is infeasible or contaminated. The synthetic
+auditor stays fixture-only; no episode/policy/data was run or accessed and no
+generation/training gate advanced.

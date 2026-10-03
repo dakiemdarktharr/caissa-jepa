@@ -7,6 +7,12 @@
 - Independent static review requested a more direct Romano–Wolf step-down citation and calibration scenarios that preserve macro-contrast algebra, paired-seat/shared-arm dependence, variance heterogeneity, and separate schedule-yield probability from conditional inferential error rates. The note was revised accordingly. This is still not a qualified statistical acceptance, and any future calibration would support only its prespecified scenario grid.
 - No roots, calibration simulations, scores, training, matches or outcomes were generated or accessed.
 
+## Latest continuation delta (2026-10-04; production generator protocol review)
+
+- Independent static review concluded the current drafts do not justify implementing a production V2.12 episode/window generator. The accepted trajectory auditor is only an in-memory synthetic fixture.
+- Recorded five grouped prerequisite areas in `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`: split matrix and episode quota; RNG/manifest streams and policy-support semantics; the exact 928-window/terminal-mask/minibatch contract; content keys separate from lineage and overlap dispositions; and atomic manifest/receipt/failure semantics with `training_approved: false`.
+- This is a protocol-readiness finding, not evidence of corpus leakage or insufficiency. No trajectories, policies, labels, or data were executed/read/generated; no gate advanced.
+
 ## Latest continuation delta (2026-10-04; root-sampling review disposition)
 
 - Independent static review found the first-valid-slot IID argument coherent only under the draft's slot-local validity, IID-within-variant×occupancy-band, and no-adaptive/identity/outcome-rejection assumptions. Repeated boards can remain distinct draws under that target.

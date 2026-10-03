@@ -132,3 +132,49 @@ seed/episode/board dimensions while policy-pair assignment is split/episode
 parity; V2.12 requires a separately frozen ordered-pair draw and seed contract.
 See docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md. No generation or
 policy execution occurred.
+
+## Independent production-generator contract review (2026-10-04)
+
+**Disposition: do not implement a production generator from the current
+documents.** The synthetic in-memory auditor is accepted only for its fixture
+contract. Independent review found the following decisions must be frozen or
+revised in a reviewed method/protocol version first:
+
+1. **Split matrix and episode quota.** Accept or reject Draft v05's replacement
+   of v04's episode train/development wording with fit-only episodes on the two
+   training-size variants and standalone development roots on held-out sizes.
+   Set numeric per-game episode quotas and their resource basis. The draft
+   requires a quota but supplies none; v04 says counts must be fixed from
+   resource measurements. Define fail behavior for invalid/short episodes and
+   insufficient selected windows without data-dependent top-up.
+2. **Policy draws and reproducibility.** Pin RNG algorithm/library version;
+   derive separate, deterministic streams for ordered seat-policy draws,
+   episode/action sampling, stochastic policy choices and tie-breaking; bind
+   each stream and policy pair to a manifest ID. Decide whether per-pair/seat
+   support is descriptive or a fail condition. Any support-based redraw or
+   rejection must be treated as a change to the realized policy mixture.
+3. **The 928-window sampling contract.** Accept or reject source-window IDs,
+   no-replacement episode-first/start-ply selection, short-tail eligibility,
+   terminal-only windows counting toward 928, and the exact meaning of
+   “valid.” Specify how these choices alter root/task supervision versus
+   available H1/H2/H4 JEPA targets. Freeze the minibatch rule and fail if any
+   batch has no valid latent target; never silently replace windows.
+4. **Identity, lineage and overlap.** Freeze raw, role-normalized and
+   symmetry-normalized H0–H4 context and H1/H2/H4 target keys, while keeping
+   episode/source lineage outside content identity. Define diagnostic-only
+   within-fit repeated content versus fail-closed prohibited partition
+   collisions under the accepted split matrix. The synthetic audit does not
+   settle real-corpus shared-opening or prefix-overlap handling.
+5. **Atomic artifact and receipt behavior.** Specify the exact manifest,
+   episode and audit receipt schemas; canonical serialization; code/config/
+   rules/policy/data hashes; stage and commit markers; how partial output is
+   hidden, removed or recovered; failed-audit receipt retention; and an
+   immutable `training_approved: false` state. The current design lists these
+   properties but does not define their executable contract.
+
+These are implementation prerequisites, not new findings about leakage,
+support, or feasibility. V2.8 remains incompatible as a V2.12 corpus source;
+no episode or policy was executed and no data were read/generated. Independent
+review of the completed, versioned protocol is still required before generator
+implementation. The separate held-out-root schedule and statistical review
+remain distinct gates.
