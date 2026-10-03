@@ -73,3 +73,17 @@ place the actual worker and descendants in the verified bounded unit, record
 its cgroup path and `memory.max`, distinguish OOM termination from request
 watchdog termination, and verify its own receipt/cleanup behavior. Sampled RSS
 remains telemetry, not the hard limit itself.
+
+
+## Request-adapter preflight follow-up (2026-10-03)
+
+The new `two_player/v212_request_adapter_v01.py` requires a finite 1.5 GiB
+`memory.max`, `memory.oom.group=0`, and the same unified cgroup path in its
+parent and worker. Its orchestration tests mock this boundary; they do not run
+inference inside the scope. The helper `verify_memory_scope()` was executed
+inside a disposable 1.5 GiB systemd scope and reported the expected limit and
+`memory.oom.group=0`; the scope and cgroup were removed afterward. This host's
+systemd rejected the newer `MemoryOOMGroup=no` unit property, so the adapter
+reads the kernel cgroup value directly and refuses any value other than zero.
+No pilot worker or model was started in the scope. Runtime enforcement,
+watchdog latency, and receipt cleanup remain unverified for the actual adapter.
