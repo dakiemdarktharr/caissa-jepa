@@ -51,27 +51,46 @@ schedule itself notes that first-in-order acceptance changes the realized
 policy-pair and prefix-length mix.
 
 This is a possible mismatch between the sampling design and the resampling
-assumption, not evidence that any result or interval is already invalid; the
-schedule has not been run and the intended estimand has not been frozen. Before
-the independent protocol review, define whether the development estimand is:
+assumption, not evidence that any result or interval is already invalid. The
+schedule has not been run and the intended estimand has not been frozen. A
+candidate resolution aligned with §7's independent-situation sample is to
+define the target as an equal-weight, occupancy-stratified distribution of
+first eligible nonterminal roots induced by the pinned policy mixture,
+conditional on a candidate slot reaching its assigned band:
 
-- performance under the occupancy-stratified policy-mixture distribution of
-  candidate slots;
-- performance on a sample of unique reachable situations under an explicitly
-  defined unique-state sampling distribution; or
-- performance conditional on one fixed, predeclared root bank.
+1. Preserve the 64 fixed, independently seeded candidate slots per band.
+2. Accept the first 16 valid slots in schedule order, regardless of whether
+   their canonical board states repeat. A slot id is the sampling unit; retain
+   duplicate states as repeated draws and report their raw/canonical
+   multiplicities rather than collapsing them.
+3. Count terminal-before-band and other invalid slots before scoring; fail if
+   fewer than 16 valid slots occur in any band. Do not top up the schedule.
+4. Report the accepted policy-pair and prefix-length mix. Since validity can
+   depend on policy and rollout, the target distribution is the induced
+   success-conditional mixture, not the nominal uniform policy-pair mixture.
 
-For the first estimand, retaining duplicate candidate slots (while recording
-canonical root multiplicities and accounting for repeated-state clustering)
-preserves the slot-level draw more directly than discarding them. For the
-second, specify an estimator/bootstrap that respects the unique-root selection
-mechanism and its induced policy/prefix distribution. For the third, state
-clearly that inference is conditional on the bank and do not use root
-resampling to imply generalization to a broader situation population. In all
-cases, terminal-before-band and other unscorable slots need a predeclared
-failure disposition; the current 64-slot yield rule is not a substitute for
-estimand alignment.
+Under that proposal, independent candidate slots filtered only by their own
+predeclared validity predicate yield independent accepted draws from the
+success-conditional distribution. Duplicate board values do not make their
+slot draws dependent. The current unique-root filter must be removed in a new
+reviewed schedule version to obtain this estimand; this audit does not amend or
+freeze that schedule.
 
+The fixed allocation of 16 roots per occupancy band is a stratified design.
+If the intended variant score gives the three bands equal weight, the crossed
+bootstrap should resample situation-slot ids within each variant/band stratum
+and combine band contrasts at fixed one-third weights, while retaining the
+shared resampled model-seed multiset across variants. The current method text
+resamples situation ids by variant without specifying the band strata. If a
+different band weighting is intended, freeze those weights and a matching
+resampling rule instead.
+
+If the study instead targets a sample of unique reachable states, it needs an
+estimator that respects the unique-state selection mechanism. If it targets a
+fixed root bank, inference must be described as conditional on that bank and
+root resampling must not imply generalization to a broader situation
+population. In every option, the estimand, candidate-failure disposition, and
+bootstrap unit must be resolved before scoring.
 
 ## Adapter symmetry inventory from source
 

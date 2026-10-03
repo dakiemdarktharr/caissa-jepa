@@ -52,7 +52,11 @@ The same root-schedule review must also reconcile §7's independent-situation
 bootstrap with the proposal to keep only the first 16 symmetry-unique roots
 from 64 candidate slots per band. Rejection makes accepted roots dependent and
 can change their induced policy/prefix distribution; the development estimand
-and resampling unit must be frozen before scoring.
+and resampling unit must be frozen before scoring. The audit now proposes a
+versioned resolution: keep duplicate candidate slots as repeated IID draws
+conditional on validity, and stratify the crossed bootstrap by the fixed
+occupancy bands. This still requires independent statistical/protocol review;
+the root schedule remains unchanged and unapproved.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.
