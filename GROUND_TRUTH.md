@@ -1,6 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; paired outer-simulation precision)
+
+- Refined the open Monte Carlo-precision note: marginal FWER/coverage/power rates need binomial uncertainty intervals, while a method comparison run on shared outer datasets needs a direct paired-difference MC error based on the replicate-level difference indicators.
+- Clarified that common random numbers refer to reusing each generated outer dataset across methods; the datasets remain independent across replicates, and inner bootstrap/resampling streams need an explicit shared-or-separate rule.
+- This is a review-only documentation clarification. It does not choose an outer R, acceptance margin, calibration method, or authorize simulation. No roots, outcomes, or training were accessed. Source: [Koehler, Brown, and Haneuse (2009)](https://doi.org/10.1198/tast.2009.0030).
+
+
 ## Latest continuation delta (2026-10-03; crossed-bootstrap alternatives scan)
 
 - Extended the source audit to Owen and Eckles (2012): product-factor reweighting covers arbitrary-order crossed random-effects data and studies variance estimation for the mean, under stated conditions. It is a plausible comparison against pigeonhole resampling in a design-matched simulation, but does not establish V2.12 max-|T| interval or Holm-test behavior.

@@ -4,6 +4,15 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
+A precision clarification in the review-only outer-simulation audit separates
+marginal operating-characteristic rates from paired method differences. For
+methods evaluated on the same generated outer datasets, estimate the replicate-
+level paired difference and its Monte Carlo error directly; do not infer it by
+subtracting marginal intervals. Common datasets pair methods within replicate,
+while independent outer streams separate replicates. The required R and
+decision/uncertainty criteria remain for independent review to freeze before
+any simulation. No simulation or gate change follows from this note.
+
 The lattice session verified cgroup enforcement in disposable user
 scopes: a 1.5 GiB `memory.max` was finite and inherited by a child; a separate
 64 MiB no-swap scope killed an over-limit child and recorded `oom_kill=1`;

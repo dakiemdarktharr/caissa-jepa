@@ -270,13 +270,30 @@ precision, actual rate, number of scenario/method cells, and any simultaneous
 reporting requirement. Use binomial uncertainty intervals and report them
 rather than reporting only point estimates.
 
+For each marginal operating-characteristic rate, report its binomial
+uncertainty interval. When comparing two methods on the same outer datasets,
+also estimate the paired difference directly: for replicate r, define
+D_r = I(method A meets the criterion) - I(method B meets the criterion), so
+D_r is in {-1, 0, 1}; its Monte Carlo standard error is the sample SD of D
+divided by sqrt(R). This uses the covariance induced by the shared datasets.
+Do not infer the precision of that difference by subtracting two marginal
+intervals or by treating the methods as independent. Common random numbers
+here mean applying every method to the same generated dataset in each outer
+replicate; outer datasets remain independent across replicates. Give each
+scenario/replicate and each method's inner resampling procedure deterministic
+streams, and state whether inner resamples are shared or separate. If
+decisions span multiple scenarios or method contrasts, freeze how their
+uncertainty will be reported and how Monte Carlo precision affects the
+decision before running.
+
 Before any such study, the reviewer should freeze the outer DGP scenarios,
 inner B or a precision-based B rule, deterministic independent RNG streams
 per scenario/replicate, R per cell, operating characteristics, and
-acceptance/uncertainty criteria. If comparing methods, define whether common
-random numbers are used and preserve paired seed/root factors within each
-generated dataset. This study remains unapproved and unrun; no roots,
-outcomes, or training were accessed.
+acceptance/uncertainty criteria. If comparing methods, define the paired
+estimand and common-dataset design explicitly, preserve the paired seed/root
+factors within each generated dataset, and choose R for the precision target
+of both marginal rates and paired differences. This study remains unapproved
+and unrun; no roots, outcomes, or training were accessed.
 
 ## Primary sources
 
