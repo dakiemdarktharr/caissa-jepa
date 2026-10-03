@@ -62,7 +62,9 @@ The candidate resolution is now specified for review in
 success-conditional first-passage distribution, treats slot IDs as sampling
 units, and proposes fixed one-third weighting with within-band bootstrap.
 This is a design proposal only; v04 and the existing root schedule remain
-unchanged pending independent review.
+unchanged pending independent review. The draft cites crossed and
+stratified-bootstrap method analogues with explicit limits; neither validates
+the proposed small-sample max-T/Holm procedure.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.

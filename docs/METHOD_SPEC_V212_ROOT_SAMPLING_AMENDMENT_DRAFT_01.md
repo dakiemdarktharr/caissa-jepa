@@ -91,6 +91,27 @@ or failed root-yield stratum invalidates nomination, as in §7. The original
 unstratified situation-id bootstrap is not interchangeable with this
 stratified estimand.
 
+## Statistical-method references and scope
+
+Owen's pigeonhole bootstrap separately resamples row and column units for
+crossed data and establishes a mean-consistency result under heteroscedastic
+crossed random-effects models. This is a method analogue for paired model-seed
+and root-slot dimensions; it does not validate the proposed finite-sample
+coverage, max-|T| intervals, centered p-values, or Holm family for this
+20-seed/16-slot-per-stratum design. See [Owen (2007)](https://arxiv.org/abs/0712.1111).
+
+Preston develops a rescaled bootstrap for stratified multistage survey designs
+and emphasizes reproducing the sampling structure within strata. That work
+uses finite-population sampling without replacement and is not the procedure
+proposed here; it supports preserving the fixed occupancy strata as a design
+feature, not direct transplantation of its weights or validity results. See
+[Preston (2009)](https://www150.statcan.gc.ca/n1/pub/12-001-x/2009002/article/11044-eng.pdf).
+
+Neither source establishes coverage for CAISSA-JEPA's paired outcomes,
+conditional first-passage slot distribution, small number of model seeds,
+familywise max statistic, or nomination thresholds. Those remain open for
+independent statistical review.
+
 ## Required review and limits
 
 Independent statistical and method review must decide whether the
