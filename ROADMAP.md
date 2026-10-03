@@ -127,11 +127,14 @@ review accepted it for the synthetic-only contract. No data bank or trained
 model is authorized by this software-contract step.
 The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`,
 `docs/METHOD_SPEC_V212_SPLIT_AMENDMENT_DRAFT_V05.md`, and
-`docs/V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` propose train-only fit windows on
-training sizes and 48 standalone development roots per held-out size.
-Independent review accepted these as design drafts, not a frozen protocol. The
-64-slot yield, occupancy bands, and symmetry uniqueness rule remain unverified
-before implementation.
+`docs/V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` propose train-only fit windows on
+training sizes and 48 held-out development root slots per variant. Design 02
+supersedes the earlier unique-root proposal by retaining the first 16 valid
+slots per occupancy band, including repeated board states, to align with the
+success-conditional slot estimand in Amendment Draft 01. This resolves the
+written design conflict only; independent review still must accept the target,
+slot-independence assumptions, yield gate, band weights, and bootstrap before
+any root generation or scoring.
 
 A second targeted literature pass added Semigroup-JEPA and Action-Conditioned
 Predictive Consistency to `docs/RELATED_WORK.md`. Recursive rollout JEPA is
