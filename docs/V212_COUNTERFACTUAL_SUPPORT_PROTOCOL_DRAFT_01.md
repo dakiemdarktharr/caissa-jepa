@@ -63,6 +63,24 @@ after the adapter's transformations are shown to preserve legality and exact
 transition semantics. Such canonicalization is descriptive; it must not merge
 training examples or alter the frozen 928-window selection.
 
+For a canonical transition-support count, transform the complete edge
+`(s, a, s')` with one and the same spatial mapping; never canonicalize the
+state and action independently. Verify both that the mapping sends the full
+legal-action set bijectively to the transformed state's legal-action set and
+that it commutes with the transition,
+`T(g(s), g(a)) = g(T(s, a))`. A role swap relabels both board pieces and the
+side to move while leaving the spatially mapped action unchanged; rules,
+dimensions, and game identity remain part of the key. Forced pass id 64 must
+remain fixed. Keep raw exact-edge counts primary even when these checks pass.
+
+The current `two_player/v212_trajectory_audit.py` canonical-window signature
+does map each action using the same spatial mapping as its states and then
+checks role-swapped paths. That routine detects duplicate ordered windows; it
+does not implement the proposed per-edge support ledger or by itself verify
+the adapter-wide legal-set and transition-commutation properties. Treat the
+canonical edge statistic as unavailable until a dedicated audit verifies
+those properties for every in-scope game variant.
+
 ### 2. Root decision-set coverage
 
 For every frozen evaluation root, the required denominator is the complete
