@@ -1,6 +1,6 @@
 # V2.12 external worker supervision design 01
 
-**Status: stages 1–2 placement/lifecycle checks passed for no-inference workers; the bounded OOM probe produced an ambiguous manager-classified OOM/SIGKILL result with zero local oom/oom_kill counters. Local OOM containment remains unvalidated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
+**Status: stages 1–2 placement/lifecycle/capture-order checks passed for no-inference workers. One bounded worker-cgroup OOM/caller-survival trial is positively attributed by the kernel journal; event-counter capture, pre-teardown receipt integration, repeatability, and broader operational supervision remain unvalidated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
 
 ## Candidate architecture
 
@@ -78,3 +78,14 @@ Primary references:
 A gated normal-exit transient service repeated the sibling-cgroup and finite-limit preflight (128 MiB effective max, swap 0, memory.oom.group=1, Restart=no, OOMPolicy=kill). The external controller captured 14 samples of the worker's memory.events.local while the cgroup existed. After normal worker exit, the controller captured SubState=exited, Result=success, ExecMainStatus=0, and empty ControlGroup; the cgroup event file was absent. It wrote the receipt before cleanup and verified the transient unit was not-found afterward. No allocation stress or OOM event occurred. Log: /tmp/caissa_v212_capture_preflight_v2.log.
 
 Independent review accepts this as the stage-2 placement/lifecycle/capture-order prerequisite. It validates ordinary sampling and result capture only; all event counters stayed zero, so it does not validate nonzero-event detection or OOM attribution. Stage 3 must explicitly test whether a local OOM counter can be captured before teardown. If only the manager result is observed, classify it as a manager-classified OOM with local source uncorroborated.
+
+
+### Second bounded transient-service OOM trial (2026-10-04; worker memcg attributed)
+
+A second gated worker passed pre-release checks: caller and worker were in separate cgroups; worker EffectiveMemoryMax and memory.max were 64 MiB; swap was 0; memory.oom.group=1; Restart=no; and OOMPolicy=kill. It attempted to touch 256 MiB. systemd recorded Result=oom-kill/ExecMainStatus=9; the controller remained alive and the completion marker was absent.
+
+The controller's held memory.events.local descriptor retained only a zero-valued baseline and no positive local OOM counter before the cgroup disappeared. A narrowly filtered journal query after cleanup then found the decisive kernel record: constraint=CONSTRAINT_MEMCG, with oom_memcg and task_memcg both matching the transient worker unit; a following kernel record says the unit's tasks were killed because memory.oom.group was set. systemd's unit journal also records OOM-killer termination and Result=oom-kill. systemd-oomd was inactive when queried. The kernel record positively attributes this one event to the worker memory cgroup despite the missed event-file counter capture; this is one bounded OOM/caller-survival observation, not a general containment guarantee.
+
+The journal evidence was copied to a local filtered receipt after unit cleanup, so pre-teardown versioned receipt integration is still open. Also unvalidated: reliable counter-change capture, repeated-trial reliability, ancestor/host pressure and headroom, request timing, and inference. Keep the broader supervision/pilot gates closed. Logs: /tmp/caissa_v212_oom_probe_v2.log and /tmp/caissa_v212_oom_probe_v2_journal.log.
+
+Primary references: [Linux kernel cgroup v2 event definitions](https://docs.kernel.org/admin-guide/cgroup-v2.html), [systemd service OOMPolicy](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml).
