@@ -76,7 +76,7 @@ def verify_memory_scope(expected: int = EXPECTED_MEMORY_MAX,
             f"memory.max={info['memory_max']} does not match required {expected}"
         )
     if info["memory_oom_group"] != 0:
-        raise RuntimeError("memory.oom.group must be 0 so the supervisor survives")
+        raise RuntimeError("memory.oom.group must be 0 to avoid group OOM; this does not guarantee the supervisor survives")
     return info
 
 
