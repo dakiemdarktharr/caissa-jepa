@@ -33,6 +33,9 @@ See `docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md` and the frozen
 fail-closed auditor is implemented, its focused tests pass, and independent
 review accepted it for the synthetic-only contract. No data bank or trained
 model is authorized by this software-contract step.
+The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md` identifies
+shared opening states as a split-design blocker and lists root-situation choices
+for review; it is not a frozen generation protocol.
 
 ## Research objective
 

@@ -1862,3 +1862,9 @@ and in-memory auditor are implemented in
 `two_player/v212_trajectory_audit.py`; focused tests pass and independent review
 accepted that software-contract scope. This does not authorize data generation.
 Training, matches, and outcome access remain gated.
+
+The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md` records
+an unresolved split-design issue: standard initial states shared by episodes
+would connect train/development components if every V2.12 H0–H4 state were
+strictly split-audited. It lists candidate root-situation strategies for review
+only. It is not a frozen protocol and authorizes no data generation.
