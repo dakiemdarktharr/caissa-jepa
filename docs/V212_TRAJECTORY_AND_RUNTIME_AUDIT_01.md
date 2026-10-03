@@ -120,12 +120,47 @@ equivalent content diagnostically. No old labels or locked-final artifacts were
 read. Any future corpus feasibility work requires a separate reviewed
 generation protocol and an explicit duplicate-policy reconciliation.
 
+## Request adapter implementation follow-up (2026-10-03)
+
+Added `two_player/v212_request_adapter_v01.py` as a new design-v01 feasibility
+adapter; the frozen `v212_pilot.py` and `v212_pilot_v02.py` implementations
+were not edited. The adapter starts a monotonic request clock before request
+validation and cgroup preflight, passes an absolute request+5-second planner
+deadline to a separate worker, and enforces a request+6-second response
+deadline in the supervising parent. On timeout it SIGKILLs the worker process
+group and records whether the process was reaped. It validates the returned
+action against the exact root's legal-action set and returns the last completed
+iterative-deepening action, or the first legal action if depth one did not
+finish. OOM termination is separated from watchdog timeout using the cgroup
+`memory.events` delta.
+
+The public request function has no unbounded-scope override. Parent and worker
+both require the exact 1.5 GiB finite `memory.max`, `memory.oom.group=0`, and
+matching cgroup paths; they fail closed on mismatch. The response carries the
+cgroup path, limit, event delta, request/search timing, and counters. The move
+action is transient and excluded from the counters. This adapter has no receipt
+writer, score, dataset, optimizer, or training checkpoint.
+
+`tests/test_v212_request_adapter_v01.py` covers cgroup path/limit/group checks,
+deadline/fallback logic, response-action validation, worker timeout/kill/reap,
+OOM event classification, and counter equivalence with the frozen search.
+Together with the symmetry, frozen V02 pilot, and synthetic trajectory-auditor
+tests, the focused suite passed 19/19. The cgroup preflight helper also ran in a
+real disposable 1.5 GiB scope and read `memory.oom.group=0`; no request worker
+or inference ran in that scope. Request orchestration unit tests use a mocked
+cgroup boundary, while search equivalence tests use in-memory synthetic roots.
+This is software verification only, not an end-to-end runtime measurement.
+
+The adapter has not received independent review and has not been launched as a
+pilot. Its per-request fresh model construction, worker startup, actual
+six-second wall response, worker cgroup inheritance under inference load, and
+receipt/report integration remain unmeasured. No training-data or outcome
+artifact was read or created. Do not use the adapter for evaluation until
+independent review and a separate no-outcome integration run are accepted.
+
 ## Decision
 
-V2.12 trajectory generation, four-ply split-leakage validation, and operational
-request-to-response timing remain **not audited**. Source review confirms the
-pilot's per-search timing boundary and cooperative stop behavior, but cannot
-substitute for an end-to-end response adapter/watchdog audit. The frozen
+V2.12 trajectory generation and four-ply split-leakage validation remain **not audited**. Request-adapter code and unit tests now exist, but end-to-end request timing remains **not empirically audited**: no worker request was run inside the verified cgroup, and no multi-cell pilot or receipt was produced. Source review and mocked orchestration tests cannot substitute for an integrated no-outcome run. The frozen
 protocol and in-memory synthetic auditor pass their focused software-contract
 tests and were independently accepted for that synthetic-only scope. This
 cannot certify corpus splits or operational timing. Data generation, training,
