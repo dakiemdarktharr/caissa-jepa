@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; EB-JEPA action-conditioned planning prior art)
+
+- Added Terver et al.'s EB-JEPA / AC-video-JEPA as direct adjacent prior art: an action-conditioned multi-step latent world model uses MPPI/CEM to plan in Two Rooms. On random-wall navigation, the authors report 97±2% success over three seeds and their last three checkpoints; removing the inverse-dynamics term reports 1±1%, while variance, covariance, and temporal-similarity ablations also reduce success. Results are author-reported and were not reproduced.
+- This closes standalone novelty claims for action-conditioned JEPA planning and inverse-action auxiliary objectives. It does not study exact symbolic two-player zero-sum games or worst-case max/min search. The inverse-action factorial remains an unreviewed control proposal; this source does not establish that it is needed or beneficial for CAISSA. Method v04 and all gates remain unchanged. Updated `docs/RELATED_WORK.md` and `docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md`. Sources: [arXiv:2602.03604](https://arxiv.org/abs/2602.03604), [ICLR 2026 World Models Workshop](https://openreview.net/pdf?id=ZVAMdXGCUC), [author repository](https://github.com/facebookresearch/eb_jepa).
+
 ## Latest continuation delta (2026-10-04; composite no-inference journal/receipt rehearsal)
 
 - A tracked controller armed a journalctl follower before a unique transient service, sampled local cgroup events 12 times while live, and captured three journal records carrying cursor/boot/monotonic metadata. The worker marker's invocation ID matched systemd's InvocationID and the exact unit/cgroup; normal-exit Result=success was captured after cgroup teardown.
