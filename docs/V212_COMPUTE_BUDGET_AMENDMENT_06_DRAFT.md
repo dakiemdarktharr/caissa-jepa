@@ -65,9 +65,22 @@ OOM-victim selection, that request timing fits, or that a pilot receipt is
 complete.
 
 Before any no-outcome integrated pilot, version and test the external
-supervision/receipt path, confirm cgroup peak and event semantics on lattice,
-exercise worker OOM and watchdog termination separately, and verify no process
-or scope remains after each case. Independent review must accept this corrected
+supervision/receipt path, verify the meaning and capture/reset procedure for
+cgroup peak and event counters during a worker run, exercise worker OOM and
+watchdog termination separately, and verify no process or scope remains after
+each case. Independent review must accept this corrected
 memory policy and implementation before any pre-fit grant. V2.12 novelty,
 trajectory generation/replay, split/leakage, and separate pre-fit gates remain
 unchanged and closed.
+
+
+## Lattice memory.peak interface probe (2026-10-03)
+
+A short no-inference process in a disposable user systemd scope with
+`MemoryMax=1536M` reported `memory.max=1610612736`,
+`memory.peak` present, `memory.oom.group=0`, and a 5,529,600-byte
+`memory.peak`/current reading. Systemd reported the scope `LoadState=not-found`
+and `ActiveState=inactive` after exit. This verifies that the interface is
+exposed in a 1.5-GiB scope on lattice and that cleanup completed. The tiny
+metadata probe is not a model working-set or headroom measurement, and it did
+not verify peak reset semantics or OOM-supervisor survival.
