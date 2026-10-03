@@ -42,11 +42,14 @@ method recommendation ([MacKinnon & Webb 2018](https://onlinelibrary.wiley.com/d
 
 Resampling-based max-statistic or step-down multiplicity methods exploit
 dependence among contrasts, but their error guarantees depend on the procedure
-and assumptions. A nominal bootstrap critical value does not by itself prove
-strong familywise coverage for this design
-([Romano & Wolf 2007](https://arxiv.org/abs/0710.2258)). Holm adjustment can
-control familywise error when its input p-values are valid; it cannot make
-miscalibrated marginal bootstrap p-values valid.
+and assumptions. Romano and Wolf discuss finite- and large-sample step-down
+methods for familywise error, including how resampling uses dependence among
+test statistics; this does not validate the particular max-|T| intervals or
+centered bootstrap p-values proposed for V2.12
+([Romano & Wolf 2005](https://doi.org/10.1198/016214504000000539),
+[Romano & Wolf 2005](https://doi.org/10.1111/j.1468-0262.2005.00615.x)). Holm
+adjustment can control familywise error when its input p-values are valid; it
+cannot make miscalibrated marginal bootstrap p-values valid.
 
 ## Research disposition
 
@@ -64,14 +67,22 @@ and failure behavior before running any simulation. At minimum the scenario
 grid must cover global and partial nulls across the 15-contrast family;
 seed, slot, and seed × slot heterogeneity; bounded/discrete paired outcomes
 with ties; the success-conditional first-valid-slot/yield mechanism and
-global-yield conditioning; cross-contrast dependence; interval coverage and
-familywise type-I error; and power/interval width around the +0.05 nomination
-boundary. Freeze outer Monte Carlo size, an uncertainty interval for each
-calibration rate, acceptable numerical tolerances, and the consequence of a
-failed scenario. Distinguish the outer calibration repetitions from the
+global-yield conditioning; and power/interval width around the +0.05
+nomination boundary. The scenario generator must preserve the algebraic
+constraint that each macro contrast is the fixed average of its two variant
+contrasts, as well as paired-seat outcomes and shared candidate/control-arm
+dependence. Specify variance/covariance patterns and heterogeneity across
+seed, slot, seed × slot, variant, band, and arm, including unequal-variance
+cases. Report the probability that the full six-stratum schedule passes its
+yield gate separately from coverage and familywise type-I error conditional
+on passing that gate. Freeze outer Monte Carlo size, an uncertainty interval
+for each calibration rate, acceptable numerical tolerances, and the
+consequence of a failed scenario. Distinguish the outer calibration repetitions from the
 10,000 inner resamples used by the proposed analysis. The inner bootstrap
 count only controls Monte Carlo noise in a bootstrap approximation; it does
-not measure the procedure's repeated-sampling coverage.
+not measure the procedure's repeated-sampling coverage. Any conclusion from
+calibration is limited to the frozen scenario grid; it is not a general
+validity proof.
 
 For scale planning only, if a true rate is near 0.95, 10,000 independent outer
 calibration repetitions give a binomial standard error of about 0.0022

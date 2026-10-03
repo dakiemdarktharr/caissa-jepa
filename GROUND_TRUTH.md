@@ -4,6 +4,7 @@
 
 - Checked primary methods literature on crossed/pigeonhole bootstrap, multiway clustering, few-cluster inference, and resampling-based multiple testing. These sources establish methods under their own assumptions; they do not calibrate the proposed V2.12 20-seed × 16-slot-per-band paired-score/max-|T| procedure or its conditional global-yield design.
 - Added `docs/V212_ROOT_INFERENCE_LITERATURE_NOTE_01.md`. Recommendation: require design-matched calibration before the v05 bootstrap is used for nomination, subject to independent statistical review. The reviewer must freeze scenarios, tolerances, outer Monte Carlo precision and failure consequences before any simulation. This is a recommendation only; v04 remains current and no gate changed.
+- Independent static review requested a more direct Romano–Wolf step-down citation and calibration scenarios that preserve macro-contrast algebra, paired-seat/shared-arm dependence, variance heterogeneity, and separate schedule-yield probability from conditional inferential error rates. The note was revised accordingly. This is still not a qualified statistical acceptance, and any future calibration would support only its prespecified scenario grid.
 - No roots, calibration simulations, scores, training, matches or outcomes were generated or accessed.
 
 ## Latest continuation delta (2026-10-04; root-sampling review disposition)

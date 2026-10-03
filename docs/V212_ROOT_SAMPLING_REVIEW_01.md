@@ -129,3 +129,15 @@ statistical acceptance. Before any simulation, a qualified reviewer must
 freeze the scenario grid, tolerances, outer Monte Carlo precision, and failure
 response. No roots, simulations, scores, outcomes, or training were produced
 or read; v04 remains current.
+
+The independent static reviewer requested and confirmed three refinements:
+use the more direct Romano–Wolf step-down sources rather than a generalized
+error-rate paper; preserve the algebraic macro-contrast relationship and
+paired-seat/shared-arm dependence in any scenario generator; and report
+six-stratum schedule-yield probability separately from coverage/FWER
+conditional on schedule passage. It also requires explicit variance/covariance
+patterns including heterogeneity. These refinements were added to the
+literature note. The reviewer agrees calibration is a prudent recommendation,
+not a requirement established by theory, and that any calibration conclusion
+is limited to its frozen scenarios. This static review is not statistical
+acceptance; no gate advanced.
