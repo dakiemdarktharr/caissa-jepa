@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 root-schedule yield sensitivity
+
+Added a closed-form sensitivity for the proposed six-stratum schedule requiring at least 16 valid roots among 64 candidates per stratum. Under hypothetical equal, independent per-slot validity, a common validity rate near 0.3834 implies about 95% whole-schedule yield; this is not an observed rate, accepted target, or feasibility result. The analysis highlights why reviewer disposition must specify whether a schedule-pass probability is required and how stratum heterogeneity/dependence is handled. No roots, data, outcomes, or inferential calibration were generated. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_01.md`.
+
 ### 2026-10-04 LAMIR prior-art crosswalk
 
 Added the already full-text-reviewed LAMIR study to the V2.12 novelty crosswalk. It establishes learned latent look-ahead and equilibrium-oriented reasoning in two-player zero-sum games; its formalism also represents sequential games using fictitious non-acting-player actions. This removes broad novelty claims around latent reasoning in alternating games. The remaining CAISSA question is limited to its specific EMA-target JEPA objective and decision-rank/regret effect in deterministic, fully observed exact-rule games against matched controls. This is a testable research question, not a novelty finding. No method or gate changed; no data, model, roots, score, match, or outcome was generated or accessed. See `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md` and `docs/RELATED_WORK.md`.

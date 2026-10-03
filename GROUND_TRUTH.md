@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; root-schedule yield sensitivity)
+
+- Added a closed-form sensitivity for the proposed rule of at least 16 valid slots among 64 candidates in each of six strata. With hypothetical equal and independent slot validity, `q≈0.3834` yields about 95% whole-schedule pass probability; this is not an observed rate, accepted target, or feasibility result.
+- The result exposes the need for independent method/statistical review to decide whether a minimum schedule-pass probability is required and what heterogeneity/dependence assumptions support it. It does not calibrate coverage/FWER/power or authorize roots. No roots, data, scores, outcomes, or models were generated/accessed. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_01.md`.
+
 ## Latest continuation delta (2026-10-04; LAMIR two-player game prior art)
 
 - Added the full-text-reviewed LAMIR study to the V2.12 novelty crosswalk. LAMIR establishes learned latent look-ahead and CFR+-based reasoning for two-player zero-sum imperfect-information games; its formalism also notes that sequential games can be represented with fictitious actions for the non-acting player.

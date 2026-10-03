@@ -96,3 +96,9 @@ version, or stopping the candidate; it must not prompt post-outcome tuning.
 Until that review is complete, v04 remains current. No roots, simulations,
 scores, training, matches, or outcomes were generated or accessed for this
 note.
+
+The separate closed-form sensitivity in
+`docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_01.md` maps hypothetical slot-validity
+rates to whole-schedule yield under explicit independence assumptions. It
+provides neither observed rates nor an accepted schedule-pass threshold and
+does not replace this review or any future inferential calibration.
