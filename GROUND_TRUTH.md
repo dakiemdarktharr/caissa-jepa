@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; multimodal JEPA game-domain prior art)
+
+- Added Campese and Moschitti's ICML 2026 workshop study of offline multimodal JEPA pretraining on Pokémon Red: pixels plus engineered RAM features, followed by a frozen encoder for PPO. The authors report higher cumulative reward on 48 held-out starting states than several representation baselines and report a trajectory-diversity advantage over expert-policy provenance in their tested comparison.
+- This establishes adjacent JEPA use in an interactive videogame, but the setup is not shown to be an action-conditioned transition planner or two-player minimax method. The source reader could verify only the official paper's abstract/first-page text, so details beyond those statements remain unchecked. No claim about CAISSA or its data policy follows; no method or gate changed. See `docs/RELATED_WORK.md`. Source: [ICML 2026 workshop paper](https://openreview.net/pdf/6d63e486bddf8678304b1ec6d1bb11ef034e620e).
+
 ## Latest continuation delta (2026-10-04; EB-JEPA action-conditioned planning prior art)
 
 - Added Terver et al.'s EB-JEPA / AC-video-JEPA as direct adjacent prior art: an action-conditioned multi-step latent world model uses MPPI/CEM to plan in Two Rooms. On random-wall navigation, the authors report 97±2% success over three seeds and their last three checkpoints; removing the inverse-dynamics term reports 1±1%, while variance, covariance, and temporal-similarity ablations also reduce success. Results are author-reported and were not reproduced.
