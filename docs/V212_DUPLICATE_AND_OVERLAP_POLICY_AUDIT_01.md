@@ -112,31 +112,37 @@ action, and successor together, normalize role only as a joint color/player
 relabeling, and then select a joint key.
 
 This inventory is a structural reading of the in-scope rules and transform
-code, not an adapter-wide executable proof: `transforms()` does not assert
-bijectivity, and the synthetic window test covers fixture paths rather than
-every legal state/action. Keep canonical edge summaries disabled until
-focused property tests check each transform's full legal-action bijection,
-transition commutation, forced-pass invariance, and terminal-result
-preservation on all in-scope variants. Those tests would verify code
-properties only; they would not authorize canonical deduplication, data
-generation, or training.
+code, not an exhaustive adapter-wide proof. `transforms()` does not assert
+bijectivity. The new bounded suite exhausts distinct states reachable through
+four legal plies, supplements them with three deterministic legal paths to
+terminal, and checks a hand-built Reversi pass fixture. For every declared
+mapping it checks permutation validity, complete legal-action-set bijection
+at each fixture state, transition commutation for every legal action,
+terminal-result preservation, and canonical-key invariance. It cannot
+establish these properties over all later reachable states. Keep canonical
+edge summaries disabled pending broader/adversarial state coverage and
+independent protocol review. These code checks do not authorize canonical
+deduplication, data generation, or training.
 
 ## Focused symmetry software-contract test
 
-Added `tests/test_v212_symmetry_properties.py`. It exercises every declared
-spatial mapping for the four V2.12 variants against deterministic in-memory
-legal paths, checking mapping bijectivity, complete legal-action-set
-bijection at each fixture state, transition commutation for each legal action,
-terminal-result preservation, and canonical-key invariance under spatial and
-side-to-move role transformations. A separate hand-built Reversi rules fixture
-checks forced-pass action 64 and its transition under all D4 mappings.
+Added `tests/test_v212_symmetry_properties.py`. It exhausts all distinct
+states reachable through four legal plies for the four V2.12 variants, then
+adds three deterministic in-memory legal paths through terminal states and a
+hand-built Reversi forced-pass fixture. For each declared mapping it checks
+permutation validity, the complete legal-action set at every fixture state,
+transition commutation for every legal action, terminal-result preservation,
+and canonical-key invariance under spatial and side-to-move role transforms.
+The Reversi fixture also verifies that pass action 64 remains fixed under all
+D4 mappings.
 
-The suite passed two tests (3.6 seconds on the initial run); together with
-`tests.test_v212_trajectory_audit`, the focused run passed 9/9. These are
-bounded fixture checks, not exhaustive enumeration of all reachable states
-and not evidence that a generated corpus is leakage-free. They do not enable
-canonical edge summaries, root generation, fitting, or match play. Independent
-review and broader adversarial state coverage remain open.
+After the four-ply expansion, the suite passed 2/2 in 19.7 seconds; combined
+with `tests.test_v212_trajectory_audit`, 9/9 passed in 19.3 seconds. Coverage
+is exhaustive only through the shallow four-ply frontier; later game states
+are represented by three deterministic paths, not exhaustive enumeration.
+This is not evidence that a generated corpus is leakage-free. It does not
+enable canonical edge summaries, root generation, fitting, or match play.
+Independent review and broader adversarial state coverage remain open.
 
 ## Implementation boundary and required review
 
