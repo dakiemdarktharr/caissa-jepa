@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; request adapter v02 candidate)
+
+- Preserved v01 and added versioned v02 to account for full function-processing latency; a late result is classified as a forfeit. Added a mocked-clock regression for delayed post-worker cgroup handling.
+- Exact remote v02 source/test blobs passed 8/8 focused tests in an isolated overlay with hash-matched dependencies. This is mocked/in-memory verification only, not real request timing, cgroup enforcement, or inference.
+- v02 still lacks independent review, an external OOM supervisor, receipt integration, and caller-observed deadline evidence. No pilot/training/data/outcome access occurred; gate remains closed.
+
 ## Latest continuation delta (2026-10-04; response-deadline contract audit)
 
 - Exact-remote-blob mocked-clock probe found the request adapter samples reported elapsed time before post-worker cgroup validation, response classification, and action checks. It returned `response` after a synthetic 0.10-second deadline (reported 0.05s; simulated return clock 0.25s).
