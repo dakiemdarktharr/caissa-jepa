@@ -22,6 +22,14 @@ protocol independently reviewed. See
 `docs/V212_COUNTERFACTUAL_SUPPORT_AUDIT_DESIGN_01.md`; V2.12-04 remains
 unchanged.
 
+The follow-on `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md` proposes
+separate denominators for fitting-data action support, full root decision sets,
+and visited-node expansion; it explicitly treats held-out-size exact support
+as not comparable. This is a review draft only, with no thresholds, data
+generation, method amendment, or training authorization. Resolve it alongside
+the split matrix, development-root schedule, and compute cap before producing
+any corpus.
+
 The follow-on source review found that the V02 RSS guard is sampled/cooperative,
 not a hard ceiling: the initial sample is not compared to the cap, periodic
 checks happen every 256 nodes, and an over-cap final check can escape the
