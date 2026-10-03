@@ -1,6 +1,15 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; root-bootstrap source audit)
+
+- Checked the primary sources cited for the proposed stratified crossed bootstrap. Owen (2007) gives a mean-consistency result for row/column resampling in crossed random-effects models; MacKinnon, Nielsen, and Webb (2021) derive asymptotic conditions for specific two-way cluster-robust regression inference. Preston's rescaled bootstrap addresses stratified multistage sampling without replacement; MacKinnon and Webb (2018) address few treated clusters in linear treatment models.
+- These sources motivate respecting crossed/stratified structure but do not establish finite-sample coverage or type-I error control for the proposed 20 model seeds, 16 slots per occupancy band, paired seats, 15 contrasts, max-|T| intervals, and centered bootstrap tests. Holm adjustment requires valid input p-values; more bootstrap replicates reduce Monte Carlo error but do not add independent sampling units.
+- Added a remote-only statistical source audit draft. It calls for independent review of whether a design-matched synthetic coverage/power study is needed, with scenarios and acceptance criteria frozen in advance. This is an open validation item, not proof the bootstrap is invalid. No roots were generated and no outcomes were accessed; no method or gate changed.
+- Checkout remains untouched with pre-existing modified/untracked files; Obsidian remains deferred. Sources: [Owen](https://arxiv.org/abs/0712.1111), [MacKinnon et al.](https://doi.org/10.1080/07350015.2019.1677473), [Preston](https://www150.statcan.gc.ca/n1/pub/12-001-x/2009002/article/11044-eng.pdf), [MacKinnon & Webb](https://doi.org/10.1111/ectj.12107).
+
+
+
 ## Latest continuation delta (2026-10-03; executable game-model prior-art check)
 
 - Read Lehrach et al., *Code World Models for General Game Playing* (ICLR 2026), from the official proceedings and primary arXiv source. It synthesizes executable Python rules/transition/legal-action models from game descriptions and sample trajectories, then uses MCTS for perfect-information games and ISMCTS for imperfect-information games. Its ten-game suite includes Connect Four and four paper-created games; it reports matching/beating Gemini 2.5 Pro on nine of ten.

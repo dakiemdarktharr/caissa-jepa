@@ -444,3 +444,19 @@ comparison is not a matched latent-dynamics control. Passing trajectory-based
 tests does not establish correctness on unsampled states. No CAISSA gate or
 claim status changes. Sources: [ICLR proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html)
 and [arXiv:2510.04542](https://arxiv.org/abs/2510.04542).
+
+
+## Root-sampling inference source audit (2026-10-03)
+
+A source-level audit recorded in
+[docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md](V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md)
+finds that the cited crossed-bootstrap paper establishes mean consistency in
+its crossed random-effects setting, while the multiway-clustering paper gives
+asymptotic conditions for specific regression variance estimators. Survey
+resampling and few-treated-cluster work are methodological analogies, not
+coverage guarantees for V2.12's 20 seeds × 16 slots per occupancy stratum,
+max-|T| intervals, and Holm-adjusted tests. This is an unresolved validation
+requirement, not evidence of invalidity. Independent statistical review must
+decide whether a design-matched synthetic coverage/power study is required
+and predeclare scenarios and acceptance criteria. No root generation,
+scoring, training, or gate transition is authorized.

@@ -569,3 +569,16 @@ code differs from CAISSA's learned JEPA latents and is not a matched neural
 control; sampled-trajectory tests also leave unseen-state correctness open.
 This narrows positioning but does not answer the V2.12 empirical comparison.
 No gate changes. See docs/RELATED_WORK.md and docs/V212_RESEARCH_GATE.md.
+
+
+### 2026-10-03 root-bootstrap inference audit
+
+Primary-source review shows the cited crossed-bootstrap result is mean
+consistency in a crossed random-effects setting, while related sources cover
+asymptotic two-way regression inference, survey sampling without replacement,
+and few-treated-cluster models. None establishes coverage for the current
+20-seed/16-slot-per-band max-|T| and Holm procedure. Require independent
+statistical review to decide whether a design-matched synthetic coverage and
+power study is necessary and to freeze scenarios/acceptance criteria before
+running it. This is an open validation item; do not generate roots or read
+outcomes. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
