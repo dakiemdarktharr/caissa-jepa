@@ -46,6 +46,7 @@ class WorkerIPCWorkspace:
     request_path: Path
     response_path: Path
     response_identity: FileIdentity
+    request_identity: FileIdentity
     directory_device: int
     directory_inode: int
     request_bytes: int
@@ -163,7 +164,7 @@ def create_workspace(request: Mapping[str, Any], *,
                 or dir_stat.st_uid != os.getuid()):
             raise WorkerIPCError("private IPC directory failed ownership/mode checks")
 
-        _create_file(directory, REQUEST_NAME, encoded)
+        request_stat = _create_file(directory, REQUEST_NAME, encoded)
         created.append(directory / REQUEST_NAME)
         response_stat = _create_file(directory, RESPONSE_NAME)
         created.append(directory / RESPONSE_NAME)
@@ -177,6 +178,7 @@ def create_workspace(request: Mapping[str, Any], *,
             request_path=directory / REQUEST_NAME,
             response_path=directory / RESPONSE_NAME,
             response_identity=FileIdentity.from_stat(response_stat),
+            request_identity=FileIdentity.from_stat(request_stat),
             directory_device=dir_stat.st_dev,
             directory_inode=dir_stat.st_ino,
             request_bytes=len(encoded),
@@ -199,6 +201,65 @@ def create_workspace(request: Mapping[str, Any], *,
                 f"workspace setup failed; cleanup incomplete at {directory}"
             ) from primary
         raise
+
+
+def cleanup_workspace(workspace: WorkerIPCWorkspace) -> None:
+    """Remove a completed workspace after the worker has been stopped.
+
+    Both file inodes and the directory inode must still match their creation
+    identities. Any substitution or cleanup failure is reported without
+    recursively deleting unexpected content.
+    """
+    if (workspace.request_path != workspace.directory / REQUEST_NAME
+            or workspace.response_path != workspace.directory / RESPONSE_NAME):
+        raise WorkerIPCError("IPC workspace paths do not match their directory")
+    directory_fd = -1
+    try:
+        directory_fd = os.open(
+            workspace.directory,
+            os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+            | getattr(os, "O_NOFOLLOW", 0))
+        directory_info = os.fstat(directory_fd)
+        if (directory_info.st_dev != workspace.directory_device
+                or directory_info.st_ino != workspace.directory_inode
+                or directory_info.st_uid != os.getuid()
+                or stat.S_IMODE(directory_info.st_mode) != 0o700):
+            raise WorkerIPCError("private IPC directory identity changed before cleanup")
+        expected = {REQUEST_NAME: workspace.request_identity,
+                    RESPONSE_NAME: workspace.response_identity}
+        for name, identity in expected.items():
+            current = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+            _validate_file_stat(current, expected_owner=os.getuid(),
+                                label=f"{name} file")
+            if FileIdentity.from_stat(current) != identity:
+                raise WorkerIPCError(f"{name} file identity changed before cleanup")
+        for name in (REQUEST_NAME, RESPONSE_NAME):
+            os.unlink(name, dir_fd=directory_fd)
+        os.fsync(directory_fd)
+    except WorkerIPCError:
+        raise
+    except OSError as exc:
+        raise WorkerIPCError("IPC workspace cleanup failed") from exc
+    finally:
+        if directory_fd >= 0:
+            os.close(directory_fd)
+    try:
+        current = os.lstat(workspace.directory)
+        if (current.st_dev != workspace.directory_device
+                or current.st_ino != workspace.directory_inode
+                or not stat.S_ISDIR(current.st_mode)):
+            raise WorkerIPCError("IPC directory identity changed before removal")
+        workspace.directory.rmdir()
+        parent_fd = os.open(workspace.directory.parent,
+                            os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        try:
+            os.fsync(parent_fd)
+        finally:
+            os.close(parent_fd)
+    except WorkerIPCError:
+        raise
+    except OSError as exc:
+        raise WorkerIPCError("IPC directory removal failed") from exc
 
 
 def _pairs_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:

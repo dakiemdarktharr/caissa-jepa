@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; invocation-bound normal-exit receipt collector)
+
+- Added `two_player/v212_supervision_collector_v01.py` to run one synthetic worker as a bounded transient user service, bind its normal-exit manager snapshot and service-journal marker to the same invocation/cgroup, sample worker-local `memory.events.local`, and persist the assembled receipt before cleanup. It collects no kernel OOM journal and performs no OOM operation or inference. Failure and interruption paths retain recovery identifiers and fail closed on uncertain receipt/workspace cleanup state.
+- The collector, receipt assembler, live evidence adapter, and worker IPC focused suites pass 62/62 on Python 3.11.17; `git diff --check` passes. Independent static review found no remaining P1/P2 issue in this scope. The broader request-adapter suites could not import because NumPy is unavailable in the installed Python environments.
+- One normal-exit no-inference smoke completed: the response nonce/schema validated; caller and worker occupied separate cgroups; effective memory/swap/file/runtime limits and two local counter snapshots were checked; one same-invocation journal marker was bound; the receipt was persisted before cleanup; and the unit ended `not-found`. The private mode-0600 receipt is retained at `/tmp/caissa-v212-smoke-receipt-00ywfuj4/receipt.json` (2,683 bytes; SHA-256 `79dabba0e715ba1fe03cca0d1390aba198620f1164e1ae300db453e7349ba03a`); its embedded receipt digest verifies. This is a single lifecycle/instrumentation smoke, not an OOM, inference, pilot, strength, or JEPA comparison result. No training data, scores, or outcomes were accessed or produced; research, pilot, training, and OOM gates remain closed.
+- See `docs/V212_SUPERVISION_COLLECTOR_V01.md` for exact scope and limitations. OOM fault testing still requires separate explicit authorization.
+
 ## Latest continuation delta (2026-10-04; live evidence adapter primitives)
 
 - Added `two_player/v212_live_supervision_v01.py` for bounded `systemctl show` parsing, exact unit/InvocationID/boot-bound snapshot normalization, fail-closed local cgroup counter reads, and private one-shot receipt persistence. The receipt destination is exclusively reserved before the assembler's atomic fsync-and-rename writer; failed persistence leaves a claim marker to require reconciliation. Raw systemd `ActiveState=failed` is retained while the existing receipt contract receives normalized post-exit state.

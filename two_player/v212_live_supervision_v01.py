@@ -188,12 +188,8 @@ def read_memory_events_local(*, cgroup_root: Path, control_group: str,
             "counters": counters}
 
 
-def persist_receipt_once(path: Path, receipt: Mapping[str, Any]) -> None:
-    """Persist evidence without replacing an earlier receipt at this path.
-
-    The parent directory must be a private caller-owned directory. A surviving
-    `.claim` file after an error intentionally blocks retries until reconciled.
-    """
+def validate_receipt_destination(path: Path) -> Path:
+    """Validate a future receipt path without creating files or changing state."""
     destination = Path(path)
     parent = destination.parent
     if not parent.is_absolute():
@@ -227,6 +223,19 @@ def persist_receipt_once(path: Path, receipt: Mapping[str, Any]) -> None:
     if (destination.name in {"", ".", ".."}
             or os.path.lexists(destination)):
         raise LiveEvidenceError("receipt destination is unsafe")
+    if os.path.lexists(destination.with_name(destination.name + ".claim")):
+        raise LiveEvidenceError("receipt path is already claimed for reconciliation")
+    return destination
+
+
+def persist_receipt_once(path: Path, receipt: Mapping[str, Any]) -> None:
+    """Persist evidence without replacing an earlier receipt at this path.
+
+    The parent directory must be a private caller-owned directory. A surviving
+    `.claim` file after an error intentionally blocks retries until reconciled.
+    """
+    destination = validate_receipt_destination(path)
+    parent = destination.parent
     claim = destination.with_name(destination.name + ".claim")
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
     try:

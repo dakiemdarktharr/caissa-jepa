@@ -43,6 +43,22 @@ class WorkerIPCTests(unittest.TestCase):
                          {"request_schema": "test.v1", "root": 3})
         self.assertEqual(workspace.response_path.stat().st_size, 0)
 
+    def test_cleanup_removes_only_the_original_private_workspace(self):
+        workspace = self._workspace()
+        directory = workspace.directory
+        ipc.cleanup_workspace(workspace)
+        self.assertFalse(directory.exists())
+
+    def test_cleanup_fails_closed_on_replaced_request_file(self):
+        workspace = self._workspace()
+        original = workspace.request_path.read_bytes()
+        workspace.request_path.unlink()
+        workspace.request_path.write_bytes(original)
+        with self.assertRaises(WorkerIPCError):
+            ipc.cleanup_workspace(workspace)
+        self.assertTrue(workspace.directory.exists())
+        self.assertTrue(workspace.response_path.exists())
+
     def test_request_writer_retries_short_writes_and_rejects_zero_progress(self):
         writes = []
 
