@@ -2167,3 +2167,8 @@ remoteness is secondary, complete legal-action results, and an independent
 hard-deadline/resource contract. No solver was run, installed, or queried;
 no scores, roots, data, models, or outcomes were produced. All generation,
 scoring, and training gates remain closed.
+
+
+### V2.12 focused request and symmetry regression check (2026-10-03)
+
+The current `main` adapter already contains the corrected cgroup explanation: `memory.oom.group=0` avoids group OOM behavior but does not guarantee supervisor survival; its focused test asserts that wording. A focused run on the local working checkout passed all 7 request-adapter tests and both bounded symmetry tests (9 total). The adapter and test semantics match the verified remote versions for this check. The local checkout was not synchronized or edited during this continuation. This is software-contract regression evidence only: no cgroup OOM integration, request pilot, data generation, scoring, training, matches, or outcome inspection was performed. Independent review and integrated receipt validation remain open; all research gates remain closed.
