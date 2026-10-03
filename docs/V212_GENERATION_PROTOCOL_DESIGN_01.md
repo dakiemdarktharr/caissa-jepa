@@ -14,31 +14,39 @@ the same Connect Four 6x7 and Reversi6 training sizes, but cannot silently
 supply V2.12's protocol, split, policy schedule, or H1/H2-only record schema;
 it also does not generate V2.12's held-out-size evaluation variants.
 
-## Critical split-design issue
+## Split-allocation ambiguity
 
-All episodes produced by the current V2.8 generator start from the same
-standard initial position for a game. A strict component assignment over every
-H0–H4 state would therefore connect episodes that share that initial position.
-If episodes were assigned independently to train and development before
-windows are formed, the shared state would violate the split boundary. The
-existing component allocator avoids some early overlap by deriving keys only
-after a phase threshold, but that is not a V2.12 rule and cannot be imported
-without changing the method's declared window population.
+V2.8 episodes all start from the standard initial position. If same-size
+episodes were independently divided between train and development and every
+H0–H4 state were part of the overlap audit, their common opening would join
+those episode components. The V2.8 component allocator avoids some early
+overlap by deriving keys only after a phase threshold; that threshold is not a
+V2.12 rule and cannot be imported without changing which windows are eligible.
 
-V2.12 needs a preregistered root-situation design before generation. Candidate
-options to evaluate in a versioned protocol are:
+However, `METHOD_SPEC_V212.md` says held-out board sizes cannot appear in fit
+data and defines primary development evaluation on those held-out variants. If
+the split matrix is strictly train windows on Connect Four 6x7/Reversi6 and
+development roots only on Connect Four 8x8/Reversi8, shared standard openings
+occur only within their own partition and do not create a cross-split state
+collision. The specification does not state this allocation matrix explicitly:
+it also refers to train/development episode groups before windowing. That
+ambiguity should be resolved before generation.
 
-1. assign training trajectories and development roots from separately seeded
-   reachable-state schedules, then quarantine any collision across complete
-   H0–H4 context and H1/H2/H4 target keys; or
-2. declare and justify a fixed opening-prefix exclusion, then audit every
-   retained window and evaluation root beyond that prefix.
+The preferred design to review is to freeze the matrix as:
 
-These choices affect which states the model sees and the evaluation target.
-Neither is adopted by this note. The root schedule, derivation policy, minimum
-ply, symmetry handling, collision rule, and insufficient-support disposition
-must be reviewed and frozen together. A post-generation choice based on observed
-scores is disallowed.
+- fit windows only from the two declared training variants;
+- development/model-selection roots only from the two held-out-size variants,
+  generated from a separately hashed reachable-situation schedule; and
+- no same-size development windows unless a new method version explicitly
+  defines them and their opening-overlap treatment.
+
+Under that design, repeated openings are not a blocker. If reviewers require a
+same-size development split, V2.12 must additionally choose a predeclared
+reachable-root schedule or justified prefix exclusion, audit all retained
+H0–H4/H1-H2-H4 keys, and quantify the effect on the training-state
+distribution. These alternatives are not adopted here. Freeze the exact split
+matrix, root-generation policy, symmetry handling, collision rule, and
+insufficient-support disposition together before observing scores.
 
 ## Required frozen protocol fields
 
@@ -49,14 +57,16 @@ Before generating any candidate data, a new protocol version should bind:
   game and partition, and episode IDs derived from those inputs;
 - per-seat policy-family draws from the four pinned sources, plus exact RNG
   algorithm and seeds, rather than an inferred schedule from the split name;
-- whole-episode partition ownership before window materialization, with a
-  complete raw, role-normalized, and symmetry-normalized H0–H4/H1-H2-H4 key
+- an explicit variant-by-split matrix and whole-episode partition ownership
+  before window materialization, with a complete raw, role-normalized, and
+  symmetry-normalized H0–H4/H1-H2-H4 key
   audit and explicit quarantine counts;
 - canonical window deduplication and the definition of 928 distinct eligible
   training windows, including terminal masks and whether short tail windows
   count;
 - development root situations and both seat assignments, generated from a
-  seed namespace disjoint from training and checked against all training keys;
+  seed namespace disjoint from training, with reachability and cross-split key
+  checks at the exact game/rules identity used by the auditor;
 - selection data policy, if any, while keeping the locked-final set unopened
   until nomination and a separately reviewed confirmatory plan;
 - atomic output behavior, provenance/license statement, manifest and per-file
@@ -65,7 +75,7 @@ Before generating any candidate data, a new protocol version should bind:
   insufficient development roots: stop, preserve the failed audit receipt,
   and draft a new version rather than top up or alter counts silently.
 
-The next review should decide the root-situation strategy and align the method
+The next review should freeze the variant-by-split matrix and align the method
 spec's split language with it. Only then should an executable generator be
 implemented and independently reviewed. A generated corpus would still need
 replay, support, split, leakage, and license gates before any fit; this design
@@ -77,4 +87,9 @@ The V2.12 synthetic auditor from `V212_TRAJECTORY_AUDIT_PROTOCOL_V01.md`
 provides reusable in-memory checks, but the H4 overlap detector is only a
 software fixture. V2.12 corpus feasibility and train/development disjointness
 remain untested. No support claim, leakage-free claim, or training readiness
-claim follows from the synthetic tests.
+claim follows from the synthetic tests. Independent review found this note
+accurate as a non-authorizing design document and confirmed that the preferred
+matrix matches the substantive held-out-size evaluation design. Before a
+protocol can be frozen, reconcile whether held-out development roots are
+development episodes or standalone evaluation situations with the method's
+episode-split wording.

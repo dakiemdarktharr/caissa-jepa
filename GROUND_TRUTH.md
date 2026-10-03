@@ -1864,7 +1864,10 @@ accepted that software-contract scope. This does not authorize data generation.
 Training, matches, and outcome access remain gated.
 
 The follow-on design note `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md` records
-an unresolved split-design issue: standard initial states shared by episodes
-would connect train/development components if every V2.12 H0–H4 state were
-strictly split-audited. It lists candidate root-situation strategies for review
-only. It is not a frozen protocol and authorizes no data generation.
+an unresolved split-matrix ambiguity. Shared standard openings would connect
+components only if same-size episodes crossed train/development; the current
+method instead describes held-out-size development roots, but does not freeze
+the allocation matrix. Independent review found the note accurate as a design
+document; before a protocol is frozen, the method must clarify whether held-out
+development roots are development episodes or standalone evaluation
+situations. The note authorizes no data generation.
