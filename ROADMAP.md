@@ -355,3 +355,12 @@ request supervisor survives OOM victim selection. Added
 `docs/V212_COMPUTE_BUDGET_AMENDMENT_06_DRAFT.md` to correct these semantics
 without changing the proposed numerical caps. It is not independently reviewed
 or operational; no pilot or fit is authorized.
+
+
+### 2026-10-03 cgroup peak interface check
+
+A no-inference probe in a disposable 1.5-GiB lattice scope confirmed
+`memory.peak` is exposed, with `memory.max=1610612736`, and the transient
+scope was removed. Its 5.5-MB metadata-only reading is not an inference
+working-set estimate. v06 still needs independent review, OOM supervision, and
+integrated receipt/timing tests before any pilot.
