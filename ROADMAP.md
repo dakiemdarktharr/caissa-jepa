@@ -4,14 +4,19 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
-The lattice session verified the cgroup enforcement mechanism in
-disposable user scopes: a 1.5 GiB `memory.max` was finite and inherited by a
-child; a separate 64 MiB no-swap scope killed an over-limit child and recorded
-`oom_kill=1`; both cgroups were removed after cleanup. The V2.12 pilot worker
-is not yet wired into this scope, so a hard memory bound is not operational for
-the pilot. Keep sampled RSS as telemetry until a versioned wrapper records and
-verifies the actual worker cgroup, `memory.max`, watchdog/OOM distinction, and
-receipt cleanup. `memory.high` is not a hard limit; see
+The lattice session verified cgroup enforcement in disposable user
+scopes: a 1.5 GiB `memory.max` was finite and inherited by a child; a separate
+64 MiB no-swap scope killed an over-limit child and recorded `oom_kill=1`;
+both cgroups were removed after cleanup. A new fail-closed request adapter,
+`two_player/v212_request_adapter_v01.py`, checks the exact cgroup limit and
+`memory.oom.group=0`, verifies that its worker inherits the same path, applies
+absolute 5-second planner and 6-second response deadlines, kills a timed-out
+worker group, and distinguishes OOM events from watchdog timeouts. The focused
+suite passes 19/19. However, only its cgroup preflight helper ran inside the
+real 1.5 GiB scope; no request worker or multi-cell pilot ran there. The adapter
+has no report/receipt writer and awaits independent review. Keep RSS as sampled
+telemetry and the budget as a proposal until an integrated no-outcome run and
+receipt review pass. `memory.high` is not a hard limit; see
 `docs/V212_HOST_MEMORY_CONTAINMENT_AUDIT_01.md`.
 
 A source audit also found that V2.12-04 calls for counterfactual coverage but
