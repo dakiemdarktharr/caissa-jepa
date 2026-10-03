@@ -463,3 +463,16 @@ SeedSequence stream; V2.12 requires a separately frozen draw across all 16
 ordered seat-policy pairs and an explicit seed contract. No episodes or policy
 actions were generated; exact source/config hashes and edge-case tests remain
 pre-generation requirements.
+
+A read-only audit found a pinned MIT-licensed Connect Four engine as a
+candidate full-game reference for the standard 7x6 training variant only:
+[Markus Thill/Connect-Four at commit 2a588445](https://github.com/MarkusThill/Connect-Four/tree/2a58844594ac022846385dd3ddc8bbbf0a26eae5).
+Its `getNextVTable` source enumerates legal columns and independently calls a
+full-window minimax root after each candidate move; the 100-ply default
+exceeds the 42-cell board and opening books can be disabled with a null book.
+This is static source evidence only, not an independently checked oracle or
+measured runtime. It does not support 8x8 Connect Four or Reversi. Value-sign
+normalization, reachability/turn/terminal contracts, correctness, licensing
+provenance, and bounded-runtime checks remain open before any use. It does
+not authorize scoring or change the research gate; see
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.

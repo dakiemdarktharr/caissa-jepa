@@ -295,3 +295,25 @@ stream; V2.12 requires an independently frozen draw over all 16 ordered pairs
 and a pinned RNG/seed derivation. A V2.12 manifest must bind code/config hashes,
 legal-action order, cap/depth, tie behavior, and RNG policy before generation.
 No policy was executed and no data were generated.
+
+## Exact reference source candidate (2026-10-03)
+
+A read-only audit of Markus Thill's [MIT-licensed Connect-Four framework](https://github.com/MarkusThill/Connect-Four)
+at pinned commit [`2a58844594ac022846385dd3ddc8bbbf0a26eae5`](https://github.com/MarkusThill/Connect-Four/tree/2a58844594ac022846385dd3ddc8bbbf0a26eae5)
+identified a candidate for exact full-game action values on the V2.12
+Connect Four 6x7 training variant only. The README claims exact state and
+action values; inspected `AlphaBetaAgent.getNextVTable` enumerates legal
+columns and invokes `rootNode(true)` separately after each move with a fresh
+full window. Its 100-ply default search horizon exceeds the 42-cell board, and
+passing `books=null` disables the opening-book paths. The fixed board
+implementation is explicitly 7 columns by 6 rows. These facts make it a
+promising source candidate, not a verified oracle. No code was executed and
+no value was queried.
+
+The 8x8 Connect Four and Reversi variants remain uncovered. Player-1 sign,
+win-distance scoring, valid-turn assumptions, terminal handling, complete
+legal-action coverage, code correctness, licensing/provenance, and resource
+bounds still need independent adapter review and contract validation before
+any evaluation use. Do not treat this as closing the overall oracle gap; it
+does not change any scoring, generation, or training gate. See the detailed
+[decision-regret design](V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md).

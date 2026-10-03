@@ -150,3 +150,33 @@ a game-aware leaf evaluator, depth, transition/node cap, action order, and
 incomplete-search policy before model scoring. The existing toy-game
 evaluator does not settle those choices or authorize swapping V2.12's game
 scope to smaller games.
+
+## External exact-solver candidate: standard Connect Four (2026-10-03)
+
+A read-only source audit found Markus Thill's MIT-licensed
+[Connect-Four framework](https://github.com/MarkusThill/Connect-Four), pinned
+for this audit to commit
+[`2a58844594ac022846385dd3ddc8bbbf0a26eae5`](https://github.com/MarkusThill/Connect-Four/tree/2a58844594ac022846385dd3ddc8bbbf0a26eae5).
+Its README claims exact game-theoretic state and state-action values for
+arbitrary positions. The inspected source exposes
+[`AlphaBetaAgent.getNextVTable`](https://github.com/MarkusThill/Connect-Four/blob/2a58844594ac022846385dd3ddc8bbbf0a26eae5/CFour/src/c4/AlphaBetaAgent.java):
+for each non-full column it applies the move and calls a fresh
+`rootNode(true)`, which initializes a full alpha-beta window. The configured
+search depth is 100 while the implementation's board has at most 42 cells;
+with `books=null`, opening-book branches are disabled. This is a plausible
+route to complete terminal-minimax action values for valid, reachable,
+nonterminal standard 7x6 positions. Returned values use the implementation's
+Player-1 sign convention and encode win/loss distance; an adapter would need
+to normalize them to root-player win/draw/loss utility and validate every
+legal action and turn convention.
+
+Scope is strictly the hard-coded 7-column by 6-row board. It does not cover
+Connect Four 8x8 or either Reversi variant. This is a source-level candidate,
+not an independently verified oracle: no code was run, no score was used, and
+no compatibility, correctness, or resource test was performed. Before use,
+pin and review an adapter, license/provenance handling, reachable-state and
+terminal/pass/action-set contracts, value normalization, and bounded runtime;
+keep exact-solved values separate from any bounded reference. Preserve the
+upstream [MIT license](https://github.com/MarkusThill/Connect-Four/blob/2a58844594ac022846385dd3ddc8bbbf0a26eae5/LICENSE)
+notice if code is ever copied. This does not close the overall V2.12 oracle
+gap or authorize scoring, root generation, data generation, or training.

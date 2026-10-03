@@ -2121,3 +2121,25 @@ none is an expert label or the V2.12 bounded-reference oracle. V2.8 assigns
 policy pairs from split/episode parity and uses one action RNG stream, while
 V2.12 needs its own frozen 16-pair draw and RNG derivation. This is source
 inspection only. No policies, data, models, or roots were generated.
+
+
+## External exact-reference candidate audit (2026-10-03)
+
+Read-only inspection pinned Markus Thill's MIT-licensed Connect-Four
+framework to upstream commit `2a58844594ac022846385dd3ddc8bbbf0a26eae5`.
+Its README claims exact game-theoretic position and state-action values.
+Source inspection found `AlphaBetaAgent.getNextVTable`, which iterates legal
+columns and evaluates each child through a fresh full-window `rootNode(true)`;
+the default search depth is 100 for a 42-cell board, and passing a null
+opening-book object disables book lookups. This is a plausible exact terminal
+minimax candidate for valid reachable nonterminal Connect Four 6x7 roots.
+
+The source hard-codes 7x6 and cannot cover Connect Four 8x8 or Reversi. This
+finding is not independent correctness verification: no code or position was
+run. Player-1 value orientation and win-distance scores require reviewed
+root-perspective win/draw/loss normalization; legal-action completeness,
+reachability, turn and terminal contracts, license provenance, and bounded
+runtime remain unverified. Treat the source as a candidate only. It does not
+close the overall exact-reference gap and does not authorize root/model
+scoring, data generation, training, or matches. No local files were changed;
+see the updated remote decision-regret design and research gate.
