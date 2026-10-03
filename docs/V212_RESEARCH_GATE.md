@@ -588,3 +588,19 @@ This narrows broad board-state-from-game-history claims but leaves the fixed-
 compute V2.12 decision-quality question open. No data, model, code, scores,
 root schedule, or outcomes were accessed; no method or gate changed. See
 `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
+
+### 2026-10-04 MetaOthello multi-world representation update
+
+Full-text review of Chawla, Hall, and Lovato's camera-ready MetaOthello paper
+found controlled 8×8 Othello-like variants with shared move syntax and changed
+rules or token mappings. The authors report cross-variant causal transfer of
+board-state probes and next-move-distribution α-scores above 0.98; each model
+was trained once with seed 42. The paper's “world model” means a latent-state
+representation reconstructed from move histories, not an explicit JEPA
+forward model. This closes broad claims to shared state representations across
+board-rule variants, but does not test action-conditioned JEPA, full
+legal-action values, adversarial search, board-size transfer, or decision
+regret. Results are author-reported and unreplicated here. No code/data were
+run, no CAISSA data or outcomes were accessed, and no method or gate changed.
+Sources and details: `docs/RELATED_WORK.md` and
+`docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.

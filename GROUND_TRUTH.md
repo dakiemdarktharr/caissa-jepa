@@ -2423,3 +2423,9 @@ or gate changed.
 
 - Full-text review of Yuan and Søgaard's Othello World Model paper found autoregressive next-move training and separate representation alignment/projection analyses on Othello game histories. Its reported very low one-hop error at full synthetic-data scale and harder multi-hop prediction narrow broad claims to learning board structure from board-game histories.
 - The paper does not evaluate JEPA latent matching, full legal-action values, fixed-compute adversarial max/min, or decision regret. It does not establish or refute a V2.12 planning effect. No code/data were downloaded or run, no CAISSA data or outcomes were accessed, and no method/gate changed. See docs/RELATED_WORK.md and docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md; source: [Yuan & Søgaard](https://arxiv.org/abs/2503.04421).
+
+
+### Latest continuation delta (2026-10-04; MetaOthello multi-world representations)
+
+- Full-text review of Chawla, Hall, and Lovato's MetaOthello paper found causal transfer of Othello board-state probes across rule variants and reported next-move-distribution α-scores above 0.98. The variants share an 8×8 syntax but change update rules or token mapping. The paper defines a “world model” as a latent-state representation inferred from histories, distinct from an explicit forward model; each model was trained once with seed 42.
+- This narrows broad shared-representation and multi-rule transfer claims. It does not test JEPA dynamics, decision quality, adversarial search, or board-size transfer, and reported representation/prediction metrics do not establish planning. No code/data were run and no CAISSA outcomes were accessed. No method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`; source: [Chawla et al., arXiv:2602.23164](https://arxiv.org/abs/2602.23164).

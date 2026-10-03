@@ -635,6 +635,35 @@ answer whether V2.12's latent matching changes max/min action quality against
 matched controls. Source: [Yuan & Søgaard, arXiv:2503.04421](https://arxiv.org/abs/2503.04421),
 [full text](https://arxiv.org/html/2503.04421).
 
+### Multiple Othello world models in shared representations (MetaOthello, 2026)
+
+Chawla, Hall, and Lovato's *MetaOthello* (camera-ready version accepted to
+ICML 2026) studies small decoder-only Transformers trained on Othello-like
+variants that share an 8×8 move syntax but differ in update rules or token
+mapping. The suite includes Classic, NoMidFlip, DelFlank, and Iago; pure-game
+models use 20 million sequences and mixed-game models use 40 million, with
+sequences capped at 60 moves. The authors report next-move-distribution
+α-scores above 0.98 across variants and causal cross-variant transfer of
+linear board-state probes. For token-remapped isomorphic games, probe
+representations align after orthogonal rotation. These are author-reported
+representation and prediction results, not reproduced here. The appendix
+states that each model was trained once with seed 42, so the study does not
+provide across-training-seed uncertainty.
+
+The paper explicitly uses “world model” in the representational sense of
+recovering latent board state from a sequence, distinct from an explicit
+forward-dynamics model. It therefore establishes shared board-state
+representations across rule variants and narrows broad multi-game
+representation-transfer claims. It does not evaluate a JEPA transition loss,
+complete legal-action values, adversarial max/min planning, head-to-head game
+strength, or decision regret; its prediction and probe scores do not establish
+planning quality. The variants retain a common 8×8 syntax and do not test
+V2.12's board-size transfer. No method or gate change follows: the open
+question remains whether V2.12's latent-matching objective changes
+fixed-compute decision quality over matched controls. Source:
+[Chawla et al., arXiv:2602.23164 v2](https://arxiv.org/abs/2602.23164),
+[full text](https://arxiv.org/html/2602.23164).
+
 A separate exact-title search surfaced a 2026 aggregator entry titled
 *JEPA-Chess: Action-Conditioned Joint Embedding Predictive Architectures for
 Discrete Logical State Tracking*, attributed there to Yumnam Harryson Singh

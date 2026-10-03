@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 MetaOthello multi-world representation prior art
+
+Full-text review of the ICML 2026 camera-ready MetaOthello study found shared board-state representations and causal cross-variant probe transfer across Othello-like games with changed rules or token mappings. Reported next-move-distribution α-scores exceed 0.98, but each model was trained only once at seed 42. The paper's world-model usage is latent state representation from move histories, not an explicit JEPA transition planner. This closes broad multi-rule shared-representation claims; it does not evaluate adversarial decisions, legal-action values, board-size transfer, or decision regret. No code/data or CAISSA outcomes were accessed. No method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
+
 ### 2026-10-04 RePAIR chess representation prior art
 
 Full-text review of Koller et al.'s RePAIR paper found self-supervised latent gap repair over chess-state sequences. The paper's chosen later-experiment objective omits the optional JEPA term; its 93.71% ± 0.05% result is square-element reconstruction with 80% sequence masking and a 50% always-empty baseline, not move selection or planning. This closes broad claims to self-supervised latent sequence reconstruction in chess but does not establish action-conditioned transition planning or adversarial max/min. No source code/data was downloaded or run; repository reuse licensing was not visible. This only narrows the prior-art positioning; no method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
