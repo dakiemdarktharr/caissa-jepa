@@ -1949,3 +1949,29 @@ memory.max events but no OOM kill and are not counted as passes. This verifies
 the host cgroup mechanism only; the V2.12 pilot worker/request watchdog has not
 been implemented or launched, so no pilot hard-memory claim is made. RSS
 remains sampled telemetry. No project data, model, or pilot process was used.
+
+
+### V2.12 request-adapter design v01 (2026-10-03)
+
+Added `two_player/v212_request_adapter_v01.py` and
+`tests/test_v212_request_adapter_v01.py`, leaving the frozen
+`two_player/v212_pilot.py` and `two_player/v212_pilot_v02.py` unchanged (their
+Git blob hashes still match the source recorded in prior receipts). The new
+adapter starts its monotonic clock before validation/cgroup preflight/worker
+spawn, passes an absolute 5-second planner deadline, and supervises a worker
+with a 6-second response deadline. It kills a timed-out worker process group,
+checks whether it was reaped, validates exact-root legal actions, preserves the
+last completed depth, verifies parent/worker cgroup identity and 1.5 GiB
+`memory.max`, and distinguishes OOM kills from response watchdog timeouts using
+`memory.events`. It refuses cgroups unless `memory.oom.group=0`. The returned
+action is transient; the adapter has no receipt writer or score output.
+
+The focused request-adapter, symmetry, frozen V02 pilot, and trajectory-auditor
+suite passed 19/19; compile and `git diff --check` passed. Tests compare request
+search counters to the frozen search on synthetic in-memory roots and exercise
+timeout/kill/reap and OOM classification. The cgroup preflight helper alone was
+run inside a disposable 1.5 GiB systemd scope; it reported the expected limit
+and `memory.oom.group=0`, and the scope was removed. No request worker ran in
+that scope and no pilot batch, data generation, training, match, or outcome
+inspection occurred. The adapter awaits independent review and has no integrated
+pilot receipt; runtime headroom and cleanup remain unverified.
