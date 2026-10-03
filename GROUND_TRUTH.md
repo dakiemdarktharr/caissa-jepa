@@ -7,6 +7,11 @@
 - Follow-up review found the v05 draft must explicitly retain v04's fresh/disjoint locked-confirmation situations/seeds and no-replacement/no-censoring loss treatment of timeouts and invalid moves. It also found that the proposed global two-variant yield stop is stricter than design 02's earlier per-variant wording; both documents now identify the global stop as unresolved, not accepted.
 - No calibration simulation, roots, scores, training, or outcomes were generated or accessed. Independent method/statistical review must freeze the estimand, slot/RNG/yield contract, bootstrap/failure rules, and decide whether design-matched calibration is required before any root generation. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md` and `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md`.
 
+## Latest continuation delta (2026-10-04; RePAIR chess representation prior art)
+
+- Read the full primary paper and author repository for RePAIR, which learns self-supervised latent sequence repair/reconstruction on chess states. Its selected later-experiment loss omits the optional JEPA alignment term; the headline 93.71% ± 0.05% is square-element reconstruction after 80% state masking over three runs, with a 50% always-empty baseline—not move accuracy, planning, strength, or regret.
+- This establishes same-domain latent sequence reconstruction, but not explicit action-conditioned transitions or alternating adversarial planning. It further narrows the possible contribution to the specific action-conditioned EMA-target objective under exact-rule max/min, still untested and high-risk. The inspected author-repository file listing exposes no top-level license; nothing was downloaded or run and reuse rights remain unknown. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`; no method gate changed.
+
 ## Latest continuation delta (2026-10-04; synthetic invocation-bound receipt assembler)
 
 - Added `two_player/v212_supervision_receipt_v02.py` with typed/versioned active-worker and post-exit manager snapshots, exact unit/InvocationID/ControlGroup/boot binding, strict post-active event windows, typed `memory.events.local` samples, normalized kernel OOM proof plus message digest, and bounded atomic receipt writing.
