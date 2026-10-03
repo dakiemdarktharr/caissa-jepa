@@ -53,14 +53,43 @@ never on a model score or outcome.
    exact state, player to move, prefix actions (including pass 64), slot seed,
    policy pair, occupancy, prefix length, and rules/protocol/source hashes.
 
-Under the independent per-slot RNG design, accepting the first 16 slots whose
-validity predicate passes yields independent draws from the success-conditional
-distribution, provided the slot generators are identically specified within
-each stratum. Repeated states are repeated draws and remain separate sampling
-units. Because policy family can affect whether and when a slot reaches its
-band, the accepted policy-pair mixture may differ from the nominal uniform
-draw; report that induced mix without reweighting. Condition inference on the
-predeclared bounded schedule and its all-strata yield rule.
+### Conditional-IID argument and assumptions
+
+Within one variant and occupancy stratum, let candidate slots be independent
+and identically distributed draws. For slot i, let V_i indicate that its
+predeclared rollout produces an eligible root, and let X_i be the resulting
+root receipt when V_i=1. The validity rule may use only the frozen rules and
+root criteria; it must not depend on board identity relative to other slots,
+model scores, or outcomes.
+
+Conditional on a slot being valid, its receipt has distribution
+P(X_i | V_i=1). The sequence of valid receipts in schedule order has this same
+distribution independently slot by slot: the validity indicators determine
+which slot indices are selected, while each selected receipt is drawn from
+the same conditional law. Conditioning on at least 16 valid slots among the
+fixed 64 changes the chance that the stratum passes the yield gate, but does
+not change the conditional law of those first 16 valid receipts, because that
+gate depends only on validity indicators. Thus the accepted 16 are IID draws
+from P(X | V=1), conditional on passing the predeclared stratum yield gate.
+
+This conclusion requires independent slot-level random streams and an
+identical candidate-generation law within each stratum. In implementation,
+freeze and record the RNG algorithm/version, root seed, deterministic
+variant/stratum/slot seed derivation, and source hashes; deterministic
+SeedSequence streams make the procedure reproducible but are an operational
+pseudo-random approximation to the independent-draw model, not a proof of
+physical randomness. A shared or stateful stream, adaptive retry, rejection
+based on duplicate identity, scores, outcomes, or earlier accepted states, or
+post hoc changes to the validity rule breaks the stated sampling argument.
+The argument is within-stratum: it does not make the three occupancy strata
+interchangeable or imply uniformity over reachable or unique boards.
+
+Repeated states are repeated draws and remain separate sampling units. Because
+policy family can affect whether and when a slot reaches its band, the
+accepted policy-pair mixture may differ from the nominal uniform draw; report
+that induced mix without reweighting. Condition inference on the predeclared
+bounded schedule and its all-strata yield rule. This is a design argument for
+review, not empirical verification of a generator or approval to run it.
 
 ## Proposed estimand and crossed bootstrap
 
