@@ -47,3 +47,29 @@ This requirement does not invalidate V02: that completed pilot's maximum
 sampled RSS was 50,212,864 bytes against its configured 1.5 GiB sampled cap,
 with no reported over-cap event. The V02 implementation and hash-bound report
 remain unchanged.
+
+
+## Disposable cgroup verification on lattice (2026-10-03)
+
+A temporary user systemd scope with `MemoryMax=1536M` exposed a finite kernel
+`memory.max=1610612736` bytes. The scope's shell and a child shell reported the
+same cgroup path. Its `memory.events` counters were all zero. The cgroup
+
+directory was removed after exit, and systemd reported the transient unit
+`LoadState=not-found`.
+
+A separate 64 MiB disposable scope with `MemorySwapMax=0` ran a throwaway
+process that touched 128 MiB of pages. The child was terminated; the surviving
+shell observed `oom_kill=1` and `oom_group_kill=0` in `memory.events`. The
+cgroup directory was removed. Systemd retained that failed transient unit
+until `reset-failed`; after cleanup it reported `LoadState=not-found`. Earlier
+reservation-only and swap-enabled probes hit memory.max events without an OOM
+kill, so they do not count as enforcement evidence.
+
+These probes verify the user-systemd/cgroup mechanism, descendant inheritance,
+kernel kill accounting, and cleanup on the current lattice session. They did
+not run the V2.12 pilot or its supervisor. A future pilot wrapper must still
+place the actual worker and descendants in the verified bounded unit, record
+its cgroup path and `memory.max`, distinguish OOM termination from request
+watchdog termination, and verify its own receipt/cleanup behavior. Sampled RSS
+remains telemetry, not the hard limit itself.
