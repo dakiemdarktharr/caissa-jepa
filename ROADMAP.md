@@ -1,6 +1,6 @@
 # CAISSA-JEPA research roadmap
 
-Updated: 2026-10-03. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
 ## V2.12 checkpoint (2026-10-03)
 
@@ -12,14 +12,13 @@ was measured. External OOM supervision, independent review, receipt integration,
 and caller-observed deadline enforcement are still required; the pilot gate
 remains closed. See the [runtime audit](docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md).
 
-A 2026-10-04 source-contract audit of the exact remote request adapter found
-that its reported request elapsed time is sampled before post-worker cgroup
-validation and response/action checks. A deterministic mocked-clock probe
-crossed the configured response deadline during that handling but still
-returned `response`. This is not an observed latency or cgroup failure; it
-shows the end-to-end deadline contract is incomplete. Keep the adapter
-unapproved until a versioned correction, post-worker-delay regression test,
-independent review, and caller-observed no-outcome integration pass. See the
+The mocked-clock deadline finding applied to adapter v01: it sampled
+elapsed time before post-worker cgroup validation and reply checks. Adapter v02
+now remeasures after full function processing and converts a late return to a
+forfeit; its new post-worker-delay regression test passes. This is a source
+contract correction only, not a hard real-time guarantee or measured request.
+Keep v02 unapproved until independent review, external OOM supervision, receipt
+integration, and caller-observed no-outcome deadline tests pass. See the
 [trajectory/runtime audit](docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md).
 
 The 2026-10-04 primary-source refresh adds JEPA-TTT (persistent online
