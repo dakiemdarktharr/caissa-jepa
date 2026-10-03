@@ -1906,3 +1906,17 @@ bootstrap proposal. Design 01 remains as historical context. The change
 resolves only the text-level conflict; independent review has not accepted the
 conditional target, PRNG independence assumptions, equal band weights, or
 inference procedure. No roots were generated and no method or data gate passed.
+
+
+### V2.12 bounded symmetry property checks (2026-10-03)
+
+Added `tests/test_v212_symmetry_properties.py` for the four current V2.12
+variants. It checks every declared spatial map over deterministic in-memory
+legal paths, and uses a hand-built Reversi forced-pass fixture to verify legal
+set mapping, exact transition commutation, terminal-result preservation,
+canonical-key invariance, role normalization, and fixed pass action 64. The
+combined symmetry and synthetic trajectory-auditor tests passed 9/9. This is
+bounded fixture coverage, not exhaustive state-space verification or a
+leakage/support result. Canonical edge reporting, root generation, data
+creation, matches, and training remain gated pending broader and independent
+review.
