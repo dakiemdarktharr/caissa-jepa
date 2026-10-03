@@ -13,18 +13,36 @@ Report them separately; do not combine them into one score.
 
 ### 1. Behavior-data support
 
-The behavior-support ledger is computed from the exact episodes and windows
-assigned to fitting, before any model is fit. Define the eligible training
-state set `S_fit` as every exact state that is actually supplied to a V2.12
-training loss or used as an intermediate state in a valid one-, two-, or
-four-ply predictor unroll.
+Compute the behavior-support ledger from the selected fit windows before any
+model is fit. Keep **encoder-state exposure** separate from **observed
+transition support**. Encoder exposure counts exact nonterminal root/target
+states actually encoded for losses. It does not create legal action
+opportunities for the dynamics-support denominator.
 
-For each state `s`, let `A_fit(s)` be the set of distinct legal actions
-observed in its predeclared fitting windows and `n_ep(s)` the number of
-distinct fitting episodes containing that state. Per-state coverage is
-`c(s) = |A_fit(s)| / |Legal(s)|`; report its full distribution and stratify by
-`n_ep(s)=1`, `n_ep(s)>=2`, and observed policy-pair/seat diversity. Also report
-distinct observed edges and distinct unobserved legal edges.
+For each selected window, every horizon `k` with a valid nonterminal target
+(`m_k=1`) contributes its full exact recorded transition prefix to `T_fit`.
+`T_fit` is the deduplicated set of exact `(game, rules, variant, s, a, s')`
+transitions in those prefixes. If one recorded edge contributes to multiple
+valid horizons or overlapping selected windows, count its occurrences
+separately but count its exact edge once in the support set. Keep terminal-
+masked final edges in a separate terminal-transition ledger; do not silently
+classify them as ordinary unobserved actions. Confirm this derivation against
+the eventual trainer's actual loss mask and unroll implementation before
+corpus generation, since no V2.12 trainer exists yet.
+
+At intermediate plies the predictor receives its own `zhat`, not an encoder
+output for the exact corresponding state. Therefore `T_fit` describes the
+recorded rule-transition prefixes used to supervise prediction; it is not a
+density estimate over the predictor's latent recurrent inputs.
+
+For each source state `s` represented in `T_fit`, let `A_fit(s)` be the set of
+distinct legal actions represented by those transitions, and `n_ep(s)` the
+number of distinct fitting episodes contributing an edge from `s`. Per-state
+observed-transition coverage is `c(s) = |A_fit(s)| / |Legal(s)|`; report its
+full distribution and stratify by `n_ep(s)=1`, `n_ep(s)>=2`, and observed
+policy-pair/seat diversity. Also report distinct observed edges and distinct
+unobserved legal edges. States only used as root/target encoder inputs belong
+in the separate exposure ledger, not in this dynamics-support denominator.
 
 Do not headline the pooled ratio
 `sum_s |A_fit(s)| / sum_s |Legal(s)|`: repeated states can dominate it, and

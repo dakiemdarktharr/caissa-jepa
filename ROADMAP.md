@@ -28,6 +28,9 @@ and visited-node expansion; it explicitly treats held-out-size exact support
 as not comparable. A self-audit removed the pooled legal-edge ratio as a
 headline because repeated states and game branching factor can dominate it;
 the draft instead reports per-state coverage and state/episode frequency.
+It now separates encoder-state exposure from exact transition edges used in
+valid nonterminal target unrolls; the eventual trainer's masks must verify that
+derivation before corpus generation.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.
