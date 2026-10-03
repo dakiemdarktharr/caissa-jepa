@@ -71,7 +71,7 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
 
             (leaf / "memory.max").write_text("1610612736\n", encoding="ascii")
             (leaf / "memory.oom.group").write_text("1\n", encoding="ascii")
-            with self.assertRaisesRegex(RuntimeError, "memory.oom.group must be 0"):
+            with self.assertRaisesRegex(RuntimeError, "does not guarantee the supervisor survives"):
                 verify_memory_scope(1610612736, proc, root)
 
             proc.write_text("0::/../../outside\n", encoding="utf-8")
