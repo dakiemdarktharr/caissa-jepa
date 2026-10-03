@@ -604,3 +604,18 @@ regret. Results are author-reported and unreplicated here. No code/data were
 run, no CAISSA data or outcomes were accessed, and no method or gate changed.
 Sources and details: `docs/RELATED_WORK.md` and
 `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
+
+### 2026-10-04 static request-adapter capacity audit
+
+The source-level random-weight inventory is small (9,761 parameter-array
+values for ordinary pilot arms and 30,551 for the raw-state control), and the
+10,000 entered-node cap gives a conservative ceiling of roughly 20,000–30,000
+counted model calls depending on arm. These are arithmetic/control-flow bounds,
+not latency or RSS measurements; Python/runtime overhead, model fitting state,
+and the end-to-end request path are not represented. The v02 wrapper dispatches
+its worker through the v01 module, so both adapter blobs are part of the
+effective runtime identity. The request worker still shares its caller's
+cgroup, its planner deadline is cooperative, and the v06
+external-supervision/receipt correction remains a draft. No request, model,
+data, score, or outcome was run or read; no resource or fit gate changed. See
+`docs/V212_ADAPTER_CAPACITY_AUDIT_01.md`.
