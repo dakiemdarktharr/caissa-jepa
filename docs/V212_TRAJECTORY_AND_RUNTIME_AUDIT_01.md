@@ -173,3 +173,33 @@ follow-on RSS source check adds a versioned pilot guard/reporting fix and
 specific RSS tests to the open work before any future cap-stressed pilot; it
 does not invalidate the completed V02 measurements, which stayed well below
 the sampled RSS cap.
+
+
+## Episode origin and full-game provenance audit
+
+The remote helper at `two_player/v212_trajectory_audit.py` validates that
+each supplied state has the adapter's shape, replays each supplied action
+legally from the preceding supplied state, checks role alternation, and
+matches the terminal result. It rejects a terminal first state, but does not
+require the first state to equal `game.initial()`; its state validator checks
+shape, values, and player sign, not reachability from the standard opening.
+The helper therefore proves consistency of the supplied segment, not that it
+is a complete game episode with verified seed/policy provenance.
+
+A deterministic in-memory probe used the suffix of an existing five-ply
+Connect Four fixture beginning after its first move. The suffix was accepted
+as an episode and emitted four windows with `start_ply=0`, although its first
+state was not the game's initial state. The focused seven-test
+`test_v212_trajectory_audit.py` suite also passed. The probe used only a tiny
+rule fixture; no generated corpus, model, training label bank, or match
+outcome was accessed.
+
+This is not evidence of a defect in the pure in-memory helper's stated
+segment-level contract, and it does not show that any current dataset is
+contaminated. It is an integration requirement: before corpus generation,
+the production materializer must either enforce the initial-state/full-game
+invariant and bind the original episode ID, seed, ordered policy pair, and
+source hashes, or use a separately typed segment format with an original-ply
+offset and parent-episode provenance. Otherwise a suffix can be renumbered
+from ply zero and the whole-episode split/manifest assumptions cannot be
+verified by this helper alone. No method or gate is amended by this audit.

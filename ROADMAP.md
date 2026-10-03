@@ -27,6 +27,15 @@ board-game planning. This narrows the novelty question to the incremental
 effect of recursive latent matching on exact-rule max/min decision quality.
 No method or gate changed; see the updated crosswalk and Related Work.
 
+A no-training source audit of the in-memory trajectory helper found it does
+not enforce that a supplied episode begins at the game's initial state or
+preserve a parent-episode/original-ply offset for a trajectory suffix. A
+deterministic suffix fixture was accepted as a new episode with start ply zero;
+the focused seven-test suite passed. This does not show existing data leakage,
+but a production materializer must bind full-game origin, seed, policy pair,
+and source hashes—or use typed segments with parent lineage—before data
+generation. No method/gate change or corpus authorization follows.
+
 The lattice session verified cgroup enforcement in disposable user
 scopes: a 1.5 GiB `memory.max` was finite and inherited by a child; a separate
 64 MiB no-swap scope killed an over-limit child and recorded `oom_kill=1`;

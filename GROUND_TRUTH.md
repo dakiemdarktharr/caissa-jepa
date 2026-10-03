@@ -1,6 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; trajectory episode-origin audit)
+
+- Read-only review of the remote in-memory trajectory auditor found it validates exact replay from the supplied first state but does not require that state to equal the game's initial state or bind a full-game seed/policy lineage.
+- A deterministic suffix fixture beginning after ply one was accepted as a four-window episode and renumbered with start ply zero; the existing focused trajectory-audit suite passed 7/7. This demonstrates the helper's segment-level scope, not corpus contamination.
+- Added a pre-generation integration requirement to the trajectory/runtime audit and roadmap: enforce full-game origin and provenance, or represent segments with parent-episode IDs and original-ply offsets. No corpus, training, method, or gate changed.
+
+
 ## Latest continuation delta (2026-10-03; JEPA-for-RL prior art)
 
 - Added Kenneweg et al.'s ESANN 2025 action-conditioned JEPA for image-based CartPole RL: one-hot action prediction with EMA targets and PPO task gradients; the paper reports collapse without task gradients/variance regularization in some configurations.
