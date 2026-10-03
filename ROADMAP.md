@@ -3,6 +3,10 @@
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
 
+## No-inference external-service placement completed (2026-10-04)
+
+After design review, two short transient-service probes confirmed worker placement in a separate cgroup and a finite effective 128 MiB memory/96 MiB high limit. A third `--collect` lifecycle probe confirmed the unit and cgroup evidence disappear after completion; the retained-unit probe kept manager result fields but not the cgroup files. These results verify only no-inference placement and successful-exit evidence lifecycle. The OOM classification path, caller survival, external counter capture, receipt persistence, request timing, and inference remain unverified. All temporary units were cleaned. The next gate is independent review of the updated evidence, then an explicitly authorized OOM fault test; no OOM or pilot is authorized by this observation. Keep training and outcomes closed.
+
 ## Supervision design review revision (2026-10-04)
 
 Independent review requested an explicit test of transient unit/cgroup evidence lifetime. The revised design requires measuring when `memory.events.local` disappears, verifying manager OOM/result fields through unit release, and proving the selected receipt path before cleanup; it specifies an external monitor fallback and fail-closed behavior if evidence is unavailable. The design awaits re-review. No unit or worker has been started. Keep OOM injection, inference, and pilot closed until each stated gate is met.
