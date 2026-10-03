@@ -2,6 +2,11 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+
+## External supervision research update (2026-10-04)
+
+Added [V2.12 external worker supervision design 01](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md), a primary-source-backed proposal to test a transient systemd service as a worker-local cgroup boundary with the caller outside that unit. Linux cgroup semantics do not guarantee supervisor survival under ancestor or host-wide OOM, and systemd service runtime does not cover all request startup latency. The proposal requires capability/ancestry preflight, no-inference placement verification, a separately authorized disposable OOM fault test, caller-observed no-outcome integration, receipt validation, and independent review. No experiment ran and no runtime, pilot, training, or data gate passed. Keep the pilot closed.
+
 ## V2.12 checkpoint (2026-10-03)
 
 A versioned request-adapter v02 candidate now remeasures elapsed time after
