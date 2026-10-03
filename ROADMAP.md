@@ -43,6 +43,11 @@ content as a diagnostic. A production materializer must not reuse that fixture
 unchanged. Source-id uniqueness, prohibited cross-partition overlap, fit-bank
 content diagnostics, and symmetry-distinct development roots now have separate
 proposed dispositions; all remain subject to independent protocol review.
+The source inventory in that audit records the declared in-scope maps (two
+gravity-preserving maps for each Connect Four variant; D4 for Reversi), but
+`canonical_key` does not return its minimizing map and no adapter-wide
+legal-action/transition property suite exists. Canonical edge metrics remain
+disabled pending those code-property checks and independent protocol review.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.

@@ -38,6 +38,35 @@ cross-partition equivalence only after the adapter-wide legal-set and
 transition-commutation checks in the counterfactual-support protocol pass.
 Raw exact identities remain available as the primary audit record.
 
+## Adapter symmetry inventory from source
+
+| In-scope adapter | Spatial mappings declared by `BoardGame.transforms()` | Action mapping and rule argument |
+| --- | --- | --- |
+| Connect Four 6x7/k4 | Identity and horizontal reflection | Gravity keeps the bottommost empty cell in each column mapped to the corresponding reflected column; the four line directions are preserved as a set. |
+| Connect Four 8x8/k4 | Identity and horizontal reflection | Same gravity/line argument as 6x7; square shape does not enable rotations because the adapter has gravity. |
+| Reversi6 and Reversi8 | The eight square D4 rotations/reflections | The eight neighbor rays and flips are permuted; legal placements map bijectively, and the forced-pass action id `64` stays fixed. |
+
+The shared action vocabulary stores board cells with stride 8, even when the
+board is smaller. `BoardGame.transform` maps a cell action through the same
+cell permutation used for the board, then returns it in that padded action
+vocabulary; it handles `64` separately as a fixed pass. `BoardGame.canonical_key`
+normalizes pieces relative to the side to move and minimizes over spatial
+mappings, but returns only a hash, not the mapping that attained the minimum.
+It therefore cannot by itself supply a consistent canonical action key. A
+future edge ledger must enumerate each declared mapping, transform source,
+action, and successor together, normalize role only as a joint color/player
+relabeling, and then select a joint key.
+
+This inventory is a structural reading of the in-scope rules and transform
+code, not an adapter-wide executable proof: `transforms()` does not assert
+bijectivity, and the synthetic window test covers fixture paths rather than
+every legal state/action. Keep canonical edge summaries disabled until
+focused property tests check each transform's full legal-action bijection,
+transition commutation, forced-pass invariance, and terminal-result
+preservation on all in-scope variants. Those tests would verify code
+properties only; they would not authorize canonical deduplication, data
+generation, or training.
+
 ## Implementation boundary and required review
 
 Keep the current synthetic fixture unchanged for its frozen positive/fault
