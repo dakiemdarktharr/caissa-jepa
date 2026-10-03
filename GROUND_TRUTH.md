@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; response-deadline contract audit)
+
+- Exact-remote-blob mocked-clock probe found the request adapter samples reported elapsed time before post-worker cgroup validation, response classification, and action checks. It returned `response` after a synthetic 0.10-second deadline (reported 0.05s; simulated return clock 0.25s).
+- This is a source-contract gap, not real request latency or cgroup/inference evidence. Logged the finding and required a versioned correction, delayed-post-worker regression test, independent review, and caller-observed no-outcome integration before use.
+- No code, corpus, pilot, training, or outcome data changed/accessed; no gate passed from this probe.
+
 ## Latest continuation delta (2026-10-04; JEPA planning prior-art refresh)
 
 - Reviewed primary arXiv full texts for JEPA-TTT v1 (persistent predictor adaptation across dynamics shifts), the point-cloud JEPA planning study v2, and decision-metric alignment for latent MPC.
