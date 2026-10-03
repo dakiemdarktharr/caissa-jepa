@@ -420,3 +420,18 @@ specifies reference-value leakage limits and synthetic-only implementation
 checks. The draft is not frozen or reviewed; reference depth/heuristic, compute
 allocation, seat/root weighting, ranking measure, and primary-vs-secondary
 status remain open. No code, data, outcomes, or pilot artifacts were changed.
+
+
+### 2026-10-03 exact-regret oracle source audit
+
+The decision-regret design audit located an existing full-game exact-regret
+precedent in two_player/evaluate.py backed by two_player/games.py::exact_value.
+That path covers only tiny registered games, uses a two-ply max-min planner,
+and reports regret only for a complete decision. The oracle is unbudgeted and
+explicitly documented for tiny state spaces. V2.12 instead targets Connect
+Four 6x7/8x8 and Reversi6/8; its random-weight runner exposes no root-action
+scores, and the inspected runner/game path has no pinned nonterminal bounded
+reference heuristic. Exact solved roots and bounded-reference roots must be
+kept as distinct strata. Do not run the legacy exact solver over the larger
+variants or replace the frozen game scope. Reference configuration and
+independent review remain open; this was a static source audit only.

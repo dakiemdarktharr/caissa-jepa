@@ -237,3 +237,27 @@ Before model scoring, the reference heuristic/depth, diagnostic compute
 allocation, root/seat weighting, tie metric, and relationship to the primary
 match metric still require decision and review. No scores were extracted from
 the pilot receipt, no code was changed, and no data/model/pilot was run.
+
+
+## Exact-regret implementation precedent and oracle gap (2026-10-03)
+
+A source audit identified an older, explicit exact-regret path in
+two_player/evaluate.py and two_player/games.py. It scores all legal root
+actions with a two-ply max-min planner, separately solves terminal outcomes
+with exact_value, and sets regret only for a complete planner result. The
+registered games are tiny (tic-tac-toe, 4x4 connect3, 4x4 reversi, and 3x4
+connect3); exact_value is unbudgeted and its docstring requires restricting
+state-space size. This establishes a usable software precedent for complete
+action denominators and status-gated regret on small games, not an oracle for
+the V2.12 Connect Four 6x7/8x8 and Reversi6/8 variants.
+
+The inspected V2.12 runner uses those four larger variant configurations,
+returns no root-action values, and has no separate nonterminal bounded
+reference evaluator. METHOD_SPEC_V212-04 requires a pinned internal heuristic
+for any larger bounded-depth reference, but no such function/config has been
+selected in the inspected source. The next protocol decision must therefore
+keep exact full-game regret limited to a predeclared tractable-position stratum
+and specify a separate, fixed bounded reference for any larger-variant
+decision-regret claim. Do not run the unbudgeted exact solver on large games
+or silently substitute the legacy toy-game variants. This remains an
+unreviewed design gap; no model score, data, or pilot was produced.

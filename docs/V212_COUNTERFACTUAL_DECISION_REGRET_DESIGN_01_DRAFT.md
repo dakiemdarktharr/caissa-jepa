@@ -119,3 +119,34 @@ co-primary. Then version the method/protocol and freeze code/config hashes and
 analysis before scoring. No metric threshold or nomination rule is supplied
 here, and this draft does not establish that the remaining benchmark question
 is novel or that any JEPA arm will perform better.
+
+
+## Existing exact-regret precedent and scope
+
+The repository's older exploratory evaluator provides a bounded-scope
+implementation precedent. In two_player/evaluate.py, plan() enumerates every
+legal root action, computes a two-ply max-min score, retains a completion
+status, and reports regret only when the decision is complete. Its separate
+reference values come from two_player/games.py::exact_value: a memoized,
+full-game terminal minimax solver. That module's registered GAMES are
+tic-tac-toe, 4x4 connect3, 4x4 reversi, and a held-out 3x4 connect3. The
+exact_value docstring explicitly calls it an unbudgeted tiny-game oracle and
+requires callers to restrict state-space size.
+
+This is useful as a semantic/test precedent for complete legal-action
+denominators, root-player value conversion, and withholding regret for
+incomplete planning. It is not a ready oracle for V2.12's Connect Four 6x7,
+Connect Four 8x8, Reversi6, or Reversi8 variants. The V2.12 random-weight
+runner instantiates those four larger games separately and does not return
+root-action scores. No V2.12 bounded reference heuristic or source/config hash
+was found in the inspected runner/game path. Do not call the unbudgeted
+exact_value solver on large variants without a separately reviewed,
+fail-bounded feasibility design.
+
+A defensible reference plan may retain full-game exact values only for a
+predeclared tractable-position stratum and keep it separate from any bounded
+reference on larger positions. The latter still requires choosing and pinning
+a game-aware leaf evaluator, depth, transition/node cap, action order, and
+incomplete-search policy before model scoring. The existing toy-game
+evaluator does not settle those choices or authorize swapping V2.12's game
+scope to smaller games.

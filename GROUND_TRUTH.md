@@ -2078,3 +2078,17 @@ labels missing/bound cases rather than converting them to point estimates, and
 keeps reference values out of training. This is a draft only; reference
 heuristic/depth and evaluation allocation are unresolved and require
 independent review. No scoring, code changes, or pilot were performed.
+
+
+## Exact-regret oracle scope audit (2026-10-03)
+
+The legacy two_player/evaluate.py plus two_player/games.py::exact_value path
+provides a precedent for all-legal-root scoring and complete-case regret, but
+only on tiny registered games (tic-tac-toe, connect3 4x4, reversi4, and held
+out connect3 3x4). Its full-game solver is unbudgeted and warns callers to
+restrict state-space size. V2.12's compute runner targets Connect Four 6x7/8x8
+and Reversi6/8 and does not emit root scores. No pinned bounded-reference
+nonterminal evaluator/config was found in the inspected V2.12 runner/game
+path, despite the method spec requiring one for larger bounded references.
+Keep exact solved and bounded-reference results separate; resolve the latter
+before model scoring. No solver, dataset, model, or pilot was run.
