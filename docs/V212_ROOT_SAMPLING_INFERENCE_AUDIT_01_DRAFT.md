@@ -218,6 +218,38 @@ pairs bootstrap is not identical to Owen-Eckles reweighting. No variance
 components have been observed and no simulation, roots, or outcomes were
 accessed.
 
+## Monte Carlo precision at the first Holm threshold
+
+The v04 method spec fixes 10,000 bootstrap replicates and uses the plus-one
+tail estimate. Across 15 one-sided tests, the first Holm cutoff is
+0.05/15 = 1/300 ≈ 0.003333. With B=10,000, 32 exceedances give
+33/10,001 ≈ 0.003300 (below the cutoff), while 33 exceedances give
+34/10,001 ≈ 0.003400 (above it). Thus a one-count Monte Carlo change can
+reverse the first step when the underlying tail probability is near its
+threshold.
+
+Conditional on an ideal bootstrap tail probability of 1/300 and independent
+bootstrap draws, the binomial Monte Carlo standard error of the plus-one
+estimate is approximately 0.000576 at B=10,000, with a normal 95% half-width
+about 0.00113. At B=100,000, the corresponding values are about 0.000183 and
+0.00036. These are Monte Carlo errors in approximating a bootstrap tail
+probability, not the sampling uncertainty across the 20 seeds and 16 roots.
+They do not assess bootstrap validity, Holm's assumptions, or dependence
+between the 15 estimates; the shared replicates make cross-contrast Monte
+Carlo errors dependent.
+
+Primary work on bootstrap repetition counts treats B as an accuracy choice
+for the bootstrap quantity, not a universal constant. Andrews and Buchinsky
+provide a procedure to select B for a specified accuracy; Davidson and
+MacKinnon find in their studied IID regression/probit/quantile settings that
+common replication counts could be too small for accurate bootstrap
+quantities, especially p-values. Those results do not determine the required
+B for this crossed design. Before outcomes, independent review should either
+accept 10,000 with a predeclared Monte Carlo precision/reporting rule or
+version and review a larger/adaptive replicate plan. Do not increase B after
+seeing which outcome decision it changes. No bootstrap or outcome was
+computed for this audit.
+
 ## Primary sources
 
 - Baayen, Davidson, and Bates (2008), [Mixed-effects Modeling With Crossed Random Effects for Subjects and Items](https://doi.org/10.1016/j.jml.2007.12.005).
@@ -226,6 +258,8 @@ accessed.
 - Roodman, MacKinnon, Nielsen, and Webb (2019), [Fast and Wild: Bootstrap Inference in Stata Using boottest](https://doi.org/10.1177/1536867X19830877).
 - MacKinnon, Nielsen, and Webb (2023), [Leverage, Influence, and the Jackknife in Clustered Regression Models](https://doi.org/10.1177/1536867X231212433) (two-way discussion; regression scope).
 - Bakshy and Eckles (2013), [Uncertainty in Online Experiments with Dependent Data: An Evaluation of Bootstrap Methods](https://arxiv.org/abs/1304.7406) (arXiv v4; Section 3.4/Figure 4 withdrawn).
+- Andrews and Buchinsky (2000), [A Three-Step Method for Choosing the Number of Bootstrap Repetitions](https://doi.org/10.1111/1468-0262.00092).
+- Davidson and MacKinnon (2001), [Evaluation of a Three-Step Method for Choosing the Number of Bootstrap Repetitions](https://doi.org/10.1016/S0304-4076(01)00047-1).
 - McCullagh (2000), [Resampling and Exchangeable Arrays](https://doi.org/10.2307/3318577).
 - Owen (2007), [The Pigeonhole Bootstrap](https://arxiv.org/abs/0712.1111).
 - Owen and Eckles (2012), [Bootstrapping Data Arrays of Arbitrary

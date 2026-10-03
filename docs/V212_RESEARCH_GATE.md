@@ -531,3 +531,17 @@ nonzero heterogeneous effects, and evaluates the whole familywise procedure.
 No variance components are known; no simulation, roots, outcomes, or training
 occurred. This refines the validation question only; the gate remains closed.
 See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 bootstrap-replicate Monte Carlo precision
+
+The frozen 10,000-replicate, plus-one p-value has finite Monte Carlo
+precision. At the first Holm threshold (0.05/15 ≈ 0.003333), 32 versus 33
+exceedances yield p ≈ 0.003300 versus 0.003400, on opposite sides of the
+cutoff. Conditional binomial Monte Carlo SE at that tail probability is about
+0.000576 (95% half-width ≈0.00113); this is distinct from uncertainty over
+seeds/roots and from bootstrap validity. Independent review should decide
+before outcomes whether 10,000 is acceptable under a declared precision
+reporting rule or whether a versioned larger/adaptive replicate plan is
+needed. No outcomes or bootstrap were computed; no gate changed. See the
+inference audit.

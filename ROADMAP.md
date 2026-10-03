@@ -650,3 +650,15 @@ should decide whether to test both main-effect- and interaction-dominated
 variance regimes and evaluate the full familywise procedure. This neither
 selects a bootstrap nor authorizes simulation. No data, roots, or outcomes were
 accessed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-03 bootstrap Monte Carlo precision
+
+With 10,000 replicates, the p-value estimate near the first Holm cutoff
+(0.05/15) has visible simulation error: 32 vs 33 exceedances straddle the
+cutoff, and the conditional binomial 95% half-width is roughly 0.00113.
+This is only uncertainty in approximating a bootstrap tail probability;
+seed/root sampling uncertainty and inferential validity remain separate.
+Independent review should freeze a precision/reporting rule or revised B
+before outcomes. No results or bootstrap were computed, and the gate remains
+closed. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
