@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 root-sampling draft consistency reconciliation
+
+A fresh independent read-only review found stale references to the superseded Design01 schedule, canonical-window deduplication wording that conflicted with split amendment v05, and root-sampling text that still required symmetry-unique states. The split amendment, generation design, duplicate/overlap audit, v05 root-sampling draft, and review record now agree editorially that source-window IDs define fit-bank distinctness, canonical content is diagnostic, and repeated development-root slot states remain separate observations under Design02. The global six-stratum under-yield stop is proposed in both v05 and Design02, but remains unaccepted and has no chosen schedule-pass-probability threshold. This does not validate the changed estimand or inference. No roots, simulation, data, model, scoring, or outcomes were run/read; no gate changed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
 ### 2026-10-04 MetaOthello multi-world representation prior art
 
 Full-text review of the ICML 2026 camera-ready MetaOthello study found shared board-state representations and causal cross-variant probe transfer across Othello-like games with changed rules or token mappings. Reported next-move-distribution α-scores exceed 0.98, but each model was trained only once at seed 42. The paper's world-model usage is latent state representation from move histories, not an explicit JEPA transition planner. This closes broad multi-rule shared-representation claims; it does not evaluate adversarial decisions, legal-action values, board-size transfer, or decision regret. No code/data or CAISSA outcomes were accessed. No method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.

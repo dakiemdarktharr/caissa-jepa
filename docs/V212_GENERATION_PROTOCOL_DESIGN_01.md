@@ -61,9 +61,11 @@ Before generating any candidate data, a new protocol version should bind:
   before window materialization, with a complete raw, role-normalized, and
   symmetry-normalized H0–H4/H1-H2-H4 key
   audit and explicit quarantine counts;
-- canonical window deduplication and the definition of 928 distinct eligible
-  training windows, including terminal masks and whether short tail windows
-  count;
+- source-window identity `(game/rules fingerprint, episode id, start ply)` and
+  the definition of 928 distinct eligible training windows, including
+  terminal masks and whether short tail windows count. Under split amendment
+  v05, canonical-equivalent content is reported as a diagnostic, not silently
+  dropped or upweighted;
 - development root situations and both seat assignments, generated from a
   seed namespace disjoint from training, with reachability and cross-split key
   checks at the exact game/rules identity used by the auditor;
@@ -92,11 +94,14 @@ claim follows from the synthetic tests. Independent review found this note
 accurate as a non-authorizing design document. The method amendment draft now
 proposes training episodes/windows on fit variants and standalone development
 roots on held-out sizes, explicitly replacing the ambiguous episode-split
-wording. The companion `V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` proposes a fixed
-48-root bank and fail-closed candidate schedule; independent review found it
-suitable for further design review, but the 64-slot yield, occupancy bands, and
-symmetry uniqueness rule remain unverified and must be frozen before any root
-generation.
+wording. The current companion
+`V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` proposes 48 accepted slot observations
+per held-out variant, with 16 accepted from each of three occupancy bands out
+of 64 candidate slots per band. It retains repeated board states as repeated
+slot draws; no symmetry-unique-root filter is proposed. Its global six-stratum
+under-yield stop is also only a proposal. Slot-independence assumptions,
+occupancy weights, yield disposition and acceptable schedule-pass probability
+remain unreviewed or unresolved; no root generation is authorized.
 
 
 ## Exact source compatibility audit

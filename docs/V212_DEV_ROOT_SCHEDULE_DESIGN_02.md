@@ -51,16 +51,18 @@ top up, adapt the policy mixture, widen bands, or replace roots. Proposed
 fail-closed choice for review: if any band in either variant has fewer than 16
 valid slots among its fixed 64, fail the complete two-variant schedule before
 scoring and preserve the complete candidate/rejection ledger. This is stricter
-than the earlier per-variant wording and must be accepted or revised
-explicitly in the method review.
+than the earlier per-variant wording and matches the global stop proposed in
+root-sampling amendment v05. It remains unaccepted and must be accepted or
+revised explicitly in the method review.
 
 The schedule therefore yields 48 accepted slot IDs per variant, or 96 across
-both variants. Before scoring, freeze and hash all candidate outcomes, invalid
-reasons, accepted root receipts, seat assignments, and source/protocol
-fingerprints. Each receipt records exact board and player to move, occupancy,
-prefix actions and legal-ply length, policy pair, slot seed identifiers, and
-the rules/code/policy/protocol hashes. Replaying each prefix must reproduce
-the exact nonterminal root.
+both variants. Before scoring, freeze and hash all candidate-slot validity
+classifications and rejection reasons, accepted root receipts, seat
+assignments, and source/protocol fingerprints. These are schedule/eligibility
+records, not game outcome labels. Each receipt records exact board and player
+to move, occupancy, prefix actions and legal-ply length, policy pair, slot
+seed identifiers, and the rules/code/policy/protocol hashes. Replaying each
+prefix must reproduce the exact nonterminal root.
 
 ## Sampling argument and reporting
 

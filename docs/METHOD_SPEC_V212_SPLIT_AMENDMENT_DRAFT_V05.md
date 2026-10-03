@@ -69,12 +69,14 @@ legal prefix from `game.initial()`; reject terminal roots, preserve forced pass
 action 64 in source replay, and record the exact side-to-move. Before any model
 is scored, freeze and hash every root situation id, rules/game identity, exact
 state, generating policy pair, root-generation seed, source rollout length,
-side to move, symmetry key, and paired seat-assignment schedule. Require at
-least 40 unique reachable situations per held-out variant as already stated
-in method §7. The companion `V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` proposes an
-exact 48-root bank with 16 per occupancy band from a fixed 64-slot candidate
-schedule. This exceeds §7's minimum 40 but remains under review; its yield and
-phase/uniqueness choices are unverified. If adopted, freeze its schedule and
+side to move, and paired seat-assignment schedule. Preserve method §7's
+minimum of 40 independently generated reachable-situation observations per
+held-out variant. The current companion proposal,
+`V212_DEV_ROOT_SCHEDULE_DESIGN_02.md`, yields 48 accepted slot observations
+with 16 per occupancy band from 64 candidate slots per band. Slot ID is the
+sampling unit; repeated board identities remain separate draws and are reported
+as multiplicities, not rejected to meet the minimum. This interpretation of
+the minimum and the schedule remain under review; freeze the schedule and
 failure rule before generation. Do not top up a failed schedule after scores.
 
 The split audit uses the exact game/rules identity in every key. Because fit

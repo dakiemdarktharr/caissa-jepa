@@ -48,10 +48,11 @@ v04 §7 and freeze:
    when repeated states are separate slot draws; fixed equal occupancy-band
    weights and equal variant macro weights; policy-mixture and seat semantics;
    minimum ply, terminal and forced-pass rules; and whether any failed band
-   invalidates the entire schedule without replacement or top-up. V05 currently
-   proposes a global stop across both variants, stricter than design 02's
-   original per-variant stop; reconcile and explicitly accept or revise that
-   choice.
+   invalidates the entire schedule without replacement or top-up. Current v05
+   and Design02 both propose a global stop if any of the six variant × band
+   strata under-yields; that is now editorially aligned but remains unaccepted.
+   Reviewers must explicitly accept or revise the rule and decide whether a
+   minimum probability of schedule completion is required.
 2. The four pinned policies and all ordered-pair probabilities; rules,
    adapter, policy, configuration, and protocol fingerprints; PRNG algorithm
    and version; deterministic independent per-slot stream derivation; the
@@ -87,3 +88,28 @@ authorization.
 - `docs/METHOD_SPEC_V212_ROOT_SAMPLING_AMENDMENT_DRAFT_01.md`.
 - `docs/V212_DEV_ROOT_SCHEDULE_DESIGN_02.md`.
 - `docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md`.
+- `docs/METHOD_SPEC_V212_SPLIT_AMENDMENT_DRAFT_V05.md`.
+- `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`.
+- `docs/V212_DUPLICATE_AND_OVERLAP_POLICY_AUDIT_01.md`.
+
+## Follow-up editorial consistency review (2026-10-04)
+
+A fresh read-only review by the configured independent reviewer found stale
+references to the superseded Design01 root schedule, a generation-protocol
+requirement for canonical window deduplication that conflicted with split
+amendment v05's source-window sampling unit, and duplicate/overlap text that
+still treated symmetry-unique roots as the current sampling unit. These
+documents now point to Design02, preserve repeated root states as distinct
+slot observations, and report canonical-equivalent fit-window content
+diagnostically without dropping or upweighting it. The same pass found that
+the global six-stratum under-yield proposal is already shared by current v05
+and Design02; the review record's earlier statement that those drafts differed
+is corrected.
+
+This reconciliation is editorial only. The success-conditional target, the
+interpretation of 48 slot observations as satisfying v04's 40-situation
+minimum, the all-six yield rule and its acceptable pass probability, the
+stratum-weighted bootstrap's finite-sample calibration, and whether a
+design-matched calibration study is required all remain unaccepted. v04
+remains current; no roots, simulations, scores, or outcomes were generated or
+read, and no generation, scoring, fitting, or match gate advanced.

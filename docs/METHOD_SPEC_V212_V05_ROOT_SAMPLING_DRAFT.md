@@ -41,11 +41,12 @@ invalid transition, and no-eligible-root slots with a reason.
 
 Within each band, accept the first 16 valid slots in slot-ID order, regardless
 of repeated board identity. Do not deduplicate, reweight, adapt, replace, or
-top up. If any band has fewer than 16 valid slots among its 64 candidates,
-this draft proposes failing the complete two-variant schedule before any
-scoring. This global stop is a fail-closed proposal, not an accepted rule;
-independent reviewers must reconcile it with design 02's earlier
-variant-schedule wording. Report the candidate and accepted policy-pair/prefix
+top up. If any band in either variant has fewer than 16 valid slots among its
+64 candidates, this draft proposes failing the complete two-variant schedule
+before any scoring. This global stop is also the fail-closed choice proposed in
+design 02; it remains a proposal, not an accepted rule. Independent reviewers
+must decide whether to retain it and whether to set a minimum schedule-pass
+probability. Report the candidate and accepted policy-pair/prefix
 mix, raw and symmetry-canonical multiplicity, and every rejection reason
 without changing the target after inspection.
 Before scoring, freeze and hash every accepted root receipt, the full

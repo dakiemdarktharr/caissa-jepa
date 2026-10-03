@@ -619,3 +619,17 @@ cgroup, its planner deadline is cooperative, and the v06
 external-supervision/receipt correction remains a draft. No request, model,
 data, score, or outcome was run or read; no resource or fit gate changed. See
 `docs/V212_ADAPTER_CAPACITY_AUDIT_01.md`.
+
+### 2026-10-04 root-sampling and generation-document reconciliation
+
+A fresh read-only independent draft review found stale Design01 references,
+conflicting canonical-window deduplication wording, and duplicate/overlap
+text that still treated symmetry-unique roots as the current sampling unit.
+The proposal documents now point to Design02, preserve repeated root slot
+observations, and keep canonical-equivalent fit-window content diagnostic.
+Current v05 and Design02 both propose a global six-stratum under-yield stop;
+the older claim that they differ was corrected. This is editorial
+reconciliation only: v04 remains the current method, root slots and inference
+remain unreviewed for validity, and no roots, simulation, model, data, score, or
+outcome were generated or accessed. Generation, scoring, fitting, and match
+gates remain closed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
