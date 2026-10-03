@@ -343,3 +343,15 @@ trajectory/prefix diagnostics, replacing “multiple independent episodes” wit
 multiple distinct episode IDs. This avoids inflating the evidential meaning of
 support counts when policy behavior is deterministic or episode content repeats.
 The summaries remain descriptive, with no sufficiency threshold or gate change.
+
+
+### 2026-10-03 memory-policy correction draft
+
+A consistency check found that compute-budget amendment v05 describes sampled
+RSS as a hard process safety stop, while source and host audits show RSS is
+sampled/cooperative and the hard-limit mechanism is cgroup `memory.max`.
+It also found that `memory.oom.group=0` does not guarantee a same-cgroup
+request supervisor survives OOM victim selection. Added
+`docs/V212_COMPUTE_BUDGET_AMENDMENT_06_DRAFT.md` to correct these semantics
+without changing the proposed numerical caps. It is not independently reviewed
+or operational; no pilot or fit is authorized.
