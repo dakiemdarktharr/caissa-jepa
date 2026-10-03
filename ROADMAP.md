@@ -4,6 +4,14 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
+A versioned request-adapter v02 candidate now remeasures elapsed time after
+all supervisor-side request processing and converts late results to forfeits.
+Its exact remote focused suite passes 8/8, including a mocked post-worker delay.
+This remains software-only evidence: no cgroup-contained request or inference
+was measured. External OOM supervision, independent review, receipt integration,
+and caller-observed deadline enforcement are still required; the pilot gate
+remains closed. See the [runtime audit](docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md).
+
 A 2026-10-04 source-contract audit of the exact remote request adapter found
 that its reported request elapsed time is sampled before post-worker cgroup
 validation and response/action checks. A deterministic mocked-clock probe
