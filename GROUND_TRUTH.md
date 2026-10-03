@@ -1,6 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-03; alpha-beta root-score contract audit)
+## Latest continuation delta (2026-10-03; counterfactual-support count audit)
+
+- Further self-audit found “multiple independent episodes” in the support draft was stronger than the implemented definition, which only counted distinct episode IDs. The draft now reports distinct IDs, declared seeds, policy-pair/seat diversity, and repeated trajectory/prefix content separately; it makes no statistical-independence claim.
+- Remote-only documentation update based on source-level protocol review. No code, local checkout state, data, pilot, or experiment artifact changed; no tests or outcome access were performed.
+
+## Prior continuation delta (2026-10-03; alpha-beta root-score contract audit)
 
 - Read-only inspection of the lattice checkout found `main` at `0cba5d646db40f4da0ef07e1d84c26b098580b2e`, four commits behind `origin/main`, with pre-existing modified `ROADMAP.md` and `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md`, plus untracked root-sampling draft, duplicate/overlap audit, request-adapter code/tests, and symmetry tests. The checkout was left untouched; remote GitHub remains authoritative for this update.
 - Source audit of frozen `two_player/v212_pilot.py` found the runner passes the incumbent root alpha through later root-action searches and discards its per-action value map after selection. Under alpha-beta cutoffs, a returned non-selected action value can be an upper bound rather than its exact fixed-depth value. The compute-only pilot publishes no action-score ledger, so this does not alter prior receipts or compute findings.
