@@ -15,6 +15,14 @@ separate replicates. The required R and
 decision/uncertainty criteria remain for independent review to freeze before
 any simulation. No simulation or gate change follows from this note.
 
+The related-work scan added Chess-World-Model (2026), a 10M-game benchmark
+for exact chess-state reconstruction from move sequences, including a
+uniformly random legal-play split. This narrows broad claims to board-game
+state tracking; the paper does not evaluate JEPA or planning/decision quality.
+An apparent separate JEPA-Chess result remained aggregator-only and its
+reported metrics were excluded without a primary-source record. No method or
+gate changed; see the updated crosswalk and Related Work.
+
 The lattice session verified cgroup enforcement in disposable user
 scopes: a 1.5 GiB `memory.max` was finite and inherited by a child; a separate
 64 MiB no-swap scope killed an over-limit child and recorded `oom_kill=1`;

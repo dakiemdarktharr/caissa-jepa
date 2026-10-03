@@ -1,6 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; chess state-tracking prior art)
+
+- Added Walker and Lyons' Chess-World-Model as adjacent prior art: exact full-state reconstruction from legal chess move sequences, with held-out human-game and uniformly random legal-play evaluation. It narrows broad state-tracking novelty but does not test JEPA planning or decision quality.
+- An aggregator surfaced a second JEPA-Chess title, but this pass found no matching primary paper/DOI/repository and excluded its reported metrics as unverified.
+- Updated remote Related Work and the V2.12 prior-art crosswalk only. The method, gate, and research claims remain unchanged; no code/data, model, root schedule, simulation, scoring, or training was run. Sources: [Chess-World-Model paper](https://arxiv.org/abs/2605.30100), [author repository](https://github.com/Benjamin-Walker/Chess-World-Model).
+
+
 ## Latest continuation delta (2026-10-03; paired outer-simulation precision)
 
 - Added the CRN caveat from primary simulation-method sources: sharing generated datasets can yield positive or negative dependence, so it does not automatically reduce Monte Carlo error. The protocol now treats pairing as necessary for direct precision estimates of method differences, with any variance benefit left to measured covariance.

@@ -586,3 +586,35 @@ state. It therefore narrows broad “model-based planning in new games” claims
 but does not resolve CAISSA's specific JEPA decision-quality question or
 validate the V2.12 proposal. Sources: [ICLR 2026 proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html);
 [arXiv:2510.04542](https://arxiv.org/abs/2510.04542).
+
+
+
+### Exact chess-state tracking as an adjacent benchmark (2026)
+
+Walker and Lyons' *Chess-World-Model* (arXiv:2605.30100) trains sequence
+models to reconstruct the complete chess state after each prefix of legal
+moves. Its benchmark uses 10 million Lichess games, a held-out human-game
+split, and a uniformly random legal-play split; it compares a causal
+Transformer with SLiCE, Mamba-3, and Gated DeltaNet under a shared prediction
+interface. The authors report that the recurrent models outperform the
+Transformer at the smaller 3M and 8M parameter scales, while the random-play
+split remains discriminative at larger scales. The task is exact state
+tracking, not move selection or game playing, and it does not evaluate a JEPA
+loss, planning, or decision regret. It therefore rules out broad claims that
+exact state tracking over deterministic board-game move histories is new,
+while leaving the V2.12 objective-attributed decision-quality question open.
+The repository is MIT-licensed; this audit did not download or run its code or
+data, and its reported experiments were not independently reproduced.
+Sources: [paper](https://arxiv.org/abs/2605.30100) and
+[author repository](https://github.com/Benjamin-Walker/Chess-World-Model).
+
+A separate exact-title search surfaced a 2026 aggregator entry titled
+*JEPA-Chess: Action-Conditioned Joint Embedding Predictive Architectures for
+Discrete Logical State Tracking*, attributed there to Yumnam Harryson Singh
+and described as a Zenodo preprint. Exact-title searches of arXiv, Crossref,
+and Zenodo's indexed results did not yield a matching primary record, DOI, or
+author repository during this pass. This is a search lead only: the claimed
+40-ply accuracy and other metrics are excluded from the evidence until a
+verifiable primary source is located. This is distinct from the existing
+[CCranney/JEPA-chess development repository](https://github.com/CCranney/JEPA-chess),
+which does not establish a completed benchmark or strength result.
