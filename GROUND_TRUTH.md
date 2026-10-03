@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; kernel-attributed bounded worker-cgroup OOM trial)
+
+- After the stage-2 capture-path check was accepted by independent review, one bounded 64 MiB transient-service worker attempted a 256 MiB allocation. systemd recorded Result=oom-kill/ExecMainStatus=9; the external caller survived and the completion marker was absent.
+- The open memory.events.local descriptor did not capture a positive counter before the cgroup disappeared. A filtered kernel journal query after cleanup recorded constraint=CONSTRAINT_MEMCG with oom_memcg and task_memcg matching the transient worker unit, then recorded group termination because memory.oom.group was set. This positively attributes this single event to the worker memory cgroup. systemd-oomd was inactive when queried.
+- The journal excerpt was copied to a local filtered log only after cleanup; pre-teardown, invocation-bound receipt integration and positive event-counter capture remain open. This is one bounded OOM/caller-survival observation, not a general containment guarantee. Repeatability, ancestor/host headroom, request timing, inference, and broader supervision remain unvalidated; pilot gate remains closed. Logs: /tmp/caissa_v212_oom_probe_v2.log and /tmp/caissa_v212_oom_probe_v2_journal.log.
 ## Latest continuation delta (2026-10-04; no-inference event/result capture check)
 
 - A gated 128 MiB transient service verified the sibling-cgroup/finite-limit preflight. The controller captured 14 worker-local memory.events.local samples while the cgroup existed, then captured SubState=exited, Result=success, ExecMainStatus=0, and empty ControlGroup after normal exit; the cgroup file was gone. It persisted the receipt and verified the unit not-found after cleanup. No OOM occurred. Log: /tmp/caissa_v212_capture_preflight_v2.log.
