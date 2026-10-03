@@ -44,7 +44,10 @@ both cgroups were removed after cleanup. A new fail-closed request adapter,
 `memory.oom.group=0`, verifies that its worker inherits the same path, applies
 absolute 5-second planner and 6-second response deadlines, kills a timed-out
 worker group, and distinguishes OOM events from watchdog timeouts. The focused
-suite passes 20/20. A no-inference subprocess preflight inside the real 1.5 GiB
+suite passes 20/20. The exact remote adapter and test blobs also passed their
+seven-test subset in a scratch overlay (7/7); this is mocked/in-memory
+validation, not a cgroup-contained request measurement. A no-inference
+subprocess preflight inside the real 1.5 GiB
 scope verified that the worker inherited the parent's exact cgroup path,
 `memory.max=1610612736`, and `memory.oom.group=0`; the disposable scope was
 removed. No request/inference worker or multi-cell pilot ran. The adapter has no

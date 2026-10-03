@@ -1,6 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
 
+## Latest continuation delta (2026-10-03; exact remote adapter test)
+
+- Hash-verified the adapter/test blobs on `main` (adapter `3303a144...`, test `7470a46e...`) and their exact `games.py` and `v212_pilot.py` dependencies. Re-ran the remote seven-test subset in a `/tmp` overlay with the project virtualenv: 7/7 passed.
+- This is mocked/in-memory software verification only; it does not measure a real cgroup-contained request or authorize a pilot. The local untracked copies differ only in OOM error wording/assertion and remain untouched. No project data, scores, or training were accessed.
+- The adapter remains pending independent review and receipt integration; no method or gate changed.
+
+
 ## Latest continuation delta (2026-10-03; trajectory episode-origin audit)
 
 - Read-only review of the remote in-memory trajectory auditor found it validates exact replay from the supplied first state but does not require that state to equal the game's initial state or bind a full-game seed/policy lineage.

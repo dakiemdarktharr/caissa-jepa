@@ -203,3 +203,21 @@ source hashes, or use a separately typed segment format with an original-ply
 offset and parent-episode provenance. Otherwise a suffix can be renumbered
 from ply zero and the whole-episode split/manifest assumptions cannot be
 verified by this helper alone. No method or gate is amended by this audit.
+
+
+### Exact remote-blob adapter test (2026-10-03)
+
+The adapter and its focused test were fetched from remote `main` and verified
+by Git blob SHA (`3303a1441d3e6807a2b5e6eb81dffb0e22f18223` and
+`7470a46e0a40efe231dd14e679e466bddb61655f`). The remote
+`games.py` and `v212_pilot.py` dependencies also matched the local object
+hashes. All five remote files were placed in an isolated `/tmp` overlay and
+the exact remote test suite was run with the project virtual environment:
+`python -B -m unittest discover -s tests -p test_v212_request_adapter_v01.py`.
+Result: 7/7 passed in 0.323 seconds.
+
+The suite is mocked/in-memory software verification, not an in-cgroup
+request-to-response measurement or a multi-cell pilot. The local untracked
+adapter/test copies differ from remote only in the OOM-error wording and its
+assertion; they were not used for the remote result and were left untouched.
+No project corpus, model-training data, match score, or outcome was read.
