@@ -95,7 +95,7 @@ def parse_token(payload: bytes) -> dict[str, Any]:
     required = {
         "schema", "request_nonce", "service_unit", "invocation_id", "boot_id",
         "control_group", "effective_properties", "live_cgroup", "source_manifest_sha256",
-        "captured_monotonic_ns", "token_sha256",
+        "captured_monotonic_ns", "deadline_monotonic_ns", "token_sha256",
     }
     if set(parsed) != required:
         raise ReleaseTokenError("release token fields do not match the versioned schema")
@@ -122,6 +122,9 @@ def parse_token(payload: bytes) -> dict[str, Any]:
         raise ReleaseTokenError("source_manifest_sha256 must be lowercase SHA-256")
     if type(parsed["captured_monotonic_ns"]) is not int or parsed["captured_monotonic_ns"] <= 0:
         raise ReleaseTokenError("captured_monotonic_ns must be a positive integer")
+    if (type(parsed["deadline_monotonic_ns"]) is not int
+            or parsed["deadline_monotonic_ns"] <= parsed["captured_monotonic_ns"]):
+        raise ReleaseTokenError("deadline_monotonic_ns must follow snapshot capture")
     digest = parsed["token_sha256"]
     unsigned = {key: value for key, value in parsed.items() if key != "token_sha256"}
     if not isinstance(digest, str) or not _HEX64.fullmatch(digest) \

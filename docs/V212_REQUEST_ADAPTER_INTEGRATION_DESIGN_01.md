@@ -37,6 +37,29 @@ tested. These synthetic helpers are not supervision or pilot evidence. Next is
 the mocked no-inference service/controller failure protocol, followed by
 independent review before any live service smoke.
 
+## Implementation progress: mocked armed controller/worker protocol (2026-10-04)
+
+Added `two_player/v212_armed_protocol_v01.py`. The controller rejects any
+snapshot whose effective properties do not exactly match the v01 profile
+(128/96 MiB memory, swap 0, 64 KiB file limit, 8-second runtime, no restart,
+`OOMPolicy=kill`, retained exit result) or whose manager memory values disagree
+with the live cgroup files. It sends one canonical token only after the worker
+reaches the FIFO read barrier and before the absolute monotonic deadline. That
+deadline is now bound into the token; after validating token, invocation,
+cgroup, source fingerprint, and live limits, the worker checks it again
+immediately before the synthetic callback. Tests prove invalid policy, stale
+nonce, pre-release timeout, and expiry between release and callback never invoke
+the callback. The combined IPC, release-token, and armed-protocol suites pass
+36/36; independent static review found no remaining issue in this mock scope.
+
+This is not the complete supervision failure protocol: systemd snapshot
+provenance, actual service termination/kill/reap on deadline, journal/counter
+capture, receipt durability, and cleanup/recovery remain unimplemented here.
+No service, adapter, inference, OOM, or project outcome was run. Next, extend
+the mocked supervisor boundaries for lifecycle and receipt failure paths, then
+obtain review of the complete architecture before any live normal-exit service
+smoke.
+
 Updated: 2026-10-04. **Status: design plus partial, synthetic IPC/token helper implementation; no service integration and no authorization to run inference/OOM.**
 
 ## Decision

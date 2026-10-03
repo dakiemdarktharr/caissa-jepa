@@ -57,6 +57,7 @@ class ReleaseTokenTests(unittest.TestCase):
             "live_cgroup": dict(self.live),
             "source_manifest_sha256": hashlib.sha256(b"source bundle").hexdigest(),
             "captured_monotonic_ns": 123456789,
+            "deadline_monotonic_ns": 987654321,
         }
         fields.update(changes)
         token = dict(fields, token_sha256=release.token_digest(fields))

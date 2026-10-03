@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 mocked armed controller/worker release protocol
+
+Added `two_player/v212_armed_protocol_v01.py`: the caller validates an exact bounded v01 service profile and live memory values, waits for the worker's blocking FIFO barrier, then sends a nonce/source/invocation/cgroup-bound token carrying the absolute monotonic deadline. The worker checks the deadline immediately before the synthetic callback. Deadline, resource-profile, live-memory mismatch and worker-context tests establish callback suppression on failure. Combined IPC/token/protocol tests pass 36/36; independent static review found no blocker in this mock scope. This is not systemd snapshot provenance, worker termination/reap, journal/counter receipt capture, or live service evidence. No service, adapter, inference, OOM, data, score, or outcome ran. Next: mock supervisor lifecycle/receipt/cleanup failure boundaries, then review before live normal-exit service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ### 2026-10-04 synthetic worker release-token verifier
 
 Added `two_player/v212_release_token_v01.py`: the worker blocks on the verified release FIFO, reads one bounded token through EOF, validates canonical sorted JSON and its digest, binds nonce/unit/invocation/boot/cgroup/source-manifest identity, and compares the live cgroup memory limit files. Fixture tests cover mismatch, malformed/duplicate/oversized input, FIFO substitution, empty EOF and blocking readiness. Combined IPC/token tests pass 30/30; independent static review found no remaining blocker. This is helper-level no-inference verification only: there is no controller/service integration or internal FIFO-read timeout, and the future caller deadline/service runtime must bound that wait. No service, adapter, inference, OOM, training, data, score, or outcome ran. Next: mocked service/controller failure-path protocol; review before any live service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.

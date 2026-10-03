@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; mocked armed controller/worker protocol)
+
+- Added `two_player/v212_armed_protocol_v01.py`. The mock controller enforces the exact v01 effective service profile and equality between manager memory properties and live cgroup values; it releases only after the FIFO reader is ready and carries the absolute monotonic deadline in the canonical token. The worker verifies the token/context/live files and checks deadline again immediately before the synthetic callback.
+- The combined IPC/release-token/armed-protocol suites pass 36/36; `git diff --check` passes. Tests confirm invalid policy, memory disagreement, wrong nonce, pre-release expiry, and expiry after release suppress the callback. Independent static review found no remaining issue in this mock-only scope.
+- Systemd snapshot provenance, service termination/reap, journal and counter capture, receipt durability, cleanup/recovery, and live service behavior remain unimplemented or unverified. No service, adapter, inference, OOM, training, project data, score, or outcome was run/accessed. Research/pilot gates remain closed.
+- Next: mock supervisor lifecycle, receipt and cleanup failure boundaries; then independently review the complete architecture before any live normal-exit service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ## Latest continuation delta (2026-10-04; synthetic worker release-token verifier)
 
 - Added `two_player/v212_release_token_v01.py`: a worker-side blocking FIFO consumer and strict versioned token verifier. It checks FIFO identity, bounded one-message-to-EOF input, canonical sorted JSON, duplicate/extra fields, digest, request nonce, service unit, systemd invocation, boot ID, exact cgroup path, expected source-manifest SHA-256, and live `memory.max`, `memory.high`, and `memory.swap.max` fixture values.
