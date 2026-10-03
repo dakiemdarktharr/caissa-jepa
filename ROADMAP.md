@@ -4,6 +4,16 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
+The 2026-10-04 primary-source refresh adds JEPA-TTT (persistent online
+predictor adaptation under dynamics shifts) and point-cloud adaptations of
+LeWM/Delta-JEPA to Related Work and the draft crosswalk. They reinforce that
+action-conditioned JEPA planning and action-sensitive objectives are established
+outside this exact game setting. Neither evaluates deterministic two-player
+exact-rule max/min or isolates the proposed V2.12 loss. This is positioning
+evidence only; the method and gates remain unchanged, and no training or pilot
+is authorized. See [Related Work](docs/RELATED_WORK.md) and the
+[prior-art crosswalk](docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md).
+
 A precision clarification in the review-only outer-simulation audit separates
 marginal operating-characteristic rates from paired method differences. For
 methods evaluated on the same generated outer datasets, estimate the replicate-
