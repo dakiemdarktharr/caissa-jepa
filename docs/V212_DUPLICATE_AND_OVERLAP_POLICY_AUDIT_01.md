@@ -38,6 +38,41 @@ cross-partition equivalence only after the adapter-wide legal-set and
 transition-commutation checks in the counterfactual-support protocol pass.
 Raw exact identities remain available as the primary audit record.
 
+## Root-sampling and inference alignment
+
+METHOD_SPEC_V212 §7 says to generate at least 40 independently generated
+reachable situations per held-out variant and uses a crossed bootstrap that
+resamples situation ids independently. The root-schedule draft instead accepts
+the first 16 symmetry-unique roots from 64 candidate slots in each occupancy
+band. If candidate slots are independent draws, the accepted set after
+duplicate rejection is not an iid sample from the original policy-mixture
+root distribution: acceptance depends on earlier accepted roots, and the
+schedule itself notes that first-in-order acceptance changes the realized
+policy-pair and prefix-length mix.
+
+This is a possible mismatch between the sampling design and the resampling
+assumption, not evidence that any result or interval is already invalid; the
+schedule has not been run and the intended estimand has not been frozen. Before
+the independent protocol review, define whether the development estimand is:
+
+- performance under the occupancy-stratified policy-mixture distribution of
+  candidate slots;
+- performance on a sample of unique reachable situations under an explicitly
+  defined unique-state sampling distribution; or
+- performance conditional on one fixed, predeclared root bank.
+
+For the first estimand, retaining duplicate candidate slots (while recording
+canonical root multiplicities and accounting for repeated-state clustering)
+preserves the slot-level draw more directly than discarding them. For the
+second, specify an estimator/bootstrap that respects the unique-root selection
+mechanism and its induced policy/prefix distribution. For the third, state
+clearly that inference is conditional on the bank and do not use root
+resampling to imply generalization to a broader situation population. In all
+cases, terminal-before-band and other unscorable slots need a predeclared
+failure disposition; the current 64-slot yield rule is not a substitute for
+estimand alignment.
+
+
 ## Adapter symmetry inventory from source
 
 | In-scope adapter | Spatial mappings declared by `BoardGame.transforms()` | Action mapping and rule argument |

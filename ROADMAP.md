@@ -48,6 +48,11 @@ gravity-preserving maps for each Connect Four variant; D4 for Reversi), but
 `canonical_key` does not return its minimizing map and no adapter-wide
 legal-action/transition property suite exists. Canonical edge metrics remain
 disabled pending those code-property checks and independent protocol review.
+The same root-schedule review must also reconcile §7's independent-situation
+bootstrap with the proposal to keep only the first 16 symmetry-unique roots
+from 64 candidate slots per band. Rejection makes accepted roots dependent and
+can change their induced policy/prefix distribution; the development estimand
+and resampling unit must be frozen before scoring.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.
