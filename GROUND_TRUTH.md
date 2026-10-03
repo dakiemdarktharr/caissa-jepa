@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; request-adapter integration design review)
+
+- Read the current v01/v02 request adapters against the new live receipt collector and staged supervision requirements. The existing v02 request path still launches a pipe-based worker in the caller's cgroup and samples the caller's hierarchical counters; simply wrapping that path in a transient unit would not provide the required worker-local evidence or caller/worker boundary.
+- Added `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`. It defines a caller/worker split, schema+nonce-bound file IPC, a pre-compute armed handshake with an identity-checked release FIFO, a release token containing canonical effective-property and live-cgroup values, strict no-action failure handling, and exact-source execution/fingerprinting. The token digest is recomputed over the included values; the worker compares invocation/cgroup/limits before model initialization. Source verification must execute the exact bytes checked, not mutable files that can change between hashing and import.
+- Independent read-only design review found and the follow-up resolved sequencing and token/source-binding ambiguities. No code, adapter request, inference, training, project data, score, or outcome was run/read in this review. This does not authorize OOM or open the pilot gate. The next permitted implementation step is a synthetic no-inference armed/release service and its failure-path tests; stage-3 OOM remains separately authorized, and stage-4 request integration remains downstream of the documented stages/reviews.
+- NumPy is absent from available Python runtimes, so request-adapter test suites remain unverified. The design note records the exact limits and evidence reviewed.
+
 ## Latest continuation delta (2026-10-04; invocation-bound normal-exit receipt collector)
 
 - Added `two_player/v212_supervision_collector_v01.py` to run one synthetic worker as a bounded transient user service, bind its normal-exit manager snapshot and service-journal marker to the same invocation/cgroup, sample worker-local `memory.events.local`, and persist the assembled receipt before cleanup. It collects no kernel OOM journal and performs no OOM operation or inference. Failure and interruption paths retain recovery identifiers and fail closed on uncertain receipt/workspace cleanup state.
