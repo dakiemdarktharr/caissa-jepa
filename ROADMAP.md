@@ -10,6 +10,18 @@ descendant containment, supervisor behavior, and cleanup. `memory.high` is not
 a hard limit; see
 `docs/V212_HOST_MEMORY_CONTAINMENT_AUDIT_01.md` and its primary references.
 
+A source audit also found that V2.12-04 calls for counterfactual coverage but
+does not define its branch population, denominator, or missing-support
+handling. V2.8 reply closure is used for overlap checks, while its model-facing
+targets remain observed actions; the V2.12 synthetic helper likewise only
+forms observed-path windows. This is a protocol-definition gap, not a result
+about model quality or leakage. Before data generation, define behavior
+support and complete legal-branch evaluation, distinguish held-out-size
+structural absence from ordinary missing actions, and get the versioned
+protocol independently reviewed. See
+`docs/V212_COUNTERFACTUAL_SUPPORT_AUDIT_DESIGN_01.md`; V2.12-04 remains
+unchanged.
+
 The follow-on source review found that the V02 RSS guard is sampled/cooperative,
 not a hard ceiling: the initial sample is not compared to the cap, periodic
 checks happen every 256 nodes, and an over-cap final check can escape the
