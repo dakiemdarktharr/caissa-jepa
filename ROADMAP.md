@@ -1,6 +1,7 @@
 # CAISSA-JEPA research roadmap
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+
 ### 2026-10-04 bounded transient-service OOM probe (ambiguous)
 
 A bounded no-inference transient-service worker passed the finite 64 MiB/swap-zero/OOM-group preflight, attempted a 256 MiB allocation, and was recorded by systemd as Result=oom-kill; the external controller survived and the worker did not complete. However, the last worker-local memory.events.local sample had max=3 and zero oom, oom_kill, and oom_group_kill. Independent review found the source ambiguous, so this does not demonstrate local OOM containment and stage 3 remains closed. Verify and review event/result capture under no-inference stage 2, including attribution before cgroup teardown, before repeating fault injection. No inference, training, data, or outcome gate changed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md.
