@@ -280,3 +280,10 @@ delivery under OS scheduling. The eventual caller must enforce and record its
 own observed six-second response boundary; independent review, external OOM
 supervision, and receipt/report integration remain open. Do not run a pilot
 with v01 or v02 until those gates pass.
+
+
+### External worker supervision design (2026-10-04)
+
+Added `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md` as a research proposal based on the Linux cgroup v2 and systemd manuals. It proposes testing a uniquely named transient service for the worker while the request-owning caller remains outside that unit. Kernel cgroup semantics support only a worker-local OOM boundary; they do not prove protection from ancestor/host-wide pressure. The design also records systemd start/runtime and receipt-capture constraints.
+
+This is not an independent review, host capability check, or OOM-supervision result. Prior disposable tests exercised user scopes, not transient services; no service-local OOM test, request/inference, or receipt integration ran. The document defines staged preflight, placement, fault-injection, no-outcome integration, and review gates. No pilot/training/data/outcome gate changed.
