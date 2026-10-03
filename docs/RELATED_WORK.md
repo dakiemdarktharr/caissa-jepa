@@ -525,3 +525,39 @@ review must assess a DA-LeWM-style inverse-action control and whether any
 goal-action target is meaningful for policy-mixture trajectories without
 confounding behavior imitation with adversarial decision quality. The present
 V2.12 spec does not include this control; no method or gate is amended here.
+
+
+### Learned latent models for two-player zero-sum games: LAMIR (ICLR 2026)
+
+Kubíček and Lisý, *Look-ahead Reasoning with a Learned Model in Imperfect
+Information Games* (LAMIR), directly establish that learned latent game models
+can support look-ahead reasoning in two-player zero-sum games. Their
+MuZero-inspired model encodes each player's information set, predicts both
+players' next abstract information states from a joint action, and predicts
+reward, termination, and legal actions. Training uses trajectory data and
+recurrent losses for those targets, plus a learned information-set
+abstraction; the paper does not present a JEPA objective. At test time the
+learned model supports depth-limited reasoning with CFR+, rather than
+CAISSA's exact-rule finite-horizon max/min backup.
+
+The scope is materially different but closer than generic single-agent
+world-model work: LAMIR addresses imperfect-information simultaneous-move
+games without chance, including Leduc Hold'em and imperfect-information
+Goofspiel/Oshi-Zumo. Its formalism notes that sequential games can be
+represented with fictitious actions for the non-acting player, so
+“alternating two-player game” alone is not a defensible novelty claim. The
+paper reports lower exploitability than concurrently trained RNaD in smaller
+games, and up to 80% head-to-head win rate in large games; these are
+author-reported results, not independently reproduced here.
+
+This closes any broad claim that learned latent models plus test-time
+look-ahead or equilibrium-oriented reasoning are new to two-player
+zero-sum games. A narrower CAISSA comparison remains possible: deterministic,
+fully observed board states with known exact rules and legal-action
+enumeration; JEPA-style state-latent prediction; and decision-rank/regret
+evaluation under finite-horizon adversarial backup against compute-matched
+non-JEPA controls. That difference defines a testable empirical question,
+not established novelty or evidence of a JEPA advantage. V2.12's planner is a
+max/min heuristic and must not be described as a Nash-equilibrium solver.
+Source: [Kubíček & Lisý, arXiv:2510.05048](https://arxiv.org/abs/2510.05048),
+whose paper identifies itself as published at ICLR 2026.

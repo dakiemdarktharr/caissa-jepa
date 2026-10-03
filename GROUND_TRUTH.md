@@ -1,5 +1,14 @@
 # CAISSA-JEPA — Ground Truth
 
+
+## Latest continuation delta (2026-10-03; LAMIR game-model prior-art refresh)
+
+- Read the primary-source paper by Kubíček and Lisý, *Look-ahead Reasoning with a Learned Model in Imperfect Information Games* (LAMIR), arXiv:2510.05048; the paper identifies itself as published at ICLR 2026.
+- LAMIR learns latent representations for both players' information sets, predicts next abstract states from joint actions together with reward, termination and legal actions, and uses a learned abstraction with depth-limited CFR+ look-ahead. It reports lower exploitability than concurrent RNaD on smaller games and up to 80% head-to-head wins in larger games. These published claims were not independently reproduced.
+- Novelty positioning is narrowed: learned latent game models plus look-ahead, and alternating/zero-sum game domain alone, are not new. LAMIR is imperfect-information, simultaneous-action/no-chance, MuZero-inspired rather than JEPA, and uses equilibrium-oriented CFR+; it does not test CAISSA's deterministic fully observed exact-rule board-game setup or JEPA-versus-matched-control regret question. That difference is a candidate empirical question, not an established novelty claim. V2.12 max/min remains a heuristic, not a Nash solver.
+- No source, data, model, outcome, method, or gate changed. No training, scoring, or match occurred. Obsidian remains deferred. Source: [primary paper](https://arxiv.org/abs/2510.05048).
+
+
 ## Latest continuation delta (2026-10-03; lattice memory.peak probe)
 
 - A no-inference process ran in a disposable user systemd scope with `MemoryMax=1536M`; it reported the same cgroup's `memory.max=1610612736`, `memory.peak` present, `memory.oom.group=0`, and a 5,529,600-byte current/peak reading.

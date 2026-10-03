@@ -407,3 +407,25 @@ Reviewers must decide whether its cost, estimand, loss weight, initialization,
 compute parity, and multiplicity are acceptable before any future fit.
 No goal-action imitation head is presumed appropriate for adversarial
 decision quality. No data, training, scoring, or match gate changes.
+
+
+## Learned-model game-planning prior art: LAMIR (2026-10-03)
+
+Kubíček and Lisý's ICLR 2026 LAMIR paper demonstrates learned latent
+dynamics, legal-action prediction, recurrent trajectory supervision, and
+test-time depth-limited reasoning in two-player zero-sum imperfect-information
+games. It also notes that sequential games can be represented as simultaneous
+games using fictitious non-acting-player actions. This closes broad novelty
+claims for “learned game model plus look-ahead” and for alternating/zero-sum
+game domain alone. LAMIR is MuZero-inspired rather than JEPA, models
+information sets and a learned abstraction, and uses CFR+ reasoning; it does
+not test CAISSA's deterministic fully observed exact-rule board-game setup or
+its proposed JEPA-versus-matched-control decision-regret question.
+
+The distinction is a candidate empirical comparison, not a novelty finding.
+Published LAMIR results (lower exploitability than concurrent RNaD in small
+games; up to 80% head-to-head in large games) are author-reported and were not
+reproduced here. V2.12 still uses a finite-horizon max/min heuristic, not an
+equilibrium solver. No method, implementation, gate, data, training, scoring,
+or outcome status changes. Prior-art source:
+[arXiv:2510.05048](https://arxiv.org/abs/2510.05048).

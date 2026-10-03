@@ -541,3 +541,19 @@ objective as potentially redundant. Logged future actions are not minimax
 labels, so a goal-action imitation head is excluded unless separately
 justified as behavior modeling. No method amendment, data generation, fitting,
 scoring, or gate change is authorized.
+
+
+### 2026-10-03 LAMIR prior-art update
+
+LAMIR (Kubíček & Lisý, ICLR 2026) learns latent game dynamics and uses
+depth-limited CFR+ reasoning in two-player zero-sum imperfect-information
+games. Because its formalism can represent sequential games via fictitious
+non-acting-player actions, alternating/zero-sum game scope and learned-model
+look-ahead cannot stand alone as novelty. CAISSA's possible distinction is
+narrower: JEPA-style latent targets in fully observed deterministic games
+with known exact rules, tested on legal-action decision regret against
+compute-matched controls. This remains unverified and must not be represented
+as a new method or JEPA advantage. LAMIR's paper-reported exploitability and
+head-to-head results were not reproduced. The v04 scope, method, and all
+research gates are unchanged. See docs/RELATED_WORK.md and
+docs/V212_RESEARCH_GATE.md.
