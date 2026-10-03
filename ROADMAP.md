@@ -4,6 +4,16 @@ Updated: 2026-10-03. This is an adaptive research plan, not a promise of a posit
 
 ## V2.12 checkpoint (2026-10-03)
 
+A 2026-10-04 source-contract audit of the exact remote request adapter found
+that its reported request elapsed time is sampled before post-worker cgroup
+validation and response/action checks. A deterministic mocked-clock probe
+crossed the configured response deadline during that handling but still
+returned `response`. This is not an observed latency or cgroup failure; it
+shows the end-to-end deadline contract is incomplete. Keep the adapter
+unapproved until a versioned correction, post-worker-delay regression test,
+independent review, and caller-observed no-outcome integration pass. See the
+[trajectory/runtime audit](docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md).
+
 The 2026-10-04 primary-source refresh adds JEPA-TTT (persistent online
 predictor adaptation under dynamics shifts) and point-cloud adaptations of
 LeWM/Delta-JEPA to Related Work and the draft crosswalk. They reinforce that
