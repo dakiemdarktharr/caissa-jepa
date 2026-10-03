@@ -17,22 +17,27 @@ The behavior-support ledger is computed from the exact episodes and windows
 assigned to fitting, before any model is fit. Define the eligible training
 state set `S_fit` as every exact state that is actually supplied to a V2.12
 training loss or used as an intermediate state in a valid one-, two-, or
-four-ply predictor unroll. Define
+four-ply predictor unroll.
 
-`E_fit = {(game, rules, variant, s, a) : s in S_fit and a in Legal(s)}`
+For each state `s`, let `A_fit(s)` be the set of distinct legal actions
+observed in its predeclared fitting windows and `n_ep(s)` the number of
+distinct fitting episodes containing that state. Per-state coverage is
+`c(s) = |A_fit(s)| / |Legal(s)|`; report its full distribution and stratify by
+`n_ep(s)=1`, `n_ep(s)>=2`, and observed policy-pair/seat diversity. Also report
+distinct observed edges and distinct unobserved legal edges.
 
-and `O_fit` as the subset of those exact state-action edges that occur in the
-predeclared fitting trajectories/windows. The exact-state action support rate
-is `|O_fit| / |E_fit|`. If `E_fit` is empty, report `not_defined`; do not emit
-zero or one. This is a descriptive property of the realized fit bank, not a
-quality estimate, data-sufficiency threshold, or model-based OOD detector.
+Do not headline the pooled ratio
+`sum_s |A_fit(s)| / sum_s |Legal(s)|`: repeated states can dominate it, and
+its magnitude changes mechanically with game branching factor. If retained
+for debugging, label it pooled, give the per-game/variant value and state
+frequency distribution, and never use it as a sufficiency threshold. None of
+these support summaries estimates prediction or playing quality.
 
-For each edge, retain occurrence count, distinct episode count, policy-pair
-count, and seat/actor counts. Publish aggregate histograms by game, variant,
-ply/phase, and policy family; do not publish labels or use terminal outcomes
-to define the support key. Report the legal-but-unobserved edge count
-explicitly. Terminal transitions, forced Reversi passes, and window-tail
-masking need separate enumerated counts.
+For each observed edge, retain occurrence count, distinct episode count,
+policy-pair count, and seat/actor counts. Publish aggregate histograms by
+game, variant, ply/phase, and policy family; do not publish labels or use
+terminal outcomes to define the support key. Terminal transitions, forced
+Reversi passes, and window-tail masking need separate enumerated counts.
 
 Exact keys include rules version and board dimensions. Report raw exact keys
 first. Role-normalized and spatially canonical counts may be secondary only

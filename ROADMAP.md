@@ -25,10 +25,12 @@ unchanged.
 The follow-on `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md` proposes
 separate denominators for fitting-data action support, full root decision sets,
 and visited-node expansion; it explicitly treats held-out-size exact support
-as not comparable. This is a review draft only, with no thresholds, data
-generation, method amendment, or training authorization. Resolve it alongside
-the split matrix, development-root schedule, and compute cap before producing
-any corpus.
+as not comparable. A self-audit removed the pooled legal-edge ratio as a
+headline because repeated states and game branching factor can dominate it;
+the draft instead reports per-state coverage and state/episode frequency.
+This remains a review draft, with no thresholds, data generation, method
+amendment, or training authorization. Resolve it alongside the split matrix,
+development-root schedule, and compute cap before producing any corpus.
 
 The follow-on source review found that the V02 RSS guard is sampled/cooperative,
 not a hard ceiling: the initial sample is not compared to the cap, periodic
