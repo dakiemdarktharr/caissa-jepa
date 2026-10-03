@@ -22,6 +22,23 @@ def _fixed_legal_path(game, choose_action):
     return states
 
 
+def _reachable_states_through(game, max_plies):
+    """Enumerate the exact reachable fixture states through a shallow depth."""
+    states = {game.initial()}
+    frontier = set(states)
+    for _ in range(max_plies):
+        following = set()
+        for state in frontier:
+            for action in game.legal_actions(state):
+                following.add(game.transition(state, action))
+        following -= states
+        states.update(following)
+        frontier = following
+        if not frontier:
+            break
+    return states
+
+
 def _pass_fixture(game):
     """A hand-built Reversi rules fixture where +1 must pass and -1 can move."""
     board = [1] * (game.rows * game.cols)
@@ -78,18 +95,22 @@ class V212SymmetryProperties(unittest.TestCase):
                             transformed_successor,
                         )
 
-    def test_declared_maps_preserve_rules_on_fixed_legal_paths(self):
+    def test_declared_maps_preserve_rules_on_shallow_states_and_legal_paths(self):
         selectors = (
             lambda actions, _ply: min(actions),
             lambda actions, _ply: max(actions),
             lambda actions, ply: actions[(ply * 7) % len(actions)],
         )
         for game in VARIANTS:
-            states = []
+            # Exhaust every distinct state through four legal plies, then add
+            # complete deterministic paths to exercise terminal transitions.
+            states = _reachable_states_through(game, max_plies=4)
             for selector in selectors:
-                states.extend(_fixed_legal_path(game, selector))
+                states.update(_fixed_legal_path(game, selector))
             with self.subTest(game=game.name):
-                self.assert_transform_properties(game, states)
+                self.assert_transform_properties(game, sorted(
+                    states, key=lambda item: (item.player, item.board)
+                ))
 
     def test_reversi_pass_is_fixed_and_transition_commutes(self):
         for game in VARIANTS:
