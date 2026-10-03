@@ -253,15 +253,18 @@ class V212RequestAdapterV01Tests(unittest.TestCase):
                 "reply": self._worker_reply(game, state, scope),
             }
 
-        with patch.object(request_adapter, "time",
-                          SimpleNamespace(monotonic=monotonic)), \\
-             patch(
-                 "two_player.v212_request_adapter_v02.verify_memory_scope",
-                 side_effect=verify_scope,
-             ), patch(
-                 "two_player.v212_request_adapter_v02._run_worker_process",
-                 side_effect=delayed_worker,
-             ):
+        with (
+            patch.object(request_adapter, "time",
+                         SimpleNamespace(monotonic=monotonic)),
+            patch(
+                "two_player.v212_request_adapter_v02.verify_memory_scope",
+                side_effect=verify_scope,
+            ),
+            patch(
+                "two_player.v212_request_adapter_v02._run_worker_process",
+                side_effect=delayed_worker,
+            ),
+        ):
             response = run_move_request(
                 game, root, "direct-leaf-value", model_seed=1,
                 planner_seconds=0.05, response_seconds=0.10,
