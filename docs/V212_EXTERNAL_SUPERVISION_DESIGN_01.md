@@ -1,6 +1,6 @@
 # V2.12 external worker supervision design 01
 
-**Status: research proposal only; not independently reviewed or host-validated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
+**Status: research proposal only; partial read-only host capability preflight completed; not independently reviewed or operationally validated.** This note translates the open external-OOM-supervision gate into a testable design. It does not authorize inference, an OOM stress test, a pilot, training, or a change to the V2.12 method or budget.
 
 ## Candidate architecture
 
@@ -36,6 +36,12 @@ Before cleanup, capture the unique unit name and invocation ID, unit result, mai
 ## Evidence and scope limits
 
 The existing disposable-scope tests established cgroup-v2 memory enforcement and worker inheritance for a scope. They did not exercise transient-service semantics, a service-local OOM, caller survival, or receipt capture. The request-adapter tests are mocked and do not close those gaps. No claim of operational OOM supervision follows until the staged checks pass.
+
+## Partial read-only host capability preflight (2026-10-04)
+
+A read-only lattice check observed systemd 262. The user manager responds to queries and reports version 262; `user@1000.service` is active with `Delegate=yes` and memory accounting enabled. The manager state query reports `degraded`, which was not diagnosed. The unified cgroup memory controller is available and enabled in the user-manager subtree. systemd reports an effective memory maximum/high of 16,092,520,448 bytes (about 15 GiB) for the user manager and its app slice; their direct `MemoryMax`/`MemoryHigh` properties are `infinity`. The caller currently runs in a child cgroup under that app slice.
+
+This indicates that the host has a functioning delegated cgroup-v2 user manager and a finite inherited effective memory ceiling. It does **not** show that a transient inference service can be started with the requested finite limit, that the worker's effective limit will be below the ancestor ceiling, or that sufficient live headroom exists. It also does not show worker-local OOM containment, caller survival, reliable unit-result/event capture, or cleanup. No transient unit was created, and no inference or OOM test ran. Continue to fail closed until a reviewed no-inference placement check verifies those properties.
 
 Primary references:
 
