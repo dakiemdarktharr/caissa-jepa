@@ -37,12 +37,15 @@ density estimate over the predictor's latent recurrent inputs.
 
 For each source state `s` represented in `T_fit`, let `A_fit(s)` be the set of
 distinct legal actions represented by those transitions, and `n_ep(s)` the
-number of distinct fitting episodes contributing an edge from `s`. Per-state
+number of distinct fitting episode IDs contributing an edge from `s`. Per-state
 observed-transition coverage is `c(s) = |A_fit(s)| / |Legal(s)|`; report its
-full distribution and stratify by `n_ep(s)=1`, `n_ep(s)>=2`, and observed
-policy-pair/seat diversity. Also report distinct observed edges and distinct
-unobserved legal edges. States only used as root/target encoder inputs belong
-in the separate exposure ledger, not in this dynamics-support denominator.
+full distribution and stratify by `n_ep(s)=1`, `n_ep(s)>=2`, observed
+policy-pair/seat diversity, and distinct declared seed count. These are
+descriptive source counts, not claims that the episodes are statistically
+independent. Also report distinct observed edges, distinct unobserved legal
+edges, and duplicate trajectory/prefix content across episode IDs. States only
+used as root/target encoder inputs belong in the separate exposure ledger, not
+in this dynamics-support denominator.
 
 Do not headline the pooled ratio
 `sum_s |A_fit(s)| / sum_s |Legal(s)|`: repeated states can dominate it, and
@@ -129,8 +132,11 @@ scoring; no diagnostic budget or estimand is frozen by this clarification.
 
 On training-size variants only, attach each frozen evaluation edge to its raw
 exact state-action support count, then report results in predeclared buckets:
-zero, one episode, and multiple independent episodes. Freeze the exact bucket
-boundaries before model outcomes are opened. If the evaluation state's exact
+zero, one episode ID, and multiple distinct episode IDs. Also report distinct
+declared-seed count, ordered policy-pair/seat diversity, and duplicate
+trajectory/prefix content; episode IDs or different seeds alone do not prove
+statistical independence. Freeze the exact bucket boundaries before model
+outcomes are opened. If the evaluation state's exact
 key is absent, count it as an unseen state; do not reclassify it as an
 unsupported action at a known state.
 
