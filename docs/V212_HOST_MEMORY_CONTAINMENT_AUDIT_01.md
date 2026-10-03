@@ -87,3 +87,18 @@ systemd rejected the newer `MemoryOOMGroup=no` unit property, so the adapter
 reads the kernel cgroup value directly and refuses any value other than zero.
 No pilot worker or model was started in the scope. Runtime enforcement,
 watchdog latency, and receipt cleanup remain unverified for the actual adapter.
+
+
+## OOM-victim selection clarification (2026-10-03)
+
+A follow-up source review found that `memory.oom.group=0` does not guarantee
+that a supervisor in the same cgroup survives an OOM event. It avoids treating
+the cgroup as an indivisible workload for group killing; the kernel can still
+select any eligible individual task in the cgroup. The earlier disposable
+child test observed the shell supervisor survive one child OOM, which is
+evidence for that test case only. A request-level OOM classifier therefore
+needs an external observer outside the bounded workload or equivalent
+reviewed control plane. The adapter's exception text and tests now avoid
+claiming guaranteed supervisor survival. See the kernel's
+[cgroup v2 memory documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+and the unreviewed `docs/V212_COMPUTE_BUDGET_AMENDMENT_06_DRAFT.md`.
