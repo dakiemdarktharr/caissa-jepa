@@ -1,5 +1,14 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-03; alpha-beta root-score contract audit)
+
+- Read-only inspection of the lattice checkout found `main` at `0cba5d646db40f4da0ef07e1d84c26b098580b2e`, four commits behind `origin/main`, with pre-existing modified `ROADMAP.md` and `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md`, plus untracked root-sampling draft, duplicate/overlap audit, request-adapter code/tests, and symmetry tests. The checkout was left untouched; remote GitHub remains authoritative for this update.
+- Source audit of frozen `two_player/v212_pilot.py` found the runner passes the incumbent root alpha through later root-action searches and discards its per-action value map after selection. Under alpha-beta cutoffs, a returned non-selected action value can be an upper bound rather than its exact fixed-depth value. The compute-only pilot publishes no action-score ledger, so this does not alter prior receipts or compute findings.
+- Updated `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md` to require exact/bound/missing status and provenance, prohibit point-ranking or point-regret from bounds, and leave the exact all-action diagnostic and separate budget for independent review. This is a draft clarification only.
+- No tests, inference, pilot, data generation, training, match, or outcome access occurred in this documentation/source-audit step. Existing gates and negative results remain unchanged.
+
+## Prior latest continuation delta (2026-10-03; request scope and related-work update)
+
 ## Latest continuation delta (2026-10-03; request scope and related-work update)
 
 - The latest remote checkpoint before this delta was `6c671e3e4e57abc3310a8f8563568f2add7b7e6d` on `main`; updates were made only to research documentation through the authenticated GitHub integration. No local checkout, source code, generated data, or experiment state was changed.
