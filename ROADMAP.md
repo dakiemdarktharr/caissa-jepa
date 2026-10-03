@@ -317,3 +317,18 @@ adjacent prior art for structured prediction queries, but it does not establish
 coverage of every legal action or exact counterfactual transition in a
 zero-sum board game. The current V2.12 counterfactual-support protocol gap
 therefore remains open; no method, data, or training gate changes.
+
+
+### 2026-10-03 root-score semantics audit
+
+A source-level review of the compute-only alpha-beta runner found that it
+carries the incumbent root alpha between legal root actions and discards the
+per-action score map after selecting a move. Under pruning, some non-selected
+root entries can be bounds rather than exact depth-limited values. The
+counterfactual-support draft now requires score-status/bound provenance and
+prohibits interpreting bounds as point-valued rankings or regret. Exact
+all-action ranking would need a separately specified diagnostic and budget.
+This is a measurement-contract clarification only: frozen pilot receipts
+contain compute counters, not these scores, and no pilot result changes. See
+`docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md`; the draft remains
+unreviewed and authorizes no model scoring or data generation.
