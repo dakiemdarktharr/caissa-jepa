@@ -1,6 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-03; cgroup memory and OOM policy audit)
+## Latest continuation delta (2026-10-03; lattice memory.peak probe)
+
+- A no-inference process ran in a disposable user systemd scope with `MemoryMax=1536M`; it reported the same cgroup's `memory.max=1610612736`, `memory.peak` present, `memory.oom.group=0`, and a 5,529,600-byte current/peak reading.
+- Systemd subsequently reported the scope `LoadState=not-found` and `ActiveState=inactive`. Log: `/tmp/caissa_v212_memory_peak_audit.log`.
+- This confirms interface availability and scope cleanup only. It does not measure inference memory/headroom, verify peak-reset semantics under a workload, or demonstrate supervisor survival under all OOM victim choices. No model, request worker, pilot, or project data was used.
+
+## Prior continuation delta (2026-10-03; cgroup memory and OOM policy audit)
 
 - The current compute-budget amendment v05 calls sampled RSS a hard process safety stop, but the code samples process RSS and the host audit says that sampling is not a hard limit. Linux cgroup v2 documents `memory.max` as the hard-limit/OOM mechanism and `memory.high` as throttling/reclaim.
 - The adapter requires `memory.oom.group=0` with an error claiming this makes the supervisor survive. Kernel semantics do not guarantee that: zero avoids indivisible group killing, but any eligible process in the cgroup may still be selected. The lattice child OOM probe showed one surviving-parent case only.
