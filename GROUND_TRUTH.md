@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; root-inference methods literature)
+
+- Checked primary methods literature on crossed/pigeonhole bootstrap, multiway clustering, few-cluster inference, and resampling-based multiple testing. These sources establish methods under their own assumptions; they do not calibrate the proposed V2.12 20-seed × 16-slot-per-band paired-score/max-|T| procedure or its conditional global-yield design.
+- Added `docs/V212_ROOT_INFERENCE_LITERATURE_NOTE_01.md`. Recommendation: require design-matched calibration before the v05 bootstrap is used for nomination, subject to independent statistical review. The reviewer must freeze scenarios, tolerances, outer Monte Carlo precision and failure consequences before any simulation. This is a recommendation only; v04 remains current and no gate changed.
+- No roots, calibration simulations, scores, training, matches or outcomes were generated or accessed.
+
 ## Latest continuation delta (2026-10-04; root-sampling review disposition)
 
 - Independent static review found the first-valid-slot IID argument coherent only under the draft's slot-local validity, IID-within-variant×occupancy-band, and no-adaptive/identity/outcome-rejection assumptions. Repeated boards can remain distinct draws under that target.

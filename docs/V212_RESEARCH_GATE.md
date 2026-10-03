@@ -633,3 +633,17 @@ reconciliation only: v04 remains the current method, root slots and inference
 remain unreviewed for validity, and no roots, simulation, model, data, score, or
 outcome were generated or accessed. Generation, scoring, fitting, and match
 gates remain closed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+### 2026-10-04 root-inference literature check
+
+Primary methods research on crossed/pigeonhole bootstrap, multiway clustering,
+few-cluster inference, and resampling-based multiple testing supports the
+conclusion that the proposed v05 inferential procedure has no direct
+finite-sample guarantee from the cited sources. See
+`docs/V212_ROOT_INFERENCE_LITERATURE_NOTE_01.md`. The current research
+recommendation is to require design-matched calibration before the v05
+procedure can support nomination. This is not independent statistical
+acceptance: the reviewer may accept, revise, or reject the recommendation
+and must freeze the scenario grid, numerical tolerances, outer Monte Carlo
+precision, and failure response before any simulation. v04 remains current;
+no roots, simulations, scores, training, or outcomes were generated/read.

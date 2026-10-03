@@ -113,3 +113,19 @@ stratum-weighted bootstrap's finite-sample calibration, and whether a
 design-matched calibration study is required all remain unaccepted. v04
 remains current; no roots, simulations, scores, or outcomes were generated or
 read, and no generation, scoring, fitting, or match gate advanced.
+
+## Follow-up methods-literature assessment (2026-10-04)
+
+Primary sources on crossed/pigeonhole bootstrap, multiway cluster inference,
+few-cluster procedures, and resampling-based multiple testing were reviewed
+and summarized in `docs/V212_ROOT_INFERENCE_LITERATURE_NOTE_01.md`. They
+support the crossed-resampling analogy only under their own assumptions and
+do not directly establish finite-sample coverage or strong familywise control
+for the proposed bounded, discrete paired-score statistic, slot-yield
+conditioning, 20-seed × 16-slot design, and 15-contrast gate. The research
+recommendation is to require design-matched calibration before the draft
+procedure supports nomination. This remains a recommendation, not independent
+statistical acceptance. Before any simulation, a qualified reviewer must
+freeze the scenario grid, tolerances, outer Monte Carlo precision, and failure
+response. No roots, simulations, scores, outcomes, or training were produced
+or read; v04 remains current.
