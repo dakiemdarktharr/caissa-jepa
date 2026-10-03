@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+
+## Latest continuation delta (2026-10-04; read-only supervision preflight)
+
+- On lattice, systemd 262 and the user manager responded to read-only queries; the manager health query returned `degraded`. `user@1000.service` is active with `Delegate=yes` and memory accounting enabled; the memory controller is enabled in the delegated cgroup-v2 subtree.
+- systemd reports an effective inherited user/app-slice memory maximum of 16,092,520,448 bytes (about 15 GiB), while direct `MemoryMax`/`MemoryHigh` values are unlimited. This is not live headroom and does not verify a transient worker service's effective limit or OOM behavior.
+- No transient unit, worker, inference, or OOM test was created/run. The preflight log is at `/tmp/caissa_v212_supervision_host_preflight.log`; the design and runtime audit now record the limits of this evidence. Stages 2–5 remain gated; no pilot/training/data/outcome gate changed.
+
 ## Latest continuation delta (2026-10-04; external supervision design)
 
 - Added [external worker supervision design 01](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md) from current Linux cgroup v2 and systemd primary documentation. It proposes a transient systemd service for an isolated worker while the request caller remains outside the unit, with explicit checks for ancestor/host OOM, deadline accounting, unit-result capture, receipt integrity, and cleanup.
