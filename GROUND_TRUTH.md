@@ -1934,3 +1934,18 @@ test passed 2/2 in 19.7 seconds; combined with the synthetic trajectory
 auditor it passed 9/9 in 19.3 seconds. This remains shallow bounded software
 coverage, not an exhaustive later-game proof or a data/leakage result.
 Canonical edge reporting and all generation/training gates remain closed.
+
+
+### V2.12 disposable cgroup containment probe (2026-10-03)
+
+Using the authorized lattice session, a temporary user systemd scope with
+`MemoryMax=1536M` reported `memory.max=1610612736` bytes; a child inherited the
+same cgroup path; all initial `memory.events` counters were zero. A separate
+64 MiB scope with swap disabled terminated a 128 MiB page-touch child and
+reported `oom_kill=1`, while its parent survived to read the event. Both cgroup
+directories were removed; the OOM-failed unit required `reset-failed` before
+systemd reported it absent. Reservation-only and swap-enabled probes produced
+memory.max events but no OOM kill and are not counted as passes. This verifies
+the host cgroup mechanism only; the V2.12 pilot worker/request watchdog has not
+been implemented or launched, so no pilot hard-memory claim is made. RSS
+remains sampled telemetry. No project data, model, or pilot process was used.
