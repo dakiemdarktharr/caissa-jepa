@@ -1,5 +1,29 @@
 # V2.12 request-adapter integration design 01
 
+## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
+
+Added nine orchestration tests in `tests/test_v212_supervision_collector_v01.py`
+with the systemd command/snapshot, cgroup, journal, clock, IPC lifecycle, and
+failure boundaries mocked. They cover successful receipt-before-stop/cleanup
+ordering; invalid worker response; service dispatch failure; non-success
+manager result; missing worker-local counter or journal marker; receipt write
+failure; an ambiguous post-publication durability acknowledgement; unit-stop
+failure; and IPC cleanup failure. The post-publication case invokes the real
+atomic receipt writer before raising a simulated acknowledgement error, and
+verifies the visible receipt and workspace remain while the service is not
+stopped. A successful run separately verifies receipt persistence completion
+precedes the stop command, which precedes workspace cleanup.
+
+The configured independent reviewer found no remaining fixture issue. The
+focused collector, live-evidence, receipt, armed-protocol, release-token, and
+IPC suites pass 92/92 under `unittest`. The environment has no `pytest`
+installation. This is mocked orchestration coverage only; it provides no new
+evidence about live systemd, cgroup teardown, journal timing, or receipt
+durability on the host. No service, adapter, inference, OOM, data, score, or
+outcome ran. The next step is independent review of the complete architecture
+and remaining failure contracts before any live service step. OOM still needs
+separate explicit authorization.
+
 ## Implementation progress: private release-FIFO primitive (2026-10-04)
 
 `two_player/v212_worker_ipc.py` now optionally creates a mode-0600 release FIFO

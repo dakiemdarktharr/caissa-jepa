@@ -178,6 +178,12 @@
 - Exact remote v02 source/test blobs passed 8/8 focused tests in an isolated overlay with hash-matched dependencies. This is mocked/in-memory verification only, not real request timing, cgroup enforcement, or inference.
 - v02 still lacks independent review, an external OOM supervisor, receipt integration, and caller-observed deadline evidence. No pilot/training/data/outcome access occurred; gate remains closed.
 
+## Latest continuation delta (2026-10-04; mocked supervision lifecycle boundaries)
+
+- Added nine mocked collector-orchestration tests covering success, invalid response, service dispatch failure, non-success manager result, missing counter/journal evidence, receipt persistence failure, post-publication durability uncertainty, unit-stop failure, and IPC cleanup failure. Tests assert a completed receipt precedes stop and cleanup; ambiguous publication retains any visible receipt and the IPC workspace and does not stop the unit.
+- The configured independent reviewer found no remaining fixture issue. The collector, live-evidence, receipt, armed-protocol, release-token, and IPC suites pass 92/92 using `unittest`; `pytest` is unavailable in the runtime. These fixtures replace systemd, cgroup, journal, clock, IPC lifecycle, and persistence boundaries (except the real local receipt helper used in the post-publication case), so they establish no live host behavior.
+- No service, request adapter, inference, OOM, training, project data, score, or outcome ran/accessed; no research/runtime gate changed. Next: review remaining protocol failure contracts and the integrated architecture before any live service step. OOM still requires separate explicit authorization. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ## Latest continuation delta (2026-10-04; response-deadline contract audit)
 
 - Exact-remote-blob mocked-clock probe found the request adapter samples reported elapsed time before post-worker cgroup validation, response classification, and action checks. It returned `response` after a synthetic 0.10-second deadline (reported 0.05s; simulated return clock 0.25s).
