@@ -31,7 +31,12 @@ generation protocol. The current V2.8 leak-key audit covers H1/H2 plus two-ply
 reply closure, not every V2.12 H0–H4 context/window state and H1/H2/H4 target.
 The synthetic helper rejects canonical duplicate windows, while draft v05 calls
 for reporting equivalent content diagnostically; production reuse requires an
-explicit reviewed policy.
+explicit reviewed policy. A source-level runtime pass also confirmed V02's
+per-search clock starts after input validation/model reset, while schedule/model
+construction and warmup occur before the call; RSS is sampled every 256 nodes,
+and no end-to-end action-response watchdog exists. These are expected pilot
+instrumentation boundaries, not evidence the proposed request-anchored cap is
+operational.
 See `docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md` and the frozen
 `docs/V212_TRAJECTORY_AUDIT_PROTOCOL_V01.md`. The in-memory synthetic
 fail-closed auditor is implemented, its focused tests pass, and independent
