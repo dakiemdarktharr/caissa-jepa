@@ -2411,3 +2411,9 @@ or gate changed.
 - A design-matched calibration study would have inner bootstrap replicates per synthetic dataset and outer independent datasets per DGP/method cell. Their Monte Carlo errors are distinct; accurate inner p-values do not by themselves make empirical FWER, coverage, or power precise.
 - For a binary operating characteristic near 0.05 or 0.95, approximate normal 95% half-width 0.01 requires about 1,825 outer datasets per cell; half-width 0.005 requires about 7,300. These illustrate the precision-cost relationship; they are not the selected R, acceptance margin, or permission to simulate.
 - If review authorizes a study, preregister R/precision, inner B, RNG stream derivation, uncertainty intervals, and scenario/method comparison rules. No simulation, roots, outcomes, or training occurred. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and [Koehler et al. (2009)](https://doi.org/10.1198/tast.2009.0030).
+
+
+### Latest continuation delta (2026-10-04; analytical root-yield sensitivity)
+
+- Derived exact binomial-tail sensitivity for the proposed global rule requiring at least 16 valid candidates among 64 in all six variant × occupancy strata. Under a common independent per-slot validity rate, all-six schedule yield is about 0.361 at p=0.30, 0.821 at p=0.35, and 0.976 at p=0.40; rates about 0.366, 0.383, and 0.418 correspond to 90%, 95%, and 99% pass probability.
+- These figures are analytical illustrations, not measured slot validity, Monte Carlo simulation, a selected yield target, or authorization. Actual stratum-specific rates and dependence are unknown; independent review must disposition the yield/failure contract. No roots, scores, outcomes, or gate transition occurred. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

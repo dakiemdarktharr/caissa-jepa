@@ -793,3 +793,15 @@ per scenario-method cell; half a point requires about 7,300. Independent
 review must select the precision target, R, uncertainty intervals, and
 reproducible RNG streams before any simulation. No run is authorized or
 performed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-04 analytical root-yield sensitivity
+
+An exact binomial-tail calculation illustrates the proposed global yield gate:
+with 64 candidates and 16 required valid slots in each of six variant ×
+occupancy strata, a common independent slot-validity rate of 0.30, 0.35, and
+0.40 implies all-six pass probabilities of about 0.361, 0.821, and 0.976.
+Rates of about 0.366, 0.383, and 0.418 correspond to 90%, 95%, and 99% pass
+probability. This is analytic sensitivity, not an observed yield, selected
+threshold, simulation, or gate transition; actual stratum rates and
+dependencies remain unknown. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.

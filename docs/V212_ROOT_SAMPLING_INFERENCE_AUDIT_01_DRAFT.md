@@ -259,6 +259,33 @@ to estimate familywise Type I error, interval coverage, or power. Precision
 of the inner bootstrap p-values does not make the estimated operating
 characteristics precise; the outer rates also have Monte Carlo error.
 
+## Analytical sensitivity of the six-stratum yield rule
+
+The proposed global fail-closed rule needs at least 16 valid slots among 64
+candidates in every one of six variant × occupancy strata. Before any roots
+exist, its yield sensitivity can be described analytically under a deliberately
+simple model: each candidate slot is independently valid with the same
+probability `p` in every stratum. The per-stratum pass probability is
+`q(p) = sum_{k=16}^{64} choose(64,k) p^k (1-p)^(64-k)`; if the six strata are
+independent, the probability that the entire schedule passes is `q(p)^6`.
+
+Under that illustration, `p=0.30` gives a per-stratum pass probability of
+0.844 and an all-six pass probability of 0.361; `p=0.35` gives 0.968 and
+0.821; and `p=0.40` gives 0.996 and 0.976. The common per-slot validity rates
+that yield 90%, 95%, and 99% all-six pass probabilities are approximately
+0.3662, 0.3834, and 0.4179, respectively. These values are exact binomial-tail
+calculations up to displayed rounding, not Monte Carlo estimates or observed
+feasibility.
+
+This sensitivity is not a selected acceptance target. Actual validity may
+differ by variant and band, and independence across deterministic PRNG streams
+is an operational assumption. With stratum-specific validity probabilities
+`p_h`, the independent-strata expression is `product_h q(p_h)`; dependence
+would require the joint yield law. A reviewer must choose any desired schedule
+success probability and decide whether a common-rate illustration is useful.
+No slot-validity rate, root, score, or outcome was observed; no simulation was
+run and no gate changed.
+
 For an operating characteristic estimated as a binary proportion p-hat from
 R independent datasets, its Monte Carlo standard error is approximately
 sqrt(p(1-p)/R). As an illustration only, if the true rate is near 0.05 (or

@@ -559,3 +559,17 @@ reviewer must predeclare R/precision, uncertainty intervals, scenario/method
 multiplicity, and deterministic RNG streams before simulation. No simulation,
 roots, outcomes, or gate transition occurred. Details:
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### 2026-10-04 analytical root-yield sensitivity
+
+For a common independent per-slot validity probability `p`, the exact
+binomial-tail calculation for at least 16 valid slots among 64 in each of six
+variant × occupancy strata gives an all-six schedule pass probability of
+about 0.361 at `p=0.30`, 0.821 at `p=0.35`, and 0.976 at `p=0.40`. Common `p`
+values of approximately 0.3662, 0.3834, and 0.4179 correspond to 90%, 95%,
+and 99% all-six pass probabilities. This is illustrative analytical
+sensitivity only: stratum rates and dependencies are unknown, no roots or
+validity rates were observed, and no threshold was selected. The global
+yield-failure rule and all V2.12 gates remain open. See the inference audit
+draft.

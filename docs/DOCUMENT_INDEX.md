@@ -29,6 +29,7 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/validation/V28_ROOT_ORACLE_DEV10_PILOT.json` | Five-root Connect4 6x7 exact-label pilot; 0/5 complete maps under frozen local budget |
 | `docs/METHOD_AMENDMENTS.md` | Active v1.2 middle/late feasibility design and objective controls |
 | `docs/RELATED_WORK.md` | Primary-source positioning review; not an exhaustive publication review |
+| `docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md` | Research-only statistical source and analytical yield-sensitivity audit; no simulation/root generation authorization |
 | `docs/DATA_SOURCES.md` | Source/license register; no external data acquired |
 | `docs/TWO_PLAYER_PILOT_20260929.md` | Executed exploratory 21-run evidence, ceiling/negative results and limitations |
 | `docs/INDEPENDENT_REVIEW_20260929.md` | Independent agent findings, repairs and unresolved scientific issues |
