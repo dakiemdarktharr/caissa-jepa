@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 EB-JEPA action-conditioned planning prior-art update
+
+A primary-source review of Terver et al.'s EB-JEPA paper and official repository found AC-video-JEPA: action-conditioned multi-step latent prediction with goal-conditioned MPPI/CEM planning in Two Rooms. The authors report 97±2% success on randomized-wall navigation and 1±1% when removing inverse-dynamics supervision, alongside substantial variance/covariance and temporal-similarity ablation effects. This removes standalone novelty claims for action-conditioned JEPA planning and inverse-action auxiliary losses. Its continuous 2D goal-navigation results do not establish anything about deterministic adversarial board games or V2.12 performance. It informs reviewer disposition of the existing inverse-action factorial only; no method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md`.
+
 ### 2026-10-04 composite no-inference journal/receipt rehearsal
 
 The no-inference composite rehearsal validated a pre-armed journal follower, 12 live cgroup samples, worker invocation/unit/cgroup binding, separate replay of the retained historical OOM record, and a file+directory-fsynced atomic receipt before cleanup. Independent review accepted this composition prerequisite. It did not exercise live same-invocation OOM capture, positive counter changes, or failure handling; the broader supervision/pilot gate stays closed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md.
