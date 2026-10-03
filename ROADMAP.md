@@ -48,8 +48,10 @@ gravity-preserving maps for each Connect Four variant; D4 for Reversi), but
 `canonical_key` does not return its minimizing map. A bounded
 `tests/test_v212_symmetry_properties.py` suite now checks each declared map's
 legal-action bijection and transition commutation on deterministic in-memory
-fixtures for all four in-scope variants, including a forced-pass Reversi case.
-It is not exhaustive over reachable states; canonical edge metrics remain
+fixtures for all four in-scope variants: it exhausts states through four
+legal plies, then checks three deterministic paths to terminal plus a
+forced-pass Reversi fixture. This remains shallow bounded coverage, not
+exhaustive verification of later states; canonical edge metrics remain
 disabled pending broader/adversarial code-property review and independent
 protocol review.
 The earlier design-01 root schedule kept only the first 16
