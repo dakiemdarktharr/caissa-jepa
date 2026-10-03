@@ -1,6 +1,15 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-03; V2.12 drafts and literature refresh)
+## Latest continuation delta (2026-10-03; adversarial board-game prior-art check)
+
+- At continuation start, verified checkout `/home/koi/src/caissa-jepa`, branch `main`, HEAD and `origin/main` `87450b311ace159514d33f5a92d834b1b02e7074`, clean; remote remains `https://github.com/dakiemdarktharr/caissa-jepa.git`.
+- A targeted Exa search ran 13 queries across JEPA-in-games, adversarial board-game world models, and latent planning/transfer, requesting 92 results before deduplication. This is a lead-generation/search pass, not a systematic review.
+- First-party code review of [WorldModel-ConnectX](https://github.com/alextitonis/WorldModel-ConnectX) found the closest directly verified adversarial board-game latent-model/search setting in this pass. Its self-supervised encoder/dynamics model uses shared-encoder latent targets and a three-step unroll, without an EMA target; the training `step` bundles a fixed opponent response. Its deployed minimax uses exact legal board transitions and the learned value head at leaves; its latent-beam search is a separate comparison baseline. The README's headline and detailed method describe this distinction inconsistently, so the code path controls the interpretation. The public README/repo results are author-reported and not independently reproduced here.
+- [SOLIS](https://arxiv.org/abs/2506.04892) is adjacent board-game latent planning: a Stockfish-value-aligned contrastive chess encoder and six-ply beam, without learned action-conditioned transition dynamics or explicit alternating minimax. Its reported Elo is not independently verified here.
+- Novelty consequence: learned latent models with adversarial board search, and latent-guided planning in a board game, cannot be claimed as new settings. Neither source evaluates the specific V2.12 EMA-target JEPA loss with matched non-JEPA/exact-state controls. The research gate is unchanged; no training, match, score, data generation, or protocol change occurred. Obsidian remains deferred.
+- Search and first-party method distinctions are documented in `docs/RELATED_WORK.md`, `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`, and `ROADMAP.md`. Background command PIDs/logs: skill read `87677` (`/tmp/caissa_search_skill.md`); repo snapshot `87679` (`/tmp/caissa_repo_state.log`); diff review `88626` (`/tmp/caissa_current_research.verify.log`, `/tmp/caissa_current_research.patch`).
+
+## Prior continuation delta (2026-10-03; V2.12 drafts and literature refresh)
 
 - Verified checkout: `/home/koi/src/caissa-jepa`, `main` at `16bcdeefd42ad065a7d38c24557909477bfe8407`, matching `origin/main`; working tree was clean before this documentation update. Remote is `https://github.com/dakiemdarktharr/caissa-jepa.git`.
 - The random-weight no-training compute pilot v02 completed 1,152/1,152 depth-four cells under its safety ceilings. Twelve cells exceeded 2 seconds; maximum was 3.7419 seconds, 7,224 nodes, 20,891 model calls, and 50,212,864 sampled RSS bytes. This is synthetic-state, single-host instrumentation, not trained-model runtime, playing strength, or a common operational budget. The 10,000-node/5-second planner cap and 6-second response deadline remain reviewed proposals pending request-to-search headroom implementation verification.

@@ -83,6 +83,19 @@ exact-state, value, and ranking differences. Distinct legal actions need not
 map to distinct latents; latent distance alone is not evidence of useful
 sensitivity. See the updated [prior-art crosswalk](docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md).
 
+The latest primary-source pass found the author-released 2026
+[WorldModel-ConnectX](https://github.com/alextitonis/WorldModel-ConnectX) and
+the 2025 [SOLIS chess study](https://arxiv.org/abs/2506.04892). ConnectX
+directly overlaps the adversarial board-game setting with a learned latent
+model and search, but its deployed minimax uses exact board rules and learned
+value leaves; its latent beam is a separate baseline, and training folds one
+fixed opponent response into each action transition. It has no EMA-target
+JEPA loss. SOLIS is value-aligned latent chess planning without learned
+transition dynamics. These results remove setting-level novelty claims and
+raise the remaining bar to a matched empirical effect of the specific V2.12
+objective. The sources and their limitations are recorded in
+`docs/RELATED_WORK.md`; no spec, data, compute, or training gate changes.
+
 ## Research objective
 
 Falsifiable hypothesis: an EMA-target JEPA that predicts future latent states conditioned on both players' ordered actions can improve planning under a fixed compute budget over matched non-JEPA baselines, with the benefit retained across a declared family of deterministic, alternating-turn, fully observed, finite-action, zero-sum games. Current evidence does not support this hypothesis. The immediate aim is to determine whether there is a defensible mechanism worth testing, not to tune until a development win appears.

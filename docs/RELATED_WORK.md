@@ -343,3 +343,25 @@ are not treated as evidence. The independently reachable
 remains an experimental repository with no independently verified playing-
 strength result, as noted above. Recheck the unverified lead against a primary
 record before any submission novelty statement.
+
+### Adversarial board-game latent-model planning check (2026-10-03)
+
+A targeted Exa discovery pass used 13 queries across three overlapping
+territories—JEPA in games, learned world models for adversarial board games,
+and latent planning/transfer in chess and related games—with 92 requested
+results before deduplication. Results were treated as leads, not evidence.
+This is not a systematic database or citation search.
+
+| Work and first-party evidence | Method and reported evidence | Relevance and limits for CAISSA |
+| --- | --- | --- |
+| Titonis, Droumalia & Mouliaras (2026), [World Models for Adversarial Games: Encoder–Dynamics–Value Planning Applied to ConnectX, Zenodo record](https://doi.org/10.5281/zenodo.21904378), [author repository](https://github.com/alextitonis/WorldModel-ConnectX) | The public author repo contains a whitepaper, implementation and MIT license. `train_utils.py` trains an encoder/dynamics/decoder with one-step latent, reconstruction and reward losses plus a three-step unrolled latent/reconstruction loss; the encoder itself supplies targets (no EMA target is specified). `env.py` bundles a fixed opponent's reply into each `step`, so a training action transition is not an alternating pair of separately conditioned plies. The deployed `adversarial_search.py` enumerates actual legal board moves/replies and uses the learned value head at leaves; `search.py` is the latent-beam comparison. The README reports a ConnectX 7×6 ladder result of 630 rating / rank 66 of 190 on 2026-09-02 and an internal opponent-harness table (the current deployed configuration with exact endgame solving reports 83.3% against its stronger heuristic); these are author-reported, not independently reproduced. | This is the closest directly verified adversarial board-game latent-model-plus-search precedent found in this pass, and it removes room to present that system-level setting as new. It is not a JEPA result: the model has no EMA-target objective, its trained transition incorporates one fixed-opponent response, and the deployed max/min uses exact rules with a learned leaf value rather than latent imagined branches. It studies one Connect Four board size, not cross-size or cross-game transfer. The paper/repo is a preprint/author project, not peer-reviewed evidence; the README's brief description says planning over the learned prediction, while its detailed method, code and results distinguish that latent-beam baseline from deployed exact adversarial search. Treat the code path and this wording discrepancy explicitly. |
+| Hamara et al. (2025), [Learning to Plan via Supervised Contrastive Learning and Strategic Interpolation: A Chess Case Study](https://arxiv.org/abs/2506.04892), [official KDD-UMC paper PDF](https://kdd.org/kdd2025/wp-content/uploads/2025/07/CameraReady-17.pdf), [author code](https://github.com/andrewhamara/SOLIS) | Trains a transformer state encoder with supervised contrastive labels from Stockfish win-probability estimates over ChessBench positions; chooses moves using an evaluation-aligned latent direction and a six-ply beam. The paper reports an estimated Elo of 2593, but this is not a controlled JEPA/minimax comparison. | Board-game latent planning and shallow search are also prior art, but this method does not learn action-conditioned transition latents or model alternating opponent replies. It further narrows representation/planning claims while remaining adjacent to V2.12's exact-rule search and EMA-target loss. The camera-ready text exposes a placeholder DOI and the reported Elo is not independently verified here. |
+
+These sources sharpen rather than resolve novelty. ConnectX overlaps the game
+setting and the combination of a learned latent model with adversarial board
+search, but not V2.12's specific EMA-target, alternating-action JEPA objective;
+SOLIS overlaps board-state representation and latent-guided chess planning,
+but not predictive dynamics. The only defensible V2.12 question remains a
+controlled empirical increment over matched state/value baselines and a
+same-search exact-state control. No V2.12 fit, match, score, or gate change
+follows from this search.
