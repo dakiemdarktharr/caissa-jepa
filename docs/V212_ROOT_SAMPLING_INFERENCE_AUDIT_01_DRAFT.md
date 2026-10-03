@@ -89,8 +89,43 @@ The amendment and existing schedule remain drafts. Do not generate roots or
 read scores while these choices are unresolved. A statistical reviewer must
 make the disposition before the gate advances.
 
+## Additional primary-source evidence: null and effect scenarios
+
+Bakshy and Eckles evaluate bootstrap inference for dependent user–item
+experiments using three real Facebook datasets to construct synthetic A/A
+experiments, then use probit random-effects simulations with item–treatment
+interactions. Their A/A experiments assess the sharp null; in the simulated
+zero-average-effect setting, one-way user bootstrap coverage falls as those
+interactions grow (87.5% for a nominal 95% interval in one reported condition),
+while their multiway bootstrap remains mildly conservative in the studied
+conditions. They explicitly caution that A/A checks alone cannot reveal
+potentially serious inferential problems under effects. The arXiv v4 notice
+also withdraws the Section 3.4/Figure 4 item-imbalance simulation because of a
+software error; that result is excluded from this audit.
+
+This is design guidance, not validation for CAISSA. The source concerns
+user–item online experiments, large observational layouts, product-factor
+bootstrap weights, and normal-quantile intervals. It does not evaluate 20
+model seeds × 16 root slots per stratum, the proposed max-|T| intervals,
+centered tests, or Holm adjustment. Its numerical coverage must not be
+transferred to CAISSA.
+
+If the independent statistical reviewer requires a design-matched simulation,
+the frozen scenario set should include both (a) sharp-null/zero-contrast
+scenarios and (b) nonzero mean contrasts with heterogeneous seed and
+root-slot effects and seed × root interactions. Freeze variance components,
+discreteness/tie behavior, slot-conditioning assumptions, cross-contrast
+dependence, and acceptance criteria before running anything. Assess familywise
+Type I error and interval coverage under nulls, and coverage, power, interval
+width, and direction/magnitude error under alternatives as applicable to the
+reviewed estimand. A/A-style null checks alone are insufficient. This
+recommendation does not itself authorize a simulation or settle whether one is
+required; independent review must decide. No simulation or root schedule has
+been run.
+
 ## Primary sources
 
+- Bakshy and Eckles (2013), [Uncertainty in Online Experiments with Dependent Data: An Evaluation of Bootstrap Methods](https://arxiv.org/abs/1304.7406) (arXiv v4; Section 3.4/Figure 4 withdrawn).
 - Owen (2007), [The Pigeonhole Bootstrap](https://arxiv.org/abs/0712.1111).
 - Owen and Eckles (2012), [Bootstrapping Data Arrays of Arbitrary
   Order](https://arxiv.org/abs/1106.2125).

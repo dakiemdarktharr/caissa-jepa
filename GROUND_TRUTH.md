@@ -2242,3 +2242,10 @@ frequency, and distinct state/action/successor content. Repeated slots are
 training exposures, not independent observations, and are not silently
 deduplicated. This only clarifies the unreviewed proposal; no data, method,
 or gate changed.
+
+
+### Latest continuation delta (2026-10-03; null-versus-effects inference evidence)
+
+- Bakshy and Eckles evaluate online user–item bootstrap procedures using real-data A/A experiments and simulated item–treatment heterogeneity. Their results support checking both sharp-null and effect scenarios when evaluating dependent-data inference; A/A alone does not expose every failure under effects. One-way bootstrap coverage fell to 87.5% for a nominal 95% interval in a reported simulated condition, while their multiway method remained mildly conservative in the studied conditions.
+- This is a methodological analogy only. It does not validate CAISSA's 20-seed × 16-root-slot design, max-|T| intervals, centered tests, or Holm family. Their arXiv v4 explicitly withdraws its Section 3.4/Figure 4 imbalance simulation for a software error; the project audit excludes it.
+- If independent review requires a design-matched simulation, predeclare sharp-null and heterogeneous/nonzero seed/root-effect scenarios and relevant error/coverage/power criteria before running it. Review must decide whether it is required. No simulation, roots, outcome access, training, or gate transition occurred. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and [Bakshy & Eckles](https://arxiv.org/abs/1304.7406).

@@ -593,3 +593,19 @@ random-effect block bootstrap targets nested cluster mixed models and is not a
 drop-in method for seed × root-slot crossing. Independent statistical review
 must select/compare methods against the frozen estimand; no simulation, roots,
 or outcomes have been produced. See the inference audit draft.
+
+
+### 2026-10-03 null-versus-effects inference evidence
+
+Bakshy and Eckles show why A/A validation is narrow: it evaluates sharp-null
+behavior, while their simulated treatment–item interactions expose
+undercoverage in a one-way bootstrap; their multiway method is mildly
+conservative in the scenarios studied. The reported 87.5% coverage for a
+nominal 95% interval is specific to one user–item simulation, not a CAISSA
+estimate. Their arXiv v4 withdraws the Section 3.4/Figure 4 imbalance result,
+which is excluded. If independent review requires inference simulation, add
+both null and heterogeneous/nonzero seed × root-effect scenarios and freeze
+criteria first. This does not validate CAISSA's procedure or authorize
+simulation; no roots, scores, or training were produced. Details:
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and
+[Bakshy & Eckles](https://arxiv.org/abs/1304.7406).

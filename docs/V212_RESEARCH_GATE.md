@@ -470,3 +470,18 @@ bootstrap studies nested clustered mixed models, not the seed-by-root crossing,
 so it is not a drop-in substitute. These are reviewer options only. The
 source scope and required method disposition are in
 docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md; gates remain closed.
+
+
+### 2026-10-03 null-versus-effects inference evidence
+
+Bakshy and Eckles report that A/A checks address a sharp-null setting and do
+not expose every failure under heterogeneous effects; in their user–item
+simulations, one-way bootstrap coverage degrades under treatment interactions,
+while their multiway method is mildly conservative in the studied scenarios.
+This is contextual evidence only, not validation of CAISSA's seed × root,
+max-|T|/Holm procedure. If a design-matched simulation is required, its frozen
+scenarios should include both null and heterogeneous/nonzero-effect cases;
+independent statistical review must decide and predeclare criteria. The
+source's withdrawn Section 3.4/Figure 4 imbalance result is excluded. No
+simulation, roots, outcomes, training, or gate transition occurred. See
+docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
