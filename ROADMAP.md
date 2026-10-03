@@ -2,6 +2,11 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 no-inference event/result capture-path check
+
+The no-inference 128 MiB transient-service check captured 14 local event samples while live, then captured the normal-exit systemd result after the cgroup disappeared; receipt persistence and unit cleanup passed. Independent review accepted this as the stage-2 capture-order prerequisite. No event changed, so OOM attribution remains unverified and stage 3 remains open. Log: /tmp/caissa_v212_capture_preflight_v2.log.
+
+
 ### 2026-10-04 bounded transient-service OOM probe (ambiguous)
 
 A bounded no-inference transient-service worker passed the finite 64 MiB/swap-zero/OOM-group preflight, attempted a 256 MiB allocation, and was recorded by systemd as Result=oom-kill; the external controller survived and the worker did not complete. However, the last worker-local memory.events.local sample had max=3 and zero oom, oom_kill, and oom_group_kill. Independent review found the source ambiguous, so this does not demonstrate local OOM containment and stage 3 remains closed. Verify and review event/result capture under no-inference stage 2, including attribution before cgroup teardown, before repeating fault injection. No inference, training, data, or outcome gate changed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md.
