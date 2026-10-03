@@ -1,5 +1,12 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-04; V03 pilot RSS fail-closed candidate)
+
+- Preserved the executed V02 implementation and added a V03 candidate that checks sampled RSS at entry, every 256 search nodes, and exit; an over-cap sample returns a compute-only row and causes the runner to stop the schedule.
+- Added a durable per-cell JSONL progress journal and create-only, fsynced final receipt path. Partial/interrupted runs remain explicitly incomplete and cannot pass the full-receipt verifier. RSS remains cooperative, not a hard limit.
+- Eleven V03 tests now cover entry, periodic, and final RSS crossings, V02 search-counter parity, progress-journal creation, create-only receipt writing, runner RSS-stop journaling, and post-link publication failures; the combined V02/V03 focused suites pass 17/17. These use synthetic roots, random initialization, mocks, and temporary files; the actual V03 schedule runner was not run. Independent static review found and the follow-up review cleared code-level fixes for known RSS crossings and uncertain receipt publication. V03 was not run as a pilot and remains gated on external supervision/review requirements. No method/gate advanced; no project data, score, outcome, training, service, or inference request was accessed or run.
+- See `docs/V212_COMPUTE_PILOT_V03.md`; independent review and existing external-supervision/no-outcome gates remain prerequisites.
+
 ## Latest continuation delta (2026-10-04; JEPA Arcade two-player prior art)
 
 - Added the JEPA Arcade author model card: an action-conditioned latent predictor/state head applied to two-player Atari Pong, Tennis, and Boxing, with a hand-written controller. Reported state-probe correlations and state loss are not game-strength, minimax, regret, or matched-baseline evidence; the card notes heuristic/epsilon-random training data and privileged RAM use.
@@ -2476,3 +2483,8 @@ or gate changed.
 
 - A fresh independent read-only review exposed stale Design01 references, conflicting canonical-window deduplication language, and root-uniqueness text that contradicted the current Design02 slot-sampling proposal. Those draft documents now align: source-window IDs define fit-bank distinctness, canonical-equivalent content is reported diagnostically, and repeated development-root board states remain separate slot observations under the proposed estimand.
 - Current root-sampling v05 and Design02 both propose a global under-yield stop across all six variant × band strata. That proposal is not accepted; the minimum acceptable schedule-pass probability, meaning of the 48 slot observations versus v04's 40-situation minimum, and finite-sample calibration remain unresolved. v04 stays current. No roots, simulation, data, model, score, or outcome was generated/accessed; no gate changed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-04; V03 RSS/reporting review fixes)
+
+- Independent static reviews identified three failure paths involving a redundant RSS sample and errors after receipt linking. V03 now returns a known RSS crossing without another sample and reports any post-link failure as `publication_uncertain`; cleanup errors cannot mask that state, and the visible output blocks reruns pending reconciliation. The reviewer cleared these code-level fixes. Combined frozen V02 and V03 focused tests pass 17/17; `git diff --check` passes. No actual pilot schedule, service, inference request, dataset, score, training run, or outcome was accessed or run; V02 remains unchanged and no runtime/research gate advanced. See `docs/V212_COMPUTE_PILOT_V03.md`.

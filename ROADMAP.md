@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 V03 compute-pilot RSS guard candidate
+
+Added a versioned no-training V03 implementation candidate while preserving the executed V02 sources/receipt: RSS is checked at entry, every 256 visited nodes, and exit; a known crossing returns a diagnostic row without another sampler call. The runner writes an fsynced per-cell progress journal and only emits a complete aggregate receipt after full schedule verification. Any failure after receipt linking is marked `publication_uncertain` in the journal/CLI, and its existing path blocks reruns pending reconciliation. Eleven V03 tests, including V02 counter parity, RSS-stop runner journaling, and post-link publication failures, and the combined V02/V03 suite pass 17/17. The latest code revisions passed independent static review. RSS is still cooperative, V03 has not been run, and external supervision gates remain closed. See `docs/V212_COMPUTE_PILOT_V03.md`.
+
 ### 2026-10-04 JEPA Arcade two-player prior art
 
 Added the JEPA Arcade author model card as artifact-level prior art for action-conditioned JEPA representations in two-player Atari games. Its reported state-probe metrics and hand-written controller do not establish strategic strength or search benefit. This closes broad “JEPA in two-player games” novelty language while leaving only the narrower exact-rule adversarial decision-quality comparison open. The GitHub code link was not independently inspectable in this pass, and the card's claims remain author-reported. No method/gate changed; see `docs/RELATED_WORK.md` and the V2.12 novelty crosswalk.
