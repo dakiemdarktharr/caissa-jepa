@@ -1,6 +1,6 @@
 # V2.12 counterfactual decision-regret design 01 — draft
 
-**Status: draft; prior formulation reviewed, 2026-10-04 source-code amendment pending review; protocol not frozen.**
+**Status: draft; prior formulation and 2026-10-04 source-code amendment independently reviewed; protocol not frozen.**
 This proposal makes the action-score and regret terms operationally explicit.
 It does not
 amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
@@ -14,6 +14,14 @@ diagnostic. For the Reversi6 semi-strong artifact lead, it required
 orientation-specific `R_P` membership with the free-agent role in that same
 orientation; union-only `R` membership is insufficient. The artifact remains
 unadopted, and no gate advanced.
+
+**Independent review of the 2026-10-04 source-code amendment: no blocking issue.**
+The review confirmed that the legacy heuristic creates a plausible source-policy
+alignment risk, and that primary executed-action regret can use an exact
+bounded-reference root maximum plus independent full-window values for each
+executed action. The all-action table remains optional for ranking diagnostics.
+The root schedule is retained. Tiny-oracle implementation checks, reference
+configuration, and protocol freeze remain pending; no gate advanced.
 
 ## Source-code audit: evaluator provenance and minimum regret queries (2026-10-04)
 

@@ -12,10 +12,10 @@ bounded-reference root maximum and independent full-window reference values
 for each arm's executed action; exact values for every legal action are needed
 only for an optional action-ranking table. This could reduce redundant oracle
 work without reducing the root schedule or weakening the selected-action
-value check. It remains a proposal: choose an evaluator/depth and query budget,
-verify alpha-beta exactness and adapter semantics against tiny exhaustive
-fixtures, and obtain independent review before scoring. No root, model, score,
-or outcome was accessed; no gate changed. See
+value check. The reviewer found no blocker in the draft amendment. It remains
+unfrozen: choose an evaluator/depth and query budget and verify alpha-beta
+exactness and adapter semantics against tiny exhaustive fixtures before
+scoring. No root, model, score, or outcome was accessed; no gate changed. See
 `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
 
 ### 2026-10-04 Reversi6 exact-reference source lead

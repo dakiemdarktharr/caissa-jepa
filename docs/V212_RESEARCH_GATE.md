@@ -229,9 +229,10 @@ independent full-window query for the arm's selected action is sufficient;
 an exact full-window Q table for all legal actions is needed only for the
 separate action-ranking diagnostic. The proposed query optimization keeps the
 complete legal-action root set and does not make a bounded reference
-game-theoretic ground truth. It still needs a pinned evaluator/depth, compute
-allocation, adapter tests against tiny exhaustive games, and independent
-review. This proposal changes no gate and authorizes no scoring. See
+game-theoretic ground truth. Independent review found no blocker in this draft
+amendment; it still needs a pinned evaluator/depth, compute allocation, and
+adapter tests against tiny exhaustive games before protocol freeze. This
+proposal changes no gate and authorizes no scoring. See
 `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
 
 ## 2026-10-03 bounded-reference decision-regret design proposal
