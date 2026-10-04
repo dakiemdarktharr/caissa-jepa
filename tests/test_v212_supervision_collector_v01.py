@@ -210,10 +210,10 @@ class CollectorOrchestrationTests(unittest.TestCase):
                 request_path = Path(request_arg.split("StandardInput=file:", 1)[1])
                 response_path = Path(response_arg.split("StandardOutput=truncate:", 1)[1])
                 request = json.loads(request_path.read_text(encoding="utf-8"))
-                response_path.write_text(json.dumps({
+                unit_data["pending_response"] = (response_path, json.dumps({
                     "schema": "caissa.synthetic.response.v01",
                     "nonce": request["nonce"], "status": response_status,
-                }, separators=(",", ":")), encoding="utf-8")
+                }, separators=(",", ":")))
                 return b""
             if command == ("systemctl", "--user", "stop"):
                 if fail_stop:
@@ -236,8 +236,13 @@ class CollectorOrchestrationTests(unittest.TestCase):
                 "RemainAfterExit": "yes",
             }
             if unit_data["show_count"] == 1:
+                unit_data["sequence"].append("snapshot_active")
                 return dict(common, ActiveState="active", SubState="running")
             if unit_data["show_count"] == 2:
+                unit_data["sequence"].append("snapshot_exited")
+                if "pending_response" in unit_data:
+                    response_path, response_bytes = unit_data.pop("pending_response")
+                    response_path.write_text(response_bytes, encoding="utf-8")
                 return dict(common, ControlGroup="", ActiveState="inactive",
                             SubState="exited", Result=manager_result,
                             ExecMainStatus="0" if manager_result == "success" else "9")
@@ -273,6 +278,11 @@ class CollectorOrchestrationTests(unittest.TestCase):
             }]
 
         original_persist = collector.live.persist_receipt_once
+        original_read_response = ipc.read_response
+
+        def read_response(workspace):
+            unit_data["sequence"].append("response_read")
+            return original_read_response(workspace)
 
         def persist(destination, envelope):
             unit_data["sequence"].append("persist_attempt")
@@ -307,6 +317,8 @@ class CollectorOrchestrationTests(unittest.TestCase):
                                              side_effect=read_events))
             stack.enter_context(patch.object(collector.live, "persist_receipt_once",
                                              side_effect=persist))
+            stack.enter_context(patch.object(ipc, "read_response",
+                                             side_effect=read_response))
             stack.enter_context(patch.object(ipc, "create_workspace",
                                              side_effect=create_workspace))
             stack.enter_context(patch.object(ipc, "cleanup_workspace", side_effect=cleanup))
@@ -322,6 +334,10 @@ class CollectorOrchestrationTests(unittest.TestCase):
         self.assertEqual(envelope["receipt"]["classification"], "normal_exit")
         self.assertLess(host["sequence"].index("persist_complete"),
                         host["sequence"].index("systemctl"))
+        self.assertLess(host["sequence"].index("response_read"),
+                        host["sequence"].index("persist_attempt"))
+        self.assertLess(host["sequence"].index("snapshot_exited"),
+                        host["sequence"].index("response_read"))
         self.assertLess(host["sequence"].index("systemctl"),
                         host["sequence"].index("cleanup"))
 
@@ -389,10 +405,13 @@ class CollectorOrchestrationTests(unittest.TestCase):
 
     def test_missing_local_counter_or_journal_marker_blocks_receipt(self):
         for options in ({"fail_counter_at": 2}, {"fail_journal": True}):
-            with self.subTest(options=options), self._mock_host(**options):
+            with self.subTest(options=options), self._mock_host(**options) as host:
                 with self.assertRaises(collector.CollectorError):
                     collector.run_no_inference_smoke(receipt_path=self.receipt_path)
                 self.assertFalse(self.receipt_path.exists())
+                self.assertNotIn("systemctl", host["sequence"])
+                self.assertNotIn("cleanup", host["sequence"])
+                self.assertTrue(self.workspaces[-1].directory.exists())
 
 
 if __name__ == "__main__":

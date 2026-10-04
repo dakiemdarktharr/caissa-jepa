@@ -24,6 +24,15 @@ outcome ran. The next step is independent review of the complete architecture
 and remaining failure contracts before any live service step. OOM still needs
 separate explicit authorization.
 
+A broader architecture review identified that the response fixture was
+available before the worker's exited snapshot and that missing-counter/journal
+tests did not prove reconciliation handles were retained. The fixture now
+publishes the staged response only with the exited snapshot and asserts the
+response is read afterward; evidence-capture failures assert no stop/cleanup
+and a retained workspace. Follow-up review found no remaining issue in these
+changes. This closes those mock-coverage gaps only and does not add live service
+evidence.
+
 ## Implementation progress: private release-FIFO primitive (2026-10-04)
 
 `two_player/v212_worker_ipc.py` now optionally creates a mode-0600 release FIFO
