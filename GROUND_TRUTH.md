@@ -1,5 +1,13 @@
 # CAISSA-JEPA — Ground Truth
 
+## Current checkpoint (2026-10-04; reviewed supervision smoke)
+
+- At the start of this checkpoint the authoritative research worktree was clean on `codex/v212-supervision-receipt-v02` at source baseline `4aec5fbc448dcb8e2d13066a70fd7a3131c9e50f`, matching `origin/main`. This update only brings the session-entry record current.
+- The focused collector/live-evidence/receipt/armed-protocol/release-token/IPC suites pass 92/92 under `unittest`. Independent follow-up review cleared the mocked lifecycle assertions after requiring response-read-after-exit and reconciliation-handle retention.
+- Two bounded systemd v262 synthetic services have completed normal exit. Both validated distinct caller/worker cgroups, resource properties, worker-local counter snapshots, invocation-bound journal marker, receipt persistence before cleanup, and unit `not-found` afterward. Latest receipt: `/tmp/caissa-v212-smoke-183523/receipt.json`, mode `0600`, SHA-256 `55937b10f67666b0f0ca3bdb2365cf22b28ac93a3e2e92ee901bbceef5d351f4`; its embedded digest matches.
+- These are no-inference normal-exit observations only. They do not validate OOM attribution/containment, live timeout or interruption recovery, request-adapter integration, inference feasibility, or systematic repeatability. No model, project data, score, or outcome was run/accessed; training, pilot, and OOM gates remain closed. OOM testing still requires separate explicit authorization.
+- Current next step: integrate the armed-release protocol into a synthetic no-inference service harness and cover its full failure/reconciliation contract before request-adapter use. See `ROADMAP.md`, `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`, and `docs/V212_SUPERVISION_COLLECTOR_V01.md`.
+
 ## Latest continuation delta (2026-10-04; mocked armed controller/worker protocol)
 
 - Added `two_player/v212_armed_protocol_v01.py`. The mock controller enforces the exact v01 effective service profile and equality between manager memory properties and live cgroup values; it releases only after the FIFO reader is ready and carries the absolute monotonic deadline in the canonical token. The worker verifies the token/context/live files and checks deadline again immediately before the synthetic callback.
