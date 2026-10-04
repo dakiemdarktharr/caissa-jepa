@@ -1,19 +1,64 @@
 # V2.12 counterfactual decision-regret design 01 — draft
 
-**Status: draft; independent static review complete, protocol not frozen.**
+**Status: draft; prior formulation reviewed, 2026-10-04 source-code amendment pending review; protocol not frozen.**
 This proposal makes the action-score and regret terms operationally explicit.
 It does not
 amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
 or root generation, training, matches, or outcome access. The reference depth,
 leaf evaluator, sampling schedule, and compute allocation remain unselected.
 
-**Independent static review (2026-10-04): no remaining blocker.** The review
+**Independent static review of the prior formulation (2026-10-04): no remaining blocker within that scope.** The review
 confirmed that regret must use the action returned under the frozen planner
 caps, kept separate from any extra-compute full-window score-ranking
 diagnostic. For the Reversi6 semi-strong artifact lead, it required
 orientation-specific `R_P` membership with the free-agent role in that same
 orientation; union-only `R` membership is insufficient. The artifact remains
 unadopted, and no gate advanced.
+
+## Source-code audit: evaluator provenance and minimum regret queries (2026-10-04)
+
+This is a design amendment proposal based on the repository source, not a
+frozen protocol or independent acceptance. It does not change the method,
+authorize root generation or scoring, or advance any gate.
+
+The legacy `two_player/v28_data.py::_line_score` is not a neutral reference
+candidate as currently used: `_bounded_search` calls it at depth/node-cap
+leaves, and `choose_action(..., "positional", ...)` also ranks actions with
+the policy heuristic built from it. A reference using the same implementation
+on roots drawn from those synthetic policies could favor the data-generating
+policy by construction. Pinning its source hash would make that dependency
+reproducible, but would not remove the estimand's alignment. Keep this
+heuristic excluded from the reference unless a separately reviewed protocol
+explicitly wants that policy-aligned comparison. This is a source-level
+confound audit; no roots or scores were inspected.
+
+The primary executed-action regret does not mathematically require a point
+score for every root action. For a fixed reference search `Q_ref`, it requires
+the exact fixed-horizon root maximum `V_ref(s) = max_a Q_ref(s,a)` over the
+complete legal set and an exact fixed-horizon value `Q_ref(s,a_m^exec)` for
+the action returned by each arm. The latter must be an independent full-window
+query (or a separately verified equivalent); a fail-low bound from a shared
+incumbent window is insufficient. Then regret is
+`V_ref(s) - Q_ref(s,a_m^exec)` for that declared bounded reference. One
+action-independent `V_ref` can be shared across arms, while action-value
+queries may be cached by root fingerprint and action.
+
+Proposed protocol split: keep a complete legal-action fingerprint and prove
+the reference maximization covered every legal action, but record exact
+per-action Q rows only for distinct executed actions in the primary regret
+table. Retain a separate optional all-legal-action full-window table for
+reference/model ranking agreement; it has its own compute allocation and
+completeness status. A root is not estimable for an arm if either `V_ref` or
+that arm's selected-action value is missing, bounded, or interrupted. This
+reduces redundant oracle work without dropping roots or changing the
+estimand; it does not make the bounded reference full-game ground truth.
+
+Before adoption, an independent implementation review must verify root-value
+exactness, selected-action full-window semantics, ties, terminals and forced
+passes under both game adapters, and prove against a tiny exhaustive oracle
+that the new query path returns the same per-root regrets as a complete
+all-action table. These are proposed checks only; no implementation or tests
+were run.
 
 ## Question and interpretation
 
@@ -52,8 +97,8 @@ score. Report these model-score rankings only when all required rows complete;
 their additional compute needs a separate frozen allocation. They do not
 replace a_m^exec(s), and they do not enter the primary head-to-head metric.
 
-When all reference root-action values are exact under configuration c,
-report per-root
+When the exact fixed-horizon reference root maximum and selected-action
+reference values are available under configuration c, report per-root
 
     R_m^exec(s;c) = max_{a in Legal(s)} Q_ref(s,a;c)
                     - Q_ref(s,a_m^exec(s);c).
@@ -70,23 +115,28 @@ observations.
 
 ## Completeness, alpha-beta bounds, and failures
 
-Every legal root action belongs in the denominator. The score ledger contains
-one row per protocol, root, arm, and root action with root fingerprint, actor,
-legal-set fingerprint, model/reference config hashes, score, score status,
-search window/bound provenance, completed depth, node visits, exact transition
-calls, model calls, elapsed time, and stop reason. Allowed statuses are
-exact, upper_bound, lower_bound, and missing. Full-window completed fixed-depth
-alpha-beta yields an exact score for that root action under the specified leaf
-evaluator; a bound or missing score must never be converted to a point estimate.
+The legal-action set is always fingerprinted, and the reference root search
+must establish an exact maximum over that complete set. The primary regret
+ledger needs one root-value record per protocol/root/reference configuration
+and one independently exact selected-action reference value per distinct
+executed action, arm, and root; repeated actions may share a cached value.
+Record root fingerprint, actor, legal-set fingerprint, model/reference config
+hashes, score/status, search window/bound provenance, completed depth, node
+visits, exact transition calls, model calls, elapsed time, and stop reason.
+Allowed statuses are exact, upper_bound, lower_bound, and missing. A bounded
+action score must never be converted to a point estimate. A separate optional
+all-legal-action ranking table requires a row for every legal action and its
+own completeness status.
 
-A root's regret is not_estimable if any legal action needed for the model's
-selected action or the reference maximum lacks a point-exact value. Pairwise
-ranking is reported only when bounds establish the order; otherwise it is
-unresolved. If any arm stops before scoring every required root action, retain
-the failure row and do not shrink the denominator or substitute an easier
-root. Report coverage and missing reasons next to every aggregate. Any
-cap-stressed diagnostic needs its own predeclared compute allocation; it may
-not silently borrow or alter the frozen head-to-head budget.
+A root's regret is not_estimable if the exact root maximum or that arm's
+selected-action value is missing, bounded, or interrupted. Pairwise ranking
+is reported only when bounds establish the order; otherwise it is unresolved.
+If any arm stops before the required root and selected-action values complete,
+retain the failure row and do not shrink the root denominator or substitute an
+easier root. Report coverage and missing reasons next to every aggregate. Any
+cap-stressed or all-action ranking diagnostic needs its own predeclared
+compute allocation; it may not silently borrow or alter the frozen
+head-to-head budget.
 
 ## Reference construction and leakage boundary
 
@@ -95,9 +145,10 @@ positions, a fixed bounded-depth reference must pin h_ref, source hash,
 search depth, rules, tie-breaking, root-player conversion, and any pruning
 settings before models are scored. Keep exact-solved and bounded-reference
 results in separate strata and do not label the latter optimal, ground truth,
-or full-game value. If a common reference cannot score the full legal root
-set within its frozen procedure, mark that root not estimable for regret;
-do not tune depth per root after seeing predictions.
+or full-game value. If a common reference cannot establish the exact root
+maximum and selected-action values within its frozen procedure, mark that
+root/arm not estimable for regret; do not tune depth per root after seeing
+predictions.
 
 Reference values are evaluation-only. Do not use them as training labels,
 select support buckets, choose checkpoints, or tune the method. Any training

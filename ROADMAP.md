@@ -2,6 +2,22 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 decision-regret source-code audit
+
+The legacy V2.8 line heuristic is used to generate positional policy choices
+and as the bounded-search policy's leaf evaluator, so reusing it as the
+decision-regret reference could favor trajectories from those policies.
+Separately, primary executed-action regret can be calculated from a complete
+bounded-reference root maximum and independent full-window reference values
+for each arm's executed action; exact values for every legal action are needed
+only for an optional action-ranking table. This could reduce redundant oracle
+work without reducing the root schedule or weakening the selected-action
+value check. It remains a proposal: choose an evaluator/depth and query budget,
+verify alpha-beta exactness and adapter semantics against tiny exhaustive
+fixtures, and obtain independent review before scoring. No root, model, score,
+or outcome was accessed; no gate changed. See
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
 ### 2026-10-04 Reversi6 exact-reference source lead
 
 A primary-source search found Takizawa's 6x6 Othello semi-strong solution

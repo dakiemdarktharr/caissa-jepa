@@ -218,6 +218,22 @@ unreviewed outcomes to select them. Status remains no training, no matches,
 and no superiority/novelty claim.
 
 
+## 2026-10-04 source-code amendment proposal
+
+The legacy V2.8 `_line_score` is used by both the positional policy and the
+bounded-search data-generation policy, so its reuse as an evaluation
+reference risks aligning the benchmark with its own source policies. Keep it
+out of the reference absent an explicit policy-aligned estimand. For primary
+executed-action regret, a complete exact fixed-horizon root maximum plus an
+independent full-window query for the arm's selected action is sufficient;
+an exact full-window Q table for all legal actions is needed only for the
+separate action-ranking diagnostic. The proposed query optimization keeps the
+complete legal-action root set and does not make a bounded reference
+game-theoretic ground truth. It still needs a pinned evaluator/depth, compute
+allocation, adapter tests against tiny exhaustive games, and independent
+review. This proposal changes no gate and authorizes no scoring. See
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
 ## 2026-10-03 bounded-reference decision-regret design proposal
 
 Source audit of the published compute-only runner found that
