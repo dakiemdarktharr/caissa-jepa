@@ -250,6 +250,21 @@ now regression-tested. The focused suite passes. The repository-wide suite ran
 621 tests but ended with 24 environment/platform/data errors and 11 skips. No
 roots, models, scores, or gates changed.
 
+### 2026-10-04 hard-transition-cap minimax interval probe
+
+Two additional isolated search orders now enforce a hard rule-transition
+budget: DFS with atomic full-successor expansion, and even allocation across
+root actions. Ten tiny-game tests pass, including exact containment,
+forced-pass, monotonicity and cap accounting. A reproducible single-run
+synthetic profile over only the standard opening state of Connect Four 6x7 and
+Reversi6 found that root/action value intervals all retained full width 2 and
+identified 0% of root actions through 65,536 transitions. At that cap the
+observed single-run times were 11.345 s and 4.107 s, respectively. This is
+negative evidence about these naive no-heuristic DFS orders on two opening
+states, not a representative feasibility estimate or model pilot. Do not adopt
+them or use this profile to change inference caps; a sound selective/best-first
+reference or another prespecified estimand is still needed. No gate changed.
+
 ## 2026-10-04 source-code amendment proposal
 
 The legacy V2.8 `_line_score` is used by both the positional policy and the

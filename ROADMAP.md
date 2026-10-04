@@ -20,9 +20,13 @@ isolated deterministic-DFS candidate and focused tiny-game tests now validate
 containment across every expansion-budget prefix for one late Tic-Tac-Toe
 fixture, plus forced-pass handling and unresolved root actions. Independent
 code review confirmed the recurrence and prompted stricter action-ID validation.
-This is implementation evidence only: the expansion budget is not a hard
-transition cap, intended-variant cap feasibility remains open, and the option
-is not accepted or frozen. No benchmark roots, models, scores, or gates changed.
+Follow-up hard-transition-cap variants enforce complete root enumeration and
+atomic successor expansion. On one standard opening state per intended game,
+root-balanced DFS still left all root/action intervals at full width 2 through
+65,536 transitions (single-run 11.345 s Connect Four 6x7; 4.107 s Reversi6).
+This negative result argues against adopting the naive DFS orders but is not
+representative cap evidence. The interval option remains a candidate, not an
+accepted or frozen method; no benchmark roots, models, scores, or gates changed.
 See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
 
 ### 2026-10-04 decision-regret source-code audit

@@ -156,6 +156,49 @@ semantics, not a frozen configuration. Synthetic cap-feasibility assessment
 remains pending. The interval option is not accepted or frozen, and no root
 generation, model scoring, or gate advancement occurred.
 
+### Synthetic hard-transition-cap feasibility probe (2026-10-04)
+
+The expansion-count candidate above does not enforce a transition cap, so two
+separate hard-cap search orders were added for method exploration:
+`two_player/v212_minimax_transition_bounds_v01.py` reserves the full legal
+successor set before expanding a DFS node, while
+`two_player/v212_minimax_transition_balanced_bounds_v01.py` divides the
+remaining cap evenly across the complete root action set and searches each
+branch independently. Both count every root and descendant rule transition;
+an internal node that cannot afford all its legal successors remains
+`[-1,+1]`. Ten focused tests pass across exact tiny-game budget prefixes,
+forced passes, monotonic root/action/regret bounds, and cap enforcement.
+
+The reproducible profile command is
+`UV_CACHE_DIR=/tmp/caissa-uv-cache uv run --with 'numpy>=1.26' python -B tools/v212_minimax_interval_profile.py`.
+It uses only the standard initial state in memory for Connect Four 6x7 and
+Reversi6, one single-run measurement at each cap, and zero model calls. On
+Linux x86_64, Python 3.12.15, NumPy 2.5.3, the balanced search produced the
+following results. The source-fingerprinted rows are retained in
+`docs/validation/V212_MINIMAX_INTERVAL_PROFILE_V01.json`; its raw stdout was
+captured at `/tmp/caissa-v212-minimax-interval-profile-v01.jsonl` with
+SHA-256 `d321fbf614e4ec90243353898810addc2c22416937ad075870d82b4d733da44f`.
+
+| Variant | Transition cap | Calls used | Expanded descendants | Mean root-action interval width | Point-identified actions | Wall seconds |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Connect Four 6x7 | 4,096 | 4,092 | 2,281 | 2.00 | 0/7 | 0.620 |
+| Connect Four 6x7 | 16,384 | 16,383 | 10,614 | 2.00 | 0/7 | 2.755 |
+| Connect Four 6x7 | 65,536 | 65,533 | 43,375 | 2.00 | 0/7 | 11.345 |
+| Reversi6 | 4,096 | 4,096 | 2,574 | 2.00 | 0/4 | 0.306 |
+| Reversi6 | 16,384 | 16,384 | 11,097 | 2.00 | 0/4 | 1.048 |
+| Reversi6 | 65,536 | 65,536 | 45,399 | 2.00 | 0/4 | 4.107 |
+
+Every root-value interval also retained width 2. These two opening-state
+observations show that this no-heuristic, root-balanced DFS candidate produced
+no point identification through 65,536 transitions; at that cap the single
+Connect Four run took 11.345 seconds. This is negative evidence against
+adopting this search order for the primary decision-regret reference under a
+small transition/time allocation. It is not a multi-root feasibility estimate,
+a p90, a model pilot, or evidence against all sound interval-search methods.
+The tool emits a manifest with Python/NumPy/platform and SHA-256 fingerprints
+for the profile and rule/search sources. Do not use this one-root profile to
+revise the V2.12 inference cap, and do not freeze either search order.
+
 ## Question and interpretation
 
 For a prehashed set of reachable roots, does an arm's action chosen from its
