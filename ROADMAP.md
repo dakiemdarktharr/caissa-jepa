@@ -92,6 +92,25 @@ A targeted primary-source pass found ARC-Bench (fixed-candidate JEPA rankability
 
 Published the supervision architecture audit and drafted a new versioned request/runtime-binding contract: hash the exact bounded request bytes the worker reads, bind that digest into release/response/receipt, and attest project code from verified bytes or immutable artifacts while recording interpreter, systemd, and native runtime identities. Independent review found no P1/P2 issue; canonical JSON rules and a mapped-native-binary check were added, with host support for `/proc/map_files` still open. A sourced first-pass related-work audit found strong overlap with V-JEPA 2-AC, JEPA-WM/physical-planning studies, value/plan-aware objectives, action-conditioned JEPA theory, and multi-step action-sensitive JEPA work. ConnectX and LAMIR establish learned latent game planning and two-player zero-sum look-ahead; JEPA Arcade describes a non-peer-reviewed two-player Atari pipeline. Broad “first JEPA game planner/agent” claims are unsupported. The key design gap is that v04 trains on recorded actions but plans over alternative legal branches; decide before fitting whether to add an action-sensitive control and diagnostics that score every legal root action against a bounded exact-search reference. Keep novelty clearance, adapter, inference, training, pilot, and OOM gates closed. Next: finish source/citation chasing and exact-method comparison, decide any method-spec changes under independent review, and complete the manager/journal/counter failure matrix. See `docs/V212_REQUEST_RUNTIME_BINDING_AMENDMENT_DRAFT_01.md`, `docs/V212_RELATED_WORK_POSITIONING_AUDIT_01.md`, `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`, and the detailed `docs/RELATED_WORK.md` ledger.
 
+### 2026-10-04 request/runtime amendment review follow-up
+
+The focused reviewer confirmed four added requirements: Python interpreter
+executed-byte identity must remain unverified absent an immutable/equivalent
+execution proof; canonical JSON must reject non-string keys recursively;
+response receipts must bind the exact bounded bytes read, byte length, and
+schema; and amended-schema tests must integrate manager/journal/counter failure
+and reconciliation cases. The reviewer also identified ambiguity in whether
+request canonicalization rules apply to responses. The draft now explicitly
+applies the same encoding, allowed value types, int64 bounds, key and
+duplicate-key checks, and canonical re-encoding to response bytes, with a
+versioned response schema and explicit size limit. The reviewer confirmed this
+closes the ambiguity. This remains documentation only; no implementation, adapter,
+inference, pilot, training, or OOM operation ran. Next: version the integrated
+failure-test plan and resolve immutable runtime
+identity requirements before considering downstream stages. See
+`docs/V212_REQUEST_RUNTIME_BINDING_AMENDMENT_DRAFT_01.md` and
+`docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ### 2026-10-04 supervision architecture audit
 
 Read-only audit of the armed synthetic smoke confirmed exact in-memory execution for its three worker helper files, active manager/cgroup/property checks, one invocation-bound journal marker, two invocation-bound local counter snapshots, and receipt-before-stop behavior. It also identified integration blockers: caller source hashes are taken after imports and cannot attest loaded code objects; no structured Python/systemd runtime fingerprint is included; and the request digest is recorded in the envelope but is not bound into the release token or computed by the worker from raw stdin bytes. Failure-path behavior remains mock-only; the single normal-exit receipt is not invalidated by these gaps. Added `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`. Next: obtain independent review of a versioned request-digest/token amendment and an exact runtime/source-loading contract, then close manager/journal/counter failure mapping. Keep request-adapter, inference, training and pilot gates closed; OOM still requires separate explicit authorization.

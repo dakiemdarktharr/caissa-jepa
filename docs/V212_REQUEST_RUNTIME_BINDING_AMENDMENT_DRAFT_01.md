@@ -40,11 +40,17 @@ Use a new request/release schema version; do not extend v01 in place.
    its step-2 digest with the token value before any model/search import or
    callback. A mismatch exits without computation or a successful response.
 4. The response echoes the request nonce and the accepted `request_sha256`.
-   The caller validates both against its original request identity. The
-   receipt records request schema, exact request digest, release schema/token
-   digest, and response digest. The request digest is metadata only; the
-   request body, move/action, and outcome are not copied into the supervision
-   receipt.
+   The worker serializes the strict response exactly once using the versioned
+   canonical encoding, and the caller performs one bounded read of those exact
+   response bytes, hashes them before parsing, then validates schema, nonce,
+   and request digest against the original request identity. Bind both the
+   exact response-byte digest and byte length to the response schema in the
+   receipt. Do not describe a digest of re-serialized parsed JSON as the bytes
+   received. Reject non-canonical response bytes. The receipt records request
+   schema, exact request digest, release schema/token digest, response schema,
+   exact response-byte digest, and response byte length. The request digest is
+   metadata only; the request body, move/action, and outcome are not copied
+   into the supervision receipt.
 5. Preserve the controller's pre-dispatch and pre-receipt file identity/hash
    checks. These checks detect ordinary mutation and improve diagnosis; the
    worker's raw-byte comparison is the decisive proof of what it parsed.
@@ -56,18 +62,30 @@ controls for the cooperating controller/worker, not protection against a
 hostile same-UID process. Do not describe them as such.
 
 For v02, define canonical request bytes exactly: UTF-8 without a BOM; one JSON
-object; keys sorted by Python Unicode code-point order; no insignificant
-whitespace; non-ASCII characters emitted directly; arrays retain order; and
+object; string keys only at every object depth; keys sorted by Python Unicode
+code-point order; no insignificant whitespace; non-ASCII characters emitted
+directly; arrays retain order; and
 only objects, arrays, strings, booleans, null, and signed 64-bit integers are
 permitted (`-2^63 <= n <= 2^63 - 1`). Serialize with the pinned Python
 expression `json.dumps(value, ensure_ascii=False, allow_nan=False,
-separators=(",", ":"), sort_keys=True).encode("utf-8")`. This specifies
+separators=(",", ":"), sort_keys=True).encode("utf-8")`. Validate the object
+tree and reject non-string mapping keys before serialization; Python's JSON
+encoder can coerce some keys, which could make the in-memory request differ
+from the signed wire schema. This specifies
 string escaping, including control characters. Reject floats, NaN/Infinity,
 lone surrogates, out-of-range integers, duplicate keys, and any encoding that
 does not byte-match the canonical re-encoding. The runtime fingerprint pins the
 Python implementation/version. If a cross-language worker is introduced,
 adopt a separately versioned canonicalization standard rather than assuming
 equivalent JSON serializers produce identical bytes.
+
+The same canonical encoding, permitted JSON value types, signed 64-bit integer
+bounds, recursive string-key rule, decoder duplicate-key checks, and
+canonical-re-encoding comparison apply to response bytes. The response has its
+own versioned schema and explicit byte limit no larger than `MAX_IPC_BYTES`;
+the caller hashes the exact bounded bytes read before parsing and rejects any
+response that exceeds the limit, has an invalid/truncated frame, or fails the
+same canonical-byte checks.
 
 ## Runtime and loaded-source contract
 
@@ -92,6 +110,16 @@ Proposed minimum fingerprint fields:
   import and call that proof of the already-loaded machine code;
 - kernel release, architecture, cgroup-v2 mode, and relevant runtime limits
   needed to interpret the receipt.
+
+The Python executable is itself an executed-code dependency. A hash read after
+startup identifies the executable backing object at read time; it does not by
+itself prove which bytes the interpreter executed or rule out mutation of a
+writable backing object after mapping. Treat it under the same rule as native
+libraries: verified only when an immutable/content-addressed execution
+boundary or an independent mechanism proves the executed bytes; otherwise
+record the observation as partial/unverified and keep any component that
+requires this identity gated. Hashing `/proc/self/exe` or a mapped-file link
+alone does not close the writable-mapping race.
 
 For project Python code, prefer an explicit loader that reads a bounded,
 allowlisted manifest, validates every digest, then compiles those exact bytes
@@ -145,6 +173,9 @@ does not provide scientific-performance evidence.
 - release token missing, mismatching, or tampering with `request_sha256`, with
   assertions that no compute callback/import is reached;
 - response nonce/digest mismatch and receipt omission/mismatch;
+- response framing tests proving the digest is over the exact bounded bytes
+  read (not re-serialized JSON), with byte-length/schema binding and rejection
+  of non-canonical response bytes;
 - module file changed after preflight but before import, proving the exact
   verified bytes execute or the run fails before release;
 - executable, runtime, systemd, and native dependency fingerprint mismatch;
@@ -152,6 +183,13 @@ does not provide scientific-performance evidence.
   oversized files, and source mutation during execution;
 - serialized receipt round-trip and independent recomputation of all linked
   hashes, while confirming it contains no request body or action.
+- integrated amended-schema regression tests for manager-state loss,
+  missing/duplicate/mismatched journal markers, disappearing or mismatched
+  counters, deadline/kill/reap, and reconciliation failure. Reuse the failure
+  matrix in `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md` under
+  “Required implementation tests and gates”; each case must retain the
+  necessary reconciliation handles and must never return an accepted action
+  or receipt when required evidence is missing.
 
 The current 116-test suite and one normal-exit synthetic receipt do not cover
 these cases. Implementing the schema amendment requires versioned code,
@@ -181,5 +219,11 @@ raw-request digest can be compared after the existing no-compute barrier and
 before any compute import/callback. It requested exact JSON encoder flags,
 integer bounds, and a caveat that mapped-file hashing alone does not attest
 pages if the backing file can change after mapping; these clarifications are
-now included. `/proc/map_files` access and the immutable-artifact guarantee
-remain unvalidated implementation requirements.
+now included. A focused follow-up review required and confirmed four further
+design clarifications: Python interpreter executed-byte identity, recursive
+string-key validation, exact response-byte digest and length semantics, and
+integration of the manager/journal/counter failure map. The reviewer also
+confirmed that response bytes use the same canonical JSON rules as request
+bytes. `/proc/map_files` access, the immutable-artifact guarantee, request
+limits, and runtime/source binding remain unvalidated implementation
+requirements.
