@@ -15,9 +15,14 @@ synthetic-data heuristic but may be too wide under practical compute limits.
 Independent review found no blocker in the derivation under a full-successor
 accounting invariant: enumerate every legal child or retain omitted actions
 as unresolved intervals; forced passes count as transitions. The general
-algorithm precedent does not establish CAISSA correctness or feasibility.
-Exhaustive tiny-game tests and cap assessment remain before choosing it; no
-implementation, root generation, scoring, or gate change yet.
+algorithm precedent does not establish CAISSA correctness or feasibility. An
+isolated deterministic-DFS candidate and focused tiny-game tests now validate
+containment across every expansion-budget prefix for one late Tic-Tac-Toe
+fixture, plus forced-pass handling and unresolved root actions. Independent
+code review confirmed the recurrence and prompted stricter action-ID validation.
+This is implementation evidence only: the expansion budget is not a hard
+transition cap, intended-variant cap feasibility remains open, and the option
+is not accepted or frozen. No benchmark roots, models, scores, or gates changed.
 See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
 
 ### 2026-10-04 decision-regret source-code audit

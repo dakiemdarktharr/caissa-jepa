@@ -126,13 +126,35 @@ evaluation allocation; it does not borrow from or alter the arm's inference
 cap. The scalar `h_ref` regime may remain a labeled sensitivity analysis, but
 must not be pooled with these game-theoretic bounds.
 
-Before preferring this option, independently verify the interval recursion
-against exhaustive tiny-game values at every partial-tree shape, including
-forced Reversi passes, terminal wins/draws, and unseen legal children; check
-the regret interval contains exact regret and collapses when bounds resolve.
-Then assess cap feasibility using synthetic in-memory fixtures only. These
-checks have not run, the interval option is not accepted or frozen, and no
-root generation, model scoring, or gate advancement is authorized.
+An isolated candidate implementation is in
+`two_player/v212_minimax_bounds_v01.py`; focused tests are in
+`tests/test_v212_minimax_bounds_v01.py`. The tested budget policy is deterministic
+depth-first expansion below the root. The complete root legal-action set is
+always transitioned; each expanded nonterminal node transitions every legal
+successor, and a nonterminal reached after the expansion budget is exhausted
+retains `[-1,+1]`. The root itself does not consume the expansion budget.
+Across every integer budget from zero through complete resolution on a reachable
+four-empty-cell Tic-Tac-Toe fixture, the root, each action, and executed-action
+regret intervals contained the exact `exact_value` oracle; bounds narrowed
+monotonically and collapsed at full resolution. A separate near-terminal
+Reversi4 fixture verified that forced pass action 64 is transitioned and that
+one further node expansion resolves its value and zero regret. A zero-budget
+initial Tic-Tac-Toe check verified that every legal root action remains present
+as unresolved. The four focused tests passed on 2026-10-04 with the declared
+NumPy dependency supplied through a temporary `/tmp` environment; no project
+dependency files changed.
+
+This validates the recurrence and this implementation only on tiny fixtures;
+it does not establish feasibility under intended variant caps or validate a
+research protocol. Independent code review confirmed recurrence and pass
+accounting; it identified Boolean action IDs being accepted as integer IDs,
+which was fixed and covered by a regression test. The tested DFS budget counts
+fully expanded nonterminal descendants only; it is not a hard transition cap,
+since the root and every expanded node still transition all legal successors.
+`transition_count` records this work. The tested DFS budget is a candidate
+semantics, not a frozen configuration. Synthetic cap-feasibility assessment
+remains pending. The interval option is not accepted or frozen, and no root
+generation, model scoring, or gate advancement occurred.
 
 ## Question and interpretation
 

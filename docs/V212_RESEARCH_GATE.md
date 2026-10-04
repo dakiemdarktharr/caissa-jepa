@@ -230,9 +230,25 @@ under the available compute cap. A primary optimistic-minimax paper provides
 a general interval-bound search precedent; it does not validate the proposed
 CAISSA recursion, cap, or Reversi pass handling. Independent review found no
 blocker in the derivation, subject to representing all omitted legal children
-as unresolved intervals; exhaustive tiny-game bound-containment tests and cap
-assessment are pending. No gate changes and no scoring is authorized. See
+as unresolved intervals. No gate changes and no scoring is authorized. See
 `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+### 2026-10-04 tiny-game interval verifier
+
+An isolated deterministic-DFS candidate and focused tests now exist in
+`two_player/v212_minimax_bounds_v01.py` and
+`tests/test_v212_minimax_bounds_v01.py`. Tests passed for every integer
+expansion budget on a late Tic-Tac-Toe fixture, including containment of exact
+root/action values and executed-action regret, monotone narrowing, and collapse
+at full resolution. A Reversi4 forced-pass fixture confirmed pass accounting;
+zero-budget search retained every legal root action as unresolved. These checks
+validate the tiny-fixture recurrence and implementation only. The DFS budget
+counts expanded descendants rather than transitions, and is not frozen; cap
+feasibility remains open, and the interval reference is not adopted. Independent
+code review confirmed the recurrence and led to rejecting Boolean action IDs,
+now regression-tested. The focused suite passes. The repository-wide suite ran
+621 tests but ended with 24 environment/platform/data errors and 11 skips. No
+roots, models, scores, or gates changed.
 
 ## 2026-10-04 source-code amendment proposal
 
