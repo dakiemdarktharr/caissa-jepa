@@ -2,6 +2,24 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 interval-valued minimax reference option
+
+Deep search identified a possible alternative to choosing an arbitrary scalar
+leaf evaluator: give unexpanded nonterminal leaves the valid W/D/L interval
+[-1,+1] and propagate lower/upper values by MAX/MIN. For every legal root
+action this yields a sound interval containing the full-game minimax value;
+combining the root-optimum and executed-action intervals yields a conservative
+decision-regret interval. A zero-width interval identifies a point value;
+otherwise the width must remain visible. This avoids direct reuse of the
+synthetic-data heuristic but may be too wide under practical compute limits.
+Independent review found no blocker in the derivation under a full-successor
+accounting invariant: enumerate every legal child or retain omitted actions
+as unresolved intervals; forced passes count as transitions. The general
+algorithm precedent does not establish CAISSA correctness or feasibility.
+Exhaustive tiny-game tests and cap assessment remain before choosing it; no
+implementation, root generation, scoring, or gate change yet.
+See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
 ### 2026-10-04 decision-regret source-code audit
 
 The legacy V2.8 line heuristic is used to generate positional policy choices

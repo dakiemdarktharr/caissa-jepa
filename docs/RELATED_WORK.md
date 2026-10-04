@@ -530,6 +530,28 @@ remain unselected. See
 `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
 
 
+### Sound minimax value bounds as an evaluation reference (2014–2026)
+
+Busoniu, Munos, and Páll's primary paper on optimistic minimax search for
+sequential adversarial decisions initializes partial-tree leaves with lower
+and upper bounds, propagates bounds through max/min nodes, and permits
+anytime stopping while retaining a bound on unresolved root optimality
+([paper](https://busoniu.net/files/papers/adprl14-minimax.pdf)). Its
+near-optimality results require assumptions about how action-sequence value
+gaps vary with depth; these are not established for CAISSA. Pascal Pons's
+pinned Connect Four solver gives a concrete implementation example in which
+alpha-beta returns exact values only inside the search window and otherwise
+labels upper/lower bounds ([source](https://github.com/PascalPons/connect4/blob/d6ba50d8aaf2308c769d9bf2abd42d90f34baf41/Solver.cpp)). Takizawa's primary Othello paper also distinguishes proven game-theoretic values from estimates during its weak-solving procedure ([paper](https://arxiv.org/html/2310.19387v3)).
+
+These sources support the measurement principle “preserve valid bounds and
+do not report an unresolved estimate as exact.” They do not validate the
+proposed CAISSA W/D/L interval recurrence, its budget, or its forced-pass
+adapter. The derived interval metric is a diagnostic design, not a new search
+algorithm or a learned-method result. Independent review found no blocker in
+the interval derivation under the full-successor invariant; tiny exhaustive
+verification, cap feasibility, and protocol freeze remain necessary. No
+positions were queried and no source code/artifact was integrated.
+
 ### Weak solution of standard 8x8 Othello (2023)
 
 Takizawa reports a **weak solution** of standard 8x8 Othello: the initial

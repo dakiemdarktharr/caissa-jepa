@@ -1,6 +1,6 @@
 # V2.12 counterfactual decision-regret design 01 — draft
 
-**Status: draft; prior formulation and 2026-10-04 source-code amendment independently reviewed; protocol not frozen.**
+**Status: draft; prior formulation and both amendments independently reviewed; interval-reference tests/configuration pending; protocol not frozen.**
 This proposal makes the action-score and regret terms operationally explicit.
 It does not
 amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
@@ -22,6 +22,14 @@ bounded-reference root maximum plus independent full-window values for each
 executed action. The all-action table remains optional for ranking diagnostics.
 The root schedule is retained. Tiny-oracle implementation checks, reference
 configuration, and protocol freeze remain pending; no gate advanced.
+
+**Independent review of the 2026-10-04 interval-reference option: no blocking issue in the derivation.**
+The review confirmed soundness under the requirement that every expanded node
+enumerate all legal successors or retain unexpanded actions as unresolved
+`[-1,+1]` children. It confirmed the regret interval is valid but may be
+conservative. Tiny-game containment tests, compute-cap feasibility, and
+configuration remain pending; this interval estimand is distinct from scalar
+bounded-`h_ref` regret and must not be pooled with it.
 
 ## Source-code audit: evaluator provenance and minimum regret queries (2026-10-04)
 
@@ -67,6 +75,64 @@ passes under both game adapters, and prove against a tiny exhaustive oracle
 that the new query path returns the same per-root regrets as a complete
 all-action table. These are proposed checks only; no implementation or tests
 were run.
+
+## Deep-search update: sound minimax-regret intervals (2026-10-04)
+
+The scalar fixed-depth `h_ref` proposal is not the only reference design. A
+less heuristic-dependent candidate is to maintain sound lower/upper bounds on
+the full-game minimax values while expanding only a frozen portion of the
+tree. The primary source on optimistic minimax search by Busoniu, Munos and
+Pall describes lower/upper bounds at partial-tree leaves, max/min propagation,
+and anytime termination whose remaining value gap bounds the unresolved
+optimality ([paper](https://busoniu.net/files/papers/adprl14-minimax.pdf)).
+This is a general adversarial-search precedent, not a drop-in CAISSA algorithm;
+its convergence guarantees rely on assumptions that must not be transferred
+without proof. Pascal Pons's Connect Four solver likewise explicitly
+distinguishes exact, upper-bound, and lower-bound alpha-beta returns
+([pinned `Solver.cpp`](https://github.com/PascalPons/connect4/blob/d6ba50d8aaf2308c769d9bf2abd42d90f34baf41/Solver.cpp)); it illustrates why cutoffs must remain bounds rather than point values, but its AGPL code is not proposed for integration. The exact Othello study further distinguishes
+positions whose game-theoretic value was solved from those only estimated
+([Takizawa, 2024](https://arxiv.org/html/2310.19387v3)).
+
+For CAISSA's W/D/L utility in `[-1,+1]`, initialize each unexpanded
+nonterminal frontier leaf to the conservative interval `[-1,+1]`; terminal
+nodes take their exact root-perspective outcome. On expansion, propagate
+intervals monotonically: at a root-player MAX node use
+`[max_i L_i, max_i U_i]`; at an opponent MIN node use
+`[min_i L_i, min_i U_i]`. Enumerate the full legal root set. If action `a`
+has interval `[L_a,U_a]`, then the exact full-game root value is enclosed by
+`[max_a L_a, max_a U_a]`. For an executed action with interval
+`[L_e,U_e]`, a sound regret interval is
+`[max(0, max_a L_a - U_e), min(2, max_a U_a - L_e)]`.
+This interval follows from the declared W/D/L utility range and bound
+propagation; it is a derivation, not an empirical result. A zero-width regret
+interval identifies a point value; otherwise report the interval and its
+width, never its midpoint as a point estimate.
+
+For soundness, every expanded internal node must either enumerate its full
+legal successor set or retain each unexpanded legal action as an unresolved
+`[-1,+1]` child interval. Propagating only visited children would silently
+turn a partial search into a false exact value. A forced Reversi pass is its
+own legal transition and must remain in this accounting.
+
+This option avoids reusing the positional/bounded-search data heuristic and
+can retain the full predeclared root schedule even when exact solving is
+infeasible. It trades scalar coverage for honest uncertainty: many intervals
+may remain wide under realistic caps. Freeze the deterministic expansion
+policy, per-variant/per-root node or transition budget, tie ordering, cache
+semantics, pass/terminal handling, and failure rules in advance. Report
+interval widths and point-identification coverage alongside the separate
+root-sampling uncertainty. The game-tree budget is a separately declared
+evaluation allocation; it does not borrow from or alter the arm's inference
+cap. The scalar `h_ref` regime may remain a labeled sensitivity analysis, but
+must not be pooled with these game-theoretic bounds.
+
+Before preferring this option, independently verify the interval recursion
+against exhaustive tiny-game values at every partial-tree shape, including
+forced Reversi passes, terminal wins/draws, and unseen legal children; check
+the regret interval contains exact regret and collapses when bounds resolve.
+Then assess cap feasibility using synthetic in-memory fixtures only. These
+checks have not run, the interval option is not accepted or frozen, and no
+root generation, model scoring, or gate advancement is authorized.
 
 ## Question and interpretation
 

@@ -218,6 +218,22 @@ unreviewed outcomes to select them. Status remains no training, no matches,
 and no superiority/novelty claim.
 
 
+## 2026-10-04 interval-valued minimax-reference option
+
+An alternative to a point-valued bounded reference is sound interval search:
+initialize unexpanded nonterminal leaves to the valid W/D/L range `[-1,+1]`,
+propagate lower/upper values through exact-rule MAX/MIN nodes, and report a
+per-root regret interval. Zero-width intervals are point identified; unresolved
+width is retained, not replaced by a midpoint. This avoids choosing/reusing a
+policy-aligned scalar heuristic but may provide little decision resolution
+under the available compute cap. A primary optimistic-minimax paper provides
+a general interval-bound search precedent; it does not validate the proposed
+CAISSA recursion, cap, or Reversi pass handling. Independent review found no
+blocker in the derivation, subject to representing all omitted legal children
+as unresolved intervals; exhaustive tiny-game bound-containment tests and cap
+assessment are pending. No gate changes and no scoring is authorized. See
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
 ## 2026-10-04 source-code amendment proposal
 
 The legacy V2.8 `_line_score` is used by both the positional policy and the
