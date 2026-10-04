@@ -6,6 +6,13 @@ authorize data generation, fit, inference, scoring, matches, or advance any
 research gate. The six-arm panel and all open compute, data, supervision, and
 review gates remain unchanged.
 
+**Independent review (2026-10-04): conditionally accepts retaining the six
+arms for the narrow v04 contrast family; no P1/P2 blocker.** The reviewer
+confirmed the estimand limitation, source summaries, and decision-facing
+diagnostics. A nonblocking AD-WM wording correction distinguishing elite-regret
+from Cube success evidence was incorporated. This review accepts the scope
+exclusion only; it does not freeze the regret protocol or open any fit gate.
+
 ## Decision to review
 
 Does the frozen V2.12-04 six-arm panel need an action-sensitive JEPA control
@@ -75,9 +82,11 @@ test. If the intended claim is comparative algorithm performance against
 action-sensitive JEPA, the current panel is insufficient; version and review a
 separate benchmark arm before fitting.
 
-The reviewer must explicitly accept or reject this disposition against the
-complete method and prior-art record. Until then, the existing research gate's
-action-sensitive-control question remains open and blocks fitting.
+The action-sensitive-control scope question is resolved for this narrow v04
+contrast family subject to the claim limits above. It does not resolve the
+measurement protocol below, establish action sensitivity, or permit broader
+comparative claims. Fitting remains blocked by the unfrozen legal-root regret
+protocol and the other open gates.
 
 ## Required decision-facing measurement, still unfrozen
 

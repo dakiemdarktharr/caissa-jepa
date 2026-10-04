@@ -10,14 +10,13 @@ not cover every legal counterfactual branch. ActSWM and AD-WM establish
 relevant action-sensitive objectives and candidate-selection diagnostics, but
 do not provide a ready-made matched control for deterministic alternating
 zero-sum board search. Draft 01 recommends preserving the six frozen v04 arms
-only for their narrow contrast family, conditional on independent pre-fit
-acceptance of the scope exclusion; a broader method comparison needs its own
-versioned benchmark. It also proposes full legal-root action scoring and
-decision-regret measurement, with latent separation alone insufficient. This
-does not amend v04 or close the research gate: the reviewer must still
-accept/reject the disposition, the regret protocol is unfrozen, and the
-Reversi8 2-second p90 gate remains failed. No code, roots, data, models,
-inference, or outcomes were run. See
+only for their narrow contrast family; the independent reviewer accepted this
+conditional scope exclusion with no P1/P2 blocker. A broader method comparison
+needs its own versioned benchmark. It also proposes full legal-root action
+scoring and decision-regret measurement, with latent separation alone
+insufficient. This does not amend v04 or open fit: the regret protocol is
+unfrozen and the Reversi8 2-second p90 gate remains failed. No code, roots,
+data, models, inference, or outcomes were run. See
 `docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md`.
 
 ### 2026-10-04 D-JEPA control-scope assessment
