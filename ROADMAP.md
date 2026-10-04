@@ -125,7 +125,12 @@ validation row for malformed or mismatched bytes. The reviewer confirmed the
 revised matrix. It remains a design inventory, not evidence of live recovery
 or adapter readiness. No service, adapter, inference, OOM operation, training,
 or outcome ran. Next: version an integrated regression plan and resolve
-immutable runtime identity and bounded IPC details. See
+immutable runtime identity and bounded IPC details. A case-by-case draft now
+exists in `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`; it maps each
+matrix row to a fault seam, fail-closed assertions and current coverage, and
+has independent design review. The reviewer confirmed Boolean/rollback
+counter tests already exist in the legacy suite; the amended schema must carry
+them forward. No live service, adapter, inference or OOM operation is in scope. See
 `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 

@@ -77,4 +77,6 @@ versioned test case that names the exact injection seam, expected receipt
 state, action disposition, and retained handles. Run those tests only in the
 mocked harness until separate stage gates authorize later operations. OOM
 fault injection remains separately gated and is deliberately absent from this
-matrix.
+matrix. The proposed case-by-case injection and coverage mapping is tracked in
+`docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`; that plan also remains
+subject to independent review.
