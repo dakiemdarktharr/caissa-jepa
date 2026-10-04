@@ -23,11 +23,13 @@ the bytes before receipt assembly. Follow-up tests now cover invalid worker
 response, missing marker, receipt publication and durability-acknowledgement
 failures, unit-stop failure, IPC-cleanup failure, active-state query failure,
 non-success manager result, caller deadline expiry while the service stays
-active, and Ctrl-C after release; all preserve the appropriate receipt
-uncertainty and reconciliation handles. The focused orchestration and
-supervision suites pass 112/112 with `unittest`; the whitespace check and AST
-parsing pass. Independent review confirmed the controlled clock exercises the
-actual deadline polling branch and found no remaining P1/P2 issue.
+active, duplicate-key response bytes, and Ctrl-C before dispatch/during
+release/after dispatch; all preserve the appropriate receipt uncertainty and
+reconciliation handles. The focused orchestration and supervision suites pass
+116/116 with `unittest`; the whitespace check and AST parsing pass.
+Independent review confirmed the controlled clocks exercise the actual
+active-wait and exit-wait deadline branches, including a start-race snapshot
+reporting `LoadState=not-found`, and found no remaining P1/P2 issue.
 One bounded live normal-exit systemd v262 run then verified armed release,
 receipt-before-cleanup, matching embedded receipt digest, mode `0600`, and
 `LoadState=not-found` after cleanup. Receipt SHA-256:
@@ -44,9 +46,9 @@ and is not wired to this harness. Next: review remaining manager-result,
 service-start race, and deadline/interruption recovery contracts; keep staged
 external-supervision and separate OOM authorization gates closed.
 
-The next mock-only gap is response corruption and explicit service-start
-reconciliation behavior. These must be reviewed before request-adapter
-integration. The live normal-exit smoke does not
+The next research task is an architecture audit of source/runtime fingerprint
+coverage and the remaining manager/journal/counter failure map before
+request-adapter integration. The live normal-exit smoke does not
 substitute for those failures, and the separately gated OOM stage remains
 closed pending explicit authorization.
 

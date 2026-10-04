@@ -37,7 +37,7 @@ and workspace identifiers.
   normal-exit synthetic run. The reviewer noted that source-file hashes do not
   independently attest host bytecode already loaded before execution.
 - The focused armed-smoke, collector, live-evidence, receipt, armed-protocol,
-  release-token, and IPC suites pass 112/112 using `unittest`; the whitespace
+  release-token, and IPC suites pass 116/116 using `unittest`; the whitespace
   check and AST parsing of the new module/tests pass.
 - Mocked composition failures cover a nonmatching response, missing journal
   evidence, receipt publication failure before a visible file, durability
@@ -50,6 +50,14 @@ and workspace identifiers.
   controlled monotonic clock through the real polling-loop condition and
   verifies no receipt, response read, or stop occurs while the workspace stays
   available. Independent review confirmed this exercises the deadline branch.
+- A separate start-race fixture reports `LoadState=not-found` before the active
+  snapshot. The controlled clock advances beyond the active-wait deadline, and
+  the test confirms the worker is never released, no receipt is published, no
+  stop is attempted, and the IPC workspace remains available for reconciliation.
+- Duplicate-key response JSON is rejected before receipt publication. Ctrl-C
+  before dispatch cleans the private IPC workspace without creating a unit;
+  Ctrl-C at the release call retains the active-unit/workspace reconciliation
+  handles. Independent review confirmed all three branches and fixture teardown.
 - One live smoke completed under systemd v262 with a normal exit. It verified
   distinct caller and worker cgroups, the 128 MiB max / 96 MiB high memory
   profile, swap 0, 64 KiB file limit, no restart, `OOMPolicy=kill`, successful
@@ -76,8 +84,8 @@ request adapter, project data, inference, OOM operation, training, score, or
 outcome ran or was accessed. The run does not validate OOM attribution or
 caller survival under resource failure, and it does not open the pilot gate.
 
-Next: close remaining response-corruption and service-start reconciliation
-contracts before staged request-adapter integration. The
+Next: audit source/runtime fingerprinting and the remaining manager/journal/
+counter failure map before staged request-adapter integration. The
 external-supervision OOM stage still requires separate explicit authorization.
 Request-adapter integration remains behind the supervision stages and
 independent review.
