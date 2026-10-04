@@ -2,6 +2,10 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 D-JEPA control-scope assessment
+
+A static comparison of v04’s six arms with D-JEPA/ARC-Bench recommends keeping the frozen panel unchanged for the narrow estimand: recursive EMA-target JEPA effect versus matched value/dynamics controls inside the specified exact-rule max/min planner. Adding one outcome-supervised candidate ranker would introduce unmatched labels, architecture, and inference; adding it across all arms would be a new factorial study. This recommendation is not independent review approval. Before any corpus generation or fit, an independent reviewer must accept the scope rationale and resolve the still-draft support/regret protocol; the failed Reversi8 2-second p90 compute gate also remains open. Do not claim general decision-alignment superiority. See `docs/V212_DECISION_ALIGNMENT_CONTROL_REVIEW_DRAFT_01.md`.
+
 ### 2026-10-04 decision-alignment prior-art refresh
 
 A targeted primary-source pass found ARC-Bench (fixed-candidate JEPA rankability with regret/ranking metrics) and D-JEPA (outcome-supervised relational selection among shared predicted-future candidates). These preprints make generic candidate-ranking diagnostics and JEPA-informed decision alignment poor novelty claims. Their reported domains are navigation/manipulation/robotics, not exact-rule alternating zero-sum board search; no CAISSA result follows. Before any corpus generation or fit, review whether the frozen six-arm v04 panel needs an outcome-supervised candidate-set control to isolate the recursive JEPA transition term, or record why the estimand excludes it. Do not add a loss/arm to v04 silently. The D-JEPA code repo states Apache-2.0, but its checkpoint card leaves upstream redistribution/license checks open and its linked dataset card was empty/unlicensed in this snapshot; no artifacts were downloaded or reused. No gate changed. See the targeted section in `docs/RELATED_WORK.md`; the full search snapshot remains in `docs/V212_RELATED_WORK_POSITIONING_AUDIT_01.md`.
