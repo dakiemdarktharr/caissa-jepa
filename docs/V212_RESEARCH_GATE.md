@@ -264,6 +264,9 @@ negative evidence about these naive no-heuristic DFS orders on two opening
 states, not a representative feasibility estimate or model pilot. Do not adopt
 them or use this profile to change inference caps; a sound selective/best-first
 reference or another prespecified estimand is still needed. No gate changed.
+The search used exact terminal checks on descendants of the two synthetic
+initial states; it accessed no training labels, benchmark root schedule,
+model outputs, or empirical game results.
 
 ## 2026-10-04 source-code amendment proposal
 
