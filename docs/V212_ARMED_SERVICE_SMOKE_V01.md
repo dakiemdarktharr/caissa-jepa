@@ -37,13 +37,19 @@ and workspace identifiers.
   normal-exit synthetic run. The reviewer noted that source-file hashes do not
   independently attest host bytecode already loaded before execution.
 - The focused armed-smoke, collector, live-evidence, receipt, armed-protocol,
-  release-token, and IPC suites pass 107/107 using `unittest`; the whitespace
+  release-token, and IPC suites pass 112/112 using `unittest`; the whitespace
   check and AST parsing of the new module/tests pass.
 - Mocked composition failures cover a nonmatching response, missing journal
   evidence, receipt publication failure before a visible file, durability
   acknowledgement failure after a visible file, unit-stop failure, and IPC
   cleanup failure. These assert no premature stop/cleanup and preserve receipt
   uncertainty plus unit/workspace reconciliation identifiers as applicable.
+- Further composition cases cover active-state query failure, a non-success
+  manager result, deadline expiry while repeated snapshots still report the
+  worker active, and Ctrl-C after release. The deadline test advances a
+  controlled monotonic clock through the real polling-loop condition and
+  verifies no receipt, response read, or stop occurs while the workspace stays
+  available. Independent review confirmed this exercises the deadline branch.
 - One live smoke completed under systemd v262 with a normal exit. It verified
   distinct caller and worker cgroups, the 128 MiB max / 96 MiB high memory
   profile, swap 0, 64 KiB file limit, no restart, `OOMPolicy=kill`, successful
@@ -70,8 +76,8 @@ request adapter, project data, inference, OOM operation, training, score, or
 outcome ran or was accessed. The run does not validate OOM attribution or
 caller survival under resource failure, and it does not open the pilot gate.
 
-Next: close the remaining manager-result, service-start race, and deadline
-recovery contract tests before staged request-adapter integration. The
+Next: close remaining response-corruption and service-start reconciliation
+contracts before staged request-adapter integration. The
 external-supervision OOM stage still requires separate explicit authorization.
 Request-adapter integration remains behind the supervision stages and
 independent review.

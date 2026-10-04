@@ -88,7 +88,10 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
 
     def _mock_host(self, stack, *, fail_release=False, fail_profile=False,
                    response_status="released_no_inference", fail_journal=False,
-                   fail_persist=None, fail_stop=False, fail_cleanup=False):
+                   fail_persist=None, fail_stop=False, fail_cleanup=False,
+                   fail_first_show=False, exited_result="success",
+                   exited_status="0", fail_exited_show=False,
+                   interrupt_exited_show=False, keep_running_at_exit=False):
         state = {"workspace": None, "show": 0, "sequence": []}
         original_create = ipc.create_workspace
         original_read = ipc.read_response
@@ -133,16 +136,25 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             state["show"] += 1
             if state["show"] == 1:
                 state["sequence"].append("active_snapshot")
+                if fail_first_show:
+                    raise collector.CollectorError("mock active-state query failed")
                 return dict(unit_props, ActiveState="active", SubState="running")
             if state["show"] == 2:
                 state["sequence"].append("exited_snapshot")
+                if fail_exited_show:
+                    raise collector.CollectorError("caller-observed response deadline expired")
+                if interrupt_exited_show:
+                    raise KeyboardInterrupt()
+                if keep_running_at_exit:
+                    return dict(unit_props, ActiveState="active", SubState="running")
                 state["workspace"].response_path.write_text(json.dumps({
                     "schema": service.RESPONSE_SCHEMA,
                     "nonce": json.loads(state["workspace"].request_path.read_text())["nonce"],
                     "status": response_status,
                 }, separators=(",", ":")), encoding="utf-8")
                 return dict(unit_props, ControlGroup="", ActiveState="inactive",
-                            SubState="exited", Result="success", ExecMainStatus="0")
+                            SubState="exited", Result=exited_result,
+                            ExecMainStatus=exited_status)
             return {"LoadState": "not-found"}
 
         def release_when_ready(workspace, snapshot, **kwargs):
@@ -348,6 +360,69 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 service.run_no_inference_armed_smoke(receipt_path=self.receipt)
         self.assertTrue(self.receipt.exists())
         self.assertIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_active_snapshot_query_failure_during_start_retains_workspace(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_first_show=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "active-state query failed.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertIn("systemd-run", state["sequence"])
+        self.assertNotIn("release", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_non_success_manager_result_retains_unit_and_workspace(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, exited_result="exit-code", exited_status="1")
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "did not exit successfully.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertFalse(self.receipt.exists())
+        self.assertIn("exited_snapshot", state["sequence"])
+        self.assertNotIn("response_read", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_exit_poll_query_error_retains_reconciliation_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_exited_show=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "response deadline expired.*receipt_not_attempted.*unit_retained_or_state_unknown"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertIn("release", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_deadline_expiry_while_unit_remains_running_retains_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, keep_running_at_exit=True)
+            clock = iter((0.0, 0.1, 0.2, 2.1))
+            stack.enter_context(patch.object(service.time, "monotonic",
+                                             side_effect=lambda: next(clock)))
+            stack.enter_context(patch.object(collector, "_check_deadline"))
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "did not exit before caller deadline.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt,
+                                                     timeout_seconds=2)
+        self.assertIn("release", state["sequence"])
+        self.assertEqual(state["sequence"].count("exited_snapshot"), 1)
+        self.assertNotIn("response_read", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_ctrl_c_after_dispatch_preserves_service_workspace_identifiers(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, interrupt_exited_show=True)
+            with self.assertRaises(KeyboardInterrupt) as caught:
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertIn("receipt_not_attempted", str(caught.exception))
+        self.assertIn("unit_retained_or_state_unknown", str(caught.exception))
+        self.assertIn(str(self.workspaces[0].directory), str(caught.exception))
+        self.assertIn("release", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
 
