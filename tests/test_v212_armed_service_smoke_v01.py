@@ -1,0 +1,280 @@
+import json
+from contextlib import ExitStack
+import tempfile
+from pathlib import Path
+import unittest
+from unittest.mock import patch
+
+from two_player import v212_armed_protocol_v01 as armed
+from two_player import v212_armed_service_smoke_v01 as service
+from two_player import v212_live_supervision_v01 as live
+from two_player import v212_supervision_collector_v01 as collector
+from two_player import v212_worker_ipc as ipc
+
+
+class ArmedServiceBootstrapTests(unittest.TestCase):
+    def test_bootstrap_compiles_and_verifies_sources_before_project_imports(self):
+        source = service._worker_source()
+        compile(source, "<armed-worker-bootstrap>", "exec")
+        self.assertLess(source.index("hashlib.sha256(argv[3])"),
+                        source.index("exec(compile(verified[relative]"))
+        self.assertIn("armed.run_synthetic_armed_worker", source)
+        self.assertNotIn("v212_request_adapter", source)
+        self.assertNotIn("import torch", source.lower())
+        self.assertNotIn("model", source.lower())
+
+    def test_source_manifest_is_bound_to_bootstrap_and_exact_helper_files(self):
+        root = Path(service.__file__).resolve().parents[1]
+        source = service._worker_source()
+        manifest, digest = service._source_manifest(root, source)
+        self.assertEqual(set(manifest), {"bootstrap_sha256", "files"})
+        self.assertEqual(set(manifest["files"]), set(service.WORKER_MODULES))
+        self.assertEqual(len(digest), 64)
+        service._assert_source_manifest(root, manifest, source)
+        host_sources = service._host_evidence_manifest(root)
+        self.assertEqual(set(host_sources), set(service.HOST_EVIDENCE_MODULES))
+        self.assertIn("two_player/v212_armed_service_smoke_v01.py", host_sources)
+        service._assert_host_evidence_manifest(root, host_sources)
+
+    def test_source_manifest_rejects_helper_hash_mismatch(self):
+        root = Path(service.__file__).resolve().parents[1]
+        source = service._worker_source()
+        manifest, _ = service._source_manifest(root, source)
+        manifest["files"][service.WORKER_MODULES[0]] = "0" * 64
+        with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                    "worker source changed"):
+            service._assert_source_manifest(root, manifest, source)
+
+    def test_host_manifest_rejects_evidence_dependency_hash_mismatch(self):
+        root = Path(service.__file__).resolve().parents[1]
+        manifest = service._host_evidence_manifest(root)
+        manifest[service.HOST_EVIDENCE_MODULES[0]] = "0" * 64
+        with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                    "host evidence source changed"):
+            service._assert_host_evidence_manifest(root, manifest)
+
+
+class ArmedServiceOrchestrationTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.ipc_parent = self.root / "ipc"
+        self.ipc_parent.mkdir(mode=0o700)
+        self.receipt = self.root / "receipt.json"
+        self.workspaces = []
+
+    def tearDown(self):
+        for workspace in self.workspaces:
+            if workspace.directory.exists():
+                try:
+                    ipc.cleanup_workspace(workspace)
+                except ipc.WorkerIPCError:
+                    pass
+        self.temp.cleanup()
+
+    def test_request_hash_rejects_path_substitution_and_detects_byte_changes(self):
+        workspace = ipc.create_workspace({"schema": "test"}, parent=self.ipc_parent,
+                                         with_release_fifo=True)
+        self.workspaces.append(workspace)
+        original_digest = service._hash_verified_request(workspace)
+        with workspace.request_path.open("wb") as stream:
+            stream.write(b'{"schema":"xxxx"}')
+        self.assertNotEqual(service._hash_verified_request(workspace), original_digest)
+        workspace.request_path.unlink()
+        workspace.request_path.symlink_to(self.receipt)
+        with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                    "verified request file could not be hashed"):
+            service._hash_verified_request(workspace)
+
+    def _mock_host(self, stack, *, fail_release=False, fail_profile=False):
+        state = {"workspace": None, "show": 0, "sequence": []}
+        original_create = ipc.create_workspace
+        original_read = ipc.read_response
+        original_persist = live.persist_receipt_once
+
+        def create(request, **kwargs):
+            ws = original_create(request, parent=self.ipc_parent, **kwargs)
+            state["workspace"] = ws
+            self.workspaces.append(ws)
+            return ws
+
+        def run(argv, **kwargs):
+            if argv[0] == "systemd-run":
+                state["sequence"].append("systemd-run")
+                self.assertIn("--remain-after-exit", argv)
+                self.assertIn("--property=Restart=no", argv)
+                self.assertIn("--property=OOMPolicy=kill", argv)
+                self.assertIn("--property=StandardInput=file:" +
+                              str(state["workspace"].request_path), argv)
+                return b""
+            if tuple(argv[:4]) == ("systemctl", "--user", "stop", state["unit"]):
+                state["sequence"].append("stop")
+                return b""
+            raise AssertionError(f"unexpected command: {argv[0]}")
+
+        unit_props = {
+            "LoadState": "loaded", "InvocationID": "a" * 32,
+            "ControlGroup": "/user.slice/" + state.get("unit", "pending"),
+            "MainPID": "4242",
+            "EffectiveMemoryMax": str(collector.MEMORY_MAX),
+            "EffectiveMemoryHigh": str(collector.MEMORY_HIGH),
+            "MemorySwapMax": "0", "LimitFSIZE": str(collector.FILE_SIZE_LIMIT),
+            "RuntimeMaxUSec": "8s", "Restart": "no", "OOMPolicy": "kill",
+            "RemainAfterExit": "yes",
+        }
+
+        def show(unit, **kwargs):
+            state["unit"] = unit
+            unit_props["ControlGroup"] = "/user.slice/" + unit
+            state["show"] += 1
+            if state["show"] == 1:
+                state["sequence"].append("active_snapshot")
+                return dict(unit_props, ActiveState="active", SubState="running")
+            if state["show"] == 2:
+                state["sequence"].append("exited_snapshot")
+                state["workspace"].response_path.write_text(json.dumps({
+                    "schema": service.RESPONSE_SCHEMA,
+                    "nonce": json.loads(state["workspace"].request_path.read_text())["nonce"],
+                    "status": "released_no_inference",
+                }, separators=(",", ":")), encoding="utf-8")
+                return dict(unit_props, ControlGroup="", ActiveState="inactive",
+                            SubState="exited", Result="success", ExecMainStatus="0")
+            return {"LoadState": "not-found"}
+
+        def release_when_ready(workspace, snapshot, **kwargs):
+            state["sequence"].append("release")
+            self.assertIsNotNone(workspace.release_identity)
+            self.assertEqual(snapshot["service_unit"], state["unit"])
+            self.assertEqual(snapshot["request_nonce"],
+                             json.loads(workspace.request_path.read_text())["nonce"])
+            if fail_release:
+                raise armed.ArmedProtocolError("mock release rejection")
+            return b"synthetic-token"
+
+        def verify_properties(properties):
+            if fail_profile:
+                raise collector.CollectorError("mock resource policy mismatch")
+
+        def read_response(workspace):
+            state["sequence"].append("response_read")
+            return original_read(workspace)
+
+        def persist(path, envelope):
+            state["sequence"].append("persist_attempt")
+            result = original_persist(path, envelope)
+            state["sequence"].append("persist_complete")
+            return result
+
+        def journal(unit, *, invocation_id, worker_cgroup, deadline):
+            return [{
+                "__CURSOR": "mock", "_BOOT_ID": "b" * 32,
+                "__MONOTONIC_TIMESTAMP": "16000",
+                "_SYSTEMD_USER_UNIT": unit,
+                "_SYSTEMD_INVOCATION_ID": invocation_id,
+                "_SYSTEMD_CGROUP": worker_cgroup,
+                "MESSAGE": collector.MARKER_PREFIX + invocation_id,
+            }]
+
+        event_samples = 0
+
+        def read_events(**kwargs):
+            nonlocal event_samples
+            event_samples += 1
+            return {
+                "schema": "cgroup-v2.memory.events.local.v1",
+                "source": "memory.events.local",
+                "cgroup": "/user.slice/" + state["unit"],
+                "boot_id": "b" * 32,
+                "captured_monotonic_us": 13000 if event_samples == 1 else 18000,
+                "counters": {"low": 0, "high": 0, "max": 0, "oom": 0,
+                             "oom_kill": 0, "oom_group_kill": 0},
+            }
+
+        stack.enter_context(patch.object(collector, "_boot_id", return_value="b" * 32))
+        stack.enter_context(patch.object(collector, "_proc_cgroup",
+                                         side_effect=lambda pid=None:
+                                         "/user.slice/caller" if pid is None
+                                         else state["sequence"] and
+                                         "/user.slice/" + state["unit"] or "/user.slice/pending"))
+        stack.enter_context(patch.object(collector, "_monotonic_us",
+                                         side_effect=[10000, 12000, 13000, 18000, 20000]))
+        stack.enter_context(patch.object(collector, "_run", side_effect=run))
+        stack.enter_context(patch.object(collector, "_show", side_effect=show))
+        stack.enter_context(patch.object(collector, "_verify_effective_properties",
+                                         side_effect=verify_properties))
+        stack.enter_context(patch.object(collector, "_cgroup_scalar",
+                                         side_effect=[str(collector.MEMORY_MAX),
+                                                      str(collector.MEMORY_HIGH), "0"]))
+        stack.enter_context(patch.object(collector, "_journal_markers", side_effect=journal))
+        stack.enter_context(patch.object(collector.time, "sleep", return_value=None))
+        stack.enter_context(patch.object(live, "read_memory_events_local",
+                                         side_effect=read_events))
+        stack.enter_context(patch.object(ipc, "create_workspace", side_effect=create))
+        stack.enter_context(patch.object(ipc, "read_response", side_effect=read_response))
+        stack.enter_context(patch.object(live, "persist_receipt_once", side_effect=persist))
+        stack.enter_context(patch.object(armed, "release_when_ready",
+                                         side_effect=release_when_ready))
+        return state
+
+    def test_mocked_success_releases_after_active_gate_and_persists_before_cleanup(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack)
+            result = service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        envelope = json.loads(self.receipt.read_text(encoding="utf-8"))
+        self.assertTrue(result["armed_release_verified"])
+        self.assertTrue(envelope["no_inference"])
+        self.assertEqual(envelope["receipt"]["classification"], "normal_exit")
+        self.assertLess(state["sequence"].index("active_snapshot"),
+                        state["sequence"].index("release"))
+        self.assertLess(state["sequence"].index("release"),
+                        state["sequence"].index("exited_snapshot"))
+        self.assertLess(state["sequence"].index("exited_snapshot"),
+                        state["sequence"].index("response_read"))
+        self.assertLess(state["sequence"].index("persist_complete"),
+                        state["sequence"].index("stop"))
+        self.assertFalse(self.workspaces[0].directory.exists())
+
+    def test_release_failure_preserves_unit_workspace_and_skips_receipt(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_release=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "receipt_not_attempted.*unit_retained_or_state_unknown"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertFalse(self.receipt.exists())
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_invalid_service_profile_blocks_release_and_preserves_reconciliation_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_profile=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "receipt_not_attempted.*unit_retained_or_state_unknown"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertFalse(self.receipt.exists())
+        self.assertNotIn("release", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_pre_dispatch_cleanup_failure_reports_reconciliation_path(self):
+        failure = ipc.WorkerIPCError("mock cleanup failure")
+        with ExitStack() as stack:
+            original_create = ipc.create_workspace
+
+            def create(request, **kwargs):
+                workspace = original_create(request, parent=self.ipc_parent,
+                                            with_release_fifo=True)
+                self.workspaces.append(workspace)
+                return workspace
+
+            stack.enter_context(patch.object(ipc, "create_workspace", side_effect=create))
+            stack.enter_context(patch.object(collector, "_check_deadline",
+                                             side_effect=RuntimeError("pre-dispatch rejected")))
+            stack.enter_context(patch.object(ipc, "cleanup_workspace", side_effect=failure))
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "service_not_dispatched.*ipc_directory=.*pre_dispatch_cleanup_failed"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+
+if __name__ == "__main__":
+    unittest.main()

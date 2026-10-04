@@ -24,6 +24,19 @@ The receipt destination is validated before dispatch and is create-only. Once di
 - The request-adapter test modules were attempted but could not import because NumPy is unavailable in the installed Python environments. The passing 62-test count covers only the four focused supervision/IPC/receipt suites.
 - The current mocked orchestration regression suite covers lifecycle ordering and failure boundaries; collector/live-evidence/receipt/armed-protocol/release-token/IPC suites pass 92/92 with `unittest`. `pytest` is unavailable in this runtime. This is test evidence separate from the two live no-inference observations.
 
+The later release-FIFO composition and its third live normal-exit observation
+are documented separately in [`V212_ARMED_SERVICE_SMOKE_V01.md`](V212_ARMED_SERVICE_SMOKE_V01.md).
+That harness reuses this collector's evidence/receipt components but adds the
+pre-compute armed release gate; it does not replace or extend the two receipts
+listed above.
+
 ## Limits and next gate
 
-These are two no-inference normal-exit lifecycle observations. They do not validate OOM attribution, timeout behavior on a live service, interruption recovery against a live unit, systematic repeatability, request-adapter integration, inference latency, or pilot feasibility. They do not change the research method or open training, pilot, or OOM gates. Any OOM fault test still requires separate explicit authorization. Next, complete the armed-worker integration and remaining failure-contract review before request-adapter use.
+These two receipts document the earlier collector path; the armed-worker
+composition is recorded separately. Neither record validates OOM attribution,
+timeout behavior on a live service, interruption recovery against a live unit,
+systematic repeatability, request-adapter integration, inference latency, or
+pilot feasibility. They do not change the research method or open training,
+pilot, or OOM gates. Any OOM fault test still requires separate explicit
+authorization. Next, expand armed-service mocked recovery/failure coverage and
+complete staged review before request-adapter use.

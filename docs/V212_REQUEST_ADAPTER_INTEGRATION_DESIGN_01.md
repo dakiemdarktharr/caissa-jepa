@@ -1,5 +1,42 @@
 # V2.12 request-adapter integration design 01
 
+## Implementation progress: armed no-inference service smoke (2026-10-04)
+
+Added `two_player/v212_armed_service_smoke_v01.py`, a separate synthetic
+controller/worker composition around the release-FIFO protocol. The worker
+hashes the exact bootstrap and three helper files before compiling those
+verified bytes in memory, waits until the caller verifies active systemd
+properties and worker/caller cgroup placement, validates the one-shot release
+token and deadline, then emits only a tiny synthetic response and
+invocation-bound journal marker. The caller starts its deadline before
+receipt-destination validation and source/request preflight, rechecks worker
+and host evidence source manifests, hashes the request with directory-relative
+no-follow opens and identity checks, and persists the assembled receipt before
+stopping the unit and removing the private IPC workspace. Pre-dispatch cleanup
+failures and post-dispatch failures retain/report reconciliation state.
+
+Independent review found and the follow-up resolved three receipt-boundary
+gaps: deadline start now precedes destination validation; the harness itself
+and evidence dependencies are in a captured/rechecked host-source manifest;
+request hashing checks the original directory/file identities and revalidates
+the bytes before receipt assembly. The focused orchestration and supervision
+suites pass 101/101 with `unittest`; `git diff --check` and AST parsing pass.
+One bounded live normal-exit systemd v262 run then verified armed release,
+receipt-before-cleanup, matching embedded receipt digest, mode `0600`, and
+`LoadState=not-found` after cleanup. Receipt SHA-256:
+`ee1d679c27f5a2c2b009045582a5d18eb8668f396fa33fb82e7203185a26a3a0`.
+
+This validates one synthetic normal-exit path only. Mock coverage and this
+single live run do not establish timeout/interruption recovery, OOM attribution,
+repeatability, or real request-adapter behavior. The manifest records source
+file stability; it does not independently attest host bytecode already loaded
+before the run and is not the complete model/runtime fingerprint required for
+adapter integration. No adapter, inference, OOM operation, training, project
+data, score, or outcome ran. The current request adapter remains same-cgroup
+and is not wired to this harness. Next: expand mocked armed-service recovery
+and failure coverage; keep the staged external-supervision and separate OOM
+authorization gates closed.
+
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 
 Added nine orchestration tests in `tests/test_v212_supervision_collector_v01.py`
@@ -122,9 +159,9 @@ Keep a caller-side request controller separate from a service-side compute worke
 
 The controller should pass one strict request object through `StandardInput=file:<request>` and receive one strict response through `StandardOutput=truncate:<response>`. Both objects need a schema/version and unpredictable request nonce. The response must echo the nonce and identify the worker protocol; the caller must validate duplicate keys, sizes, finite values, required fields, request binding, action legality against the caller's original root, and counter types before returning an action. The action remains transient and is excluded from any pilot receipt. No arbitrary paths or commands should be accepted from the payload.
 
-The caller can validate the requested unit configuration before launch, but effective properties and the actual `ControlGroup` only exist after systemd creates the service. Therefore the worker must start in a **no-compute armed state**. The concrete candidate is a private, identity-checked release FIFO in the IPC workspace: the worker parses the bounded request, opens the FIFO for reading, then blocks before model initialization/search. The caller retries a nonblocking FIFO writer open under the shared deadline; a connected reader confirms the reviewed worker reached the barrier. Both sides check FIFO type, owner, mode, and device/inode immediately around their opens. EOF before any release bytes, partial/invalid JSON, oversized input, or failed digest is an integrity failure with no computation. The caller then verifies the active unit's effective `MemoryMax`, `MemoryHigh`, swap, runtime, restart, OOM policy, exact `ControlGroup`, and `/proc/<MainPID>/cgroup` placement, plus the live cgroup memory files. Only after every check passes may the caller send a bounded release message and close the FIFO. The FIFO coordinates trusted same-UID processes; it is not an adversarial security boundary. Linux FIFO open behavior is documented in [`fifo(7)`](https://man7.org/linux/man-pages/man7/fifo.7.html) and [`open(2)`](https://man7.org/linux/man-pages/man2/open.2.html).
+The caller can validate the requested unit configuration before launch, but effective properties and the actual `ControlGroup` only exist after systemd creates the service. Therefore the worker must start in a **no-compute armed state**. The concrete candidate is a private, identity-checked release FIFO in the IPC workspace: the worker parses the bounded request, opens the FIFO for reading, then blocks before model initialization/search. The caller retries a nonblocking FIFO writer open under the shared deadline; a connected reader confirms the reviewed worker reached the barrier. Both sides check FIFO type, owner, mode, and device/inode immediately around their opens. EOF before any release bytes, partial/invalid JSON, oversized input, or failed digest is an integrity failure with no computation. The caller then verifies the active unit's effective `MemoryMax`, `MemoryHigh`, swap, runtime, restart, OOM policy, exact `ControlGroup`, and `/proc/<MainPID>/cgroup` placement, plus the live cgroup memory files. Only after every check passes may the caller send a bounded release message and close the FIFO. The FIFO coordinates trusted same-UID processes; it is not an adversarial security boundary. Linux FIFO open behavior is documented in [`fifo(7)`](https://man7.org/linux/man-pages/man7/fifo.7.html) and [`open(2)`](https://man7.org/linux/man-pages/man2/open.2.html). The synthetic armed service harness now exercises this ordering; the production request adapter does not yet use it.
 
-The release payload must bind the request nonce, exact service unit, active invocation ID, boot ID, exact `ControlGroup`, the captured effective unit properties and live `memory.max`, `memory.high`, and `memory.swap.max` values, source-manifest digest, and capture time. Define a canonical sorted JSON encoding of these fields and include its SHA-256 digest. Before model initialization, the worker consumes the message once, recomputes the digest, compares the nonce with the request, invocation ID with its systemd-provided `INVOCATION_ID`, cgroup with `/proc/self/cgroup`, and each memory value with its live cgroup files. A second, stale, foreign-invocation, digest-mismatched, or limit-mismatched message fails closed. If this handshake cannot be implemented and tested without races, the request must fail before computation; a post-hoc property check alone is insufficient to establish the pre-compute resource gate. The current collector has no armed/release handshake and does not satisfy it.
+The release payload must bind the request nonce, exact service unit, active invocation ID, boot ID, exact `ControlGroup`, the captured effective unit properties and live `memory.max`, `memory.high`, and `memory.swap.max` values, source-manifest digest, and capture time. Define a canonical sorted JSON encoding of these fields and include its SHA-256 digest. Before model initialization, the worker consumes the message once, recomputes the digest, compares the nonce with the request, invocation ID with its systemd-provided `INVOCATION_ID`, cgroup with `/proc/self/cgroup`, and each memory value with its live cgroup files. A second, stale, foreign-invocation, digest-mismatched, or limit-mismatched message fails closed. If this handshake cannot be implemented and tested without races, the request must fail before computation; a post-hoc property check alone is insufficient to establish the pre-compute resource gate. The earlier collector had no armed/release handshake; the separate synthetic harness now verifies it, but this does not satisfy the request-adapter integration requirement.
 
 The worker must verify its actual cgroup path and memory limit against the controller's captured service snapshot; it must not infer them from caller-side constants. The caller and worker must be in distinct cgroups. Capture `memory.events.local` from the worker cgroup while it exists, not from the caller's cgroup. Bind the service journal marker to exact unit, invocation ID, worker cgroup, boot ID, and monotonic window. Capture manager exit/result fields, response validation, and counter samples into one receipt before stop/unload and IPC cleanup.
 
