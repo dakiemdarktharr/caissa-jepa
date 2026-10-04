@@ -12,12 +12,16 @@ outcome-supervised candidate-set arm in V2.12-04 before its first fit.
 
 V2.12-04's treatment is the recursive multi-step EMA-target latent-prediction
 loss. Its five controls vary prediction target/horizon or remove the transition
-predictor while holding the trajectory windows, policy/root-value and rollout-
-value losses, initialization pairing, update schedule, rules, and evaluation
-schedule fixed. The main candidate is tested against all five controls under a
-matched compute gate. The study is designed to estimate the incremental effect
-of that latent-matching component inside one fixed four-ply exact-rule max/min
-planner, not to rank every available action-selection architecture.
+predictor. The four predictive controls share the trajectory windows and
+policy/root-value and rollout-value supervision specified for those arms;
+the direct-leaf arm instead values the exact four-ply state. All six arms use
+paired seeds, the specified update schedule and rules, and the common
+evaluation schedule, subject to the within-5%-FLOP gate. The prespecified
+candidate-versus-control contrasts test this candidate inside one fixed
+four-ply exact-rule max/min planner. Because the controls vary horizon,
+prediction target, and architecture, the contrast family is not one pooled
+component-effect estimate and does not rank every available action-selection
+architecture.
 
 D-JEPA asks a different question. It learns a permutation-equivariant relation
 among predicted candidate futures using candidate-level execution outcomes,
@@ -30,15 +34,16 @@ V2.12.
 
 ## Why a seventh arm is not a matched control
 
-Adding one relational decision head to the existing six-arm panel would
-change its estimand. The new head would receive candidate-set structure and
-candidate-level outcome supervision that the other arms do not receive. It
-would add a different architecture, data interface, loss, and inference path.
-A win or loss against that single added arm would not isolate the effect of the
-JEPA transition loss, and the existing equal-window, compatible-head, and
-within-5%-FLOP requirements would need a new design. Adding the head to all six
-arms would instead create a new factorial study with additional interactions,
-compute, labels, and multiplicity; it is not an editorial update to v04.
+Adding one relational decision head as a seventh arm would not by itself
+change the existing five candidate-versus-control estimands. It would add a
+distinct benchmark contrast and expand the predeclared comparison family,
+compute allocation, and multiplicity plan. Because the new head receives
+candidate-set structure and candidate-level outcome supervision unavailable
+to the other arms, it is not a matched control that isolates the JEPA
+transition loss. It would need a separately specified, fairly matched
+benchmark comparison. Adding the head to all six arms would instead create a
+new factorial study with additional interactions, compute, labels, and
+multiplicity; it is not an editorial update to v04.
 
 The semantic targets also differ. D-JEPA's reported tasks select goal-reaching
 candidates from task costs/success labels. V2.12's action sequence comes from
