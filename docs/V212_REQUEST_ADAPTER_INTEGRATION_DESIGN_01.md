@@ -33,6 +33,15 @@ and a retained workspace. Follow-up review found no remaining issue in these
 changes. This closes those mock-coverage gaps only and does not add live service
 evidence.
 
+After this review, one second no-inference normal-exit run of the existing
+collector completed on systemd 262. It verified the invocation-bound receipt
+before cleanup and left the transient unit `not-found`; details and the
+receipt digest are in `docs/V212_SUPERVISION_COLLECTOR_V01.md`. This does not
+exercise the armed-release protocol in a live service or connect the request
+adapter. OOM, inference, and request-adapter gates remain closed. Next, finish
+the armed-worker service integration and its failure contract before any
+request-adapter use; separate authorization remains required for OOM testing.
+
 ## Implementation progress: private release-FIFO primitive (2026-10-04)
 
 `two_player/v212_worker_ipc.py` now optionally creates a mode-0600 release FIFO

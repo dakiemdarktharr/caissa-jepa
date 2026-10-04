@@ -185,6 +185,12 @@
 - A broader architecture review identified two additional fixture gaps: response availability preceded the exited snapshot, and missing evidence did not assert reconciliation retention. Both were corrected; tests now require worker exit before reading the response and prove evidence failures do not stop the unit or clean the workspace. A follow-up review found no remaining issue in these changes.
 - No service, request adapter, inference, OOM, training, project data, score, or outcome ran/accessed; no research/runtime gate changed. Next: review remaining protocol failure contracts and the integrated architecture before any live service step. OOM still requires separate explicit authorization. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 
+## Latest continuation delta (2026-10-04; reviewed no-inference normal-exit smoke)
+
+- Following the mock lifecycle fixes and independent architecture review, one bounded synthetic transient user service ran under systemd 262 and exited normally. The collector validated the nonce/schema response, distinct caller/worker cgroups, effective limits, worker-local counter pair, invocation-bound journal marker, durable receipt-before-stop ordering, and `LoadState=not-found` after cleanup.
+- Receipt: `/tmp/caissa-v212-smoke-183523/receipt.json`, 2,683 bytes, mode `0600`, SHA-256 `55937b10f67666b0f0ca3bdb2365cf22b28ac93a3e2e92ee901bbceef5d351f4`; embedded receipt digest matches. Unit `caissa-v212-smoke-5f506842ca976f98.service`, invocation `46fd79df69194b90af17ea900af4312d`. This is a second normal-exit no-inference observation, not a repeatability study or validation of OOM/timeout behavior.
+- No request adapter, inference, OOM, training, project data, score, or outcome ran/accessed. No method or pilot/training gate changed. Next: close remaining armed-worker integration and failure-contract gaps before request-adapter use; OOM remains separately authorization-gated. Details: `docs/V212_SUPERVISION_COLLECTOR_V01.md`.
+
 ## Latest continuation delta (2026-10-04; response-deadline contract audit)
 
 - Exact-remote-blob mocked-clock probe found the request adapter samples reported elapsed time before post-worker cgroup validation, response classification, and action checks. It returned `response` after a synthetic 0.10-second deadline (reported 0.05s; simulated return clock 0.25s).
