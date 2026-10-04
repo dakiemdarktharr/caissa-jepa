@@ -430,6 +430,36 @@ action-sensitive arm and must define full legal-root scoring and decision
 regret against a bounded exact-search reference. No current method/spec gate
 changes from this literature review.
 
+### Action-sensitivity control scope review (2026-10-04)
+
+The primary-source method comparison is now separated from the control
+decision. ActSWM's frozen action readout constrains predicted latent
+transitions to retain recoverable action information; its rollout contrast
+uses recorded versus all-zero action sequences. The latter cannot be copied
+literally for board games, where zero may be illegal or semantically special.
+AD-WM applies inverse and normalized action recovery to predictor-generated
+transitions and evaluates predicted versus realized costs on shared candidate
+banks. Its authors report that the inverse-only increment is unresolved in the
+Cube elite-regret diagnostic; the inverse objective has a smaller,
+weight-dependent effect in the Cube success ablation. This source does not
+establish a particular auxiliary as a necessary or sufficient control. Both
+papers are arXiv preprints and their results remain author-reported, not
+independently reproduced here.
+
+`docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md` recommends
+retaining v04's six arms only for their narrow predeclared contrast family,
+subject to independent pre-fit acceptance of the scope exclusion. It does not
+call a new seventh arm a matched control: a separate comparator would add a
+benchmark contrast, compute, and multiplicity without changing the existing
+candidate-versus-control estimands. A broader comparison to action-sensitive
+JEPA requires a separately versioned and reviewed benchmark before fitting.
+Regardless of arm count, the proposed decision-facing diagnostic must cover
+every legal root action, distinguish recorded-support from counterfactual
+actions, and pair latent response with exact consequences and exact/bounded
+decision regret. Latent separation by itself is not a useful-action test.
+This is a draft recommendation only; the research gate remains open and the
+v04 method is unchanged.
+
 ### Exact Connect Four solution and oracle prior art (2025–2026)
 
 The standard 7x6 Connect Four game has strong-solver prior art beyond the

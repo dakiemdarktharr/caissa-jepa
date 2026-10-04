@@ -2,6 +2,24 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 action-sensitivity control disposition draft
+
+Primary-source comparison confirms a real v04 risk: action input does not
+guarantee useful action sensitivity, and recorded-branch latent targets do
+not cover every legal counterfactual branch. ActSWM and AD-WM establish
+relevant action-sensitive objectives and candidate-selection diagnostics, but
+do not provide a ready-made matched control for deterministic alternating
+zero-sum board search. Draft 01 recommends preserving the six frozen v04 arms
+only for their narrow contrast family, conditional on independent pre-fit
+acceptance of the scope exclusion; a broader method comparison needs its own
+versioned benchmark. It also proposes full legal-root action scoring and
+decision-regret measurement, with latent separation alone insufficient. This
+does not amend v04 or close the research gate: the reviewer must still
+accept/reject the disposition, the regret protocol is unfrozen, and the
+Reversi8 2-second p90 gate remains failed. No code, roots, data, models,
+inference, or outcomes were run. See
+`docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md`.
+
 ### 2026-10-04 D-JEPA control-scope assessment
 
 A static comparison of v04’s six arms with D-JEPA/ARC-Bench recommends keeping the frozen panel unchanged for its prespecified candidate-versus-control contrast family around the multi-step JEPA candidate, inside the specified exact-rule max/min planner. Adding one outcome-supervised candidate ranker would not change those existing contrasts, but would add a distinct, unmatched benchmark comparison, compute, and multiplicity; adding it across all arms would be a new factorial study. This recommendation is not independent review approval. Before any corpus generation or fit, an independent reviewer must accept the scope rationale and resolve the still-draft support/regret protocol; the failed Reversi8 2-second p90 compute gate also remains open. Do not claim general decision-alignment superiority. See `docs/V212_DECISION_ALIGNMENT_CONTROL_REVIEW_DRAFT_01.md`.
