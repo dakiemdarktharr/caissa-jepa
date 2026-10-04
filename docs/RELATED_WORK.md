@@ -494,6 +494,42 @@ otherwise. Adapter/correctness/license/resource review remains outstanding;
 no code or table was run or downloaded.
 
 
+### 6x6 Reversi semi-strong solution artifact (2026-10-04)
+
+Takizawa's [semi-strong solving paper v2](https://arxiv.org/abs/2411.01029v2)
+reports a score-valued exact solution artifact for 6x6 Othello/Reversi over a
+certified region `R`, plus a proof certificate. The definition is explicitly
+weaker than a strong solve: `R` covers positions reachable when one designated
+player follows a canonical optimal policy and the opponent may choose any
+legal move. For a declared orientation, every legal successor of a free-agent
+node remains in that orientation's region, while an optimal-agent node only
+certifies the canonical optimal continuation. The [Zenodo release](https://zenodo.org/records/18843225) describes
+exact value queries on `R` and reports a 138.4 GB bundle. The Zenodo rights
+metadata has no license value in the inspected snapshot. The artifact is a
+potential exact-reference source only for certified roots/actions, not a
+complete oracle for arbitrary policy-mixture roots.
+
+The paper's terminal score assigns remaining empty squares to the winner;
+CAISSA Reversi terminal utility is winner/draw. Inference from the shared
+winner rule: the sign of exact score-margin minimax values equals W/D/L
+minimax values, since the sign map is monotone through max/min. It does not
+preserve distinctions among moves with the same W/D/L result. Only a root
+certified in the orientation-specific region `R_P`, with the side to move
+free under that same orientation, has the guarantee that every legal
+successor is covered; membership in the union `R` alone is insufficient.
+Such a root may support a complete exact W/D/L action row if every child query
+is available; negate each child value to convert
+from side-to-move to root perspective. At an optimal-agent root under that
+orientation, only the canonical optimal continuation is certified, so a full
+legal-action regret denominator is unavailable. Membership, orientation,
+full child coverage, utility normalization, proof scope, license, and storage
+all need verification before use. No artifact was
+downloaded or queried. This narrows but does not close the V2.12 oracle gap;
+the bounded references for Connect Four 8x8, Reversi6 outside `R`, and Reversi8
+remain unselected. See
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+
 ### Weak solution of standard 8x8 Othello (2023)
 
 Takizawa reports a **weak solution** of standard 8x8 Othello: the initial

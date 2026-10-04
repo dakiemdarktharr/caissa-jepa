@@ -1,10 +1,19 @@
 # V2.12 counterfactual decision-regret design 01 — draft
 
-**Status: protocol design proposal for independent review only.** This draft
-makes the action-score and regret terms operationally explicit. It does not
+**Status: draft; independent static review complete, protocol not frozen.**
+This proposal makes the action-score and regret terms operationally explicit.
+It does not
 amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
 or root generation, training, matches, or outcome access. The reference depth,
 leaf evaluator, sampling schedule, and compute allocation remain unselected.
+
+**Independent static review (2026-10-04): no remaining blocker.** The review
+confirmed that regret must use the action returned under the frozen planner
+caps, kept separate from any extra-compute full-window score-ranking
+diagnostic. For the Reversi6 semi-strong artifact lead, it required
+orientation-specific `R_P` membership with the free-agent role in that same
+orientation; union-only `R` membership is insufficient. The artifact remains
+unadopted, and no gate advanced.
 
 ## Question and interpretation
 
@@ -28,29 +37,36 @@ h_ref(s_leaf,p) with its exact player-perspective conversion. Configuration c
 binds the horizon, evaluator source hash and settings, action order,
 terminal/pass treatment, and exact or bounded-search label.
 
-For model arm m, define Q_m(s,a) under the frozen method's own four-ply
-planner, model and leaf head. For every legal root action, search that action
+Let a_m^exec(s) be the action actually returned by arm m's frozen evaluation
+planner under its shared node/time/memory limits, including a declared legal
+fallback if a full iteration did not complete. Regret below evaluates this
+deployed action. It must not silently replace it with the argmax of a separate
+unbudgeted score pass.
+
+Optionally, define Q_m(s,a) as arm m's fixed-depth, model-based root-action
+score for a separate ranking diagnostic. Score every legal root action
 independently with a full window (or use a separately verified equivalent
-that returns an exact fixed-depth value). Do not carry an incumbent root alpha
-from a previous root action into this diagnostic and then treat a fail-low
-upper bound as a point score. The selected model action is
-a_m(s)=argmax over a in Legal(s) of Q_m(s,a), using the spec's predeclared
-legal action order for ties.
+that returns an exact fixed-depth value). Do not carry an incumbent root
+alpha from a previous action and treat a fail-low upper bound as a point
+score. Report these model-score rankings only when all required rows complete;
+their additional compute needs a separate frozen allocation. They do not
+replace a_m^exec(s), and they do not enter the primary head-to-head metric.
 
 When all reference root-action values are exact under configuration c,
 report per-root
 
-    R_m(s;c) = max_{a in Legal(s)} Q_ref(s,a;c)
-               - Q_ref(s,a_m(s);c).
+    R_m^exec(s;c) = max_{a in Legal(s)} Q_ref(s,a;c)
+                    - Q_ref(s,a_m^exec(s);c).
 
 The reference values are in root-player utility, so this quantity is
-nonnegative and bounded by the reference value range. Also report reference
-action-ranking agreement across the complete legal set, with ties handled by
-Kendall's tau-b or another metric selected before scoring. Keep raw regret and
-ranking separate; neither can be inferred from latent distance or factual
-prediction error. Aggregate per root first, then by predeclared variant and
-seat with the locked weighting. Do not pool root actions as if they were
-independent root observations.
+nonnegative and bounded by the reference value range. Also report ranking
+agreement between complete Q_m and Q_ref rows only in their separately
+completed diagnostic stratum, with ties handled by Kendall's tau-b or another
+metric selected before scoring. Keep deployed-action regret, model-score
+ranking and raw latent error separate; none can be inferred from another.
+Aggregate per root first, then by predeclared variant and seat with the locked
+weighting. Do not pool root actions as if they were independent root
+observations.
 
 ## Completeness, alpha-beta bounds, and failures
 
@@ -220,6 +236,54 @@ value normalization, or adapter test was run. Keep this separate from the
 5-second candidate planner budget, exact-solved from bounded-reference
 strata, and all score/generation/training gates. No external engine was
 installed or run.
+
+
+## New exact-reference lead: 6x6 Reversi semi-strong tablebase (2026-10-04)
+
+Takizawa's primary paper defines a **semi-strong** solution region `R` for
+6x6 Othello/Reversi and reports exact value queries within that region, not a
+strong solution over every rule-reachable state. `R` contains positions
+reachable when one designated player follows a fixed canonical optimal
+policy while the other may choose any legal move. At a certified free-agent
+decision node for a declared orientation, every legal successor remains in
+that orientation's certified region; at an optimal-agent node for that
+orientation, the artifact supports the canonical optimal move, not arbitrary
+alternatives. The paper's public Zenodo release describes a
+queryable solution artifact plus a proof certificate and totals 138.4 GB.
+Sources: [paper v2](https://arxiv.org/abs/2411.01029v2), [full text v2](https://arxiv.org/html/2411.01029v2),
+[Zenodo artifact](https://zenodo.org/records/18843225).
+
+There is a utility mismatch that is tractable in principle. The artifact uses
+exact terminal disc-margin utility, including award of empty squares to the
+winner, while V2.12 uses winner/draw utility. Under the ordinary Reversi
+terminal rule, the sign of the exact margin equals the winner utility; because
+sign is monotone, applying it to every terminal value commutes with recursive
+max/min. Thus a certified exact score value can yield an exact W/D/L value
+for V2.12. This inference does not turn the artifact into a strong solve and
+does not extend its region `R`.
+
+**Potential use:** a separately labelled exact-reference stratum could score
+every legal root action only when (i) the prehashed root is certified in the
+orientation-specific region `R_P`, (ii) the side to move is the free player
+for that same orientation `P`, and (iii) every legal successor value is
+returned and verified by the artifact. Membership in the union
+`R = R_first ∪ R_second` alone is insufficient.
+Each child query must be converted from the next side-to-move perspective to
+the root perspective before forming `Q_ref(s,a)`.
+All other roots/actions remain uncovered; optimal-agent decision points do
+not support an all-legal-action denominator from this artifact alone. The
+normal v04 root schedule is generated from a policy mixture, so membership in
+`R` cannot be assumed. Do not select roots after model scoring to improve
+coverage.
+
+This is a **source lead, not an adopted oracle**. The Zenodo record has no
+license value in its rights metadata, and the full release is very large; no
+files were downloaded. Before any use, resolve permission/license and storage,
+pin artifact and query-script hashes, verify the query contract and proof
+scope, and quantify root/action coverage on an independently frozen schedule.
+Even if adopted, it only creates an exact Reversi6 stratum and cannot replace
+the still-unselected bounded reference for the other variants or roots outside
+`R`. No code, roots, artifact, score, or outcome was produced in this audit.
 
 
 ## Decision-metric alignment and action-conditioned objectives prior art

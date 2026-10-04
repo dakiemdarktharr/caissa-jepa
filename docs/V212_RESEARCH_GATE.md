@@ -368,6 +368,29 @@ Othello, but adapter equivalence and any license/provenance review remain
 required. No method, outcome, scoring, or generation gate changes.
 
 
+## Reversi6 semi-strong tablebase lead (2026-10-04)
+
+Takizawa's primary v2 paper and Zenodo release describe an exact score-value
+artifact for a certified region `R` of 6x6 Othello, not a strong solve over
+all reachable states. A certified free-agent decision node for a declared
+orientation covers all legal successors; an optimal-agent node for that
+orientation only certifies the canonical optimal continuation. Thus the
+artifact may support a complete exact W/D/L action
+stratum only for prehashed roots in the orientation-specific region `R_P`,
+where the side to move is the free agent under that same orientation and
+every child query is covered; union-only membership is insufficient. Its
+terminal score-margin utility
+can be mapped to CAISSA's winner/draw value by sign, because monotone sign
+preserves max/min; negate each child value to convert to root perspective.
+This is a derivation, not a tested adapter. The release is
+138.4 GB and its Zenodo rights/license field is blank in the inspected
+snapshot. No download or query was attempted. Full scope, query, proof,
+license, storage, and coverage review remains required; it does not replace
+the bounded references needed for other variants or uncertified roots. See
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md` and
+`docs/RELATED_WORK.md`. No gate changes.
+
+
 ## Decision-metric alignment prior-art update (2026-10-03)
 
 Wang et al. (arXiv:2608.18746v1) introduce Plan-Real and CEM-stage Spearman

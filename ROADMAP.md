@@ -2,6 +2,24 @@
 
 Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-04 Reversi6 exact-reference source lead
+
+A primary-source search found Takizawa's 6x6 Othello semi-strong solution
+artifact. It supports exact values only on certified regions `R_P`; it is not
+a strong oracle for all policy-mixture roots. For roots verified in the same
+orientation-specific region where the side to move is the free player, the
+definition covers every legal successor and could support complete action-
+level W/D/L values. Union-only `R` membership is insufficient; every child
+query must also be verified. The paper's score-margin value
+maps to CAISSA winner/draw utility by monotone sign, a derivation that still
+needs adapter verification. The Zenodo release is 138.4 GB and has no license
+value in the inspected rights metadata, so it was not downloaded. This is a
+potential exact stratum only; bounded references remain unresolved for other
+variants and uncertified roots. No roots/models/scores were inspected and no
+gate changed. Independent static review confirmed the scope and orientation
+conditions; the artifact remains unadopted. See the source analysis in
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
 ### 2026-10-04 action-sensitivity control disposition draft
 
 Primary-source comparison confirms a real v04 risk: action input does not
