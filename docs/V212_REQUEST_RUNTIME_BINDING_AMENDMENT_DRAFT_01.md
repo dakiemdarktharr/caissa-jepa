@@ -185,11 +185,12 @@ does not provide scientific-performance evidence.
   hashes, while confirming it contains no request body or action.
 - integrated amended-schema regression tests for manager-state loss,
   missing/duplicate/mismatched journal markers, disappearing or mismatched
-  counters, deadline/kill/reap, and reconciliation failure. Reuse the failure
-  matrix in `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md` under
-  “Required implementation tests and gates”; each case must retain the
-  necessary reconciliation handles and must never return an accepted action
-  or receipt when required evidence is missing.
+  counters, deadline/kill/reap, and reconciliation failure. Use
+  `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` as the case inventory and
+  the adapter design's “Required implementation tests and gates” as the
+  interface-level coverage list; each case must retain necessary
+  reconciliation handles and never return an accepted action or receipt when
+  required evidence is missing.
 
 The current 116-test suite and one normal-exit synthetic receipt do not cover
 these cases. Implementing the schema amendment requires versioned code,

@@ -104,11 +104,29 @@ request canonicalization rules apply to responses. The draft now explicitly
 applies the same encoding, allowed value types, int64 bounds, key and
 duplicate-key checks, and canonical re-encoding to response bytes, with a
 versioned response schema and explicit size limit. The reviewer confirmed this
-closes the ambiguity. This remains documentation only; no implementation, adapter,
-inference, pilot, training, or OOM operation ran. Next: version the integrated
-failure-test plan and resolve immutable runtime
-identity requirements before considering downstream stages. See
-`docs/V212_REQUEST_RUNTIME_BINDING_AMENDMENT_DRAFT_01.md` and
+closes the ambiguity. This remains documentation only; no implementation,
+adapter, inference, pilot, training, or OOM operation ran. See
+`docs/V212_REQUEST_RUNTIME_BINDING_AMENDMENT_DRAFT_01.md`.
+
+### 2026-10-04 supervision failure matrix and counter requirement
+
+Read the armed collector and receipt assembler against the outstanding
+manager/journal/counter failure map and drafted
+`docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md`. It pairs each failure with
+the required action disposition, receipt certainty, retained lifecycle handles
+and minimum test assertion. The code review surfaced a concrete schema gap:
+the legacy receipt assembler permits both worker-local counter snapshots to be
+omitted, although the collector currently captures both. An amended accepted-
+receipt path must require the pair; do not silently change the legacy helper.
+The reviewer requested explicit pre-release rows for request/release binding
+and the resource/placement gate, corrected the counter sampling wording to
+reflect two in-run worker samples, and added a separate post-exit response
+validation row for malformed or mismatched bytes. These changes are added and
+await final confirmation. The matrix is a design inventory, not evidence of live recovery
+or adapter readiness. No service, adapter, inference, OOM operation, training,
+or outcome ran. Next: finalize independent review, then a versioned integrated
+regression plan and resolution of immutable runtime identity and bounded IPC details. See
+`docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 
 ### 2026-10-04 supervision architecture audit

@@ -193,6 +193,13 @@ Keep these outcomes distinct: unsupported/missing systemd property; start-job fa
 
 Before connecting this controller to the real adapter, add tests that exercise the target service-worker protocol with fixture roots and mocked process/service boundaries. Cover no-duplicate/versioned schema parsing, nonce mismatch, oversized/partial/duplicate-key JSON, short response writes and the `LimitFSIZE` boundary, illegal actions, incorrect cgroup identity/limits, start-job races, manager result retention, missing/duplicate/mismatched journal markers, counter disappearance, deadline/kill/reap outcomes, restart prevention, receipt write/rename/fsync failures, cleanup substitution, and Ctrl-C recovery handles. Tests must prove that no failure can return an action as a successful response or silently delete ambiguous evidence.
 
+Use `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` to make these tests
+phase-aware and assert receipt certainty, action disposition, and retained
+reconciliation handles together. In the amended request/runtime receipt
+schema, both worker-local counter samples are mandatory: the legacy receipt
+assembler currently allows both to be omitted, so an integration wrapper must
+reject that state until a separately reviewed schema version enforces it.
+
 Then obtain independent review of the complete architecture, service properties, source fingerprints, response contract, failure mapping, tests, and no-outcome evidence. The next live step remains governed by `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`: stage 3 is a disposable OOM fault test requiring separate explicit user authorization; stage 4 request integration follows only after earlier stages and reviews pass. Until then, do not call the request adapter, run inference, generate game outcomes, or claim the pilot gate is open.
 
 ## Reproducibility contract
