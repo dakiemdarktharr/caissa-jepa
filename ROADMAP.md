@@ -121,11 +121,11 @@ receipt path must require the pair; do not silently change the legacy helper.
 The reviewer requested explicit pre-release rows for request/release binding
 and the resource/placement gate, corrected the counter sampling wording to
 reflect two in-run worker samples, and added a separate post-exit response
-validation row for malformed or mismatched bytes. These changes are added and
-await final confirmation. The matrix is a design inventory, not evidence of live recovery
+validation row for malformed or mismatched bytes. The reviewer confirmed the
+revised matrix. It remains a design inventory, not evidence of live recovery
 or adapter readiness. No service, adapter, inference, OOM operation, training,
-or outcome ran. Next: finalize independent review, then a versioned integrated
-regression plan and resolution of immutable runtime identity and bounded IPC details. See
+or outcome ran. Next: version an integrated regression plan and resolve
+immutable runtime identity and bounded IPC details. See
 `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 
