@@ -747,3 +747,58 @@ This closes any standalone claim to action-conditioned JEPA world-model planning
 Campese and Moschitti study offline-to-online JEPA pretraining on Pokémon Red. Their workshop paper describes a multimodal encoder that fuses game pixels with engineered RAM features, pretrained on offline trajectories and then used as a frozen representation for PPO. They report evaluation on 48 held-out starting states and higher cumulative reward than DINOv3 features, random initialization, and full-encoder fine-tuning; a DINOv3-initialized JEPA is reported to have a mean comparable to DreamerV3 with lower cross-seed variation. They also report that trajectory diversity mattered more than expert-policy provenance in their tested data comparison. These are author-reported workshop results. The source reader exposed the official paper's abstract/first-page text but blocked full-text access, so finer protocol details were not independently extracted.
 
 This establishes JEPA representation pretraining in an interactive videogame domain and narrows broad “first JEPA in games” positioning. The described setup does not establish an action-conditioned transition planner, complete legal-action scoring, two-player zero-sum play, or minimax decision quality; Pokémon Red is a partially observable RPG with a different task and state interface. Its data-diversity result is contextual only and does not change CAISSA's pinned policy mixture or data plan. No method or gate changes. Source: [Campese & Moschitti, ICML 2026 workshop paper](https://openreview.net/pdf/6d63e486bddf8678304b1ec6d1bb11ef034e620e).
+
+### Decision-local JEPA action ranking and outcome supervision (2026-10-04 targeted update)
+
+Two primary-source preprints sharpen the open support/decision question. Zhang
+and Li's *ARC-Bench* (arXiv:2609.05461, submitted 12 August 2026) freezes a
+context and candidate-action set, obtains candidate terminal costs from
+offline executed or simulated rollouts, and measures scorer rankability with
+top-1 regret, Hit@k, pairwise accuracy, Spearman correlation, wrong-anchor
+rate, and a predeclared “Mirage” rate. It audits released JEPA-WM objectives
+in navigation/manipulation settings and reports severe fixed-candidate
+misranking; these numbers are author-reported and have not been reproduced
+here. This makes direct candidate-ranking diagnostics established adjacent
+work. Its candidate costs are goal-distance/task costs, not root-player
+zero-sum values from exact adversarial search. It does not test legal board
+actions, alternating opponents, or max/min backups. Source: [arXiv full
+text](https://arxiv.org/html/2609.05461).
+
+Liu et al.'s *D-JEPA: A Decision-Aligned Latent World Model* (arXiv:2609.24749,
+submitted 21 September 2026) is a closer methodological precedent. Its
+permutation-equivariant candidate-set relation module learns which predicted
+futures should be preferred from candidate executions sharing the same
+start/context and goal; candidate identities and availability are held fixed
+across compared methods. The paper also studies restricted predictor
+adaptation and realization of a learned ordering in JEPA-compatible future
+geometry. It reports matched action-selection results across simulated
+robotics, driving, and physical-robot tasks; those results remain
+author-reported preprint evidence, not an independent replication or a
+CAISSA result. The distinction is material: D-JEPA selects among outcome-
+labelled goal-reaching candidates, whereas V2.12 predicts latent transitions
+from a recorded policy-mixture trajectory and uses those representations in
+a fixed exact-rule adversarial max/min tree. D-JEPA therefore defeats a broad
+novelty claim for learning JEPA-informed candidate preferences from executed
+outcomes, while leaving the narrower exact-board-game objective comparison
+unresolved. Sources: [arXiv paper](https://arxiv.org/abs/2609.24749),
+[author project and reported protocols](https://nebulis-lab.com/D-JEPA),
+[author code repository](https://github.com/NEBULIS-Lab/D-JEPA).
+
+Release status needs careful separation. The code repository identifies an
+Apache-2.0 license, but the authors' [checkpoint card](https://huggingface.co/Shuaijun/D-JEPA)
+says publication licensing and upstream-weight redistribution checks are not
+complete; the linked [dataset card](https://huggingface.co/datasets/Shuaijun/D-JEPA-Dataset)
+was empty and exposed no license at this snapshot. No D-JEPA code, model, or
+data was downloaded or reused in this audit.
+
+**V2.12 consequence:** action-ranking/regret metrics and outcome-supervised
+candidate-set alignment cannot carry a standalone novelty claim. The six-arm
+v04 panel should receive an explicit pre-fit review against this decision-
+alignment precedent: determine whether a candidate-set, outcome-supervised
+control is required to isolate the contribution of recursive JEPA transition
+prediction, or document why the frozen estimand intentionally excludes it.
+Do not add such a model, loss, candidate labels, or compute after v04 is
+frozen. The existing counterfactual-support and decision-regret drafts remain
+proposals; this scan does not freeze their oracle, root schedule, threshold,
+or estimand. No method/gate changed and no scores, roots, data, training, or
+outcomes were run or inspected.
