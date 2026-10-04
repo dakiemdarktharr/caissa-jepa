@@ -86,7 +86,9 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                                     "verified request file could not be hashed"):
             service._hash_verified_request(workspace)
 
-    def _mock_host(self, stack, *, fail_release=False, fail_profile=False):
+    def _mock_host(self, stack, *, fail_release=False, fail_profile=False,
+                   response_status="released_no_inference", fail_journal=False,
+                   fail_persist=None, fail_stop=False, fail_cleanup=False):
         state = {"workspace": None, "show": 0, "sequence": []}
         original_create = ipc.create_workspace
         original_read = ipc.read_response
@@ -109,6 +111,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 return b""
             if tuple(argv[:4]) == ("systemctl", "--user", "stop", state["unit"]):
                 state["sequence"].append("stop")
+                if fail_stop:
+                    raise collector.CollectorError("mock unit stop failure")
                 return b""
             raise AssertionError(f"unexpected command: {argv[0]}")
 
@@ -135,7 +139,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 state["workspace"].response_path.write_text(json.dumps({
                     "schema": service.RESPONSE_SCHEMA,
                     "nonce": json.loads(state["workspace"].request_path.read_text())["nonce"],
-                    "status": "released_no_inference",
+                    "status": response_status,
                 }, separators=(",", ":")), encoding="utf-8")
                 return dict(unit_props, ControlGroup="", ActiveState="inactive",
                             SubState="exited", Result="success", ExecMainStatus="0")
@@ -161,11 +165,17 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
 
         def persist(path, envelope):
             state["sequence"].append("persist_attempt")
+            if fail_persist == "before":
+                raise live.LiveEvidenceError("mock receipt publication failure")
             result = original_persist(path, envelope)
+            if fail_persist == "after":
+                raise live.LiveEvidenceError("mock receipt durability acknowledgement failure")
             state["sequence"].append("persist_complete")
             return result
 
         def journal(unit, *, invocation_id, worker_cgroup, deadline):
+            if fail_journal:
+                raise collector.CollectorError("mock journal marker missing")
             return [{
                 "__CURSOR": "mock", "_BOOT_ID": "b" * 32,
                 "__MONOTONIC_TIMESTAMP": "16000",
@@ -212,6 +222,10 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         stack.enter_context(patch.object(ipc, "create_workspace", side_effect=create))
         stack.enter_context(patch.object(ipc, "read_response", side_effect=read_response))
         stack.enter_context(patch.object(live, "persist_receipt_once", side_effect=persist))
+        if fail_cleanup:
+            stack.enter_context(patch.object(
+                ipc, "cleanup_workspace",
+                side_effect=ipc.WorkerIPCError("mock post-stop cleanup failure")))
         stack.enter_context(patch.object(armed, "release_when_ready",
                                          side_effect=release_when_ready))
         return state
@@ -273,6 +287,67 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             with self.assertRaisesRegex(service.ArmedServiceSmokeError,
                                         "service_not_dispatched.*ipc_directory=.*pre_dispatch_cleanup_failed"):
                 service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_invalid_worker_response_retains_unit_and_workspace(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, response_status="unexpected")
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "response did not match its release.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertFalse(self.receipt.exists())
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_missing_journal_marker_retains_unit_and_workspace(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_journal=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "journal marker missing.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertFalse(self.receipt.exists())
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_receipt_publication_failure_is_uncertain_and_retains_reconciliation_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_persist="before")
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "receipt_publication_or_durability_uncertain"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertFalse(self.receipt.exists())
+        self.assertIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_receipt_durability_ack_failure_preserves_visible_receipt_and_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_persist="after")
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "receipt_publication_or_durability_uncertain"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertTrue(self.receipt.exists())
+        self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_unit_stop_failure_keeps_persisted_receipt_and_ipc_workspace(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_stop=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "receipt_persisted.*unit_retained_or_state_unknown"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertTrue(self.receipt.exists())
+        self.assertIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_ipc_cleanup_failure_keeps_receipt_and_reports_stopped_unit(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_cleanup=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "receipt_persisted.*unit_stopped.*original_directory_present"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertTrue(self.receipt.exists())
+        self.assertIn("stop", state["sequence"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
 

@@ -370,7 +370,7 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
             unit, invocation_id=invocation_id, worker_cgroup=worker_cgroup,
             deadline=deadline)
         expected_marker = MARKER_PREFIX + invocation_id
-        if records[0].get("MESSAGE") != expected_marker:
+        if len(records) != 1 or records[0].get("MESSAGE") != expected_marker:
             raise ArmedServiceSmokeError("armed marker did not bind the active invocation")
         _assert_host_evidence_manifest(repo_root, host_evidence_sources_sha256)
         if _hash_verified_request(workspace) != request_sha256:

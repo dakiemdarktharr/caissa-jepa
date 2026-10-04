@@ -19,8 +19,13 @@ Independent review found and the follow-up resolved three receipt-boundary
 gaps: deadline start now precedes destination validation; the harness itself
 and evidence dependencies are in a captured/rechecked host-source manifest;
 request hashing checks the original directory/file identities and revalidates
-the bytes before receipt assembly. The focused orchestration and supervision
-suites pass 101/101 with `unittest`; `git diff --check` and AST parsing pass.
+the bytes before receipt assembly. Follow-up tests now cover invalid worker
+response, missing marker, receipt publication and durability-acknowledgement
+failures, unit-stop failure, and IPC-cleanup failure; all preserve the
+appropriate receipt uncertainty and reconciliation handles. The focused
+orchestration and supervision suites pass 107/107 with `unittest`; the
+whitespace check and AST parsing pass. Independent review found no remaining
+P1/P2 issue in these additions.
 One bounded live normal-exit systemd v262 run then verified armed release,
 receipt-before-cleanup, matching embedded receipt digest, mode `0600`, and
 `LoadState=not-found` after cleanup. Receipt SHA-256:
@@ -33,9 +38,15 @@ file stability; it does not independently attest host bytecode already loaded
 before the run and is not the complete model/runtime fingerprint required for
 adapter integration. No adapter, inference, OOM operation, training, project
 data, score, or outcome ran. The current request adapter remains same-cgroup
-and is not wired to this harness. Next: expand mocked armed-service recovery
-and failure coverage; keep the staged external-supervision and separate OOM
-authorization gates closed.
+and is not wired to this harness. Next: review remaining manager-result,
+service-start race, and deadline/interruption recovery contracts; keep staged
+external-supervision and separate OOM authorization gates closed.
+
+The next mock-only gap is remaining manager-result normalization, service-start
+race, and deadline/interruption recovery composition. These must be reviewed
+before request-adapter integration. The live normal-exit smoke does not
+substitute for those failures, and the separately gated OOM stage remains
+closed pending explicit authorization.
 
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 

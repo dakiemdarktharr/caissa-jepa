@@ -37,8 +37,13 @@ and workspace identifiers.
   normal-exit synthetic run. The reviewer noted that source-file hashes do not
   independently attest host bytecode already loaded before execution.
 - The focused armed-smoke, collector, live-evidence, receipt, armed-protocol,
-  release-token, and IPC suites pass 101/101 using `unittest`. `git diff
-  --check` and AST parsing of the new module/tests pass.
+  release-token, and IPC suites pass 107/107 using `unittest`; the whitespace
+  check and AST parsing of the new module/tests pass.
+- Mocked composition failures cover a nonmatching response, missing journal
+  evidence, receipt publication failure before a visible file, durability
+  acknowledgement failure after a visible file, unit-stop failure, and IPC
+  cleanup failure. These assert no premature stop/cleanup and preserve receipt
+  uncertainty plus unit/workspace reconciliation identifiers as applicable.
 - One live smoke completed under systemd v262 with a normal exit. It verified
   distinct caller and worker cgroups, the 128 MiB max / 96 MiB high memory
   profile, swap 0, 64 KiB file limit, no restart, `OOMPolicy=kill`, successful
@@ -55,15 +60,18 @@ and workspace identifiers.
 ## Limits and next gate
 
 This is one normal-exit no-inference observation. The mocked suite does not
-establish live timeout, interruption, start-race, response-corruption, or
-cleanup-recovery behavior, and one run does not establish repeatability. The
-source manifest captures file stability but is not the complete execution
+establish live timeout, interruption, start-race, manager-result or cleanup
+recovery behavior, and one run does not establish repeatability. It only
+exercises response corruption at the composition boundary, not arbitrary
+worker process corruption. The source manifest captures file stability but
+is not the complete execution
 fingerprint required for a real model/runtime worker. No model/search module,
 request adapter, project data, inference, OOM operation, training, score, or
 outcome ran or was accessed. The run does not validate OOM attribution or
 caller survival under resource failure, and it does not open the pilot gate.
 
-Next: expand mocked recovery and failure-contract coverage around the armed
-service boundary. The external-supervision OOM stage still requires separate
-explicit authorization. Request-adapter integration remains behind the
-supervision stages and independent review.
+Next: close the remaining manager-result, service-start race, and deadline
+recovery contract tests before staged request-adapter integration. The
+external-supervision OOM stage still requires separate explicit authorization.
+Request-adapter integration remains behind the supervision stages and
+independent review.
