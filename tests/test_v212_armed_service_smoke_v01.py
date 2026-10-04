@@ -433,6 +433,9 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertIn("receipt_not_attempted", str(caught.exception))
         self.assertIn("unit_retained_or_state_unknown", str(caught.exception))
         self.assertIn("release", state["sequence"])
+        self.assertIn("invocation_id=" + "a" * 32, str(caught.exception))
+        self.assertIn("worker_cgroup=/user.slice/" + state["unit"],
+                      str(caught.exception))
         self.assertNotIn("stop", state["sequence"])
         self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())

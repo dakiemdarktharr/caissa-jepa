@@ -221,6 +221,13 @@ def _hash_verified_request(workspace: ipc.WorkerIPCWorkspace) -> str:
             os.close(directory_fd)
 
 
+def _active_reconciliation_ids(active: dict[str, Any] | None) -> str:
+    if active is None:
+        return ""
+    return (f"invocation_id={active.get('invocation_id', 'unavailable')} "
+            f"worker_cgroup={active.get('control_group', 'unavailable')}")
+
+
 def run_no_inference_armed_smoke(*, receipt_path: Path,
                                  timeout_seconds: float = 10.0) -> dict[str, Any]:
     """Verify the real FIFO release barrier on one bounded synthetic service.
@@ -449,7 +456,8 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
                                if workspace is not None else "ipc_workspace_unknown")
             context = (f"{receipt_state} receipt_path={destination} {unit_state} "
                        f"unit={unit} {workspace_state} ipc_directory="
-                       f"{workspace.directory if workspace is not None else 'unavailable'}")
+                       f"{workspace.directory if workspace is not None else 'unavailable'} "
+                       f"{_active_reconciliation_ids(active)}")
         elif workspace is None:
             context = "service_not_dispatched; ipc_workspace_not_created"
         elif workspace_cleaned:
@@ -485,7 +493,8 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
             detail = (f"{type(exc).__name__}: {exc}; {receipt_state} "
                       f"receipt_path={destination} {unit_state} unit={unit} "
                       f"{workspace_state} ipc_directory="
-                      f"{workspace.directory if workspace is not None else 'unavailable'}")
+                      f"{workspace.directory if workspace is not None else 'unavailable'} "
+                      f"{_active_reconciliation_ids(active)}")
         else:
             if workspace is None:
                 workspace_state = "ipc_workspace_not_created"

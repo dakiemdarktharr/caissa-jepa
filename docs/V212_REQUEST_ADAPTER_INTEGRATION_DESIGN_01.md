@@ -30,6 +30,9 @@ reconciliation handles. The focused orchestration and supervision suites pass
 Independent review confirmed the controlled clocks exercise the actual
 active-wait and exit-wait deadline branches, including a start-race snapshot
 reporting `LoadState=not-found`, and found no remaining P1/P2 issue.
+Post-dispatch error text now carries validated invocation/cgroup identifiers
+alongside the unit and IPC path for reconciliation; review confirmed it does
+not expose request or release-token contents.
 One bounded live normal-exit systemd v262 run then verified armed release,
 receipt-before-cleanup, matching embedded receipt digest, mode `0600`, and
 `LoadState=not-found` after cleanup. Receipt SHA-256:

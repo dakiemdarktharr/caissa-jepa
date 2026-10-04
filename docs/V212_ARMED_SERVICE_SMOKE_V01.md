@@ -58,6 +58,10 @@ and workspace identifiers.
   before dispatch cleans the private IPC workspace without creating a unit;
   Ctrl-C at the release call retains the active-unit/workspace reconciliation
   handles. Independent review confirmed all three branches and fixture teardown.
+- Post-dispatch errors include the validated systemd invocation ID and worker
+  cgroup alongside the unit and IPC path when an active snapshot is available;
+  they omit request/token contents. Independent review found no diagnostic
+  leakage or recovery-path issue.
 - One live smoke completed under systemd v262 with a normal exit. It verified
   distinct caller and worker cgroups, the 128 MiB max / 96 MiB high memory
   profile, swap 0, 64 KiB file limit, no restart, `OOMPolicy=kill`, successful
