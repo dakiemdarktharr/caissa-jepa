@@ -199,6 +199,22 @@ deriving smaller protocol
 caps. Do not open request-adapter integration, inference, training, pilot or
 OOM gates from this research note.
 
+### 2026-10-05 signed-image trust-store feasibility follow-up
+
+Read-only host inspection found no conventional systemd userspace Verity
+certificate directories at `/etc/verity.d`, `/usr/lib/verity.d`,
+`/run/verity.d`, or `/lib/verity.d`. Installed systemd v262 documentation says
+userspace signature verification defaults on and may use those locations or
+built-in kernel certificates; the existing user-level keyring query did not
+establish whether a suitable built-in key is available. mountfsd's relaxed
+policy for designated image directories is location trust and does not by
+itself establish an authenticated root hash for a project image. No key,
+certificate, image, unit, or system trust setting was created or changed, and
+no RootImage/mountfsd probe ran. A trust anchor and safe no-configuration
+route remain unproven; keep runtime attestation and adapter integration
+blocked pending that evidence. See
+`docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+
 ### 2026-10-04 supervision architecture audit
 
 Read-only audit of the armed synthetic smoke confirmed exact in-memory execution for its three worker helper files, active manager/cgroup/property checks, one invocation-bound journal marker, two invocation-bound local counter snapshots, and receipt-before-stop behavior. It also identified integration blockers: caller source hashes are taken after imports and cannot attest loaded code objects; no structured Python/systemd runtime fingerprint is included; and the request digest is recorded in the envelope but is not bound into the release token or computed by the worker from raw stdin bytes. Failure-path behavior remains mock-only; the single normal-exit receipt is not invalidated by these gaps. Added `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`. Next: obtain independent review of a versioned request-digest/token amendment and an exact runtime/source-loading contract, then close manager/journal/counter failure mapping. Keep request-adapter, inference, training and pilot gates closed; OOM still requires separate explicit authorization.

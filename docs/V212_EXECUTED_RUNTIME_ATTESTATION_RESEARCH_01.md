@@ -191,6 +191,19 @@ candidate for a project-created image outside those trusted directories.
 The host had no `/etc/verity.d` directory. A read-only user-level query did
 not establish the contents of the kernel trusted keyring, so an existing
 system trust anchor for a test image has not been demonstrated.
+Follow-up read-only inspection on the same v262 host found that
+`/etc/verity.d`, `/usr/lib/verity.d`, `/run/verity.d`, and `/lib/verity.d` are
+all absent (zero conventional `.crt` entries because the directories do not
+exist). The installed v262 environment reference confirms userspace signature
+checking is enabled by default and can use those certificate locations, or
+built-in kernel certificates. This does not prove that the kernel keyring is
+empty; its contents remain unestablished. The same reference says mountfsd
+applies a more relaxed image policy to designated trusted image directories.
+That location-based policy alone does not authenticate a project-created
+image's root hash. No image/signature was generated, no trust store or unit was
+changed, and no mountfsd/RootImage probe was attempted. Thus no existing
+trust-anchor route has been demonstrated; further signed-image feasibility
+work is gated on proving one without changing system trust configuration.
 Reading
 `/proc/1/ns/mnt` from the service returned `EACCES`, so direct mount-namespace
 comparison with PID 1 remains unavailable.
@@ -254,6 +267,7 @@ Primary documentation:
 - [systemd v262 execution environment](https://github.com/systemd/systemd/blob/v262/man/systemd.exec.xml)
 - [systemd v262 user-namespace mountfsd prerequisite](https://github.com/systemd/systemd/blob/v262/man/system-or-user-ns-mountfsd.xml)
 - [systemd v262 mountfsd image-authentication rules](https://github.com/systemd/systemd/blob/v262/man/systemd-mountfsd.service.xml)
+- [systemd v262 documented environment variables](https://raw.githubusercontent.com/systemd/systemd/v262/docs/ENVIRONMENT.md)
 
 The kernel documentation describes fs-verity's read-time checks and the need
 to authenticate its measured digest; the Linux manual documents the remaining
