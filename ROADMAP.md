@@ -1279,3 +1279,15 @@ This verifies fixture behavior, not realistic transition/time caps or
 evaluator provenance. The reference configuration and regret estimand remain
 unselected, and independent review remains required before scoring or opening
 downstream gates.
+
+
+### 2026-10-06 request-byte release binding candidate
+
+A versioned no-inference protocol candidate now binds the release token to the
+SHA-256 of the exact bounded request bytes read by the worker, rejecting a
+same-nonce request if even its byte encoding changes. Five synthetic protocol
+tests pass; the frozen v01 modules are unchanged. The v02 bootstrap/service
+integration, actual loaded-runtime fingerprint, remaining supervision failure
+map, and independent review are still required. No service, adapter, inference,
+or OOM test ran, and no downstream gate opened. See
+`docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.

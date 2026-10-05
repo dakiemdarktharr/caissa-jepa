@@ -55,6 +55,26 @@ request-adapter integration. The live normal-exit smoke does not
 substitute for those failures, and the separately gated OOM stage remains
 closed pending explicit authorization.
 
+## Request-byte release binding candidate v02 (2026-10-06)
+
+Added versioned `two_player/v212_release_token_v02.py` and
+`two_player/v212_armed_protocol_v02.py` without changing the v01 modules. The
+v02 worker API takes the exact bounded request byte string, rejects malformed,
+duplicate-key, non-object, non-finite, and oversized JSON, and computes its
+SHA-256 before waiting on the release FIFO. The v02 release token includes
+that digest and verifies it against the worker's bytes before the callback
+can run. A same-nonce request changed only by appended whitespace is rejected,
+so the binding covers bytes rather than parsed-object equivalence.
+
+Five focused protocol tests pass, including matching-byte release,
+same-nonce/different-byte rejection before callback, tampered release digest,
+and malformed/oversized request rejection before the FIFO wait. This is only
+a synthetic API/contract candidate: the v01 systemd smoke and current request
+adapter do not call v02, the worker bootstrap has not yet been changed to read
+bounded raw stdin into this API, and no live service or request was run. It
+does not close the runtime fingerprint or remaining manager/journal/counter
+failure map, receive independent review, or open adapter/pilot/OOM gates.
+
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 
 Added nine orchestration tests in `tests/test_v212_supervision_collector_v01.py`

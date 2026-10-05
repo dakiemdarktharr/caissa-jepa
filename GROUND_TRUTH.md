@@ -2625,3 +2625,9 @@ or gate changed.
 ### Latest continuation delta (2026-10-06; rule-bound root fingerprint)
 
 - Code review found that the bounded-reference root digest used only game name, board, and player; reusing a name for different rule configurations could collide. The digest now also includes the adapter's canonical game-state key. A regression test proves same-name Connect-3/Connect-4 fixtures with identical empty boards receive different root fingerprints. The seven bounded-reference tests and full 29-test bounded-reference/interval/request-adapter/symmetry group pass. This closes only that fingerprint defect; evaluator hashes remain caller labels, and reference protocol/cap feasibility/independent review remain open. No roots, model scores, datasets, training, matches, outcomes, or gate changes occurred.
+
+
+### Latest continuation delta (2026-10-06; request-byte release protocol v02)
+
+- Added `two_player/v212_release_token_v02.py` and `two_player/v212_armed_protocol_v02.py` as versioned candidates; v01 remains unchanged. The v02 worker path hashes the exact bounded raw request bytes, rejects duplicate-key/malformed/non-object JSON, and requires the release token to carry the same request digest before callback execution. Five focused tests pass, including same-nonce byte mutation rejection before callback and malformed request rejection before FIFO wait.
+- This is not wired into the existing no-inference systemd smoke or request adapter; the bootstrap still needs a v02 exact-raw-stdin integration. No service/request/inference/OOM stress, project data, outcome, training, or scoring was run. Runtime identity, operational failure map, independent review, and adapter/pilot gates remain open. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
