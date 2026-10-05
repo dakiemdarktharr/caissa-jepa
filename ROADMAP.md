@@ -2,6 +2,19 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 incremental single-PV bound-allocation follow-up
+
+Added a second synthetic interval-search schedule with cached frontier counts
+and ancestor-only bound backups after the first principal-variation attempt
+showed high control overhead. Across six single-run comparisons at 4,096,
+16,384, and 65,536 transitions on the same two opening states, no root/action
+interval narrowed. The schedule improved wall time over DFS for these
+Connect Four openings but was substantially slower on Reversi6 (18.735 s vs
+4.861 s at 65,536). This remains a custom, unselected allocation policy; the
+result neither validates nor refutes published FSSS-Minimax, and does not
+justify cap changes. Sixteen tiny/oracle-focused tests pass. Details and raw
+receipt hash: `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
 ### 2026-10-06 bound-critical interval-search probe
 
 An isolated principal-variation schedule alternated lower/upper critical paths

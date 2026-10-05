@@ -244,6 +244,50 @@ incremental bound-update design and its own tiny-oracle review before any
 broader feasibility study. No benchmark roots, model outputs, labels, scores,
 training, or gates were accessed or changed.
 
+### Incremental single-PV interval schedule (2026-10-06)
+
+In response to the prior schedule's repeated tied-path scan and early stop, a
+second isolated schedule was added in
+`two_player/v212_minimax_single_pv_bounds_v01.py`. It caches unresolved-frontier
+counts, updates bound/count backups only along ancestors, follows one
+bound-critical path with deterministic frontier-aware ties, and uses a FIFO
+fallback when no critical path can currently be expanded. This is a custom
+allocation policy, not an implementation of FSSS-Minimax and not covered by
+that paper's expansion guarantees.
+
+Three focused tests cover all integer budget prefixes to exact resolution on a
+small Tic-Tac-Toe state, root/action/regret containment and monotonicity, pass
+accounting, and malformed budget/action inputs. The combined five interval
+solver modules pass 16/16 under Python 3.14.7 and a temporary NumPy 2.5.3
+installation in `/tmp`. A source-hashed, single-run comparison at three hard
+transition caps used only the two standard opening states:
+
+| Game | Cap | Transition-DFS seconds | Root-balanced DFS seconds | Single-PV seconds | Root/action width | Point-identified actions |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Connect Four 6x7 | 4,096 | 0.654 | 0.586 | 0.344 | 2 | 0/7 |
+| Connect Four 6x7 | 16,384 | 2.692 | 2.529 | 1.267 | 2 | 0/7 |
+| Connect Four 6x7 | 65,536 | 11.324 | 11.651 | 6.162 | 2 | 0/7 |
+| Reversi6 | 4,096 | 0.290 | 0.338 | 0.694 | 2 | 0/4 |
+| Reversi6 | 16,384 | 1.406 | 1.808 | 3.351 | 2 | 0/4 |
+| Reversi6 | 65,536 | 4.861 | 4.644 | 18.735 | 2 | 0/4 |
+
+All three methods used the full cap except root-balanced DFS, which left at
+most four transitions unused. The custom schedule was faster on these single
+Connect Four runs and slower on Reversi6, but it did not narrow any interval at
+any measured cap. These two opening positions do not estimate performance on a
+policy-mixture root distribution. The run used Python 3.14.7, NumPy 2.5.3,
+zero model calls, and the existing tiny-rules adapters; the complete output
+and PID are `/tmp/caissa-minimax-single-pv-all-caps.jsonl` and
+`/tmp/caissa-minimax-single-pv-all-caps.pid` (raw-output SHA-256
+`ab9dae2d2a833f34207c751a5411fb43b975c7dd9b89805b51253c0b4925b23b`).
+
+This improves cap utilization and removes the previous schedule's severe
+control overhead on Connect Four, but it provides no evidence that the
+interval-reference option yields useful information under these budgets; its
+Reversi control cost is also unfavorable. Keep it unselected and do not treat
+this as a reference, benchmark, pilot, or reason to modify inference caps.
+No sampled roots, model outputs, labels, scores, training, or gate changed.
+
 ## Question and interpretation
 
 For a prehashed set of reachable roots, does an arm's action chosen from its

@@ -21,19 +21,19 @@ from two_player.v212_minimax_transition_bounds_v01 import minimax_transition_bou
 from two_player.v212_minimax_transition_balanced_bounds_v01 import (
     minimax_transition_balanced_bounds,
 )
-from two_player.v212_minimax_pv_interval_bounds_v01 import (
-    minimax_pv_interval_bounds,
+from two_player.v212_minimax_single_pv_bounds_v01 import (
+    minimax_single_pv_bounds,
 )
 
 
-CAPS = (4096,)
+CAPS = (4096, 16384, 65536)
 SOURCES = (
     Path(__file__),
     ROOT / "two_player/games.py",
     ROOT / "two_player/v212_minimax_bounds_v01.py",
     ROOT / "two_player/v212_minimax_transition_bounds_v01.py",
     ROOT / "two_player/v212_minimax_transition_balanced_bounds_v01.py",
-    ROOT / "two_player/v212_minimax_pv_interval_bounds_v01.py",
+    ROOT / "two_player/v212_minimax_single_pv_bounds_v01.py",
 )
 GAMES = (
     BoardGame("synthetic-connect4-6x7", 6, 7, 4, gravity=True),
@@ -42,7 +42,7 @@ GAMES = (
 SCHEDULES = (
     ("transition-dfs", minimax_transition_bounds),
     ("root-balanced-dfs", minimax_transition_balanced_bounds),
-    ("pv-bound-critical", minimax_pv_interval_bounds),
+    ("single-pv-incremental", minimax_single_pv_bounds),
 )
 
 
