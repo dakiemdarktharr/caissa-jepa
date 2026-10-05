@@ -1264,3 +1264,18 @@ planning. Only a measured incremental JEPA effect against equally decision-
 aware controls remains an empirical question; no superiority or novelty
 finding follows.
 See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
+
+
+### 2026-10-06 bounded-reference adapter and fingerprint verification
+
+The bounded-reference candidate now has oracle parity checks on shallow
+reachable states in all four in-scope variants, with both player perspectives
+and role-symmetric positions. Every legal root-action score matches plain
+minimax at three plies. A root-digest collision for same-name, different-rule
+games was fixed by including the adapter's canonical game-state key; a
+regression test covers it. The seven bounded-reference tests and 29-test
+bounded-reference, interval-search, request-adapter, and symmetry group pass.
+This verifies fixture behavior, not realistic transition/time caps or
+evaluator provenance. The reference configuration and regret estimand remain
+unselected, and independent review remains required before scoring or opening
+downstream gates.

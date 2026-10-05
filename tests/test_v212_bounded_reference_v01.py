@@ -2,6 +2,7 @@ import hashlib
 import unittest
 
 from two_player.games import BoardGame, State
+from two_player.v212_pilot import VARIANTS
 from two_player.v212_bounded_reference_v01 import (
     ReferenceBudgetExceeded,
     ReferenceError,
@@ -12,6 +13,10 @@ from two_player.v212_bounded_reference_v01 import (
 
 def _zero(*_args):
     return 0
+
+
+def _root_piece_balance(_game, state, root_player):
+    return sum(state.board) * root_player
 
 
 def _positive_source():
@@ -55,6 +60,33 @@ class BoundedReferenceTests(unittest.TestCase):
                     action for action, value in expected
                     if value == result.root_value))
 
+    def test_in_scope_variants_match_oracle_with_negative_root_player(self):
+        for game in VARIANTS:
+            initial = game.initial()
+            state = game.transition(initial, game.legal_actions(initial)[-1])
+            self.assertEqual(state.player, -1)
+            role_swapped = State(tuple(-piece for piece in state.board),
+                                 player=-state.player)
+            role_values = []
+            for root in (state, role_swapped):
+                result = bounded_reference_values(
+                    game, root, horizon_plies=3, evaluator=_root_piece_balance,
+                    evaluator_source_sha256=_positive_source(),
+                    evaluator_config_sha256=_positive_config())
+                expected = tuple((action, plain_fixed_horizon(
+                    game, game.transition(root, action), root.player,
+                    2, _root_piece_balance))
+                    for action in game.legal_actions(root))
+                with self.subTest(game=game.name, root_player=root.player):
+                    self.assertEqual(result.root_player, root.player)
+                    self.assertEqual(result.action_values, expected)
+                    self.assertEqual(result.root_value,
+                                     max(value for _, value in expected))
+                    self.assertEqual(result.action_values[0][0],
+                                     game.legal_actions(root)[0])
+                    role_values.append(dict(result.action_values))
+            self.assertEqual(role_values[0], role_values[1])
+
     def test_terminal_values_override_leaf_evaluator_and_root_actions_are_full_window(self):
         game = BoardGame("bounded-reference-win", 3, 3, 3)
         state = State((1, 1, 0,
@@ -95,6 +127,24 @@ class BoundedReferenceTests(unittest.TestCase):
                 evaluator_source_sha256=_positive_source(),
                 evaluator_config_sha256=_positive_config(),
                 transition_budget=len(game.legal_actions(state)))
+
+    def test_root_fingerprint_binds_rule_configuration_even_if_names_match(self):
+        connect3 = BoardGame("same-name", 4, 4, 3, gravity=True)
+        connect4 = BoardGame("same-name", 4, 4, 4, gravity=True)
+        connect3_result = bounded_reference_values(
+            connect3, connect3.initial(), horizon_plies=1, evaluator=_zero,
+            evaluator_source_sha256=_positive_source(),
+            evaluator_config_sha256=_positive_config())
+        connect4_result = bounded_reference_values(
+            connect4, connect4.initial(), horizon_plies=1, evaluator=_zero,
+            evaluator_source_sha256=_positive_source(),
+            evaluator_config_sha256=_positive_config())
+        self.assertEqual(connect3.name, connect4.name)
+        self.assertEqual(connect3.initial().board, connect4.initial().board)
+        self.assertNotEqual(connect3.canonical_key(connect3.initial()),
+                            connect4.canonical_key(connect4.initial()))
+        self.assertNotEqual(connect3_result.root_sha256,
+                            connect4_result.root_sha256)
 
     def test_invalid_evaluator_domain_and_hash_are_rejected(self):
         game = BoardGame("bounded-reference-tictactoe", 3, 3, 3)

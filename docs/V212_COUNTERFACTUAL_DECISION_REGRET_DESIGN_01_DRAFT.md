@@ -89,17 +89,21 @@ values, selected ties, and counted transitions/search nodes. Those supplied
 hash strings are provenance fields only: the implementation does not prove
 that they identify the callable or its configuration.
 
-Five focused tests compare each root action at horizons 1–5 with an independent
-plain minimax traversal on a tiny Tic-Tac-Toe state, check terminal utility,
-forced Reversi pass accounting, all-or-error cap behavior, evaluator-domain
-validation, and hash-format validation. The combined new reference and four
-interval-search test modules pass 18/18 under Python 3.14.7 with the temporary
-NumPy 2.5.3 environment in `/tmp`; no project dependency files changed. This
-is implementation-level evidence only. It is not the requested independent
-review, does not select an evaluator/depth/cap or regret estimand, and does not
-measure realistic root coverage or feasibility. No roots, model scores,
-datasets, training, matches, or outcomes were generated/accessed; no gate
-advanced.
+Seven focused tests compare each root action at horizons 1–5 with an independent
+plain minimax traversal on a tiny Tic-Tac-Toe state and compare all root-action
+values at horizon 3 on one reachable post-opening state in each of the four
+in-scope variants, for both sides to move and their color/role-swapped states.
+They also check terminal utility, forced Reversi pass accounting, all-or-error
+cap behavior, evaluator-domain validation, hash-format validation, and
+rule-aware root fingerprinting when game names collide. The root digest now
+includes the adapter's canonical game-state key alongside the exact board and
+player. The combined bounded-reference, four interval-search, request-adapter,
+and symmetry test modules pass 29/29 under Python 3.14.7 with temporary NumPy
+2.5.3 in `/tmp`; no project dependency files changed. This remains
+implementation-level evidence on shallow fixtures, not the requested
+independent review or a realistic cap-feasibility measurement. It does not
+select an evaluator/depth/cap or regret estimand. No root schedule, model score,
+dataset, training, match, or outcome was generated/accessed; no gate advanced.
 
 ## Deep-search update: sound minimax-regret intervals (2026-10-04)
 

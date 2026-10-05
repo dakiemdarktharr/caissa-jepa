@@ -148,6 +148,7 @@ def bounded_reference_values(
                          if value == root_value)
     root_identity = {
         "game": game.name,
+        "canonical_game_state_key": game.canonical_key(state),
         "board": list(state.board),
         "player": root_player,
     }
