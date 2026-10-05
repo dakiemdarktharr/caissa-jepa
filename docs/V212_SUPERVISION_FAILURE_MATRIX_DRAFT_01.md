@@ -68,13 +68,13 @@ controlled-clock test of the real stop command; none of these tests establish
 live failure recovery. See the case-by-case map in
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
 
-The receipt assembler validates counter identity, order, required counter
-keys, and nonnegative deltas when snapshots are supplied. It currently permits
-both counter snapshots to be omitted. A future amended request/runtime schema
-must make the pair mandatory at the accepted-receipt boundary; it must not
-change this legacy helper's behavior in place without a versioned contract and
-focused tests. The current collector captures both snapshots, but that fact
-does not yet prove the end-to-end amended request path.
+The v02 receipt assembler validates counter identity, order, required counter
+keys, and nonnegative deltas when snapshots are supplied. It permits both
+counter snapshots to be omitted. The isolated v03 draft boundary now requires
+both samples, reports its own source digest and the delegated v02 source digest,
+and leaves v02 behavior unchanged. This does not yet integrate an accepted
+request/runtime path or prove the complete end-to-end contract; the collector's
+capture of both samples is not itself acceptance evidence.
 
 Before any request-adapter integration proposal, convert every row into a
 versioned test case that names the exact injection seam, expected receipt

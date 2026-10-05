@@ -274,6 +274,18 @@ validation and the real request/runtime path remain open. No gate changed. See
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and
 `docs/V212_ARMED_SERVICE_SMOKE_V01.md`.
 
+### 2026-10-06 versioned mandatory-counter receipt boundary
+
+Added an isolated v03 receipt boundary that rejects both omitted counter
+snapshots and either one-sided omission, while leaving the v02 helper's
+compatibility behavior unchanged. A complete pair is delegated to the existing
+v02 evidence validator/classifier; the emitted v03 receipt records both the
+wrapper source digest and delegated v02 source digest. The four focused v02/v03
+tests pass 30/30. This closes the isolated CNT-01b assembler case only; no
+request/runtime integration or end-to-end action/receipt gate is established.
+No service, inference, OOM, training, pilot, or outcome evaluation ran. See
+`two_player/v212_supervision_receipt_v03.py` and the updated failure test plan.
+
 ### 2026-10-05 proposal-only schema-bound audit
 
 Added `two_player/v212_request_schema_v02_proposal_audit.py` and focused
