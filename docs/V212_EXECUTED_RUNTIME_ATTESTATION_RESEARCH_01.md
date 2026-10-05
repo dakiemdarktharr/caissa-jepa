@@ -223,6 +223,22 @@ authenticated runtime boundary, and the observed ext4 files did not expose
 fs-verity measurement even with seccomp disabled. Keep executed-byte
 attestation, adapter integration, inference and pilot gates closed.
 
+### Current user-manager/keyring query (2026-10-06)
+
+An escalated read-only query of the current lattice user manager returned
+`LoadState=not-found`, `ActiveState=inactive`, and `SubState=dead` for both
+`systemd-mountfsd.service` and `systemd-mountfsd.socket`. `keyctl show
+%:.builtin_trusted_keys` could not resolve the name in the current user key
+context. The thread-keyring query returned `Required key not available`; the
+session keyring showed only `_ses` and `_uid.1000`, while a filtered `/proc/keys`
+query exposed no built-in/platform/machine trusted-keyring name. These results
+do not prove the kernel trusted keyring is empty: its contents are not
+inspectable from this user context. They do establish that this user manager
+currently has no available mountfsd unit and no demonstrated existing signing
+anchor. No key, service, module, image, or configuration was changed and no
+mount was attempted. Keep this route unavailable unless an existing authorized
+trust anchor and mountfsd installation become inspectable.
+
 ## Request/response framing consequence
 
 The current IPC transport hard ceiling is `MAX_IPC_BYTES = 65_536`; release

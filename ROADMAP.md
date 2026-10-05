@@ -176,8 +176,9 @@ added to the note. Official systemd v262 documents `RootImage=`, dm-verity
 `RootHash=`/`RootVerity=`, and optional `RootHashSignature=` verification with
 a key in the kernel keyring. The host has unprivileged user namespaces
 enabled, and the running kernel has modular dm-verity/loop support plus signed
-root-hash verification. However, `systemd-mountfsd.service` is inactive, its
-socket is disabled, and `systemd-nsresourced.service` is inactive. User-service
+root-hash verification. However, `systemd-mountfsd.service` and its socket now
+report `LoadState=not-found`; `systemd-nsresourced.service` was inactive in the
+earlier inspection. User-service
 RootImage requires mountfsd and private user namespaces; no image mount or
 trust configuration was attempted. mountfsd accepts images in designated
 trusted system directories by location, or signed Verity images with a
@@ -190,14 +191,17 @@ does not return exact wire-byte digest/length or enforce canonical re-encoding;
 request v02 lacks a finalized schema-derived cap. Full findings and source
 links: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
 
-Next: determine whether the systemd user manager can provision a signed
-dm-verity `RootImage` with an existing trusted key and verify runtime mappings,
-without changing system trust configuration. If no trusted key is available,
-preserve the runtime gate as unavailable. Separately, define versioned
-request/response schemas before
-deriving smaller protocol
-caps. Do not open request-adapter integration, inference, training, pilot or
-OOM gates from this research note.
+Follow-up read-only `keyctl`/`/proc/keys` checks did not expose the kernel
+trusted keyring: `.builtin_trusted_keys` is not resolvable in the current user
+key context, and the visible session/user rings contain no trusted-keyring
+name. This cannot prove the kernel ring is empty. Both mountfsd service and
+socket currently report `LoadState=not-found`, so no no-configuration-change
+signed-image route is demonstrated. Preserve this runtime option as
+unavailable; do not attempt a mount unless an existing authorized trust anchor
+and mountfsd route can be inspected. The request/response schemas and candidate
+byte caps are now drafted and mechanically audited; obtain independent design
+review and add actual stream-boundary tests before adapter integration. Do not
+open inference, training, pilot or OOM gates from this research note.
 
 ### 2026-10-05 signed-image trust-store feasibility follow-up
 
