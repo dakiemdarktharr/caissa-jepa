@@ -199,6 +199,51 @@ The tool emits a manifest with Python/NumPy/platform and SHA-256 fingerprints
 for the profile and rule/search sources. Do not use this one-root profile to
 revise the V2.12 inference cap, and do not freeze either search order.
 
+### Bound-critical principal-variation schedule probe (2026-10-06)
+
+Primary minimax-search literature suggests a more selective direction, but not
+a ready-made CAISSA implementation. Korf and Chickering's best-first minimax
+search expands the current expected line of play and reports domain-specific
+results on random trees and Othello ([Microsoft Research publication page](https://www.microsoft.com/en-us/research/publication/best-first-minimax-search/)).
+Weinstein, Littman, and Goschin's FSSS-Minimax uses lower/upper bounds to guide
+rollouts and proves an expansion relation to alpha-beta in its stated setting;
+the paper also identifies repeated-rollout and memory costs
+([JMLR Workshop paper](https://jmlr.csail.mit.edu/proceedings/papers/v24/weinstein12a/weinstein12a.pdf)).
+Those guarantees and empirical results do not transfer automatically to this
+custom finite-transition implementation or to CAISSA's games.
+
+Added `two_player/v212_minimax_pv_interval_bounds_v01.py` as an unselected
+experiment. It alternates bound-critical lower/upper paths for the root value
+and executed action, preserves tied paths, and expands only complete legal
+successor sets that fit a hard transition budget. Three focused tests establish
+exact-oracle containment and monotonicity at every integer budget on a tiny
+Tic-Tac-Toe fixture, plus forced-pass accounting and Boolean-action rejection.
+The combined interval solver suites pass 13/13 under Python 3.14.7 with a
+temporary NumPy 2.5.3 install in `/tmp`; project dependency files are unchanged.
+
+A source-hashed, single-run comparison used only the two standard opening
+states and a common 4,096-transition cap. All schedules left root and action
+intervals at full width 2 and identified 0% of root actions. The custom
+principal-variation schedule took 4.038 s on Connect Four 6x7 versus 0.636 s
+for transition-DFS and 0.554 s for root-balanced DFS; on Reversi6 it took
+7.142 s versus 0.286 s and 0.335 s. It used the same transition cap and
+expanded a similar number of descendants. An exploratory Connect Four run at
+16,384 transitions took 80.348 s for this schedule versus 2.583 s for
+transition-DFS, with no interval contraction; the run was stopped before
+larger-cap or second-game measurements. Treat all timings as single-run
+diagnostics, not benchmarks. The complete 4,096-cap raw output and PID record
+are at `/tmp/caissa-minimax-pv-profile-final.jsonl` and
+`/tmp/caissa-minimax-pv-profile-final.pid`.
+
+This candidate is rejected as a useful schedule in its current form: it adds
+large control/backup overhead without narrowing the interval on these two
+states. This does not refute FSSS-Minimax or other bound-guided searches. Do not
+integrate this candidate, infer feasibility on sampled benchmark roots, or
+change any model cap. A future interval-search implementation would need an
+incremental bound-update design and its own tiny-oracle review before any
+broader feasibility study. No benchmark roots, model outputs, labels, scores,
+training, or gates were accessed or changed.
+
 ## Question and interpretation
 
 For a prehashed set of reachable roots, does an arm's action chosen from its

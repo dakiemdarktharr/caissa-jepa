@@ -1,6 +1,21 @@
 # CAISSA-JEPA research roadmap
 
-Updated: 2026-10-04. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+
+### 2026-10-06 bound-critical interval-search probe
+
+An isolated principal-variation schedule alternated lower/upper critical paths
+for root value and executed-action regret. Tiny-game exhaustive checks pass,
+including forced Reversi pass accounting and every integer budget prefix on a
+small Tic-Tac-Toe state. A source-hashed, same-cap comparison on one opening
+state per game found no interval narrowing at 4,096 transitions for this
+schedule, transition-DFS, or root-balanced DFS. Single-run PV times were 4.038 s
+for Connect Four 6x7 and 7.142 s for Reversi6, several times slower than either
+DFS candidate. A one-off Connect Four 16,384-transition PV run took 80.348 s
+with no narrowing and was stopped before larger-cap or second-game measurements.
+This schedule is not adopted and does not refute published FSSS-Minimax; no
+model cap, root schedule, or gate changed. See the bound-critical probe in
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
 
 ### 2026-10-04 interval-valued minimax reference option
 
