@@ -62,6 +62,14 @@ and workspace identifiers.
   cgroup alongside the unit and IPC path when an active snapshot is available;
   they omit request/token contents. Independent review found no diagnostic
   leakage or recovery-path issue.
+- Mocked lifecycle coverage now injects failure on the first and second
+  `memory.events.local` sample separately. The first prevents release; the
+  second retains the dispatched worker/IPC handles. Two additional cases
+  inject a stop-command timeout and Ctrl-C at the stop boundary after the
+  receipt is durable; both preserve exact receipt bytes and keep reconciliation
+  handles. The focused module passes 28/28. These remain fake-service tests;
+  the stop timeout is an injected command result, not live deadline or recovery
+  evidence.
 - One live smoke completed under systemd v262 with a normal exit. It verified
   distinct caller and worker cgroups, the 128 MiB max / 96 MiB high memory
   profile, swap 0, 64 KiB file limit, no restart, `OOMPolicy=kill`, successful

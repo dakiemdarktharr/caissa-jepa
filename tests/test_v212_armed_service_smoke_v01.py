@@ -93,8 +93,10 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    exited_status="0", fail_exited_show=False,
                    interrupt_exited_show=False, keep_running_at_exit=False,
                    first_show_load_state="loaded", raw_response=None,
-                   interrupt_release=False):
-        state = {"workspace": None, "show": 0, "sequence": []}
+                   interrupt_release=False, timeout_stop=False,
+                   interrupt_stop=False, fail_event_sample=None):
+        state = {"workspace": None, "show": 0, "sequence": [],
+                 "event_samples": 0, "persist_durable": False}
         original_create = ipc.create_workspace
         original_read = ipc.read_response
         original_persist = live.persist_receipt_once
@@ -116,6 +118,12 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 return b""
             if tuple(argv[:4]) == ("systemctl", "--user", "stop", state["unit"]):
                 state["sequence"].append("stop")
+                if timeout_stop:
+                    self.assertIsNotNone(kwargs.get("deadline"))
+                    raise collector.CollectorError(
+                        "mock stop command timed out at caller deadline")
+                if interrupt_stop:
+                    raise KeyboardInterrupt()
                 if fail_stop:
                     raise collector.CollectorError("mock unit stop failure")
                 return b""
@@ -190,6 +198,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             if fail_persist == "before":
                 raise live.LiveEvidenceError("mock receipt publication failure")
             result = original_persist(path, envelope)
+            state["persist_durable"] = True
+            state["receipt_bytes_after_persist"] = Path(path).read_bytes()
             if fail_persist == "after":
                 raise live.LiveEvidenceError("mock receipt durability acknowledgement failure")
             state["sequence"].append("persist_complete")
@@ -212,6 +222,9 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         def read_events(**kwargs):
             nonlocal event_samples
             event_samples += 1
+            state["event_samples"] = event_samples
+            if fail_event_sample == event_samples:
+                raise live.LiveEvidenceError("mock local counter read failure")
             return {
                 "schema": "cgroup-v2.memory.events.local.v1",
                 "source": "memory.events.local",
@@ -370,6 +383,65 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 service.run_no_inference_armed_smoke(receipt_path=self.receipt)
         self.assertTrue(self.receipt.exists())
         self.assertIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_first_worker_counter_sample_failure_blocks_release_and_receipt(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_event_sample=1)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "local counter read failure.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertEqual(state["event_samples"], 1)
+        self.assertNotIn("release", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_second_worker_counter_sample_failure_retains_dispatched_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_event_sample=2)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "local counter read failure.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertEqual(state["event_samples"], 2)
+        self.assertIn("release", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_stop_deadline_after_durable_receipt_preserves_receipt_and_recovery_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, timeout_stop=True)
+            with self.assertRaisesRegex(service.ArmedServiceSmokeError,
+                                        "stop command timed out.*receipt_persisted") as caught:
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        message = str(caught.exception)
+        self.assertIn("receipt_persisted", message)
+        self.assertIn("unit_retained_or_state_unknown", message)
+        self.assertIn("invocation_id=" + "a" * 32, message)
+        self.assertIn("worker_cgroup=/user.slice/" + state["unit"], message)
+        self.assertEqual(state["sequence"].count("persist_complete"), 1)
+        self.assertIn("stop", state["sequence"])
+        self.assertTrue(self.receipt.exists())
+        self.assertEqual(self.receipt.read_bytes(), state["receipt_bytes_after_persist"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_ctrl_c_during_stop_after_durable_receipt_preserves_receipt_and_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, interrupt_stop=True)
+            with self.assertRaises(KeyboardInterrupt) as caught:
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        message = str(caught.exception)
+        self.assertIn("receipt_persisted", message)
+        self.assertIn("unit_retained_or_state_unknown", message)
+        self.assertIn("invocation_id=" + "a" * 32, message)
+        self.assertIn("worker_cgroup=/user.slice/" + state["unit"], message)
+        self.assertEqual(state["sequence"].count("persist_complete"), 1)
+        self.assertIn("stop", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"][state["sequence"].index("stop") + 1:])
+        self.assertEqual(self.receipt.read_bytes(), state["receipt_bytes_after_persist"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
     def test_active_snapshot_query_failure_during_start_retains_workspace(self):

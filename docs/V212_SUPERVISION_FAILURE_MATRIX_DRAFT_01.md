@@ -61,8 +61,12 @@ The armed synthetic service and collector tests already exercise some rows:
 non-success manager result, missing/duplicate/mismatched worker marker,
 response deadline while active, start-state query/race, receipt publication and
 durability uncertainty, stop/cleanup failure, and Ctrl-C at several phases.
-These are mocked lifecycle checks plus one bounded normal-exit service smoke;
-they do not establish live failure recovery.
+The current mock suite also injects failures at both first and second local
+counter reads, a stop-command timeout after durable receipt, and Ctrl-C at stop
+after durable receipt. The timeout is a mocked command result rather than a
+controlled-clock test of the real stop command; none of these tests establish
+live failure recovery. See the case-by-case map in
+`docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
 
 The receipt assembler validates counter identity, order, required counter
 keys, and nonnegative deltas when snapshots are supplied. It currently permits

@@ -253,14 +253,26 @@ training and OOM operations closed. See
 
 Added a case-by-case map from the supervision failure plan's 22 cases to named
 tests in the current synthetic/helper suites. An AST-based static check resolved
-37 fully qualified references and confirmed all 50 distinct referenced test
+40 fully qualified references and confirmed all 54 distinct referenced test
 method names exist. This verifies names only; it does not establish that those
-tests jointly prove the acceptance invariant. The table explicitly retains the
-missing amended-counter-pair, first/second counter-read failures, deadlines
-after receipt durability, post-receipt Ctrl-C, and request-v02 integration
-cases. No tests or live services were run in this traceability step, and no
-supervision, inference, pilot, training, or OOM gate changed. Details:
+tests jointly prove the acceptance invariant. At that point, the map marked
+the amended-counter-pair, both counter-read positions, deadlines after receipt
+durability, post-receipt Ctrl-C, and request-v02 integration as gaps. The mock
+additions below partially cover both counter-read positions and stop-boundary
+timeout/interruption. No tests or live services were run during traceability
+mapping, and no supervision, inference, pilot, training, or OOM gate changed. Details:
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+The mock armed-smoke suite now injects first- and second-counter-read failures,
+a stop-command timeout after receipt durability, and Ctrl-C at that same stop
+boundary. The four focused regressions pass; the whole smoke module passes
+28/28. Both counter failures prevent receipt publication, and timeout/Ctrl-C
+preserve the exact durable receipt bytes and unit/workspace reconciliation
+handles. These are mocked lifecycle checks: the timeout is an injected command
+result, not live deadline or recovery evidence. Mandatory amended-counter-pair
+validation and the real request/runtime path remain open. No gate changed. See
+`docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and
+`docs/V212_ARMED_SERVICE_SMOKE_V01.md`.
 
 ### 2026-10-05 proposal-only schema-bound audit
 
