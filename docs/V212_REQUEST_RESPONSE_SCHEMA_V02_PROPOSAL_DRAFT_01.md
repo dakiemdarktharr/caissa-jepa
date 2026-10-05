@@ -99,6 +99,9 @@ exit, missing/partial response, or response
 with any other schema does not yield an action. The caller hashes the exact
 bounded response bytes before parse and includes exact digest and byte length
 in the versioned receipt; the body/action remains out of that receipt.
+The caller also requires `worker_cgroup_path_sha256` and `worker_memory_max` to
+equal the corresponding expected values in the request; otherwise the response
+does not attest that it ran in the requested worker cgroup/profile.
 
 ## Candidate exact byte caps
 
@@ -106,7 +109,13 @@ Under the field sets and representation bounds above, compact sorted canonical
 encoding has a worst-case request size of **811 bytes** and success-response
 size of **747 bytes**. These sizes include every required key, maximum fixed
 enum/hex length, maximum signed-64-bit decimal width, a 64-cell board of
-`-1` values, and all JSON structural bytes. The request witness uses
+`-1` values, and all JSON structural bytes. The largest valid variant-specific
+request witness uses `connect4-gravity-8x8` with 64 board cells. The first
+calculation paired 64 cells with `connect4-gravity-6x7` (42 cells), so that
+particular witness violated the variant/board-shape rule even though it happened
+to produce the same 811-byte length. The proposal audit now checks extremal
+witnesses for all four variants and confirms the maximum is still 811 bytes.
+The request witness uses
 `request_started_ns = 9223372031854775807` and
 `planner_deadline_ns = 9223372036854775807`, which are both 19 digits and
 differ by exactly the proposed 5-second maximum. The response witness uses the
@@ -139,7 +148,7 @@ i = 2**63 - 1
 h, n = "f" * 64, "f" * 32
 request = {
     "schema": "caissa.synthetic.request.v02", "nonce": n,
-    "variant": "connect4-gravity-6x7", "target_ply": 24,
+    "variant": "connect4-gravity-8x8", "target_ply": 24,
     "root_seed": i, "root_state_sha256": h, "board": [-1] * 64,
     "player": -1, "arm": "recursive-raw-state-dynamics",
     "model_seed": i, "request_started_ns": i - 5_000_000_000,
@@ -161,13 +170,18 @@ assert len(request) == 16 and len(encode(request)) == 811
 assert len(response) == 18 and len(encode(response)) == 747
 ```
 
-The candidate objects use the maximum permitted string/integer lengths and a
-64-cell board. The script verifies counts for this witness; it is not a schema
-validator and does not prove that every other combination stays below the
-caps. Before implementation review, add a checked reproducer that validates
-every witness field against the schema and the worker/caller tests that
-exercise 0, exact-cap, and cap-plus-one input cases. This draft does not
-implement that verifier.
+The candidate objects use maximum permitted string/integer lengths and the
+largest board variant. The corrected standalone proposal auditor is
+`two_player/v212_request_schema_v02_proposal_audit.py`; its tests validate the
+closed field/range domains, all four variant-specific extremal request
+witnesses, duplicate-key and canonical-byte rejection, and the 811/747-byte
+caps. It remains unreviewed design-audit code and is not imported by the
+request adapter. The structural request witness is not evidence of a reachable
+game position: the eventual caller must separately verify root-state hash,
+legality, and nonterminal status against the named game's rules. Before any
+adapter implementation, review the verifier and add worker/caller stream tests
+for zero, exact-cap, and cap-plus-one inputs. This audit does not implement
+those integration checks.
 
 Review must specifically decide whether the digest-only cgroup identity is
 sufficiently clear/reproducible, whether the current root-ply and node caps

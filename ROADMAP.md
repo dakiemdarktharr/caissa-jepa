@@ -245,6 +245,21 @@ profile. No code or gate changed. Keep adapter integration, inference, pilot,
 training and OOM operations closed. See
 `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md`.
 
+### 2026-10-05 proposal-only schema-bound audit
+
+Added `two_player/v212_request_schema_v02_proposal_audit.py` and focused
+standard-library tests without connecting them to either request adapter. The
+audit exposed a malformed extremal witness in the draft: a 64-cell board was
+paired with Connect Four 6x7. Rechecking each allowed variant with its exact
+board length confirms the worst canonical request is still 811 bytes (Connect
+Four 8x8); the response witness remains 747 bytes. Ten tests pass, covering
+the field/range domains, canonical encoding, duplicate keys, request/response
+nonce/digest and cgroup/profile binding, and size rejection. This proves only the proposal's structural schema
+and arithmetic. It does not prove root reachability/state-hash consistency,
+bounded stream reads, worker/caller integration, or the approved resource
+profile. Independent design review and those integration checks remain open;
+no research gate changes.
+
 ### 2026-10-04 supervision architecture audit
 
 Read-only audit of the armed synthetic smoke confirmed exact in-memory execution for its three worker helper files, active manager/cgroup/property checks, one invocation-bound journal marker, two invocation-bound local counter snapshots, and receipt-before-stop behavior. It also identified integration blockers: caller source hashes are taken after imports and cannot attest loaded code objects; no structured Python/systemd runtime fingerprint is included; and the request digest is recorded in the envelope but is not bound into the release token or computed by the worker from raw stdin bytes. Failure-path behavior remains mock-only; the single normal-exit receipt is not invalidated by these gaps. Added `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`. Next: obtain independent review of a versioned request-digest/token amendment and an exact runtime/source-loading contract, then close manager/journal/counter failure mapping. Keep request-adapter, inference, training and pilot gates closed; OOM still requires separate explicit authorization.
