@@ -188,6 +188,9 @@ it trusts images in designated system image directories by location, or
 images with a signed Verity partition trusted by a kernel key or
 `/etc/verity.d/*.crt`; only the latter is a viable content-authentication
 candidate for a project-created image outside those trusted directories.
+The host had no `/etc/verity.d` directory. A read-only user-level query did
+not establish the contents of the kernel trusted keyring, so an existing
+system trust anchor for a test image has not been demonstrated.
 Reading
 `/proc/1/ns/mnt` from the service returned `EACCES`, so direct mount-namespace
 comparison with PID 1 remains unavailable.

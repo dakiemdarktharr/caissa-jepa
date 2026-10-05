@@ -181,7 +181,9 @@ socket is disabled, and `systemd-nsresourced.service` is inactive. User-service
 RootImage requires mountfsd and private user namespaces; no image mount or
 trust configuration was attempted. mountfsd accepts images in designated
 trusted system directories by location, or signed Verity images with a
-trusted key. A read-only bind or `ProtectSystem=strict` alone would not prove
+trusted key. `/etc/verity.d` is absent and a read-only user-level keyring query
+did not establish available trusted keys, so no image trust anchor has been
+demonstrated. A read-only bind or `ProtectSystem=strict` alone would not prove
 backing-file bytes immutable against changes outside the service namespace.
 The response IPC path has a 65,536-byte hard bound and file-identity checks but
 does not return exact wire-byte digest/length or enforce canonical re-encoding;
@@ -189,9 +191,10 @@ request v02 lacks a finalized schema-derived cap. Full findings and source
 links: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
 
 Next: determine whether the systemd user manager can provision a signed
-dm-verity `RootImage` with an already trusted key and verify runtime mappings,
-without changing system trust configuration. If not, preserve the runtime gate
-as unavailable. Separately, define versioned request/response schemas before
+dm-verity `RootImage` with an existing trusted key and verify runtime mappings,
+without changing system trust configuration. If no trusted key is available,
+preserve the runtime gate as unavailable. Separately, define versioned
+request/response schemas before
 deriving smaller protocol
 caps. Do not open request-adapter integration, inference, training, pilot or
 OOM gates from this research note.
