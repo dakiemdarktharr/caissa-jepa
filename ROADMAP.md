@@ -249,6 +249,19 @@ profile. No code or gate changed. Keep adapter integration, inference, pilot,
 training and OOM operations closed. See
 `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md`.
 
+### 2026-10-06 failure-test traceability audit
+
+Added a case-by-case map from the supervision failure plan's 22 cases to named
+tests in the current synthetic/helper suites. An AST-based static check resolved
+37 fully qualified references and confirmed all 50 distinct referenced test
+method names exist. This verifies names only; it does not establish that those
+tests jointly prove the acceptance invariant. The table explicitly retains the
+missing amended-counter-pair, first/second counter-read failures, deadlines
+after receipt durability, post-receipt Ctrl-C, and request-v02 integration
+cases. No tests or live services were run in this traceability step, and no
+supervision, inference, pilot, training, or OOM gate changed. Details:
+`docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
 ### 2026-10-05 proposal-only schema-bound audit
 
 Added `two_player/v212_request_schema_v02_proposal_audit.py` and focused
