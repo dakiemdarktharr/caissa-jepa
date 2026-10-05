@@ -230,6 +230,21 @@ separate request/response byte caps. No request, worker, model, service, game
 state, score, or outcome was run/read; no gate changed. See
 `docs/V212_REQUEST_SCHEMA_BOUND_AUDIT_DRAFT_01.md`.
 
+### 2026-10-05 candidate v02 request/response schema bounds
+
+Drafted an unreviewed closed-schema proposal that replaces float timestamps
+with bounded integer nanoseconds, uses fixed enums/hashes instead of free-form
+strings, and defines success-only response fields. A reproducible local
+calculation with the proposed canonical encoder gives candidate maxima of 811
+request bytes and 747 response bytes. These are proposal figures, not selected
+caps: the cgroup-path digest and interface ranges need design review; the embedded
+byte witness passes but a checked schema/range validator is still required, and
+the candidate adapter's 1.5 GiB memory default has not been reconciled with the
+observed 128/96 MiB service
+profile. No code or gate changed. Keep adapter integration, inference, pilot,
+training and OOM operations closed. See
+`docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md`.
+
 ### 2026-10-04 supervision architecture audit
 
 Read-only audit of the armed synthetic smoke confirmed exact in-memory execution for its three worker helper files, active manager/cgroup/property checks, one invocation-bound journal marker, two invocation-bound local counter snapshots, and receipt-before-stop behavior. It also identified integration blockers: caller source hashes are taken after imports and cannot attest loaded code objects; no structured Python/systemd runtime fingerprint is included; and the request digest is recorded in the envelope but is not bound into the release token or computed by the worker from raw stdin bytes. Failure-path behavior remains mock-only; the single normal-exit receipt is not invalidated by these gaps. Added `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`. Next: obtain independent review of a versioned request-digest/token amendment and an exact runtime/source-loading contract, then close manager/journal/counter failure mapping. Keep request-adapter, inference, training and pilot gates closed; OOM still requires separate explicit authorization.
