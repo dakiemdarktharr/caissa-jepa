@@ -184,6 +184,23 @@ evidence that value-aware JEPA is new.
 | Wang et al. (2026), [WA-JEPA: Rethinking the Video JEPA Paradigm for World-Action Modeling in Autonomous Driving, arXiv:2608.20974v2](https://arxiv.org/abs/2608.20974) | Uses hybrid future masking, conditional flow matching over future latents, and a joint future-scene/action predictor; reports NAVSIM and HUGSIM results. Full method and abstract inspected. | Joint world/action prediction is another established planning-oriented JEPA direction. V2.12 predicts future states conditioned on recorded actions and has a root policy head, but does not jointly generate future actions with future-world tokens; it instead searches exact legal branches. WA-JEPA is driving and does not evaluate adversarial max/min. |
 | Gan et al. (2026), [ActSWM: Action-Sensitive World Models for Long-Horizon Planning in Open-World Games, arXiv:2607.26712v2](https://arxiv.org/abs/2607.26712) | Combines a frozen action readout trained from latent transitions with rollout-level separation between recorded-action and all-zero-action predictions to address action-insensitive autoregressive rollouts; evaluates step drift, closed-loop Minecraft tasks, and CEM action recovery. Full method/abstract inspected; detailed source summary is in `docs/V28_PRIOR_ART_DELTA_20260930.md`. | Closest game-domain JEPA planning precedent in this search. Minecraft is a single-agent open-world control task; ActSWM does not study alternating players, zero-sum utility, exact discrete board rules, or max/min. It nevertheless establishes that multi-step JEPA in a game environment and action-sensitive rollout objectives are prior art. A V2.12 diagnostic should compare legal alternatives from the same root only when their exact-rule consequences differ, and report latent separation alongside exact-state, value, and ranking differences. Distinct legal actions need not map to distinct latents, and latent distance alone does not establish useful sensitivity. |
 
+### Published latent-planning JEPA update (2026-10-05)
+
+The ICML 2026 proceedings include *Temporal Straightening for Latent
+Planning*. Its authors jointly learn an encoder and predictor with a cosine
+curvature penalty between consecutive latent displacements, then use gradient-
+based open-loop planning and MPC in four goal-reaching environments. The
+official project page describes this objective and evaluation directly. This
+strengthens prior art for shaping JEPA latent geometry around planning, but it
+does not test discrete legal-action branches, alternating zero-sum decisions,
+or exact-rule max/min. The distinction narrows the CAISSA question; it does not
+establish novelty or a benefit for its current loss. No project method or gate
+was changed from this literature update.
+
+| Work and primary source | Method and evidence inspected | Relevance and distinction for CAISSA |
+| --- | --- | --- |
+| Wang et al. (2026), [Temporal Straightening for Latent Planning, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/wang26n.html), [official project page](https://agenticlearning.ai/temporal-straightening/) | Jointly learns an encoder and JEPA predictor with a cosine-curvature penalty on consecutive latent displacements; uses gradient-based open-loop planning and receding-horizon MPC in Wall, PointMaze-UMaze, PointMaze-Medium, and PushT. Official abstract and project summary report straighter latent trajectories, better Euclidean/geodesic alignment, and improved planning success; numerical table values were not transcribed in this search | Directly establishes a JEPA objective that shapes latent geometry for planning. It does not evaluate finite legal-action enumeration, two-player zero-sum play, or exact-rule alternating max/min. Geometry shaping for planning is not a novelty claim for CAISSA; only the V2.12 loss's incremental effect in the narrower adversarial setting remains untested, with no evidence of benefit. |
+
 These sources narrow the plausible contribution further: V2.12 should be framed
 as a controlled test of whether its particular EMA-target multi-horizon loss
 adds value over matched value-/state-prediction controls in an exact-rule,
