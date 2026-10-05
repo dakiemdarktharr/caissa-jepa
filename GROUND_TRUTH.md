@@ -2601,3 +2601,10 @@ or gate changed.
 ### Latest continuation delta (2026-10-04; V03 RSS/reporting review fixes)
 
 - Independent static reviews identified three failure paths involving a redundant RSS sample and errors after receipt linking. V03 now returns a known RSS crossing without another sample and reports any post-link failure as `publication_uncertain`; cleanup errors cannot mask that state, and the visible output blocks reruns pending reconciliation. The reviewer cleared these code-level fixes. Combined frozen V02 and V03 focused tests pass 17/17; `git diff --check` passes. No actual pilot schedule, service, inference request, dataset, score, training run, or outcome was accessed or run; V02 remains unchanged and no runtime/research gate advanced. See `docs/V212_COMPUTE_PILOT_V03.md`.
+
+
+### Latest continuation checkpoint (2026-10-06; bounded-reference scaffold)
+
+- Added `two_player/v212_bounded_reference_v01.py`, an unselected fixed-horizon alpha-beta candidate that computes every legal root-action value in a separate full-window query. It aborts the whole result on a hard transition-cap miss and overrides evaluator values at terminals. Five tests compare all root actions at horizons 1–5 against plain minimax on a tiny Tic-Tac-Toe state and check terminal values, forced Reversi pass accounting, cap abort, evaluator range, and hash format.
+- The new reference tests plus four interval-search suites pass 18/18 with temporary NumPy 2.5.3 provided through `/tmp`; no dependency files changed. Test evidence is local implementation verification, not independent review or realistic cap feasibility.
+- The evaluator source/config SHA-256 values are caller-supplied labels; the helper does not verify that they bind to the callable/configuration. Evaluator, horizon, budget, regret estimand, and root schedule remain unselected. The V2.12 compute pilot, data, training, scoring, matches, and outcomes remain gated; no gate advanced. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.

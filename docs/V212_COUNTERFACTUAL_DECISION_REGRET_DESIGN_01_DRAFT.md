@@ -1,6 +1,6 @@
 # V2.12 counterfactual decision-regret design 01 — draft
 
-**Status: draft; prior formulation and both amendments independently reviewed; interval-reference tests/configuration pending; protocol not frozen.**
+**Status: draft; prior formulation and both amendments independently reviewed; interval-reference tests pass; bounded-reference implementation candidate added; evaluator configuration, independent implementation review, and protocol freeze remain pending.**
 This proposal makes the action-score and regret terms operationally explicit.
 It does not
 amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
@@ -73,8 +73,33 @@ Before adoption, an independent implementation review must verify root-value
 exactness, selected-action full-window semantics, ties, terminals and forced
 passes under both game adapters, and prove against a tiny exhaustive oracle
 that the new query path returns the same per-root regrets as a complete
-all-action table. These are proposed checks only; no implementation or tests
-were run.
+all-action table. Those review requirements remain open for independent
+disposition; passing local tests below does not satisfy that review.
+
+### Bounded-reference implementation scaffold (2026-10-06)
+
+Added `two_player/v212_bounded_reference_v01.py` as an unselected implementation
+candidate. It evaluates every legal root action in a separate full-window
+fixed-horizon alpha-beta query, shares neither an incumbent root bound nor a
+partial score table, overrides horizon evaluation at terminal states, and
+aborts the complete result if its hard transition budget is exhausted. It
+requires caller-supplied lowercase SHA-256 strings for evaluator source and
+configuration and returns the root fingerprint, source fingerprint, action
+values, selected ties, and counted transitions/search nodes. Those supplied
+hash strings are provenance fields only: the implementation does not prove
+that they identify the callable or its configuration.
+
+Five focused tests compare each root action at horizons 1–5 with an independent
+plain minimax traversal on a tiny Tic-Tac-Toe state, check terminal utility,
+forced Reversi pass accounting, all-or-error cap behavior, evaluator-domain
+validation, and hash-format validation. The combined new reference and four
+interval-search test modules pass 18/18 under Python 3.14.7 with the temporary
+NumPy 2.5.3 environment in `/tmp`; no project dependency files changed. This
+is implementation-level evidence only. It is not the requested independent
+review, does not select an evaluator/depth/cap or regret estimand, and does not
+measure realistic root coverage or feasibility. No roots, model scores,
+datasets, training, matches, or outcomes were generated/accessed; no gate
+advanced.
 
 ## Deep-search update: sound minimax-regret intervals (2026-10-04)
 

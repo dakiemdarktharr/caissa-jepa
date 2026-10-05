@@ -1236,3 +1236,16 @@ broad novelty around learning board structure from Othello histories but does
 not test V2.12's narrow objective-attributed question. No local data/code or
 outcomes were accessed; no method or gate changed. See
 `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
+
+
+### 2026-10-06 bounded-reference scaffold
+
+A project-owned fixed-horizon alpha-beta candidate now computes every legal
+root-action Q value independently with a full window and fails closed when the
+hard transition budget cannot cover the complete table. Five focused tests and
+the four existing interval-search suites pass 18/18 against tiny oracles and
+forced-pass/cap fixtures. This does not select or validate a production
+evaluator, depth, budget, or regret estimand. Independent implementation review
+and realistic root-cap feasibility remain open; do not advance the pilot,
+training, scoring, or outcome gates. See the current state in
+`GROUND_TRUTH.md` and the design draft.
