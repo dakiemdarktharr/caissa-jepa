@@ -215,8 +215,9 @@ authorized by this proposal.
 
 For runtime execution options and current interactive-shell feasibility
 observations, see `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
-Those observations do not validate the eventual systemd worker namespace and
-do not resolve these open decisions.
+The 2026-10-05 no-inference transient-service probe now records the actual
+worker mount/cgroup view and sampled mapped libraries, but still does not
+resolve executed-byte identity or these open decisions.
 
 ## Independent design review
 
@@ -235,8 +236,18 @@ limits, and runtime/source binding remain unvalidated implementation
 requirements.
 
 The 2026-10-05 runtime-attestation research note compares descriptor execution,
-fs-verity and source-byte compilation and records an interactive-shell
-`FS_IOC_MEASURE_VERITY` probe returning `EOPNOTSUPP` for sampled runtime files.
-This is a scoped capability observation only, not evidence that fs-verity is
-unavailable on the host or in the worker namespace. Independent review and a
-worker-namespace feasibility check remain required.
+fs-verity and source-byte compilation and records interactive-shell and
+transient-worker `FS_IOC_MEASURE_VERITY` probes returning errno 95 for sampled
+runtime files. This is scoped to the observed ext4 mounts, not a host-wide
+feature claim. Independent review and a worker-namespace feasibility check
+remain required.
+
+The follow-up no-inference systemd worker probe confirmed `Seccomp: 0` while
+the same ioctl returned errno 95 for the sampled files on the worker's ext4
+root; Linux documents this measure-ioctl result as missing kernel fs-verity
+support or a missing ext4-superblock `verity` feature. The probe cannot
+distinguish those causes or establish another filesystem's capability. The
+root and project path were read-write and no private/read-only root or binds
+were configured. This does not establish a trusted runtime image.
+The independent design review found no issue; a signed dm-verity image
+candidate and request/response schema limits remain open.

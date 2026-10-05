@@ -127,15 +127,64 @@ fcntl.ioctl(fd, 0xC0046686, buf, True)
 ```
 
 These are observations of the interactive shell's mount/runtime view only.
-`EOPNOTSUPP` does not distinguish kernel configuration, filesystem-superblock
-feature state, or the execution sandbox's ioctl policy. Seccomp can reject a
-system call without executing it and return an errno selected by its filter,
-so errno 95 is not host-capability evidence by itself. No service namespace
-was started or inspected. Therefore this does **not** prove the host lacks
-fs-verity globally, but fs-verity is not currently demonstrated as usable for
-this worker runtime. The root's read-only appearance is likewise not yet a
-verified runtime artifact boundary: worker namespace equality, source image
-identity, and mapped-library identity were not tested.
+The root's read-only appearance is not evidence about a systemd worker's view.
+A separate no-inference worker probe below found the opposite mount mode,
+illustrating why host-shell observations cannot establish the service runtime
+boundary.
+
+## No-inference systemd worker probe on 2026-10-05
+
+The current system manager reports `user@1000.service` active with
+`Delegate=yes` and memory accounting enabled; the user manager is systemd
+`262-1-arch`, reports `SystemState=degraded`, and uses cgroup v2. One short
+two short transient user services were run with the already-reviewed smoke profile
+(`MemoryMax=128M`, `MemoryHigh=96M`, swap 0, `RuntimeMaxSec=8s`,
+`Restart=no`, `OOMPolicy=kill`, `LimitFSIZE=65536`) and a Python-only probe
+started as `/usr/bin/python3.14 -I -S`. The probe did no project imports,
+model/search work, inference, training, game evaluation, or allocation stress.
+Its unit result was success, `ExecMainStatus=0`, and the manager reported
+effective limits of 134,217,728 / 100,663,296 bytes and swap 0. The service
+cgroup was
+`/user.slice/user-1000.slice/user@1000.service/app.slice/caissa-v212-runtime-attestation-20261005b.service`.
+
+Inside that actual service, both `/` and `/home/koi/src/caissa-jepa` resolved
+to the same ext4 mount with `rw,relatime`. The user-shell observation above
+had shown `/` read-only, so that observation does not describe this worker.
+The unit had empty `RootDirectory` and `RootImage`, `ProtectSystem=no`,
+`ProtectHome=no`, `PrivateMounts=no`, and no `ReadOnlyPaths` or
+`BindReadOnlyPaths`. Its main Python executable, ELF loader, libc, libm,
+libpython and the two sampled extensions appeared in `/proc/self/maps`; the
+path/device/inode tuples were observed but were not bound to a trusted digest
+manifest. `-I -S` was effective (`isolated=1`, `no_site=1`).
+
+The service's `/proc/self/status` reported `Seccomp: 0` and
+`Seccomp_filters: 0`. The same read-only fs-verity ioctl returned errno 95
+(`ENOTSUP`/`EOPNOTSUPP`) for all seven sampled ext4-root runtime files from
+inside this worker. Linux documents `EOPNOTSUPP` for
+`FS_IOC_MEASURE_VERITY` as the kernel not configured with fs-verity support,
+or the current filesystem superblock lacking its `verity` feature; `ENODATA`
+would instead mean that an individual file is not verity-enabled. Since these
+processes had no seccomp filter, the observed errno points to the current
+kernel/ext4 configuration path, but this probe cannot distinguish the kernel
+build from the superblock feature state and says nothing about another
+filesystem. Reading
+`/proc/1/ns/mnt` from the service returned `EACCES`, so direct mount-namespace
+comparison with PID 1 remains unavailable.
+
+The `systemd-run --user --no-block` launcher PID was 235482; unit
+`caissa-v212-runtime-attestation-20261005b.service` had invocation ID
+`b6a8fefba4ce45ac9f7e55920e126856` and main PID 235483. The mode-0600 log is
+`/tmp/caissa-v212-runtime-attestation-20261005b.log`. The retained unit was
+stopped and unloaded; a final manager query returned `LoadState=not-found`.
+An earlier probe attempt exited 1 after `/proc/1/ns/mnt` returned `EACCES`; a
+later repeat handled that unavailable field and completed. No probe unit is
+left running or loaded.
+
+This closes only the no-inference placement/runtime-view observation. It
+confirms the current service profile does **not** provide a read-only or
+authenticated runtime boundary, and the observed ext4 files did not expose
+fs-verity measurement even with seccomp disabled. Keep executed-byte
+attestation, adapter integration, inference and pilot gates closed.
 
 ## Request/response framing consequence
 
@@ -178,6 +227,7 @@ Primary documentation:
 - [Python 3.14 `site` startup hooks](https://docs.python.org/3.14/library/site.html)
 - [Linux `ld.so(8)` manual](https://man7.org/linux/man-pages/man8/ld.so.8.html)
 - [Linux `seccomp(2)` manual](https://man7.org/linux/man-pages/man2/seccomp.2.html)
+- [systemd v262 execution environment](https://github.com/systemd/systemd/blob/v262/man/systemd.exec.xml)
 
 The kernel documentation describes fs-verity's read-time checks and the need
 to authenticate its measured digest; the Linux manual documents the remaining
@@ -185,6 +235,13 @@ file-content race for `fexecve`; Python documents compiling source bytes into a
 code object that can then be executed in a module namespace. These support the
 component properties above, not a claim that CAISSA-JEPA has implemented or
 validated the proposed chain.
+
+The kernel's `FS_IOC_MEASURE_VERITY` error table distinguishes `ENODATA` (the
+individual file is not a verity file) from `EOPNOTSUPP` (kernel fs-verity
+support is absent or the filesystem superblock lacks its `verity` feature).
+Together with `Seccomp: 0` in the worker, this narrows the errno 95 finding to
+the active kernel/filesystem configuration path while leaving those two causes
+unresolved.
 
 The Python documentation confirms the distinct effects of `-I` and `-S`, and
 that `.pth` executable lines plus `sitecustomize` / `usercustomize` execute
@@ -194,3 +251,13 @@ ELF RPATH/RUNPATH. The seccomp manual documents `SECCOMP_RET_ERRNO`; together
 these sources justify treating startup and loader configuration as inputs to
 the executed-runtime evidence, not as claims that these controls were tested
 in the service namespace.
+
+The systemd v262 documentation exposes `RootImage=`, `RootHash=`,
+`RootHashSignature=`, and `RootVerity=` as candidate image-based controls. It
+describes verifying a dm-verity root hash and, when configured, validating its
+PKCS#7 signature against a public key in the kernel keyring. This is a
+candidate for investigation, not an implemented or feasible-on-this-user-
+manager result. The image itself and the source of the trusted root hash must
+be authenticated independently; merely enabling `ProtectSystem=strict` or a
+read-only bind would not prove backing-file content immutability against
+changes made outside the worker namespace.

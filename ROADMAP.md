@@ -152,20 +152,37 @@ and bind RPATH/RUNPATH, preload/cache configuration and later `dlopen`
 dependencies to the verified image. None of this is implemented or
 host-validated.
 
-Read-only current-shell probes found the project checkout on an ext4 RW bind
-mount and Python/runtime files under an ext4 RO root. Reproducible
-`FS_IOC_MEASURE_VERITY` probes returned errno 95 (`ENOTSUP`/`EOPNOTSUPP`) for
-the interpreter, loader, core libraries and two sampled extensions; the
-CLI/sysfs entry points were absent. Seccomp can synthesize errno, so this does
-not distinguish kernel/filesystem support from sandbox policy and is not
-evidence about the eventual service namespace.
+Read-only shell probes found the project checkout on an ext4 RW bind mount and
+Python/runtime files under an ext4 RO root. A short no-inference systemd user
+service under the reviewed 128/96 MiB, swap-zero, 8-second profile instead
+saw both `/` and the project path on one ext4 RW mount. Its unit had no
+`RootDirectory`, `RootImage`, `ProtectSystem`, private mounts, or read-only
+binds. Python's main executable, ELF loader, libc/libm/libpython and two
+extensions appeared in `/proc/self/maps`, but were not bound to a trusted
+manifest. CPython `-I -S` was effective. The process reported
+`Seccomp: 0`; nevertheless `FS_IOC_MEASURE_VERITY` returned errno 95 for the
+same seven runtime files. Linux documents this `EOPNOTSUPP` result as kernel
+fs-verity support missing or the filesystem superblock lacking its `verity`
+feature; the probe cannot distinguish those causes or establish other
+filesystem capability. `/proc/1/ns/mnt` was inaccessible. The unit
+completed without inference and was stopped/unloaded.
+
+The configured independent reviewer found no issue in the runtime contract.
+Official systemd v262 documentation describes `RootImage=`, dm-verity
+`RootHash=`/`RootVerity=`, and optional `RootHashSignature=` validation using a
+key in the kernel keyring. This is a candidate, not yet proven feasible in the
+user manager; image provisioning, trusted hash custody, and mapping identity
+remain open. A read-only bind or `ProtectSystem=strict` alone would not prove
+backing-file bytes immutable against changes outside the service namespace.
 The response IPC path has a 65,536-byte hard bound and file-identity checks but
 does not return exact wire-byte digest/length or enforce canonical re-encoding;
 request v02 lacks a finalized schema-derived cap. Full findings and source
 links: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
 
-Next: independent review of the runtime contract and feasibility in the actual
-worker namespace, then versioned request/response schemas with justified byte
+Next: determine whether a signed dm-verity `RootImage` can be safely provisioned
+and enforced for this user service, with a trusted root hash and verified
+runtime mappings. If not, preserve the runtime gate as unavailable. Separately,
+define versioned request/response schemas before deriving smaller protocol
 caps. Do not open request-adapter integration, inference, training, pilot or
 OOM gates from this research note.
 
