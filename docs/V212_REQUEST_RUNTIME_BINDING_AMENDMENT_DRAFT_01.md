@@ -213,6 +213,11 @@ authorized by this proposal.
    digest so that cleanup/reconciliation behavior remains safe on every
    failure branch.
 
+For runtime execution options and current interactive-shell feasibility
+observations, see `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+Those observations do not validate the eventual systemd worker namespace and
+do not resolve these open decisions.
+
 ## Independent design review
 
 The configured reviewer found no P1/P2 blocker. Review confirmed the
@@ -228,3 +233,10 @@ confirmed that response bytes use the same canonical JSON rules as request
 bytes. `/proc/map_files` access, the immutable-artifact guarantee, request
 limits, and runtime/source binding remain unvalidated implementation
 requirements.
+
+The 2026-10-05 runtime-attestation research note compares descriptor execution,
+fs-verity and source-byte compilation and records an interactive-shell
+`FS_IOC_MEASURE_VERITY` probe returning `EOPNOTSUPP` for sampled runtime files.
+This is a scoped capability observation only, not evidence that fs-verity is
+unavailable on the host or in the worker namespace. Independent review and a
+worker-namespace feasibility check remain required.

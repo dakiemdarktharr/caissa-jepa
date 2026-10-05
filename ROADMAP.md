@@ -134,6 +134,41 @@ them forward. No live service, adapter, inference or OOM operation is in scope. 
 `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 
+### 2026-10-05 executed-runtime attestation research
+
+Primary-source review found that descriptor-based `fexecve` avoids pathname
+replacement but does not stop file-content changes between hashing and exec.
+Linux fs-verity is the stronger per-file candidate: it makes verity files
+read-only and verifies reads/mmap, while still requiring the measured digest to
+be authenticated against a trusted manifest. Python's documented
+source-to-code path can execute exact already-read source bytes inside explicit
+module namespaces. Proposed chain: a trusted minimal launcher verifies
+fs-verity digests for the interpreter, dynamic loader and mandatory native
+libraries, descriptor-executes that interpreter, then a minimal Python
+bootstrap verifies and compiles allowlisted project sources from the exact
+bytes. Startup and loader state are also in scope: isolate CPython (`-I -S`),
+attest its pre-bootstrap import inputs, sanitize loader environment variables,
+and bind RPATH/RUNPATH, preload/cache configuration and later `dlopen`
+dependencies to the verified image. None of this is implemented or
+host-validated.
+
+Read-only current-shell probes found the project checkout on an ext4 RW bind
+mount and Python/runtime files under an ext4 RO root. Reproducible
+`FS_IOC_MEASURE_VERITY` probes returned errno 95 (`ENOTSUP`/`EOPNOTSUPP`) for
+the interpreter, loader, core libraries and two sampled extensions; the
+CLI/sysfs entry points were absent. Seccomp can synthesize errno, so this does
+not distinguish kernel/filesystem support from sandbox policy and is not
+evidence about the eventual service namespace.
+The response IPC path has a 65,536-byte hard bound and file-identity checks but
+does not return exact wire-byte digest/length or enforce canonical re-encoding;
+request v02 lacks a finalized schema-derived cap. Full findings and source
+links: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+
+Next: independent review of the runtime contract and feasibility in the actual
+worker namespace, then versioned request/response schemas with justified byte
+caps. Do not open request-adapter integration, inference, training, pilot or
+OOM gates from this research note.
+
 ### 2026-10-04 supervision architecture audit
 
 Read-only audit of the armed synthetic smoke confirmed exact in-memory execution for its three worker helper files, active manager/cgroup/property checks, one invocation-bound journal marker, two invocation-bound local counter snapshots, and receipt-before-stop behavior. It also identified integration blockers: caller source hashes are taken after imports and cannot attest loaded code objects; no structured Python/systemd runtime fingerprint is included; and the request digest is recorded in the envelope but is not bound into the release token or computed by the worker from raw stdin bytes. Failure-path behavior remains mock-only; the single normal-exit receipt is not invalidated by these gaps. Added `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`. Next: obtain independent review of a versioned request-digest/token amendment and an exact runtime/source-loading contract, then close manager/journal/counter failure mapping. Keep request-adapter, inference, training and pilot gates closed; OOM still requires separate explicit authorization.
