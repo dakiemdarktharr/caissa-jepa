@@ -63,7 +63,7 @@ class RequestSchemaProposalAuditTests(unittest.TestCase):
     def test_request_wire_size_cap_includes_cap_plus_one_rejection(self):
         request = audit.request_witness("connect4-gravity-8x8")
         raw = audit.canonical_bytes(request)
-        self.assertLessEqual(len(raw), audit.MAX_REQUEST_BYTES)
+        self.assertEqual(len(raw), audit.MAX_REQUEST_BYTES)
         self.assertEqual(audit.decode_canonical(raw, audit.MAX_REQUEST_BYTES),
                          request)
         with self.assertRaisesRegex(ValueError, "byte cap"):
@@ -80,9 +80,17 @@ class ResponseSchemaProposalAuditTests(unittest.TestCase):
 
     def test_valid_response_maximum_and_binding(self):
         audit.validate_response(self.response, self.request, self.request_bytes)
-        self.assertEqual(len(audit.canonical_bytes(self.response)), 747)
+        raw = audit.canonical_bytes(self.response)
+        self.assertEqual(len(raw), audit.MAX_RESPONSE_BYTES)
+        self.assertEqual(audit.decode_canonical(raw, audit.MAX_RESPONSE_BYTES),
+                         self.response)
         self.assertEqual(hashlib.sha256(self.request_bytes).hexdigest(),
                          self.response["request_sha256"])
+
+    def test_response_wire_cap_rejects_cap_plus_one(self):
+        with self.assertRaisesRegex(ValueError, "byte cap"):
+            audit.decode_canonical(b" " * (audit.MAX_RESPONSE_BYTES + 1),
+                                   audit.MAX_RESPONSE_BYTES)
 
     def test_response_rejects_wrong_binding_or_open_schema(self):
         response = copy.deepcopy(self.response)

@@ -252,10 +252,11 @@ standard-library tests without connecting them to either request adapter. The
 audit exposed a malformed extremal witness in the draft: a 64-cell board was
 paired with Connect Four 6x7. Rechecking each allowed variant with its exact
 board length confirms the worst canonical request is still 811 bytes (Connect
-Four 8x8); the response witness remains 747 bytes. Ten tests pass, covering
+Four 8x8); the response witness remains 747 bytes. Eleven tests pass, covering
 the field/range domains, canonical encoding, duplicate keys, request/response
-nonce/digest and cgroup/profile binding, and size rejection. This proves only the proposal's structural schema
-and arithmetic. It does not prove root reachability/state-hash consistency,
+nonce/digest and cgroup/profile binding, and exact/cap-plus-one byte
+boundaries. This proves only the proposal's structural schema and arithmetic.
+It does not prove root reachability/state-hash consistency,
 bounded stream reads, worker/caller integration, or the approved resource
 profile. Independent design review and those integration checks remain open;
 no research gate changes.
