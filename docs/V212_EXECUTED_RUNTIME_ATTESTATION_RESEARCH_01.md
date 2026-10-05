@@ -245,6 +245,14 @@ behavior. The current same-UID workspace caveat remains: private mode and
 identity checks protect cooperating processes and detect ordinary mutation,
 not a hostile process with the same UID.
 
+A separate read-only source audit found that no smaller request/response cap
+can yet be derived: the adapter has floating-point deadline fields despite
+the proposed integer-only canonical JSON contract, several numeric inputs and
+strings lack protocol maxima, and its current worker reads stdin unbounded.
+Its variant/arm/board/action domains provide useful finite pieces but are not
+themselves a complete versioned schema. No sub-cap is selected; see
+`docs/V212_REQUEST_SCHEMA_BOUND_AUDIT_DRAFT_01.md`.
+
 ## Decision and next gate
 
 Do not mark Python or native dependencies verified from `/proc/self/exe`,

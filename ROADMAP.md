@@ -215,6 +215,21 @@ route remain unproven; keep runtime attestation and adapter integration
 blocked pending that evidence. See
 `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
 
+### 2026-10-05 request/response byte-bound source audit
+
+Read-only inspection of the adapter and IPC source confirms the 65,536-byte
+limit is only a generic transport ceiling. The candidate v02 adapter payload
+has float monotonic deadlines, unbounded/overridable numeric values and a
+cgroup path without a protocol length bound; its worker reads stdin without a
+byte limit. Its response has a floating-point duration, no closed schema, and
+an unbounded error-name field. Existing enum/board/action domains are useful
+but insufficient to derive a worst-case encoding. No smaller cap or schema
+was guessed. Next: version and review exact field/range bounds, choose integer
+time units consistent with the canonical encoding, and only then derive
+separate request/response byte caps. No request, worker, model, service, game
+state, score, or outcome was run/read; no gate changed. See
+`docs/V212_REQUEST_SCHEMA_BOUND_AUDIT_DRAFT_01.md`.
+
 ### 2026-10-04 supervision architecture audit
 
 Read-only audit of the armed synthetic smoke confirmed exact in-memory execution for its three worker helper files, active manager/cgroup/property checks, one invocation-bound journal marker, two invocation-bound local counter snapshots, and receipt-before-stop behavior. It also identified integration blockers: caller source hashes are taken after imports and cannot attest loaded code objects; no structured Python/systemd runtime fingerprint is included; and the request digest is recorded in the envelope but is not bound into the release token or computed by the worker from raw stdin bytes. Failure-path behavior remains mock-only; the single normal-exit receipt is not invalidated by these gaps. Added `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`. Next: obtain independent review of a versioned request-digest/token amendment and an exact runtime/source-loading contract, then close manager/journal/counter failure mapping. Keep request-adapter, inference, training and pilot gates closed; OOM still requires separate explicit authorization.
