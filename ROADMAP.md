@@ -1249,3 +1249,18 @@ evaluator, depth, budget, or regret estimand. Independent implementation review
 and realistic root-cap feasibility remain open; do not advance the pilot,
 training, scoring, or outcome gates. See the current state in
 `GROUND_TRUTH.md` and the design draft.
+
+
+### 2026-10-06 adversarial world-model prior-art refresh
+
+Full-text review of Nie et al.'s AWM preprint found a close conceptual
+neighbor: a role-conditioned autoregressive traffic model is trained as an
+adversary, then a planner is updated against it with reference-relative regret
+and tail-risk terms. Its stochastic traffic-policy setting differs from
+V2.12's exact legal actions and deterministic board-game max/min search, but
+further weakens standalone novelty claims around adversarial world models,
+counterfactual role conditioning, min-max planner framing, or regret-aware
+planning. Only a measured incremental JEPA effect against equally decision-
+aware controls remains an empirical question; no superiority or novelty
+finding follows.
+See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`.
