@@ -165,9 +165,30 @@ inside this worker. Linux documents `EOPNOTSUPP` for
 or the current filesystem superblock lacking its `verity` feature; `ENODATA`
 would instead mean that an individual file is not verity-enabled. Since these
 processes had no seccomp filter, the observed errno points to the current
-kernel/ext4 configuration path, but this probe cannot distinguish the kernel
-build from the superblock feature state and says nothing about another
-filesystem. Reading
+kernel/ext4 configuration path. Read-only inspection of the running kernel
+configuration showed `CONFIG_FS_VERITY=y`, `CONFIG_EXT4_FS=y`, and
+`/sys/fs/ext4/features/verity` contained `supported`, so the current volume's
+superblock is the likely remaining cause. A read-only `dumpe2fs` attempt on
+`/dev/nvme0n1p2` was denied, so that superblock feature state is not directly
+confirmed. This says nothing about another filesystem. The same kernel config
+showed `CONFIG_DM_VERITY=m`, `CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG=y`, and
+`CONFIG_BLK_DEV_LOOP=m`; `dm_verity`, `dm_mod`, and `loop` were not loaded or
+exposed in `/sys/module` at inspection time. These settings make signed
+dm-verity a plausible kernel-level candidate. Read-only host checks found
+`kernel.unprivileged_userns_clone=1` and
+`user.max_user_namespaces=60747`, satisfying the documented namespace
+prerequisite for a per-user `RootImage` service. systemd v262 says those
+settings implicitly enable `PrivateUsers=` and rely on
+`systemd-mountfsd.service`. That system service was loaded but inactive, its
+socket was loaded but disabled, and `systemd-nsresourced.service` was inactive
+at inspection time. No RootImage unit was attempted, so whether the user
+manager can activate the mount helper, load the needed loop/dm modules, and
+receive an authenticated mount remains untested. The v262 mountfsd manual says
+it trusts images in designated system image directories by location, or
+images with a signed Verity partition trusted by a kernel key or
+`/etc/verity.d/*.crt`; only the latter is a viable content-authentication
+candidate for a project-created image outside those trusted directories.
+Reading
 `/proc/1/ns/mnt` from the service returned `EACCES`, so direct mount-namespace
 comparison with PID 1 remains unavailable.
 
@@ -228,6 +249,8 @@ Primary documentation:
 - [Linux `ld.so(8)` manual](https://man7.org/linux/man-pages/man8/ld.so.8.html)
 - [Linux `seccomp(2)` manual](https://man7.org/linux/man-pages/man2/seccomp.2.html)
 - [systemd v262 execution environment](https://github.com/systemd/systemd/blob/v262/man/systemd.exec.xml)
+- [systemd v262 user-namespace mountfsd prerequisite](https://github.com/systemd/systemd/blob/v262/man/system-or-user-ns-mountfsd.xml)
+- [systemd v262 mountfsd image-authentication rules](https://github.com/systemd/systemd/blob/v262/man/systemd-mountfsd.service.xml)
 
 The kernel documentation describes fs-verity's read-time checks and the need
 to authenticate its measured digest; the Linux manual documents the remaining
@@ -239,9 +262,10 @@ validated the proposed chain.
 The kernel's `FS_IOC_MEASURE_VERITY` error table distinguishes `ENODATA` (the
 individual file is not a verity file) from `EOPNOTSUPP` (kernel fs-verity
 support is absent or the filesystem superblock lacks its `verity` feature).
-Together with `Seccomp: 0` in the worker, this narrows the errno 95 finding to
-the active kernel/filesystem configuration path while leaving those two causes
-unresolved.
+Here the running kernel and ext4 driver report fs-verity support, while the
+current mounted superblock could not be inspected due device permission. The
+worker's `Seccomp: 0` and errno 95 therefore point to that volume's feature
+state, which remains unconfirmed.
 
 The Python documentation confirms the distinct effects of `-I` and `-S`, and
 that `.pth` executable lines plus `sitecustomize` / `usercustomize` execute
@@ -257,7 +281,10 @@ The systemd v262 documentation exposes `RootImage=`, `RootHash=`,
 describes verifying a dm-verity root hash and, when configured, validating its
 PKCS#7 signature against a public key in the kernel keyring. This is a
 candidate for investigation, not an implemented or feasible-on-this-user-
-manager result. The image itself and the source of the trusted root hash must
-be authenticated independently; merely enabling `ProtectSystem=strict` or a
-read-only bind would not prove backing-file content immutability against
-changes made outside the worker namespace.
+manager result. User-service image mounting also relies on unprivileged user
+namespaces and systemd-mountfsd; the sysctl prerequisite is enabled on this
+host, but the service/socket are inactive and no mount was attempted. The
+image itself and the source of the trusted root hash must be authenticated
+independently; merely enabling `ProtectSystem=strict` or a read-only bind
+would not prove backing-file content immutability against changes made outside
+the worker namespace.

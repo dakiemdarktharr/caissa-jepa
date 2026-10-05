@@ -163,26 +163,36 @@ manifest. CPython `-I -S` was effective. The process reported
 `Seccomp: 0`; nevertheless `FS_IOC_MEASURE_VERITY` returned errno 95 for the
 same seven runtime files. Linux documents this `EOPNOTSUPP` result as kernel
 fs-verity support missing or the filesystem superblock lacking its `verity`
-feature; the probe cannot distinguish those causes or establish other
-filesystem capability. `/proc/1/ns/mnt` was inaccessible. The unit
+feature. The running kernel and ext4 driver advertise fs-verity support, so a
+missing superblock feature is likely, but a read-only superblock query was
+denied and did not confirm it. The kernel config also includes modular
+dm-verity/loop support and signed-root-hash verification; modules were not
+loaded/exposed during inspection. `/proc/1/ns/mnt` was inaccessible. The unit
 completed without inference and was stopped/unloaded.
 
-The configured independent reviewer found no issue in the runtime contract.
-Official systemd v262 documentation describes `RootImage=`, dm-verity
-`RootHash=`/`RootVerity=`, and optional `RootHashSignature=` validation using a
-key in the kernel keyring. This is a candidate, not yet proven feasible in the
-user manager; image provisioning, trusted hash custody, and mapping identity
-remain open. A read-only bind or `ProtectSystem=strict` alone would not prove
+Independent review found no contract blocker, confirmed the systemd v262
+image/signature description, and prompted the explicit errno interpretation
+added to the note. Official systemd v262 documents `RootImage=`, dm-verity
+`RootHash=`/`RootVerity=`, and optional `RootHashSignature=` verification with
+a key in the kernel keyring. The host has unprivileged user namespaces
+enabled, and the running kernel has modular dm-verity/loop support plus signed
+root-hash verification. However, `systemd-mountfsd.service` is inactive, its
+socket is disabled, and `systemd-nsresourced.service` is inactive. User-service
+RootImage requires mountfsd and private user namespaces; no image mount or
+trust configuration was attempted. mountfsd accepts images in designated
+trusted system directories by location, or signed Verity images with a
+trusted key. A read-only bind or `ProtectSystem=strict` alone would not prove
 backing-file bytes immutable against changes outside the service namespace.
 The response IPC path has a 65,536-byte hard bound and file-identity checks but
 does not return exact wire-byte digest/length or enforce canonical re-encoding;
 request v02 lacks a finalized schema-derived cap. Full findings and source
 links: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
 
-Next: determine whether a signed dm-verity `RootImage` can be safely provisioned
-and enforced for this user service, with a trusted root hash and verified
-runtime mappings. If not, preserve the runtime gate as unavailable. Separately,
-define versioned request/response schemas before deriving smaller protocol
+Next: determine whether the systemd user manager can provision a signed
+dm-verity `RootImage` with an already trusted key and verify runtime mappings,
+without changing system trust configuration. If not, preserve the runtime gate
+as unavailable. Separately, define versioned request/response schemas before
+deriving smaller protocol
 caps. Do not open request-adapter integration, inference, training, pilot or
 OOM gates from this research note.
 

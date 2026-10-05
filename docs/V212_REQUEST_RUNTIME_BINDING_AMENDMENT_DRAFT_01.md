@@ -245,9 +245,11 @@ remain required.
 The follow-up no-inference systemd worker probe confirmed `Seccomp: 0` while
 the same ioctl returned errno 95 for the sampled files on the worker's ext4
 root; Linux documents this measure-ioctl result as missing kernel fs-verity
-support or a missing ext4-superblock `verity` feature. The probe cannot
-distinguish those causes or establish another filesystem's capability. The
-root and project path were read-write and no private/read-only root or binds
-were configured. This does not establish a trusted runtime image.
+support or a missing ext4-superblock `verity` feature. The running kernel and
+ext4 driver advertise fs-verity support, making a missing superblock feature
+likely, but a read-only superblock query was denied. The probe does not
+establish another filesystem's capability. The root and project path were
+read-write and no private/read-only root or binds were configured. This does
+not establish a trusted runtime image.
 The independent design review found no issue; a signed dm-verity image
 candidate and request/response schema limits remain open.
