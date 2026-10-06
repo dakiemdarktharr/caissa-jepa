@@ -2154,3 +2154,11 @@ local feasibility assessment remain required before any simulation. No R was
 selected; no simulation, roots, scores, outcomes, inference, or training ran.
 v04 remains current, all gates remain closed, and no superiority claim is
 supported.
+
+Publication: local commit `6eb77995c3cf31d9f864da35ca404c2ea6516c58` has
+tree `c0147d5771e4e8157cedb7cf2093d5c4cecd8bc1`. The normal SSH push was
+blocked by the system SSH-config ownership check. Verified `main` at
+`67c6fbbd29b36dbf76d45e574e470064f8b83599`, then advanced it through the
+GitHub Git Database API with `force=false` and that expected old SHA to
+`0d74266883a7539e60738478c76ff6e420e84bb6`; GitHub confirms its tree matches
+the local milestone tree exactly.
