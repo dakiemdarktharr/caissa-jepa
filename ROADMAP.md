@@ -2,6 +2,20 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 strict journal evidence parsing
+
+The collector now rejects duplicate JSON keys at every nesting level and
+non-standard JSON constants in journal records. Its fixtures cover partial
+final records, malformed JSON, invalid UTF-8, non-object records, duplicate
+keys, and `NaN`; the existing exact-one-marker and trusted unit/invocation/
+cgroup checks remain in place. The collector plus receipt-assembler suites
+pass 48/48; logs are under
+`/tmp/caissa-v212-journal-strict-tests-20261006.{log,pid}`. These are parser,
+assembler, and mocked no-inference checks only. Live journal failure evidence
+and the integrated request-controller action/receipt/handle matrix remain
+open. No service, request, inference, OOM, training, score, or match ran; no
+gate changed. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
 ### 2026-10-06 nonblocking cgroup-counter evidence reads
 
 The live-evidence reader now opens `memory.events.local` with `O_NONBLOCK` and

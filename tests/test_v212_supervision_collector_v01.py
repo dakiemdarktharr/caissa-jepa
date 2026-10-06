@@ -65,6 +65,38 @@ class CollectorParsingTests(unittest.TestCase):
                     unit, invocation_id="d" * 32,
                     worker_cgroup="/user.slice/caissa-v212-test.service")
 
+    def test_journal_query_rejects_partial_malformed_and_nonobject_records(self):
+        unit = "caissa-v212-test.service"
+        bad_outputs = {
+            "partial final record": b'{"MESSAGE":"ordinary"}',
+            "malformed JSON": b"{broken}\n",
+            "invalid UTF-8": b"\xff\n",
+            "non-object JSON": b"[]\n",
+        }
+        for label, output in bad_outputs.items():
+            with self.subTest(case=label), patch.object(
+                    collector, "_run", return_value=output), \
+                    self.assertRaises(collector.CollectorError):
+                collector._journal_markers(
+                    unit, invocation_id="f" * 32,
+                    worker_cgroup="/user.slice/caissa-v212-test.service")
+
+    def test_journal_query_rejects_duplicate_keys_and_nonstandard_constants(self):
+        unit = "caissa-v212-test.service"
+        bad_records = (
+            b'{"MESSAGE":"ordinary","MESSAGE":"' +
+            collector.MARKER_PREFIX.encode() + b'"}\n',
+            b'{"MESSAGE":"ordinary","extra":NaN}\n',
+        )
+        for output in bad_records:
+            with self.subTest(output=output), patch.object(
+                    collector, "_run", return_value=output), \
+                    self.assertRaisesRegex(
+                        collector.CollectorError, "malformed JSON"):
+                collector._journal_markers(
+                    unit, invocation_id="f" * 32,
+                    worker_cgroup="/user.slice/caissa-v212-test.service")
+
     def test_runtime_limit_accepts_systemctl_timespan_format(self):
         props = {
             "EffectiveMemoryMax": str(collector.MEMORY_MAX),

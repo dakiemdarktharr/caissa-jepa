@@ -203,8 +203,12 @@ def _journal_markers(unit: str, *, invocation_id: str, worker_cgroup: str,
         if len(line) > MAX_JOURNAL_RECORD_BYTES:
             raise CollectorError("unit journal record exceeds its byte bound")
         try:
-            record = json.loads(line.decode("utf-8", errors="strict"))
-        except (UnicodeError, json.JSONDecodeError) as exc:
+            record = json.loads(
+                line.decode("utf-8", errors="strict"),
+                object_pairs_hook=_journal_object_no_duplicates,
+                parse_constant=_reject_journal_constant,
+            )
+        except (UnicodeError, ValueError) as exc:
             raise CollectorError("unit journal contains malformed JSON") from exc
         if not isinstance(record, dict):
             raise CollectorError("unit journal record is not an object")
@@ -222,6 +226,19 @@ def _journal_markers(unit: str, *, invocation_id: str, worker_cgroup: str,
     if record.get("_SYSTEMD_CGROUP") != worker_cgroup:
         raise CollectorError("worker marker cgroup metadata did not match the active worker cgroup")
     return records
+
+
+def _journal_object_no_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    record: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in record:
+            raise ValueError("duplicate journal JSON key")
+        record[key] = value
+    return record
+
+
+def _reject_journal_constant(token: str) -> None:
+    raise ValueError(f"non-standard journal JSON constant: {token}")
 
 
 def _verify_effective_properties(properties: dict[str, str]) -> None:
