@@ -210,6 +210,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             return result
 
         def journal(unit, *, invocation_id, worker_cgroup, deadline):
+            state["sequence"].append("journal")
             if fail_journal:
                 raise collector.CollectorError("mock journal marker missing")
             return [{
@@ -558,6 +559,30 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 service.run_no_inference_armed_smoke(receipt_path=self.receipt)
         self.assertIn("release", state["sequence"])
         self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_deadline_expiry_after_response_read_blocks_journal_and_receipt(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack)
+            original_check = collector._check_deadline
+
+            def check_deadline(deadline):
+                if "response_read" in state["sequence"]:
+                    raise collector.CollectorError(
+                        "mock caller deadline expired after response read")
+                original_check(deadline)
+
+            stack.enter_context(patch.object(
+                collector, "_check_deadline", side_effect=check_deadline))
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "deadline expired after response read.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertIn("response_read", state["sequence"])
+        self.assertNotIn("journal", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
 
     def test_deadline_expiry_while_unit_remains_running_retains_handles(self):

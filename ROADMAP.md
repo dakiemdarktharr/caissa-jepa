@@ -2,6 +2,17 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 deadline check after response read
+
+The v01 no-inference smoke now checks the caller deadline directly after its
+bounded response read and parse, before accepting the response or querying
+the journal. A controlled mock expiry at that point proves no journal
+collection, receipt publication, or unit stop begins, and the IPC workspace
+is retained. The focused armed-smoke/collector/live-evidence/receipt group
+passes 90/90. Counter/evidence-capture deadline crossings and the v02
+controller remain open. No live service, inference, OOM, training, score, or
+match ran; no gate changed. See CLK-01 in the supervision failure plan.
+
 ### 2026-10-06 raw response validation in the schema proposal audit
 
 The offline v02 proposal auditor now validates a bounded canonical response
