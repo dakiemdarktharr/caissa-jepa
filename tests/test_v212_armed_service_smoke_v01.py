@@ -470,6 +470,28 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 self.assertNotIn("stop", state["sequence"])
                 self.assertTrue(self.workspaces[-1].directory.exists())
 
+    def test_journal_binding_metadata_mismatch_retains_handles(self):
+        cases = {
+            "foreign_unit": lambda record: [dict(
+                record, _SYSTEMD_USER_UNIT="foreign.service")],
+            "foreign_invocation": lambda record: [dict(
+                record, _SYSTEMD_INVOCATION_ID="c" * 32)],
+            "foreign_boot": lambda record: [dict(record, _BOOT_ID="c" * 32)],
+            "outside_window": lambda record: [dict(
+                record, __MONOTONIC_TIMESTAMP="10000")],
+            "missing_cursor": lambda record: [dict(record, __CURSOR="")],
+        }
+        for case, transform in cases.items():
+            with self.subTest(case=case), ExitStack() as stack:
+                state = self._mock_host(stack, journal_records=transform)
+                with self.assertRaises(service.ArmedServiceSmokeError):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertIn("journal", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertFalse(self.receipt.exists())
+                self.assertTrue(self.workspaces[-1].directory.exists())
+
     def test_receipt_publication_failure_is_uncertain_and_retains_reconciliation_handles(self):
         with ExitStack() as stack:
             state = self._mock_host(stack, fail_persist="before")
@@ -748,6 +770,21 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertIn("exited_snapshot", state["sequence"])
         self.assertNotIn("response_read", state["sequence"])
         self.assertNotIn("stop", state["sequence"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_failed_manager_state_with_success_result_is_rejected(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, exited_overrides={
+                "ActiveState": "failed", "SubState": "failed"})
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "did not exit successfully.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertIn("exited_snapshot", state["sequence"])
+        self.assertNotIn("response_read", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
 
     def test_exit_snapshot_identity_and_required_fields_fail_before_response_read(self):

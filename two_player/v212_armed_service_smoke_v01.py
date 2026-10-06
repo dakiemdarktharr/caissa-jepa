@@ -374,7 +374,9 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
         if current_boot != boot:
             raise ArmedServiceSmokeError(
                 "post-exit host boot ID did not match request boot ID")
-        if manager_snapshot["result"] != "success" or manager_snapshot["main_status"] != 0:
+        if (manager_snapshot["manager_active_state"] not in {"active", "inactive"}
+                or manager_snapshot["result"] != "success"
+                or manager_snapshot["main_status"] != 0):
             raise ArmedServiceSmokeError("armed synthetic worker did not exit successfully")
         if (manager_snapshot["unit"] != active["unit"]
                 or manager_snapshot["invocation_id"] != invocation_id

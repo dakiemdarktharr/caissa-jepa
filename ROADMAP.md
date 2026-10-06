@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 manager/journal failure-map regressions
+
+Mocked armed-smoke validation now rejects a contradictory post-exit manager
+state (`failed/failed`) even when the result/status fields claim success, before
+response acceptance or lifecycle cleanup. Journal consumer-seam fixtures now
+also reject wrong unit, invocation, boot ID, time window, and missing cursor,
+retaining reconciliation handles and skipping receipt/stop. The 43-test
+armed-smoke module passes; compile and whitespace checks pass. These tests do
+not exercise live systemd/journal behavior or integrate the amended v02
+controller. No operational or research gate advanced. See the supervision
+failure matrix and named-test plan.
+
 ### 2026-10-07 v02 request-helper schema boundary
 
 Read-only review found that the generic v02 helper only required a JSON object
