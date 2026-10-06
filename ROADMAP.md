@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 raw-state control wiring proposal
+
+Converted the architecture audit into a reviewable clarification proposal:
+reuse the shared 104-to-32 action-conditioned latent predictor in the
+raw-state control, decode its latent output to 198 exact-state features, and
+re-encode for recurrence. The decoder output is linear because exact feature
+targets include 0/1 channels under MSE; the random-weight pilot's `tanh`
+decoder is not an equivalent training path. This fixes the proposed wiring at 18,440 online
+parameters while retaining the required 5% training-FLOP gate. It does not
+resolve whether that gate is feasible, and independent review has not adopted
+the proposal; v04 remains current. No trainer or model operation was run. See
+the new wiring amendment and architecture reconciliation drafts.
+
 ### 2026-10-07 v04 arm architecture and compute reconciliation
 
 A static comparison found that the raw-state control description leaves its

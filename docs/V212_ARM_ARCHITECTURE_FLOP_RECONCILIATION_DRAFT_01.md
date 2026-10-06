@@ -26,12 +26,14 @@ leaves open whether the raw-state arm is:
 
 The no-training random-weight compute pilot implements the second path in
 `two_player/v212_pilot.py::RandomInferenceModel.advance`: its raw-state arm
-uses `decoder_w` with input width 104 and output width 198, then calls the
-encoder. It allocates `predictor_w` for every arm, but the raw-state branch
-does not use that matrix. This is an instrumentation proxy, not evidence that
-the v04 raw-state training arm has a frozen architecture. No V2.12 trainer or
-optimizer implementation is present under `two_player/` in the current
-checkout.
+uses `decoder_w` with input width 104 and output width 198, applies `tanh`,
+then calls the encoder. It allocates `predictor_w` for every arm, but the
+raw-state branch does not use that matrix. The exact feature adapter emits
+binary channels and descriptor values in `[0,1]`; the pilot's `tanh` output
+therefore is not the linear-MSE decoder proposed in the follow-up amendment.
+This is an instrumentation proxy, not evidence that the v04 raw-state
+training arm has a frozen architecture. No V2.12 trainer or optimizer
+implementation is present under `two_player/` in the current checkout.
 
 ## Parameter-count consequences
 
@@ -90,3 +92,15 @@ the random-weight inference model and its `advance` method, and the tracked
 stated dimensions; no model was instantiated and no inference, fit, dataset,
 root, score, outcome, match, or service was accessed or run. This audit is
 not independent review, a FLOP profile, or approval to train.
+
+## Follow-up proposal
+
+`V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md` now proposes the
+latent-then-decode interpretation: use the shared 104-to-32 action-conditioned
+predictor, decode its output through a 32-to-198 feature head, and re-encode
+predicted features for recurrence. It specifies masks and initialization
+pairing, gives the resulting 18,440 online-parameter count, and preserves the
+existing 5% FLOP-parity gate. That proposal has not been independently
+reviewed or adopted; v04 remains unchanged. It specifies a linear feature
+decoder because exact adapter features include 0/1 targets; the pilot's
+bounded `tanh` output is not treated as an equivalent training objective.
