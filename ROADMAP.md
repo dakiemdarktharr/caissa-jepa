@@ -1938,3 +1938,16 @@ review. This is not adoption or fit approval. The parameter-count difference is 
 measured ≤5% total training-FLOP gate remains mandatory. No trainer, data,
 inference, training, scoring, or gate transition occurred. See
 `docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md`.
+
+
+### 2026-10-07 calibration covariance-profile audit
+
+Added `tools/v212_calibration_profile_audit.py` to calculate and serialize
+draft 02's per-band covariance matrices, candidate-control component margins,
+P5 cross-band shared-seed covariance, total `V`, and `sigma` without random
+draws. Its six standard-library tests pass. Independent read-only review
+confirmed the specified P1–P5 normalization and cross-band construction. This
+supports reproducibility of the proposed DGP arithmetic only; it is not a
+calibration simulation or statistical acceptance. v04 remains current and
+root generation, calibration, scoring, training, and downstream gates remain
+closed. See `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_02.md`.

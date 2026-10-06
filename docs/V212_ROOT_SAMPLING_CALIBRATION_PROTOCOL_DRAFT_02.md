@@ -391,3 +391,20 @@ explicit disposition on each item before any simulation:
 No reviewer disposition or simulation is recorded in this draft. v04 remains
 the current method; the v05 root-sampling design and every downstream gate
 remain unaccepted/closed.
+
+## Deterministic covariance-profile audit (2026-10-07)
+
+Added `tools/v212_calibration_profile_audit.py` to serialize the five profile
+covariance structures, pair-specific arm-margin variances, total `V`, and
+`sigma=sqrt(1+V)` without drawing random values. It normalizes each arm
+component by the mean of its ten candidate-control margin variances, splits
+the seed×slot fraction equally between arm interactions and matchup variance,
+and emits all P5 cross-band shared-seed covariance matrices as `L_g L_h^T`.
+For P1–P4, the same Cholesky factor across bands reproduces the marginal
+seed covariance. Six standard-library unit tests pass; the analytic manifest
+reports mean `V=1` and `sigma=sqrt(2)` for every P1–P4 pair, while P5 preserves
+mean `V=1` with the specified pair heterogeneity. The approved read-only
+reviewer confirmed the covariance, cross-band, and sigma calculations by
+inspection. This is a deterministic arithmetic audit only: no calibration
+simulation, roots, outcomes, inference, training, or gate transition occurred.
+The protocol remains unapproved and v04 remains current.
