@@ -87,6 +87,52 @@ simulations, roots, scores, or outcomes were accessed or generated. v04
 remains current; calibration, root generation, and downstream gates remain
 closed. See the draft protocol and `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
 
+### 2026-10-07 shared-arm calibration DGP proposal
+
+Protocol draft 02 replaces contrast-level copula outcomes with a shared-arm
+ordinal match-score generator. Candidate and control arm effects are reused
+across their related contrasts; seat advantage changes sign across the two
+assignments; wins/draws/losses yield the discrete paired-score support; and
+macro contrasts are computed from the atomic contrasts. A scalar normal-CDF
+equation calibrates declared matchup means while preserving the partial-null
+scenario grid. This remains an unapproved synthetic model, not a game
+simulator or evidence of performance. The DGP covariance, seat-pair law,
+calibration equation, exact marginal target, and the 18,000 × 10,000 workload
+need read-only statistical review before any run. v04 remains current; all
+root, simulation, and downstream gates remain closed. See
+`docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_02.md`.
+
+### 2026-10-07 calibration profile coverage revision
+
+After the approved static review identified missing seed-dominant,
+slot-dominant, and heteroskedastic stress coverage, protocol draft 02 now has
+five profiles: seed-dominant, slot-dominant, balanced, seed×slot-interaction
+dominant, and combined band/arm heteroskedastic. The five global-null cells
+cover each profile; the remaining principal IDs use a frozen round-robin map,
+and the two yield cells explicitly inherit P5 and P1. `A-HETERO` adds
+low/middle/high occupancy-band mean offsets. The grid now contains 25 null and
+four alternative principal cells plus two yield stresses (31 total), with 57
+Monte Carlo acceptance endpoints. At R=18,000 the analytic union-bound
+assurance is 0.8322 and workload is 5.58 billion inner bootstrap replicates
+(up to 83.7 billion contrast evaluations). These are design calculations,
+not simulation results; an independent reviewer is checking the revision.
+No simulation, root, score, or outcome was generated/accessed; v04 remains
+current and all research gates remain closed.
+
+### 2026-10-07 shared-seed and alternative-coverage correction
+
+The reviewer found that P5's band-varying seed variance needed an explicit
+shared-seed construction and that P5 did not yet appear under an alternative.
+Draft 02 now transforms one standardized latent seed per seed through
+band-specific covariance factors and specifies the induced cross-band
+covariance; `A-HETERO` maps to P5. P4 is explicitly limited to null-pattern
+coverage in this finite grid. The K=57 binomial-tail calculation was
+rechecked at alpha `0.05/57`; unrounded union-bound assurance at R=18,000 is
+0.8321582599. The second read-only review confirmed these fixes and found no
+remaining inconsistency in the edits, but did not accept the overall protocol
+or independently recompute the binomial tails. Calibration and all downstream
+gates remain closed.
+
 ### 2026-10-07 schema proposal bounded stream reader
 
 Added an audit-only fd reader to the unreviewed response/request schema

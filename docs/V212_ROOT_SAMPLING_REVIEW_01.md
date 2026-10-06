@@ -225,3 +225,38 @@ A final read-only consistency pass confirmed the corrected endpoint counts,
 stable yield-stress IDs, and dependence-robust assurance framing. It found no
 new major inconsistency; the shared-arm-generator disposition remains open.
 The protocol is still unapproved and no execution gate advanced.
+
+## Follow-up shared-arm generator and profile review (2026-10-07)
+
+An approved read-only reviewer found the replacement ordinal shared-arm
+generator coherent under its stated assumptions. It checked seed/slot/arm
+covariance normalization, the P5 `k D R D` variance scaling and
+pair-specific `sigma`, the ordinal-score normal-CDF mean equation, seat-swap
+averaging, policy-dependent yield weighting, and the null/alternative/cell
+and workload arithmetic. The profile grid now covers seed-dominant,
+slot-dominant, balanced, interaction-dominant, and band/arm-heteroskedastic
+variance. P5's band-varying seed variance uses one standardized latent seed
+vector transformed by band-specific factors, with induced cross-band
+covariance `L_g L_h^T`. `A-HETERO` maps to P5; positive alternatives cover
+P1/P2/P3/P5, while P4 is explicitly null-only in this finite grid. The DGP
+now states mutual independence of seed latent, root-slot, seed×slot, matchup,
+and game-residual components within a dataset except for the specified
+shared/reused structure. The reviewer confirmed these corrections resolved
+the profile/covariance findings and remaining wording/independence issues.
+
+The scenario inventory is 25 principal nulls, four principal alternatives,
+and two yield stresses (31 cells); the acceptance family is 26 null FWER plus
+31 joint-coverage endpoints (`K=57`). At `R=18,000`, the recorded binomial
+calculation uses `alpha=0.05/57`, cutoff 981, individual pass probability
+`0.9970554080688392`, and union-bound lower limit `0.8321582599238337`; the
+31-cell workload is 5.58 billion inner bootstrap replicates (up to 83.7
+billion contrast evaluations). The reviewer checked endpoint/count and
+workload arithmetic by inspection but did not independently recompute the
+binomial tails. These are design calculations, not simulation findings.
+
+This review does not accept the calibration protocol, decide that calibration
+is required, resolve v05/v04 compatibility, establish local compute
+feasibility, or open a gate. The grid remains finite and excludes P4
+alternative coverage. No simulation, root, score, outcome, inference, or
+training was performed or accessed; v04 remains current and downstream
+activity remains closed.
