@@ -2,6 +2,26 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 compute/resource profile reconciliation
+
+A static source audit corrected the request-schema bound audit: the unintegrated
+`v212_request_adapter_v02` defaults to 10,000 nodes, a 5-second planner
+deadline, a 6-second response deadline, and 1.5 GiB RSS/expected cgroup memory;
+the separate `v212_pilot` defaults to 500,000 nodes, 8 seconds, and 1.5 GiB
+RSS. The armed synthetic supervision fixture specifies 128 MiB `MemoryMax`,
+96 MiB `MemoryHigh`, zero swap, and an 8-second `RuntimeMaxUSec`. These
+profiles do not compose as written: the adapter expects 12 times the smoke
+fixture's memory limit, and its node cap is 50 times below the provisional v04
+method cap. The adapter's response deadline is caller-observed and is not
+replaced by the service runtime limit. The previously measured rule-only
+Reversi8 p90 of 6.037 seconds against the v04 2-second target remains a failed
+negative result. No profile or cap was selected, and no request, root, model,
+service, inference, training, score, or match ran. No gate changed. A future
+versioned protocol must reconcile the estimand, common root schedule, all-arm
+resource limits, and separate setup/search/response/receipt costs before
+service or pilot work. See
+`docs/V212_REQUEST_SCHEMA_BOUND_AUDIT_DRAFT_01.md`.
+
 ### 2026-10-06 armed-bootstrap release and manifest boundary tests
 
 Added offline subprocess fixtures for a valid exact-byte release-to-response

@@ -37,11 +37,44 @@ validation, or canonical re-encoding.
 
 The adapter source contains useful finite candidates: four variant names, six
 arm names, at most 64 board cells, board values in `{-1,0,1}`, player in
-`{-1,+1}`, and action IDs in `[0,64]`. The pilot module's candidate defaults
-include a 10,000 node cap and a 1.5 GiB RSS cap, but the adapter accepts
-overrides and the request protocol does not freeze these as maximums. These
-implementation constants therefore cannot yet serve as normative schema
-bounds.
+`{-1,+1}`, and action IDs in `[0,64]`. The request adapter defaults to 10,000
+nodes, a 5-second planner deadline, a 6-second response deadline, a 1.5 GiB
+RSS cap, and a 1.5 GiB expected `memory.max`; it accepts overrides. The
+separate no-training `v212_pilot` instead defaults to 500,000 nodes, 8 seconds,
+and a 1.5 GiB RSS cap. These implementation constants are not normative
+schema bounds.
+
+## Compute/resource profile reconciliation (static audit, 2026-10-06)
+
+The current source and approved/draft protocols contain four distinct profiles:
+
+| Boundary | Node visits | Planner/wall deadline | RSS or cgroup memory | Status |
+| --- | ---: | ---: | ---: | --- |
+| V2.12 v04 method | 500,000 | 2.0 s per move | Not a service limit | Provisional method cap; rule-only Reversi8 p90 was 6.037 s on 16 roots, so this gate failed before learned-model calls |
+| `two_player/v212_pilot.py` | 500,000 | 8.0 s | RSS 1.5 GiB | Separate random-weight, no-training instrumentation candidate |
+| `two_player/v212_request_adapter_v02.py` | 10,000 | Planner 5.0 s; response 6.0 s | RSS cap and `memory.max` both 1.5 GiB | Separate unintegrated request-adapter candidate; its defaults do not revise v04 |
+| Armed synthetic service profile | Not a model/search budget | `RuntimeMaxUSec=8s` | `MemoryMax=128 MiB`, `MemoryHigh=96 MiB`, swap 0 | Reviewed supervision fixture only; its live evidence is no-inference |
+
+The request adapter's 10,000-node cap is 50 times smaller than v04's 500,000
+cap. Its 1.5 GiB expected service limit is 12 times the synthetic service
+profile's 128 MiB `MemoryMax`. The adapter's default therefore cannot run under
+that armed-service profile as written: its preflight rejects a different
+`memory.max`, and changing the expected value alone would not demonstrate that
+random-weight setup/search fits within 128 MiB. The 8-second service runtime
+also starts after activation and does not substitute for the adapter's
+caller-observed 6-second response deadline. The schema proposal's `node_cap`
+maximum of 10,000 and 5-second planner interval describe that request-adapter
+candidate, not the v04 method cap; its int64 RSS and `expected_memory_max`
+domains are wire-representation bounds, not approved resource requests.
+
+No profile is selected or reconciled here. Reconciliation requires a new,
+versioned no-outcome protocol that names the estimand and arm set, pins the
+same reachable root schedule and order for every arm, records model setup,
+search, response and receipt costs separately, and evaluates resource headroom
+under a separately accepted supervision profile. The existing Reversi8
+negative result must remain visible. No request, root, model, score or outcome
+was run or accessed for this static audit; no adapter, inference, pilot,
+training, service or OOM gate changed.
 
 ## Consequences for a future v02 contract
 
@@ -89,6 +122,14 @@ changed.
   byte-digest/canonicalization contract and open cap decision.
 - `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`: worker/caller boundary
   and failure/reconciliation requirements.
+- `METHOD_SPEC_V212.md`, `two_player/v212_pilot.py`,
+  `two_player/v212_request_adapter_v02.py`, and
+  `two_player/v212_armed_protocol_v01.py`: distinct method, harness, request,
+  and synthetic-service budgets compared above.
+- `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md`: unreviewed
+  wire-bound proposal whose 10,000-node and 5-second maxima mirror the request
+  adapter candidate; those bounds do not reconcile its resource profile with
+  the method or armed-service fixture.
 
 No request was constructed or sent; no adapter, worker, service, inference,
 game state, score, or outcome was run or read. This is a static source audit.

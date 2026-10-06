@@ -10,9 +10,14 @@ spec remain unchanged.
 This proposal closes the field and encoding domains needed to calculate
 smaller byte caps for the existing synthetic random-weight request adapter.
 It is a protocol candidate, not a claim that the adapter's current runtime or
-resource profile is safe or ready. Independent design review must approve the
-field set, bounds, resource-profile relationship, and failure semantics before
-implementation.
+resource profile is safe or ready. Its 10,000-node/5-second candidate bounds
+mirror the unintegrated request adapter and are 50 times below the provisional
+500,000-node v04 method cap; its 1.5 GiB expected `memory.max` also differs
+from the armed synthetic fixture's 128 MiB limit. No profile is selected by
+this draft. Independent design review must approve the field set, bounds,
+resource-profile relationship, and failure semantics before implementation.
+See `docs/V212_REQUEST_SCHEMA_BOUND_AUDIT_DRAFT_01.md` for the static profile
+reconciliation.
 
 ## Canonical encoding
 
