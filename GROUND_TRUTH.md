@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; six-arm dense-forward operation inventory)
+
+- Added a standard-library static MAC inventory from the v04 layer shapes and the still-unadopted raw-state wiring proposal. Per fully valid 1/2/4-ply window, it counts 37,536 dense forward MACs for multi-step JEPA, 56,544 for raw-state (+50.64%), 18,528 for value-only, 24,864 for single-pair/single-horizon, and 14,816 for direct-leaf. The discrepancy is a reason to treat the measured 5% all-arm compute gate as a substantive risk.
+- The inventory omits backward, optimizer, EMA updates, activations, losses, masks, and data movement. It is not a FLOP measurement and does not decide whether the gate passes or fails. Three standard-library tests pass; JSON remains under `/tmp`. No model, root, data, score, outcome, inference, training, or match was run/accessed. No method or gate changed. See `tools/v212_arm_dense_forward_macs_audit.py` and the architecture reconciliation draft.
+
 ## Latest continuation delta (2026-10-07; raw-state feature coordinate audit)
 
 - Made the proposed 198-coordinate raw-state target explicit against `BoardGame.features`: current-player occupancy at `[0:64]`, opponent occupancy at `[64:128]`, board indicator at `[128:192]`, and `(rows/8, cols/8, k/8, placement, reversi, gravity)` at `[192:198]`, on a row-major 8×8 padded grid. Added deterministic fixtures for both training and held-out sizes and a forced-pass perspective swap. The two focused tests pass under Python 3.14.7 with the existing NumPy runtime; compile and whitespace checks pass.

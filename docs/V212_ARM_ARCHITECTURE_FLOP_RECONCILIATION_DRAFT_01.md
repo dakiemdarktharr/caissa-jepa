@@ -104,3 +104,29 @@ existing 5% FLOP-parity gate. That proposal has not been independently
 reviewed or adopted; v04 remains unchanged. It specifies a linear feature
 decoder because exact adapter features include 0/1 targets; the pilot's
 bounded `tanh` output is not treated as an equivalent training objective.
+
+## Follow-up static dense-forward MAC inventory (2026-10-07)
+
+Added `tools/v212_arm_dense_forward_macs_audit.py` to count only dense
+matrix multiply-accumulates implied by v04 and the unadopted latent-then-decode
+proposal, per fully valid nonterminal 1/2/4-ply window. The candidate JEPA
+inventory is 37,536 MACs; the proposed recursive raw-state graph is 56,544
+(+50.64%); value-only latent rollout is 18,528; single-pair and single-horizon
+JEPA are each 24,864; and direct-leaf value is 14,816. The raw-state count
+includes three 32-to-198 decoder calls and three online 198-to-32 re-encodes;
+the JEPA count includes three EMA target encodes. This makes clear that equal
+windows, batches, and update counts do not imply close dense forward work.
+
+This is a static operation inventory, not a complete FLOP count, not a
+forward/backward dry-run, and not a verdict that the v04 5% gate fails. It
+omits activations, bias additions, loss/reduction work, masks, backward,
+optimizer, EMA updates, and data movement; actual valid-target masks may also
+change executed calls. The raw-state architecture remains a proposal. Before
+any trainer or fit, independently resolve the arm graphs and run the required
+same-batch forward/backward FLOP profile; if the measured panel exceeds 5%,
+version and review a method change rather than adding filler work.
+
+Three standard-library tests verify the shape arithmetic and graph call counts.
+The deterministic JSON is at `/tmp/caissa-v212-arm-dense-forward-macs-audit.json`;
+the output is not a dataset or performance result. No model was instantiated
+and no roots, outcomes, inference, training, or matches were run/accessed.
