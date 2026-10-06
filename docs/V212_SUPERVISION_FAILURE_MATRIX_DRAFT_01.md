@@ -61,6 +61,10 @@ The armed synthetic service and collector tests already exercise some rows:
 non-success manager result, missing/duplicate/mismatched worker marker,
 response deadline while active, start-state query/race, receipt publication and
 durability uncertainty, stop/cleanup failure, and Ctrl-C at several phases.
+The GATE-01b pre-release seam now injects worker `/proc` cgroup mismatch,
+caller/worker cgroup sharing, and live `memory.max` disagreement; each blocks
+counter sampling/release and preserves the dispatched unit and IPC workspace
+without receipt or stop. These are mocked values, not host placement evidence.
 At the current consumer seam, an empty journal-marker collection is also
 injected and checked for no receipt attempt, unit stop, or workspace cleanup;
 duplicate and foreign-invocation records are checked at the same seam.

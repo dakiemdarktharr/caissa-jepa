@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 pre-release cgroup gate failure cases
+
+The armed-smoke orchestration test now injects three GATE-01b failures at the
+pre-release seam: worker `/proc/<pid>/cgroup` mismatch, caller/worker cgroup
+sharing, and live `memory.max` disagreement. Each prevents counter reads and
+release, leaves the receipt absent, and retains the dispatched unit/workspace.
+The focused armed-smoke/collector/live-evidence/receipt group passes 97/97;
+compileall and `git diff --check` pass. The failure-test AST audit resolves all
+46 fully qualified references. These are mocked identities/limits,
+not host-service evidence; the v02 controller and live placement remain open.
+No service, inference, OOM, training, score, or match ran. See GATE-01b.
+
 ### 2026-10-07 failure-test traceability reconciliation
 
 The JRN-01/JRN-02 coverage map now names the armed-smoke empty, duplicate, and

@@ -2685,3 +2685,9 @@ or gate changed.
 
 - Reconciled JRN-01/JRN-02 traceability rows with the armed-smoke test for empty, duplicate, and foreign-invocation marker records. A read-only AST audit resolved all 45 fully qualified test references in the failure plan to existing test methods; none were missing. `git diff --check` passes.
 - This validates reference integrity only, not assertion coverage or live behavior; failure-map rows and all operational/research gates remain partial/closed. No service, inference, OOM, training, data, score, match, or outcome was accessed or run. See the failure test plan.
+
+
+### Latest continuation delta (2026-10-07; pre-release cgroup gate failures)
+
+- Added a table-driven armed-smoke orchestration case for worker `/proc/<pid>/cgroup` mismatch, caller/worker cgroup sharing, and a `memory.max` mismatch. Each is rejected before counter sampling and release, with no receipt or unit stop and with the dispatched unit/workspace retained. The focused armed-smoke/collector/live-evidence/receipt group passes 97/97; compileall, `git diff --check`, and the 46-reference failure-test AST audit pass.
+- This is mocked GATE-01b coverage only; actual host placement, live cgroup reads, and the v02 controller remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See GATE-01b in the failure test plan and matrix.

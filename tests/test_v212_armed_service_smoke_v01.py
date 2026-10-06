@@ -319,6 +319,52 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertNotIn("stop", state["sequence"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
+    def test_cgroup_identity_and_live_limit_mismatches_block_release(self):
+        cases = ("proc_mismatch", "shared_cgroup", "live_limit_mismatch")
+        for case in cases:
+            with self.subTest(case=case), ExitStack() as stack:
+                state = self._mock_host(stack)
+                caller_cgroup = "/user.slice/caller"
+                if case == "shared_cgroup":
+                    class FixedTokens:
+                        @staticmethod
+                        def token_hex(nbytes):
+                            return "a" * (nbytes * 2) if nbytes == 16 else "b" * (nbytes * 2)
+
+                    unit = "caissa-v212-armed-smoke-" + "b" * 16 + ".service"
+                    caller_cgroup = "/user.slice/" + unit
+                    stack.enter_context(patch.object(service, "secrets", FixedTokens))
+
+                if case in {"proc_mismatch", "shared_cgroup"}:
+                    worker_cgroup = ("/user.slice/foreign-worker.service"
+                                     if case == "proc_mismatch" else caller_cgroup)
+
+                    def proc_cgroup(pid=None):
+                        return caller_cgroup if pid is None else worker_cgroup
+
+                    stack.enter_context(patch.object(
+                        collector, "_proc_cgroup", side_effect=proc_cgroup))
+                else:
+                    stack.enter_context(patch.object(
+                        collector, "_cgroup_scalar",
+                        side_effect=[str(collector.MEMORY_MAX + 1),
+                                     str(collector.MEMORY_HIGH), "0"]))
+
+                expected_error = (
+                    "armed worker live cgroup limits did not match policy"
+                    if case == "live_limit_mismatch"
+                    else "armed worker/caller cgroup placement did not verify")
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError,
+                        expected_error + ".*receipt_not_attempted"):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertEqual(state["event_samples"], 0)
+                self.assertNotIn("release", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertFalse(self.receipt.exists())
+                self.assertTrue(self.workspaces[-1].directory.exists())
+
     def test_pre_dispatch_cleanup_failure_reports_reconciliation_path(self):
         failure = ipc.WorkerIPCError("mock cleanup failure")
         with ExitStack() as stack:
