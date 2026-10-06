@@ -1,11 +1,12 @@
 # V2.12 raw-state control wiring amendment — draft 02
 
-**Status: proposed clarification for independent method review only; draft 02
-supersedes draft 01 as the current raw-state candidate.** Draft 01 remains
-unchanged history. This draft does not amend METHOD_SPEC_V212-04, authorize a
-trainer, data generation, fitting, model scoring, or open any gate. The six-arm
-panel and negative results remain unchanged unless a reviewed version
-explicitly adopts a clarification.
+**Status: frozen candidate amendment after static method review; not adopted
+into METHOD_SPEC_V212-04.** Draft 02 supersedes draft 01 as the current
+raw-state candidate; draft 01 remains unchanged history. The reviewer found
+the contract coherent enough to freeze as a candidate, but this does not
+authorize a trainer, data generation, fitting, model scoring, or open any
+gate. The six-arm panel and negative results remain unchanged unless a
+versioned method decision explicitly adopts a clarification.
 
 ## Proposed resolution
 
@@ -233,3 +234,16 @@ dense-forward MAC difference warns of parity risk but cannot establish the
 5% total-training-FLOP gate. Draft 02 records these choices for disposition;
 no graph is frozen, no implementation/profile is authorized, and no gate
 advanced. No model, root, simulation, inference, or training was run.
+
+**Independent read-only method disposition of draft 02 (2026-10-07):** the
+reviewer found the candidate internally coherent with v04's stated controls,
+including end-to-end `F -> D -> E` gradients, the stated nonterminal target
+mask/terminal interpretation, separate mask/failure accounting, and the
+preflight needed to preserve fixed minibatches and 87 updates. Uniform
+coordinate weighting and pooled valid-target normalization were accepted as
+explicit candidate choices where v04 is underspecified. This freezes draft 02
+only as an amendment candidate; it does not amend/adopt v04 or authorize
+implementation or fitting. Compute-gate readiness is **NO**: the ≤5% total
+training-FLOP requirement remains unmeasured and mandatory. If it fails, any
+method/config change requires a new version and review before fitting. No
+profile, model operation, or gate advancement occurred.
