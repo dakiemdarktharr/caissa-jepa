@@ -1903,3 +1903,19 @@ unresolved gate. No freeze or gate change follows. No roots, scores, outcomes,
 model outputs, inference, or training were produced/accessed. See
 `docs/V212_ACTION_SENSITIVITY_DIAGNOSTIC_PROTOCOL_DRAFT_01.md` and
 `docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.
+
+
+### 2026-10-07 generation receipt/auditor crosswalk
+
+Added a non-operative crosswalk for proposed episode/window/root identities,
+lineage, masks, duplicate multiplicities, overlap keys, and durable audit
+receipts. Independent static review confirmed it keeps current v04 separate
+from unaccepted split v05 and root-schedule design 02. It also records why the
+existing synthetic trajectory auditor cannot be reused unchanged: it rejects
+repeated canonical windows and does not emit lineage-linked, typed corpus or
+root receipts. The fixture remains unchanged. Next dependencies are method
+and statistical acceptance, a separately versioned/reviewed no-I/O fixture,
+and only later an independently reviewed/authorized bounded no-outcome
+feasibility pilot to set quotas/caps. No generation, roots, scoring, inference,
+training, or gate transition occurred. See
+`docs/V212_GENERATION_RECEIPT_AUDITOR_CROSSWALK_DRAFT_01.md`.
