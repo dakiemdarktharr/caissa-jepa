@@ -185,3 +185,43 @@ reported separately from conditional inferential error rates.
 
 These findings are a static review only. No method wording or gate changed;
 no calibration simulation, root, score, or outcome was produced or accessed.
+
+## Follow-up calibration protocol design review (2026-10-07)
+
+An approved read-only review found the draft's scenario arithmetic and null
+identities consistent: 23 null patterns, four alternatives, and two
+policy-dependent yield stresses give 29 cells; macro contrasts remain exact
+averages of the variant contrasts. The success-conditional policy-pair
+weighting is correct when ordered pairs are drawn uniformly, validity is
+Bernoulli by pair, and the stated independence assumptions hold. At the
+provisional `R=6,000`, the workload is 1.74 billion bootstrap replicates
+(about 26.1 billion contrast evaluations).
+
+The review did not accept the protocol. Its main concern is that the
+contrast-level copula does not enforce shared candidate/control-arm outcomes
+or seat-swap mechanics; reviewers must accept it as a broad dependence stress
+model with a justified covariance envelope or require a shared-arm generator.
+The protocol also needed to state policy-pair/validity/outcome dependence,
+cross-stratum assumptions, exact scenario/profile mappings and metric
+definitions, and the multiplicity inventory for Monte Carlo endpoint
+decisions. A follow-up correction clarified that scenario RNG streams are
+independent, but FWER and coverage indicators within a null scenario share
+datasets; therefore the joint-assurance claim uses a dependence-robust union
+bound rather than assuming all 53 endpoints independent. Stable IDs were
+added for both yield-stress cells.
+
+An analytic binomial-tail calculation for the proposed one-sided
+Bonferroni-Clopper–Pearson rule (`alpha=0.05/53`) gives individual pass
+assurance 0.5854 at `R=6,000` and 0.9971 at `R=18,000` when each true rate is
+at its boundary (FWER .05 or coverage .95). The dependence-robust union-bound
+lower limit for all 53 endpoints at `R=18,000` is 0.8439. This is a
+pre-simulation calculation only; independent statistical review must accept
+the 80% target, endpoint definitions, and calculation, and local compute
+feasibility is unmeasured. The copula/shared-arm choice remains unresolved.
+No simulations, roots, scores, or outcomes were produced/accessed. v04
+remains current and all gates remain closed.
+
+A final read-only consistency pass confirmed the corrected endpoint counts,
+stable yield-stress IDs, and dependence-robust assurance framing. It found no
+new major inconsistency; the shared-arm-generator disposition remains open.
+The protocol is still unapproved and no execution gate advanced.

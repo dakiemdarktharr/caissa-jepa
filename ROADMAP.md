@@ -65,6 +65,28 @@ response before any simulation. No method version or gate changed; v04 remains
 current and calibration/root generation remain unauthorized. See
 `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
 
+### 2026-10-07 synthetic calibration protocol proposal
+
+Prepared `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_01.md` as a
+reviewable, unapproved proposal for design-matched synthetic calibration of
+the v05 crossed bootstrap. It specifies the ten atomic and five algebraically
+derived macro contrasts, a 29-cell null/alternative and yield-stress grid,
+outer/inner replication proposals, Monte Carlo uncertainty, candidate
+acceptance limits, and stop conditions. The synthetic generator is an
+abstract discrete dependence stress model; whether it adequately preserves
+the intended shared-arm structure remains under independent review. The
+proposed workload is 5.22 billion inner bootstrap replicates at R=18,000, so
+feasibility is unproven. The approved static reviewer found the scenario
+arithmetic coherent but did not accept the protocol: the contrast-level
+copula does not enforce shared-arm/seat-swap dependence. The draft now uses a
+dependence-robust union bound for within-scenario FWER/coverage endpoints; an
+analytic boundary-rate calculation gives a joint assurance lower limit of
+0.8439 across 53 endpoints. Reviewer acceptance of that calculation/target,
+adequacy of the abstract generator, and local feasibility remain open. No
+simulations, roots, scores, or outcomes were accessed or generated. v04
+remains current; calibration, root generation, and downstream gates remain
+closed. See the draft protocol and `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
 ### 2026-10-07 schema proposal bounded stream reader
 
 Added an audit-only fd reader to the unreviewed response/request schema
