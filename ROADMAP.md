@@ -2,6 +2,16 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 failure-test traceability reconciliation
+
+The JRN-01/JRN-02 coverage map now names the armed-smoke empty, duplicate, and
+foreign-invocation marker injection test. An AST audit resolved all 45
+fully-qualified test references in the plan to existing test methods; none
+were missing. This validates reference integrity only, not assertion coverage,
+live behavior, or an open gate. No code/test behavior, service, inference,
+OOM, training, score, or match changed. See the test plan's traceability
+section.
+
 ### 2026-10-07 counter-file disappearance between controller samples
 
 The armed-smoke test now drives the actual bounded `memory.events.local`

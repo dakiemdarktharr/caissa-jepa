@@ -2679,3 +2679,9 @@ or gate changed.
 
 - Added a controller-flow test using the actual bounded `memory.events.local` reader against a temporary cgroup-shaped tree. The test removes the file after the first read; the second read fails closed, without receipt persistence or unit stop, and the IPC workspace remains. The focused armed-smoke/collector/live-evidence/receipt group passes 96/96; compileall and `git diff --check` pass.
 - This is temporary-filesystem plus mocked-service evidence, not live cgroup behavior. Amended v03 receipt integration, runtime attestation, and independent review remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See CNT-01a in the failure plan and matrix.
+
+
+### Latest continuation delta (2026-10-07; failure-test traceability reconciliation)
+
+- Reconciled JRN-01/JRN-02 traceability rows with the armed-smoke test for empty, duplicate, and foreign-invocation marker records. A read-only AST audit resolved all 45 fully qualified test references in the failure plan to existing test methods; none were missing. `git diff --check` passes.
+- This validates reference integrity only, not assertion coverage or live behavior; failure-map rows and all operational/research gates remain partial/closed. No service, inference, OOM, training, data, score, match, or outcome was accessed or run. See the failure test plan.
