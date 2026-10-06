@@ -2667,3 +2667,9 @@ or gate changed.
 
 - The v01 armed-smoke controller now checks the caller deadline after validating the post-exit manager identity and before reading response bytes. A controlled mock expiry verifies that response/journal reads, receipt persistence, unit stop, and workspace cleanup are skipped while the workspace remains available. The focused armed-smoke/collector/live-evidence/receipt group passes 94/94.
 - This closes only one more mocked CLK-01 boundary. Other evidence capture crossings, complete manager/journal/counter mapping, executed-runtime attestation, independent review, and v02 controller integration remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md`.
+
+
+### Latest continuation delta (2026-10-07; invalid counter evidence at controller seam)
+
+- Added table-driven armed-smoke injections for wrong counter source/schema/cgroup/boot, out-of-window and unordered sample times, Boolean values, and rollback. All reject during receipt assembly before receipt persistence or unit stop, retain the IPC workspace, and preserve `receipt_not_attempted`. The focused armed-smoke/collector/live-evidence/receipt suite passes 95/95; compileall and `git diff --check` pass.
+- This adds mocked CNT-02 action/evidence lifecycle assertions only. Actual counter-file disappearance between samples, live service behavior, amended v03 receipt integration, and independent review remain open. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. See the failure matrix and test plan.

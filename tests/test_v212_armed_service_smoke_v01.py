@@ -95,7 +95,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    first_show_load_state="loaded", raw_response=None,
                    interrupt_release=False, timeout_stop=False,
                    interrupt_stop=False, fail_event_sample=None,
-                   exited_overrides=None, journal_records=None):
+                   exited_overrides=None, journal_records=None,
+                   event_mutator=None):
         state = {"workspace": None, "show": 0, "sequence": [],
                  "event_samples": 0, "persist_durable": False}
         original_create = ipc.create_workspace
@@ -235,7 +236,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             state["event_samples"] = event_samples
             if fail_event_sample == event_samples:
                 raise live.LiveEvidenceError("mock local counter read failure")
-            return {
+            snapshot = {
                 "schema": "cgroup-v2.memory.events.local.v1",
                 "source": "memory.events.local",
                 "cgroup": "/user.slice/" + state["unit"],
@@ -244,6 +245,9 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 "counters": {"low": 0, "high": 0, "max": 0, "oom": 0,
                              "oom_kill": 0, "oom_group_kill": 0},
             }
+            if event_mutator is not None:
+                snapshot = event_mutator(event_samples, snapshot)
+            return snapshot
 
         stack.enter_context(patch.object(collector, "_boot_id", return_value="b" * 32))
         stack.enter_context(patch.object(collector, "_proc_cgroup",
@@ -441,6 +445,52 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertNotIn("stop", state["sequence"])
         self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_invalid_counter_snapshot_evidence_retains_dispatched_handles(self):
+        cases = {
+            "wrong_source": "counter source is not memory.events.local",
+            "wrong_schema": "memory event snapshot schema does not match",
+            "wrong_cgroup": "counter cgroup does not match worker",
+            "wrong_boot": "counter boot ID does not match",
+            "outside_window": "counter capture is outside invocation window",
+            "unordered_pair": "counter snapshots are not in increasing time order",
+            "boolean_count": "memory event counters are malformed",
+            "counter_rollback": "memory event counters moved backwards",
+        }
+        for case, error in cases.items():
+            with self.subTest(case=case), ExitStack() as stack:
+                def mutate(sample_number, snapshot):
+                    snapshot = dict(snapshot, counters=dict(snapshot["counters"]))
+                    if case == "wrong_source":
+                        snapshot["source"] = "memory.events"
+                    elif case == "wrong_schema":
+                        snapshot["schema"] = "unknown.counter.schema"
+                    elif case == "wrong_cgroup":
+                        snapshot["cgroup"] = "/user.slice/foreign.service"
+                    elif case == "wrong_boot":
+                        snapshot["boot_id"] = "c" * 32
+                    elif case == "outside_window":
+                        snapshot["captured_monotonic_us"] = 30000
+                    elif case == "unordered_pair" and sample_number == 2:
+                        snapshot["captured_monotonic_us"] = 13000
+                    elif case == "boolean_count":
+                        snapshot["counters"]["oom_kill"] = True
+                    elif case == "counter_rollback" and sample_number == 1:
+                        snapshot["counters"]["oom_kill"] = 1
+                    return snapshot
+
+                state = self._mock_host(stack, event_mutator=mutate)
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError,
+                        error + ".*receipt_not_attempted"):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertEqual(state["event_samples"], 2)
+                self.assertIn("release", state["sequence"])
+                self.assertIn("journal", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertFalse(self.receipt.exists())
+                self.assertTrue(self.workspaces[-1].directory.exists())
 
     def test_stop_deadline_after_durable_receipt_preserves_receipt_and_recovery_handles(self):
         with ExitStack() as stack:

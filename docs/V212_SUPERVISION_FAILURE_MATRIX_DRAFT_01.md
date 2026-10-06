@@ -72,8 +72,11 @@ before reading response bytes; the corresponding controlled expiry fixture
 proves response and journal reads plus receipt persistence and cleanup are
 skipped.
 The current mock suite also injects failures at both first and second local
-counter reads, a stop-command timeout after durable receipt, and Ctrl-C at stop
-after durable receipt. The timeout is a mocked command result rather than a
+counter reads and invalid counter records for source, schema, cgroup, boot,
+time order/window, Boolean values, and rollback; all reject during receipt
+assembly without persistence, stop, or workspace cleanup. It also injects a
+stop-command timeout after durable receipt and Ctrl-C at stop after durable
+receipt. The timeout is a mocked command result rather than a
 controlled-clock test of the real stop command; none of these tests establish
 live failure recovery. See the case-by-case map in
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.

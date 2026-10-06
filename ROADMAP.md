@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 counter evidence rejection at the armed-smoke receipt boundary
+
+The armed-smoke mock can now mutate worker-local counter snapshots at the
+collector seam. A table-driven case injects wrong source/schema/cgroup/boot,
+out-of-window and unordered timestamps, a Boolean count, and counter rollback.
+Each case reaches receipt assembly, rejects before persistence or unit stop,
+and retains the IPC workspace. The focused armed-smoke/collector/live-evidence/
+receipt group passes 95/95; compileall and `git diff --check` pass. This remains
+mock evidence: live filesystem disappearance between samples, the amended
+v03 receipt controller, and service behavior are not covered. No inference,
+OOM, training, score, or match ran. See CNT-02 in the failure plan and matrix.
+
 ### 2026-10-07 deadline check after post-exit manager snapshot
 
 The v01 armed-smoke controller now checks the caller deadline after validating
