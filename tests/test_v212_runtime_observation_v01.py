@@ -89,6 +89,17 @@ class RuntimeObservationV01Tests(unittest.TestCase):
             build_inventory(captured_monotonic_ns=123, components=[dict(
                 observed_component(), value={"counter": 1 << 63})])
 
+    def test_deeply_nested_values_use_schema_error_contract(self):
+        inventory = build_inventory(captured_monotonic_ns=123,
+                                    components=[observed_component()])
+        nested = {}
+        for _ in range(1500):
+            nested = {"next": nested}
+        component = dict(observed_component(), value=nested)
+        candidate = dict(inventory, components=[component])
+        with self.assertRaises(RuntimeObservationError):
+            encode_inventory(candidate)
+
     def test_byte_bound_is_enforced(self):
         with self.assertRaises(RuntimeObservationError):
             parse_inventory(b" " * (MAX_INVENTORY_BYTES + 1))

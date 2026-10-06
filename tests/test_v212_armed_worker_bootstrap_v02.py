@@ -16,6 +16,9 @@ from two_player import v212_worker_ipc as ipc
 
 
 class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
+    def test_bootstrap_and_protocol_share_request_schema_version(self):
+        self.assertEqual(bootstrap.REQUEST_SCHEMA, armed.REQUEST_SCHEMA)
+
     def test_bootstrap_compiles_and_reads_before_project_source_access(self):
         source = bootstrap.worker_source()
         compile(source, "<armed-worker-bootstrap-v02>", "exec")

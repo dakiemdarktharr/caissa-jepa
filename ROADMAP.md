@@ -2,6 +2,22 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 v02 request-helper schema boundary
+
+Read-only review found that the generic v02 helper only required a JSON object
+and matching nonce, while the generated bootstrap checked a canonical synthetic
+envelope. The helper now enforces canonical request bytes, the exact envelope,
+the five-file manifest shape and digest syntax, the recomputed manifest digest,
+and equality with the expected digest before it blocks on the release FIFO.
+Focused negative fixtures cover wrong schema, noncanonical bytes, and manifest
+digest mismatch. The approved read-only follow-up confirmed the generic-helper
+gap is closed and emphasized that manifest consistency is not an independent
+trust anchor; the bootstrap still verifies and compiles exact local helper
+bytes. This hardens only the isolated no-inference candidate; it does not
+integrate the caller deadline, response receipt, runtime identity, or full
+supervision failure map. No service or model operation ran and no gate
+advanced. See `two_player/v212_armed_protocol_v02.py` and its tests.
+
 ### 2026-10-07 diagnostic runtime observation inventory
 
 An approved read-only runtime review established that an offline post-startup
@@ -10,7 +26,8 @@ native-library bytes without an independently trusted immutable boundary or
 equivalent measurement. Added a standalone, bounded observation-inventory
 candidate with only `partial` and `unavailable` assurance states. Its integrity
 digest is not an attestation, and it is not connected to the release token,
-bootstrap, controller, service, adapter, or receipt. Seven synthetic tests pass.
+bootstrap, controller, service, adapter, or receipt. Eight synthetic tests pass,
+including fail-closed handling of deeply nested input.
 No host values were collected in this milestone; prior host feasibility evidence
 is limited to the recorded user/sandbox context. No service, OOM, inference,
 roots, scores, outcomes, simulations, or training were run/accessed, and no gate

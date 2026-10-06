@@ -357,11 +357,13 @@ altered raw request was rejected before response. The fixture supplied fake
 cgroup files and suppressed the system journal marker; it did not create a
 systemd unit. The combined bootstrap, armed-protocol, release-token, IPC,
 service-smoke mock, and receipt regression suites now pass 121/121; Python
-bytecode compilation and `git diff --check` pass. This does not provide
-canonical request enforcement, controller/runtime-receipt integration, an
-actual runtime fingerprint, or independent review. The candidate is not wired
-to systemd or the request adapter. It supplies no service, inference, OOM,
-training, score, match, or gate evidence.
+bytecode compilation and `git diff --check` pass. The synthetic bootstrap and
+v02 helper now both enforce canonical bytes and the closed bootstrap-envelope
+schema. This still does not freeze the application request schema or provide
+controller/runtime-receipt integration, an actual runtime fingerprint, the
+integrated failure map, or service-level independent review. The candidate is
+not wired to systemd or the request adapter. It supplies no service, inference,
+OOM, training, score, match, or gate evidence.
 
 ### Import-path hardening and bootstrap-hash regression (2026-10-07)
 

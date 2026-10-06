@@ -27,11 +27,22 @@ class ArmedProtocolV02Tests(unittest.TestCase):
                            ("memory.swap.max", "0")):
             (cgroup / key).write_text(value + "\n", encoding="ascii")
         self.nonce = "a" * 32
+        self.source_manifest = {
+            "bootstrap_sha256": hashlib.sha256(b"bootstrap source").hexdigest(),
+            "files": {path: hashlib.sha256(path.encode()).hexdigest()
+                      for path in sorted(armed._SOURCE_FILES)},
+        }
+        manifest_bytes = json.dumps(
+            self.source_manifest, sort_keys=True, separators=(",", ":"),
+            ensure_ascii=False, allow_nan=False).encode("utf-8")
+        self.source_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
         self.request_bytes = json.dumps(
-            {"schema": "synthetic.request.v01", "nonce": self.nonce},
-            sort_keys=True, separators=(",", ":")).encode()
+            {"schema": armed.REQUEST_SCHEMA, "nonce": self.nonce,
+             "source_manifest": self.source_manifest,
+             "source_manifest_sha256": self.source_sha256},
+            sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+            allow_nan=False).encode("utf-8")
         self.request_sha256 = hashlib.sha256(self.request_bytes).hexdigest()
-        self.source_sha256 = hashlib.sha256(b"worker source").hexdigest()
         self.snapshot = {
             "schema": release.SCHEMA,
             "request_nonce": self.nonce,
@@ -111,7 +122,7 @@ class ArmedProtocolV02Tests(unittest.TestCase):
             thread.join(timeout=1)
             ipc.cleanup_workspace(workspace)
 
-    def test_changed_bytes_with_same_nonce_never_reach_callback(self):
+    def test_noncanonical_changed_bytes_with_same_nonce_fail_before_release(self):
         workspace = self._workspace()
         changed = self.request_bytes + b" "
         callbacks, failures = [], []
@@ -120,14 +131,13 @@ class ArmedProtocolV02Tests(unittest.TestCase):
             daemon=True)
         thread.start()
         try:
-            armed.release_when_ready(
-                workspace, self.snapshot, deadline=time.monotonic() + 1)
             thread.join(timeout=1)
             self.assertFalse(thread.is_alive())
             self.assertEqual(callbacks, [])
             self.assertEqual(len(failures), 1)
             self.assertIsInstance(failures[0], armed.ArmedProtocolError)
-            self.assertIn("before compute", str(failures[0]))
+            self.assertIn("not canonical", str(failures[0]))
+            self.assertFalse(workspace.release_writer_state.claimed)
         finally:
             thread.join(timeout=1)
             ipc.cleanup_workspace(workspace)
@@ -136,6 +146,22 @@ class ArmedProtocolV02Tests(unittest.TestCase):
         for payload in (b'{"nonce":"a","nonce":"b"}', b"[]",
                         b" " * (ipc.MAX_IPC_BYTES + 1)):
             with self.subTest(payload_len=len(payload)):
+                with self.assertRaises(armed.ArmedProtocolError):
+                    armed._parse_request_bytes(payload)
+
+    def test_request_parser_requires_canonical_v02_envelope_and_manifest(self):
+        parsed = json.loads(self.request_bytes)
+        wrong_schema = dict(parsed, schema="synthetic.request.v01")
+        noncanonical = self.request_bytes + b" "
+        bad_manifest = dict(parsed, source_manifest_sha256="0" * 64)
+        bad_manifest_bytes = json.dumps(
+            bad_manifest, sort_keys=True, separators=(",", ":"),
+            ensure_ascii=False, allow_nan=False).encode("utf-8")
+        for payload in (
+                json.dumps(wrong_schema, sort_keys=True, separators=(",", ":"),
+                           ensure_ascii=False, allow_nan=False).encode("utf-8"),
+                noncanonical, bad_manifest_bytes):
+            with self.subTest(payload_tail=payload[-16:]):
                 with self.assertRaises(armed.ArmedProtocolError):
                     armed._parse_request_bytes(payload)
 
@@ -235,6 +261,25 @@ class ArmedProtocolV02Tests(unittest.TestCase):
                     self_control_group=self.control_group,
                     expected_source_manifest_sha256=self.source_sha256,
                     cgroup_root=self.cgroup_root, on_release=lambda _token: self.fail())
+            self.assertFalse(workspace.release_writer_state.claimed)
+        finally:
+            ipc.cleanup_workspace(workspace)
+
+    def test_expected_manifest_mismatch_fails_before_waiting_on_release_fifo(self):
+        workspace = self._workspace()
+        try:
+            with self.assertRaisesRegex(armed.ArmedProtocolError,
+                                        "source manifest does not match"):
+                armed.run_synthetic_armed_worker(
+                    workspace, request_bytes=self.request_bytes,
+                    expected_nonce=self.nonce,
+                    expected_service_unit=self.snapshot["service_unit"],
+                    invocation_id=self.snapshot["invocation_id"],
+                    boot_id=self.snapshot["boot_id"],
+                    self_control_group=self.control_group,
+                    expected_source_manifest_sha256="0" * 64,
+                    cgroup_root=self.cgroup_root,
+                    on_release=lambda _token: self.fail("callback must not run"))
             self.assertFalse(workspace.release_writer_state.claimed)
         finally:
             ipc.cleanup_workspace(workspace)

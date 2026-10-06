@@ -118,7 +118,9 @@ def _unsigned_inventory(inventory: Mapping[str, Any]) -> dict[str, Any]:
         raise RuntimeObservationError("assurance_status does not match diagnostic evidence")
     unsigned = {key: value for key, value in inventory.items()
                 if key != "inventory_sha256"}
-    _validate_json_value(unsigned)
+    # Route recursive validation through the canonical encoder so deeply
+    # nested caller-supplied values become the schema's stable error type.
+    canonical_json(unsigned)
     digest = inventory.get("inventory_sha256")
     if (not isinstance(digest, str) or not _HEX64.fullmatch(digest)
             or hashlib.sha256(canonical_json(unsigned)).hexdigest() != digest):

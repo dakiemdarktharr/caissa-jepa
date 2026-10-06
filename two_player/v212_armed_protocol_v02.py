@@ -17,6 +17,19 @@ from two_player import v212_worker_ipc as ipc
 _POSITIVE_INT = re.compile(r"^[1-9][0-9]*$")
 _TIMESPAN = re.compile(r"^[1-9][0-9]*(?:us|ms|s|min|h)?$")
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
+_HEX32 = re.compile(r"^[0-9a-f]{32}$")
+REQUEST_SCHEMA = "caissa.synthetic.armed-bootstrap-request.v02"
+_REQUEST_FIELDS = frozenset({
+    "schema", "nonce", "source_manifest", "source_manifest_sha256",
+})
+_MANIFEST_FIELDS = frozenset({"bootstrap_sha256", "files"})
+_SOURCE_FILES = frozenset({
+    "two_player/v212_worker_ipc.py",
+    "two_player/v212_release_token_v01.py",
+    "two_player/v212_armed_protocol_v01.py",
+    "two_player/v212_release_token_v02.py",
+    "two_player/v212_armed_protocol_v02.py",
+})
 EXPECTED_EFFECTIVE_PROPERTIES = {
     "EffectiveMemoryMax": "134217728", "EffectiveMemoryHigh": "100663296",
     "MemorySwapMax": "0", "LimitFSIZE": "65536", "RuntimeMaxUSec": "8s",
@@ -59,6 +72,38 @@ def _parse_request_bytes(request_bytes: bytes) -> tuple[dict[str, Any], str]:
         raise ArmedProtocolError("worker request is not bounded UTF-8 JSON") from exc
     if not isinstance(parsed, dict):
         raise ArmedProtocolError("worker request must be one JSON object")
+    try:
+        canonical = json.dumps(parsed, sort_keys=True, separators=(",", ":"),
+                               ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError, UnicodeError, RecursionError) as exc:
+        raise ArmedProtocolError("worker request cannot be canonicalized") from exc
+    if canonical != request_bytes:
+        raise ArmedProtocolError("worker request is not canonical JSON")
+    if (set(parsed) != _REQUEST_FIELDS or parsed.get("schema") != REQUEST_SCHEMA):
+        raise ArmedProtocolError("worker request fields or schema are unsupported")
+    nonce = parsed.get("nonce")
+    if not isinstance(nonce, str) or not _HEX32.fullmatch(nonce):
+        raise ArmedProtocolError("worker request nonce must be lowercase hexadecimal")
+    manifest = parsed.get("source_manifest")
+    if not isinstance(manifest, dict) or set(manifest) != _MANIFEST_FIELDS:
+        raise ArmedProtocolError("worker request source manifest is malformed")
+    bootstrap_digest = manifest.get("bootstrap_sha256")
+    files = manifest.get("files")
+    if (not isinstance(bootstrap_digest, str) or not _HEX64.fullmatch(bootstrap_digest)
+            or not isinstance(files, dict) or set(files) != _SOURCE_FILES
+            or any(not isinstance(digest, str) or not _HEX64.fullmatch(digest)
+                   for digest in files.values())):
+        raise ArmedProtocolError("worker request source manifest entries are malformed")
+    manifest_digest = parsed.get("source_manifest_sha256")
+    try:
+        canonical_manifest = json.dumps(
+            manifest, sort_keys=True, separators=(",", ":"),
+            ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError, UnicodeError, RecursionError) as exc:
+        raise ArmedProtocolError("worker request source manifest is not canonical") from exc
+    if (not isinstance(manifest_digest, str) or not _HEX64.fullmatch(manifest_digest)
+            or hashlib.sha256(canonical_manifest).hexdigest() != manifest_digest):
+        raise ArmedProtocolError("worker request source manifest digest is invalid")
     return parsed, hashlib.sha256(request_bytes).hexdigest()
 
 
@@ -194,6 +239,8 @@ def run_synthetic_armed_worker(
     request, request_sha256 = _parse_request_bytes(request_bytes)
     if request.get("nonce") != expected_nonce:
         raise ArmedProtocolError("worker request nonce does not match its expected value")
+    if request["source_manifest_sha256"] != expected_source_manifest_sha256:
+        raise ArmedProtocolError("worker request source manifest does not match expected digest")
     try:
         if workspace.release_identity is None:
             raise ArmedProtocolError("workspace has no verified release FIFO")
