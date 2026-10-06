@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 post-exit boot identity revalidation
+
+The v01 armed-smoke controller rereads the host boot ID after a successful
+post-exit manager snapshot and before reading the worker response. If the
+source is unavailable or the ID differs from the pre-dispatch value, it fails
+closed without response/journal/receipt/stop and retains the dispatched
+workspace. A two-case mocked regression passes. This is MGR-01 controller-seam
+coverage, not live manager/reboot evidence; the v02 controller and full manager
+failure map remain open. No service or model operation ran. See the failure
+plan and matrix.
+
 ### 2026-10-07 isolated Python startup in armed-worker candidates
 
 The v01 service-smoke worker command and the offline v02 raw-stdin bootstrap

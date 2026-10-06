@@ -366,6 +366,14 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
         manager_snapshot = live.snapshot_from_properties(
             unit=unit, properties=exited_props, boot_id=boot,
             captured_monotonic_us=collector._monotonic_us(), active=False)
+        try:
+            current_boot = collector._boot_id()
+        except collector.CollectorError as exc:
+            raise ArmedServiceSmokeError(
+                "post-exit host boot ID could not be revalidated") from exc
+        if current_boot != boot:
+            raise ArmedServiceSmokeError(
+                "post-exit host boot ID did not match request boot ID")
         if manager_snapshot["result"] != "success" or manager_snapshot["main_status"] != 0:
             raise ArmedServiceSmokeError("armed synthetic worker did not exit successfully")
         if (manager_snapshot["unit"] != active["unit"]

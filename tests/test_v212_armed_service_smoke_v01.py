@@ -713,6 +713,28 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 self.assertNotIn("stop", state["sequence"])
                 self.assertTrue(self.workspaces[-1].directory.exists())
 
+    def test_post_exit_boot_identity_revalidation_failure_preserves_handles(self):
+        cases = (
+            (collector.CollectorError("mock boot ID source unavailable"),
+             "post-exit host boot ID could not be revalidated"),
+            ("c" * 32, "post-exit host boot ID did not match request boot ID"),
+        )
+        for current_boot, expected_error in cases:
+            with self.subTest(current_boot=current_boot), ExitStack() as stack:
+                state = self._mock_host(stack)
+                stack.enter_context(patch.object(
+                    collector, "_boot_id",
+                    side_effect=["b" * 32, current_boot]))
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError, expected_error):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertNotIn("response_read", state["sequence"])
+                self.assertNotIn("journal", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertFalse(self.receipt.exists())
+                self.assertTrue(self.workspaces[-1].directory.exists())
+
     def test_exit_poll_query_error_retains_reconciliation_handles(self):
         with ExitStack() as stack:
             state = self._mock_host(stack, fail_exited_show=True)
