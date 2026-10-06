@@ -90,6 +90,21 @@ executed runtime identity, integrated failure mapping, independent review, and
 all live-service gates remain open. No service, request, inference, OOM,
 training, score, or match ran.
 
+### Post-exit manager identity gate before response read (2026-10-06)
+
+The existing v01 no-inference smoke now compares the post-exit manager
+snapshot's unit, invocation ID, boot ID, and any still-present cgroup path
+against the active worker snapshot before it reads the response file. A
+table-driven mocked orchestration regression injects foreign invocation and
+cgroup values plus missing/malformed invocation, `Result`, and
+`ExecMainStatus`; each path rejects before response read or receipt publication
+and retains the service workspace without stopping the unit. The focused
+armed-smoke/collector/live-evidence/receipt group passes 89/89. This closes
+only those v01 mocked pre-response cases: the candidate v02 controller is not
+integrated, live manager failures and boot-source loss remain unverified, and
+the full failure matrix, runtime attestation, independent review, and all
+service/pilot gates remain open. No live service or model work ran.
+
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 
 Added nine orchestration tests in `tests/test_v212_supervision_collector_v01.py`

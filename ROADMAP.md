@@ -2,6 +2,20 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 post-exit manager identity before response read
+
+The existing v01 no-inference smoke now binds the post-exit manager snapshot
+back to the active unit, invocation, boot, and any retained cgroup path before
+reading response bytes. Table-driven mocked cases reject foreign invocation
+or cgroup identity and missing/malformed invocation, `Result`, or
+`ExecMainStatus`; they preserve the workspace and skip response acceptance,
+receipt publication, and unit stop. The focused armed-smoke/collector/live-
+evidence/receipt group passes 89/89. This does not test live failures, boot-
+source loss, or the v02 controller and does not complete the failure matrix.
+Runtime attestation and independent review remain open. No service, inference,
+OOM, training, score, or match ran; no gate changed. See the request-adapter
+integration design and supervision failure plan.
+
 ### 2026-10-06 canonical request bytes at the v02 bootstrap boundary
 
 The separate v02 bootstrap re-encodes the parsed bounded stdin request using

@@ -366,6 +366,13 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
             captured_monotonic_us=collector._monotonic_us(), active=False)
         if manager_snapshot["result"] != "success" or manager_snapshot["main_status"] != 0:
             raise ArmedServiceSmokeError("armed synthetic worker did not exit successfully")
+        if (manager_snapshot["unit"] != active["unit"]
+                or manager_snapshot["invocation_id"] != invocation_id
+                or manager_snapshot["boot_id"] != active["boot_id"]
+                or (manager_snapshot["control_group"] is not None
+                    and manager_snapshot["control_group"] != worker_cgroup)):
+            raise ArmedServiceSmokeError(
+                "post-exit manager snapshot identity did not match active worker")
 
         response = ipc.read_response(workspace)
         if (response.get("schema") != RESPONSE_SCHEMA

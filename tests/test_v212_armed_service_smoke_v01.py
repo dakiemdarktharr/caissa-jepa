@@ -94,7 +94,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    interrupt_exited_show=False, keep_running_at_exit=False,
                    first_show_load_state="loaded", raw_response=None,
                    interrupt_release=False, timeout_stop=False,
-                   interrupt_stop=False, fail_event_sample=None):
+                   interrupt_stop=False, fail_event_sample=None,
+                   exited_overrides=None):
         state = {"workspace": None, "show": 0, "sequence": [],
                  "event_samples": 0, "persist_durable": False}
         original_create = ipc.create_workspace
@@ -168,9 +169,12 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                     }, separators=(",", ":")), encoding="utf-8")
                 else:
                     state["workspace"].response_path.write_bytes(raw_response)
-                return dict(unit_props, ControlGroup="", ActiveState="inactive",
-                            SubState="exited", Result=exited_result,
-                            ExecMainStatus=exited_status)
+                exited = dict(unit_props, ControlGroup="", ActiveState="inactive",
+                              SubState="exited", Result=exited_result,
+                              ExecMainStatus=exited_status)
+                if exited_overrides:
+                    exited.update(exited_overrides)
+                return exited
             return {"LoadState": "not-found"}
 
         def release_when_ready(workspace, snapshot, **kwargs):
@@ -523,6 +527,28 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertNotIn("response_read", state["sequence"])
         self.assertNotIn("stop", state["sequence"])
         self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_exit_snapshot_identity_and_required_fields_fail_before_response_read(self):
+        cases = (
+            ({"InvocationID": "c" * 32}, "identity did not match active worker"),
+            ({"ControlGroup": "/user.slice/foreign.service"},
+             "identity did not match active worker"),
+            ({"InvocationID": ""}, "systemd property InvocationID is missing"),
+            ({"Result": ""}, "systemd property Result is missing"),
+            ({"ExecMainStatus": "invalid"},
+             "systemd property ExecMainStatus is malformed"),
+        )
+        for overrides, expected_error in cases:
+            with self.subTest(overrides=overrides), ExitStack() as stack:
+                state = self._mock_host(stack, exited_overrides=overrides)
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError, expected_error):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertFalse(self.receipt.exists())
+                self.assertNotIn("response_read", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertTrue(self.workspaces[-1].directory.exists())
 
     def test_exit_poll_query_error_retains_reconciliation_handles(self):
         with ExitStack() as stack:
