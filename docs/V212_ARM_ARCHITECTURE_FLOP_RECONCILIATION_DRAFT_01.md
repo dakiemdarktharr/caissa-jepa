@@ -1,0 +1,92 @@
+# V2.12 arm architecture and compute reconciliation — draft 01
+
+**Status: static implementation/spec audit only.** This note does not change
+METHOD_SPEC_V212-04, select the raw-state control architecture, authorize a
+trainer, data generation, fitting, model scoring, or open a gate. No training
+or inference was run for this audit.
+
+## Finding
+
+The v04 architecture section defines a latent predictor
+
+```text
+F: concat(z[32], onehot(action)[65], role[1], game[6]) -> z_next[32]
+```
+
+and §4 describes the recursive raw-state control as a “shared
+encoder/predictor trunk and a decoder” that predicts 198-dimensional exact
+state features and re-encodes each predicted feature vector. This wording
+leaves open whether the raw-state arm is:
+
+1. **latent-then-decode:** apply `F` to obtain `z_next`, decode `z_next` to
+   198 features, then re-encode; or
+2. **direct action-conditioned decode:** map the concatenated current latent,
+   action, role, and game descriptor directly to 198 features, then re-encode,
+   with no learned 32-dimensional `F` on that path.
+
+The no-training random-weight compute pilot implements the second path in
+`two_player/v212_pilot.py::RandomInferenceModel.advance`: its raw-state arm
+uses `decoder_w` with input width 104 and output width 198, then calls the
+encoder. It allocates `predictor_w` for every arm, but the raw-state branch
+does not use that matrix. This is an instrumentation proxy, not evidence that
+the v04 raw-state training arm has a frozen architecture. No V2.12 trainer or
+optimizer implementation is present under `two_player/` in the current
+checkout.
+
+## Parameter-count consequences
+
+Using the dimensions in METHOD_SPEC_V212-04 and counting matrix weights plus
+biases (online trainable parameters only):
+
+| Module | Calculation | Parameters |
+| --- | ---: | ---: |
+| Encoder | `198*32 + 32` | 6,368 |
+| Policy head | `32*65 + 65` | 2,145 |
+| Value head | `32*1 + 1` | 33 |
+| Shared encoder and task heads | sum above | 8,546 |
+| Latent predictor `F` | `104*32 + 32` | 3,360 |
+| Direct action-conditioned feature decoder | `104*198 + 198` | 20,790 |
+| Latent-state decoder | `32*198 + 198` | 6,534 |
+
+Therefore the second raw-state interpretation has 29,336 online parameters
+(shared 8,546 plus direct decoder 20,790). If interpretation 1 includes both
+`F` and a latent-state decoder, it has 18,440 (shared 8,546 plus 3,360 plus
+6,534). The two readings differ by 10,896 parameters, about 59% of the
+latent-then-decode count. These are architecture arithmetic, not measured
+training parameters, FLOPs, optimizer memory, or runtime results. EMA target
+encoder state is excluded because the raw-arm target path is not specified
+consistently enough here to count it by arm.
+
+The pilot's allocated-but-unused raw-arm `predictor_w` adds 3,360 stored
+parameters to its Python object but not to the raw-arm executed computation or
+effective trainable capacity. A parameter report derived only from that object
+would therefore be misleading.
+
+## Fair-comparison implications
+
+The method already requires recording parameter counts and profiling forward
+and backward FLOPs on identical dry-run batches, with total training FLOPs
+within 5% across all six arms. It has no trainer yet, so this parity condition
+has not been demonstrated. Resolve the raw-state wiring before implementing
+the trainer or interpreting pilot counters as a faithful arm-level compute
+estimate. The implementation contract should also state whether an unused
+predictor is absent from the raw arm, merely allocated for shared code, or
+part of its computational path; unused allocation must not be reported as
+effective capacity or FLOPs.
+
+This finding alone does not prove the six-arm comparisons unfair or
+infeasible: the latent predictor, direct leaf, and raw-feature decoder encode
+different hypotheses. It identifies an unresolved architectural degree of
+freedom that changes capacity and compute, so it must be fixed before the
+existing 5% gate can be evaluated. Keep the current objective, arms, and
+negative results unchanged until an independently reviewed method amendment
+disposes the ambiguity.
+
+## Scope and reproduction
+
+The source reading was limited to the v04 architecture and arm definitions,
+the random-weight inference model and its `advance` method, and the tracked
+`two_player/` file inventory. Counts above are integer arithmetic from the
+stated dimensions; no model was instantiated and no inference, fit, dataset,
+root, score, outcome, match, or service was accessed or run. This audit is
+not independent review, a FLOP profile, or approval to train.

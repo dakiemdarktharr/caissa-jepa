@@ -2731,3 +2731,9 @@ or gate changed.
 
 - Calculated exact Binomial-tail schedule-pass sensitivity for six proposed independent strata, each with 64 candidate slots and a requirement of at least 16 valid slots. With a common assumed per-slot yield, global pass probabilities are 0.360846 at `p=0.30`, 0.820767 at `p=0.35`, and 0.976176 at `p=0.40`; global 0.90/0.95/0.99 targets correspond to per-slot yields 0.366219/0.383364/0.417880. This uses no random draws or root data.
 - The assumed yields are not estimates, the equal-yield and independence assumptions are unverified, and no global reliability threshold was chosen. The root schedule and method amendment remain unapproved; no roots, simulations, scoring, training, or match ran and no gate advanced. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_DRAFT_01.md` and the follow-up in `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-07; v04 arm architecture/compute reconciliation)
+
+- Static comparison of METHOD_SPEC_V212-04 with the no-training pilot found the raw-state control's predictor/decoder wiring is ambiguous. The pilot directly maps a 104-wide latent/action/role/game input to 198 state features and re-encodes; the spec wording can also be read as a 104→32 latent predictor followed by a 32→198 decoder. Under specified widths those alternatives imply 29,336 versus 18,440 online parameters. The pilot allocates a latent predictor matrix for the raw arm but does not use it in that branch; a V2.12 trainer is not present under `two_player/`.
+- The spec's 5% total training-FLOP parity gate remains unevaluated. This is an implementation/spec ambiguity, not proof the controls are unfair or infeasible. No code, model, inference, data, score, match, or gate changed. Resolve and independently review the arm wiring before trainer implementation or treating pilot compute as a faithful arm comparison. See `docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.

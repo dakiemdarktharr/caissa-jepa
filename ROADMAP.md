@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 v04 arm architecture and compute reconciliation
+
+A static comparison found that the raw-state control description leaves its
+predictor/decoder wiring ambiguous. The random-weight pilot implements a
+direct 104-to-198 feature decoder and allocates an unused latent predictor;
+the spec can also be read as a 104-to-32 latent predictor followed by a
+32-to-198 decoder. These imply 29,336 versus 18,440 online parameters under
+the specified widths. The trainer is absent, so the required all-arm 5% FLOP
+parity has not been demonstrated. Freeze the intended wiring in a reviewed
+method amendment before using the pilot as an arm-level compute proxy or
+implementing the trainer. This does not establish the panel is unfair or
+infeasible; no model operation ran and no method/gate changed. See the arm
+reconciliation draft.
+
 ### 2026-10-07 root-schedule yield sensitivity
 
 Added an exact Binomial-tail sensitivity for the proposed six-stratum schedule
