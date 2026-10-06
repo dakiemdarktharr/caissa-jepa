@@ -2121,3 +2121,11 @@ No simulation, root generation, scores, outcomes, inference, or training
 occurred. v04 remains current and no gate advanced. See
 `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_03.md` and
 `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+Publication record: local commit `b3f9f70d210275757b4552ac942879e7c50be83b`
+has tree `5102d6eb83c456251a9ebe355ddefc99e497c24f`. SSH blocked a normal
+push because of the system SSH config file's ownership. The remote head/tree
+were verified first; GitHub main was then advanced without force and with
+expected-head `c3e96c45462f2eba0ba98bca018e45a2ce3ed0c8` to commit
+`434dfb1b65c6f9c0dfb8866a4ef13fe0c961c67b`, whose tree matches the local
+milestone tree. The GitHub ref/commit APIs confirm the destination and tree.
