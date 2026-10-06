@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 ResDreamer prior-art refresh
+
+Full-text review of ICML 2026 ResDreamer adds a nearby combat-world-model
+precedent: hierarchical Dreamer-style observation/residual prediction with
+imagined actor-critic training on five MineDojo hostile-mob tasks. It is not a
+JEPA loss, strategic two-player model, or zero-sum minimax planner. It narrows
+broad self-supervised combat/world-model claims but does not test CAISSA's
+specific matched-JEPA question. The related-work ledger records the distinction
+and its scope; no paper result was reproduced and no gate advanced. See
+`docs/RELATED_WORK.md`.
+
 ### 2026-10-07 root-schedule minimum-count interpretation
 
 An approved static follow-up found that design 02's 48 accepted slots meet

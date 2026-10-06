@@ -1,6 +1,6 @@
 # Research positioning and search record
 
-Initial search: 2026-10-01; targeted primary-source refreshes through 2026-10-04. Status: scoped review for design v1, **not an exhaustive systematic literature review or a verified novelty claim**. Sources below are original papers, author repositories or official dataset hosts. Abstract-only entries are explicitly distinguished from full-text inspection. No published score is a local result.
+Initial search: 2026-10-01; targeted primary-source refreshes through 2026-10-07. Status: scoped review for design v1, **not an exhaustive systematic literature review or a verified novelty claim**. Sources below are original papers, author repositories or official dataset hosts. Abstract-only entries are explicitly distinguished from full-text inspection. No published score is a local result.
 
 ## Search method and limits
 
@@ -56,6 +56,7 @@ not altered after fitting began.
 | Ye et al. (2021), [EfficientZero, arXiv:2111.00210v2](https://arxiv.org/html/2111.00210v2), NeurIPS | MuZero with self-supervised consistency, value-prefix estimation, off-policy correction | Atari 100k; DMControl | Atari aggregate score and component ablations; full consistency section inspected | Closest learned-planning control family: consistency regularization is not new. Compact local surrogate must not be called a faithful EfficientZero reproduction |
 | Hafner et al. (2018/2019), [PlaNet, arXiv:1811.04551](https://arxiv.org/abs/1811.04551), ICML | Learn latent dynamics for model-predictive control from images | Visual continuous control | Control return and sample efficiency; abstract inspected | Non-JEPA observation/dynamics objective is needed to isolate representation loss |
 | Hansen et al. (2023/2024), [TD-MPC2, arXiv:2310.16828](https://arxiv.org/abs/2310.16828), ICLR | Decoder-free world model and latent trajectory optimization | Continuous-control tasks, multi-task agents | Return/scaling and shared multi-task models; abstract inspected | Shared weights across tasks are stronger than a common trainer. Opponent-minimax remains outside this evidence |
+| Xu et al. (2026), [ResDreamer, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/xu26ak.html), [full text, arXiv:2605.17537v2](https://arxiv.org/html/2605.17537) | Dreamer-style hierarchical recurrent world model; upper layers learn from lower-layer observation residuals and feed predicted visual hints to lower layers. The world-model representation losses include prediction, reconstruction, and KL terms; actor-critic learning uses imagined trajectories, so this is not a JEPA-only objective | Five MineDojo Minecraft combat tasks against hostile mobs; visual, open-world, online RL | The paper reports success rates against DreamerV3, STEVE-1, and PTGM; its 100M×2 ResDreamer is the only compared method reported to solve Combat Shulker within 1M environment steps. Results are task success/sample-efficiency claims, not two-player game scores or fixed-budget minimax comparisons | Relevant adjacent prior art for self-supervised world-model representations, multistep visual foresight, and combat against reactive enemies. Mobs are environment dynamics, not an explicitly modeled strategic player; the work does not evaluate alternating actions, exact legal branches, zero-sum utility, or max/min search. It rules out broad claims that self-supervised learned world models or prediction-based combat reasoning are new, but does not test JEPA against matched controls in finite deterministic perfect-information games |
 | Koller, Fürnkranz & Bertram (2026), [RePAIR, arXiv:2606.11860v1](https://arxiv.org/html/2606.11860v1), [author repo](https://github.com/Artificial-Chrisi/RePAIR) | Iterative masked latent sequence repair and per-state reconstruction of chess boards; no explicit move input | 80k Lichess training games, 10k validation, 10k test; opening/puzzle analyses | Three-run 80%-mask loss ablation: 93.71% ± 0.05% square top-1 for short+long decoder losses, versus 93.90% ± 0.02% for long-decoder-only and 93.18% ± 0.02% for long-decoder+JEPA; always-empty baseline is 50%. Later experiments omit JEPA; full text inspected | Direct chess prior art for latent sequence repair, not action-conditioned planning or game strength. The reported metric is sparse square reconstruction, not move quality or decision regret. The visible repository file listing has no top-level license; code/data reuse rights remain unverified. |
 | Ruoss et al. (2024), [Amortized Planning with Large-Scale Transformers: A Case Study on Chess, arXiv:2402.04494](https://arxiv.org/abs/2402.04494) | Supervised action-value prediction amortizes engine search | Large engine-annotated chess corpus | Action quality and searchless playing strength; primary abstract inspected | Teacher compute belongs in data budget; searchless baselines can absorb strong planning priors |
 | Cazenave et al. (2020), [Polygames, arXiv:2001.09832](https://arxiv.org/abs/2001.09832), [author platform](https://github.com/facebookarchive/Polygames) | Fully convolutional/pooling Zero learning; board-size independence; opponent checkpoint pool | Multiple board games, self-play | Bot/human competitions and size scaling; abstract/repo inspected | Variable-board adapters and transfer are not sufficient novelty; distinguish architecture compatibility from measured transfer |
@@ -203,6 +204,23 @@ was changed from this literature update.
 | Work and primary source | Method and evidence inspected | Relevance and distinction for CAISSA |
 | --- | --- | --- |
 | Wang et al. (2026), [Temporal Straightening for Latent Planning, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/wang26n.html), [official project page](https://agenticlearning.ai/temporal-straightening/) | Jointly learns an encoder and JEPA predictor with a cosine-curvature penalty on consecutive latent displacements; uses gradient-based open-loop planning and receding-horizon MPC in Wall, PointMaze-UMaze, PointMaze-Medium, and PushT. Official abstract and project summary report straighter latent trajectories, better Euclidean/geodesic alignment, and improved planning success; numerical table values were not transcribed in this search | Directly establishes a JEPA objective that shapes latent geometry for planning. It does not evaluate finite legal-action enumeration, two-player zero-sum play, or exact-rule alternating max/min. Geometry shaping for planning is not a novelty claim for CAISSA; only the V2.12 loss's incremental effect in the narrower adversarial setting remains untested, with no evidence of benefit. |
+
+### Targeted self-supervised combat world-model update (2026-10-07)
+
+Full-text inspection of ICML 2026 ResDreamer confirms a nearby but distinct
+line: a Dreamer-style hierarchical recurrent world model learns observation
+and residual prediction, then trains an actor-critic on imagined trajectories.
+Its evaluations cover five MineDojo combat tasks against hostile mobs; the
+authors report that their 100M×2 configuration solves Combat Shulker within
+one million environment steps while the compared methods do not. This is
+self-supervised world-model representation learning embedded in online RL,
+not a JEPA objective. The mobs are reactive hazards inside an open-world
+environment rather than a second strategic player in an explicitly solved
+zero-sum game. The paper therefore raises the bar against broad claims about
+self-supervised world models, long-horizon prediction, or combat reasoning,
+but does not resolve whether a JEPA loss helps over a matched non-JEPA model
+with exact legal transitions and alternating max/min search. No scores or
+data were reproduced locally and no CAISSA method or gate changed.
 
 These sources narrow the plausible contribution further: V2.12 should be framed
 as a controlled test of whether its particular EMA-target multi-horizon loss
