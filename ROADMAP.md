@@ -10,7 +10,10 @@ envelope. The helper now enforces canonical request bytes, the exact envelope,
 the five-file manifest shape and digest syntax, the recomputed manifest digest,
 and equality with the expected digest before it blocks on the release FIFO.
 Focused negative fixtures cover wrong schema, noncanonical bytes, and manifest
-digest mismatch. The approved read-only follow-up confirmed the generic-helper
+digest mismatch. The REQ-01a/REQ-01b test-plan crosswalk now includes these
+direct-helper cases and the renamed canonical-byte rejection; all 116
+documented test-method names resolve in the test tree (name existence only,
+not assertion/completeness evidence). The approved read-only follow-up confirmed the generic-helper
 gap is closed and emphasized that manifest consistency is not an independent
 trust anchor; the bootstrap still verifies and compiles exact local helper
 bytes. This hardens only the isolated no-inference candidate; it does not
