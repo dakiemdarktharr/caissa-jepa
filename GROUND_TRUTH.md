@@ -2655,3 +2655,9 @@ or gate changed.
 
 - Extended the existing mocked armed-smoke journal injection with an empty record collection. Together with duplicate and foreign-invocation fixtures, all fail before receipt persistence or unit stop and retain the IPC workspace. The focused armed-smoke/collector/live-evidence/receipt suite passes 92/92.
 - This adds consumer-seam mock evidence for JRN-01/JRN-02 only. It does not verify live journal behavior or amended-controller receipt/action mapping; all research and operational gates remain unchanged. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run. See `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-06; deadline check after journal capture)
+
+- Added a caller-deadline check immediately after journal capture and before receipt assembly in the v01 armed-smoke controller. A controlled mock expiry confirms assembly/publication and unit stop are skipped and the IPC workspace is retained. The focused armed-smoke/collector/live-evidence/receipt suite passes 93/93.
+- This covers one additional mocked CLK-01 boundary only. Other evidence-operation crossings, complete manager/journal/counter failure mapping, runtime attestation, independent review, and v02 controller integration remain open. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.

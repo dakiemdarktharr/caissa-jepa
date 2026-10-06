@@ -386,6 +386,7 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
         records = collector._journal_markers(
             unit, invocation_id=invocation_id, worker_cgroup=worker_cgroup,
             deadline=deadline)
+        collector._check_deadline(deadline)
         expected_marker = MARKER_PREFIX + invocation_id
         if len(records) != 1 or records[0].get("MESSAGE") != expected_marker:
             raise ArmedServiceSmokeError("armed marker did not bind the active invocation")

@@ -611,6 +611,37 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
 
+    def test_deadline_expiry_after_journal_capture_blocks_receipt_assembly(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack)
+            original_check = collector._check_deadline
+            original_assemble = service.assembler.assemble_receipt
+
+            def check_deadline(deadline):
+                if "journal" in state["sequence"]:
+                    raise collector.CollectorError(
+                        "mock caller deadline expired after journal capture")
+                original_check(deadline)
+
+            def assemble(*args, **kwargs):
+                state["sequence"].append("receipt_assembly")
+                return original_assemble(*args, **kwargs)
+
+            stack.enter_context(patch.object(
+                collector, "_check_deadline", side_effect=check_deadline))
+            stack.enter_context(patch.object(
+                service.assembler, "assemble_receipt", side_effect=assemble))
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "deadline expired after journal capture.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertIn("journal", state["sequence"])
+        self.assertNotIn("receipt_assembly", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
     def test_deadline_expiry_during_counter_read_blocks_next_lifecycle_step(self):
         for expired_sample in (1, 2):
             with self.subTest(sample=expired_sample), ExitStack() as stack:

@@ -2,6 +2,17 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 deadline check after journal capture
+
+The v01 armed-smoke controller now checks the caller deadline immediately
+after the journal query and before receipt assembly. A controlled mock expiry
+at that seam proves receipt assembly/publication, unit stop, and workspace
+cleanup are skipped while the workspace is retained. The focused
+armed-smoke/collector/live-evidence/receipt group passes 93/93. This adds one
+mocked evidence boundary; other evidence operations and the v02 controller
+remain open. No service, inference, OOM, training, score, or match ran; no gate
+changed. See CLK-01 in the failure test plan.
+
 ### 2026-10-06 empty journal collection at the consumer boundary
 
 Extended the mocked armed-smoke marker injection to include an empty record
