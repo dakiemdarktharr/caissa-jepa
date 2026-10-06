@@ -2,6 +2,26 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 raw-state graph and compute-parity review
+
+The approved static review found the proposed latent-then-decode raw-state
+graph defensible but not uniquely implied by v04. It identified explicit
+method choices still needed for recurrent gradient flow, terminal versus
+missing-target handling, invalid-transition failures, and feature/reduction
+weights. Draft 02 records candidate resolutions without adopting them. Its
+static dense-forward cost is 72,544 MAC/window versus 40,864 for multi-step
+JEPA (+77.53%); this warns of a parity problem but is not a full training-FLOP
+result or proof that the 5% gate fails. The required profile is still a
+same-batch, same-mask forward/backward measurement across all six implemented
+arms. Draft 02 also requires replay-validation of all selected windows and
+precomputation of each fixed minibatch's target count before the first update;
+invalid transitions or any zero-valid-target batch reject the run before
+updates. It remains a proposal pending independent method disposition,
+especially on terminal training-target meaning. No trainer,
+roots, outputs, or model operation was run. V04 remains current; no gate
+advanced. See
+`docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_02.md`.
+
 ### 2026-10-07 action-sensitivity/regret decision register
 
 An approved read-only review found the one-step retrieval and horizon
