@@ -215,6 +215,59 @@ alone does not establish useful sensitivity. Any spec change must be versioned
 and reviewed. These papers do not establish that increment, and they do not
 alter any data, compute, or training gate.
 
+### Counterfactual-action and trajectory-level JEPA refresh (2026-10-06)
+
+Radha and Goktas' *UWM-JEPA: Predictive World Models That Imagine in Belief
+Space* (arXiv:2605.25313; full author preprint inspected) provides a close
+mechanism warning for action-conditioned prediction. In its partially
+observed hidden-velocity task, the teacher-forced target can be matched with
+little use of the action term; replacing that target with a simulator rollout
+under independently sampled counterfactual actions restores the paper's
+action-term magnitude and action-perturbation response. The reported 0.77
+hidden-velocity accuracy is specific to its unitary density-matrix model and
+task; the matched LSTM-JEPA configuration using the same counterfactual target
+remains at its 0.53 majority-class baseline. The authors characterize the
+evidence as action-sensitive imagination rather than competitive planning.
+These are author-reported preprint results, not a board-game result or a local
+reproduction.
+
+The relevant distinction is the training target, not merely whether an action
+is an input. V2.12-04's recursive predictor is action-conditioned, but its
+JEPA targets follow recorded policy-mixture branches. Exact board rules make
+counterfactual legal successors computable, but using them as training targets
+would change the data intervention and potentially the estimand. It must not
+be introduced into only the candidate arm or silently substituted into v04.
+The current same-root legal-action diagnostic can test action binding and
+decision consequences without converting evaluation references into training
+labels. If counterfactual-target training is considered, version a separate
+method/control design and give the same simulated target access to its matched
+arms. UWM-JEPA is a partial-observation control task, not an alternating
+zero-sum board game, so it does not establish that v04 is action-insensitive.
+
+Huo, Song, and Luo's *Flow-JEPA: Flow Matching for Robust Latent Dynamics in
+JEPA World Models* (arXiv:2608.29029; author preprint and linked code
+repository inspected) replaces repeated one-step latent prediction with
+conditional flow matching over a future latent trajectory given current
+observations and actions. Its reported control experiments concern four
+continuous-control environments and visual perturbations, not symbolic legal
+actions, exact deterministic transitions, or adversarial max/min. It is
+another established multi-step action-conditioned JEPA design, but its
+stochastic trajectory generator is not a directly matched control for the
+frozen deterministic board-game question. Reported gains are author-reported
+and unreplicated here.
+
+The 2026-10-04 action-sensitivity disposition cites ActSWM and AD-WM but does
+not cite UWM-JEPA. Its conditional acceptance of the six-arm scope therefore
+cannot be treated as a review of this newly surfaced mechanism evidence. Before
+any fit, the independent reviewer should explicitly consider whether the
+frozen v04 estimand intentionally excludes counterfactual-target/action-
+sensitivity training, and confirm that the all-legal-root diagnostic is
+sufficient for that narrow claim. No method arm, target, root, cap, or gate is
+changed by this literature update. Sources: [UWM-JEPA paper](https://arxiv.org/abs/2605.25313),
+[UWM-JEPA author code](https://github.com/santoshkumarradha/uwm-jepa),
+[Flow-JEPA paper](https://arxiv.org/abs/2608.29029), and
+[Flow-JEPA author code](https://github.com/HuoYanchen/Flow-JEPA).
+
 ### Planning-alignment and transfer update (2026-10-02)
 
 The follow-up search targeted JEPA objectives that align latent prediction with

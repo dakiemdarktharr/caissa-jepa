@@ -2,6 +2,27 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 counterfactual-action JEPA literature refresh
+
+A targeted primary-source refresh examined UWM-JEPA and Flow-JEPA. UWM-JEPA
+reports a controlled hidden-velocity result where teacher-forced targets permit
+an action-insensitive predictor, while simulator-generated counterfactual
+targets restore action-perturbation sensitivity. This does not establish that
+V2.12 is insensitive: the paper uses partial observations and a different
+latent geometry, and does not demonstrate competitive adversarial planning.
+It does make action use an empirical question even when an action is an
+explicit predictor input. Flow-JEPA independently establishes conditional
+flow-matching over multi-step latent trajectories in continuous control, not
+exact-rule board-game search. Both results are author-reported and were not
+reproduced. The current v04 trains along recorded policy-mixture branches;
+counterfactual-target training would be a new data intervention and method
+version, not a silent edit to one arm. The prior conditional six-arm review
+does not cite UWM-JEPA, so its scope exclusion needs explicit reviewer
+reconsideration before fit. No code/data was downloaded, no arm or gate
+changed, and no root, model, score or outcome was run. See
+`docs/RELATED_WORK.md` and
+`docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md`.
+
 ### 2026-10-06 compute/resource profile reconciliation
 
 A static source audit corrected the request-schema bound audit: the unintegrated

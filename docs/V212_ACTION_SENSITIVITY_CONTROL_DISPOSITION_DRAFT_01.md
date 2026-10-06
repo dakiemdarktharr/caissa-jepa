@@ -13,6 +13,12 @@ diagnostics. A nonblocking AD-WM wording correction distinguishing elite-regret
 from Cube success evidence was incorporated. This review accepts the scope
 exclusion only; it does not freeze the regret protocol or open any fit gate.
 
+**Literature follow-up (2026-10-06):** the targeted source refresh identified
+UWM-JEPA's counterfactual-target action-binding result, which is not cited in
+the 2026-10-04 disposition. Do not treat the earlier conditional acceptance
+as explicit review of this source. The six-arm v04 panel remains unchanged;
+its narrow-scope exclusion requires reviewer reconsideration before any fit.
+
 ## Decision to review
 
 Does the frozen V2.12-04 six-arm panel need an action-sensitive JEPA control
@@ -26,6 +32,20 @@ component-effect estimate and not a comparison against every action-selection
 architecture.
 
 ## What the closest prior art establishes
+
+Radha and Goktas' UWM-JEPA trains an action-conditioned unitary JEPA on
+partially observed trajectories. In its hidden-velocity task, the authors
+report that an observed-future teacher-forced target lets the action term
+become nearly inert, while independently sampled simulator counterfactual
+targets restore action-perturbation sensitivity. Their result is a controlled
+mechanism finding, not evidence about deterministic board games or
+competitive planning. It makes one point directly relevant to v04: passing an
+action into the predictor does not establish that the learned predictor uses
+it. Because exact board rules can generate alternate legal successors,
+counterfactual-target training is technically available here, but it would be
+a new data intervention and requires a new method/control version if adopted.
+The UWM-JEPA preprint and its author code were inspected in the 2026-10-06
+refresh; no code or data was downloaded or used.
 
 Gan et al.'s ActSWM combines multi-step JEPA prediction with two action-
 sensitivity constraints: a rollout-level contrast between recorded actions
@@ -82,11 +102,14 @@ test. If the intended claim is comparative algorithm performance against
 action-sensitive JEPA, the current panel is insufficient; version and review a
 separate benchmark arm before fitting.
 
-The action-sensitive-control scope question is resolved for this narrow v04
-contrast family subject to the claim limits above. It does not resolve the
-measurement protocol below, establish action sensitivity, or permit broader
-comparative claims. Fitting remains blocked by the unfrozen legal-root regret
-protocol and the other open gates.
+The 2026-10-04 disposition conditionally addressed the narrow v04 contrast
+family against the sources then listed. UWM-JEPA adds relevant mechanism
+evidence not cited there, so the scope question is not fully closed until an
+independent reviewer explicitly considers whether the v04 estimand intentionally
+excludes counterfactual-target/action-sensitivity training. This does not
+establish action sensitivity or permit broader comparative claims. Fitting
+remains blocked by this review follow-up, the unfrozen legal-root regret
+protocol, and the other open gates.
 
 ## Required decision-facing measurement, still unfrozen
 
@@ -120,7 +143,11 @@ also remains open.
 ## Source and claim limits
 
 The source claims above were checked against the ActSWM and AD-WM arXiv v2
-full texts. Both are preprints in this source snapshot; reported results are
-author-reported. This targeted comparison is not a systematic literature
-review, reproduction, or novelty certification. No external code, model,
-dataset, game state, score, or outcome was used in this analysis.
+full texts. The 2026-10-06 refresh additionally checked the UWM-JEPA arXiv
+full text and author repository. These are preprints in this source snapshot;
+reported results are author-reported. This targeted comparison is not a
+systematic literature review, reproduction, or novelty certification. The
+2026-10-04 conditional review disposition cites ActSWM and AD-WM but not
+UWM-JEPA, so its scope exclusion should receive explicit reviewer
+reconsideration before fit. No external code, model, dataset, game state,
+score, or outcome was used in this analysis.
