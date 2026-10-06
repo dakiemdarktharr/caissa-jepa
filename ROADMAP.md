@@ -145,6 +145,14 @@ assurance 0.5854327569152956 and no useful joint bound. This corrects about
 1e-11 numerical drift in the earlier double-only values. The calibration
 protocol remains unapproved; the calculation opens no gate.
 
+The analytic-audit tree was published as remote commit
+`d59c4d8d0c46318d230da3bd29f55502e1d6f571` from expected parent
+`dd68156365a66ee84b75c5b52efff92b3ddb40ee` using a non-force API ref update;
+GitHub compare verified `main` advanced by one commit and the remote tree
+matched local. SSH/HTTPS Git transport was unavailable, so the local
+`origin/main` tracking ref is still stale pending a later fetch. No generated
+simulation artifacts were published.
+
 ### 2026-10-07 schema proposal bounded stream reader
 
 Added an audit-only fd reader to the unreviewed response/request schema
