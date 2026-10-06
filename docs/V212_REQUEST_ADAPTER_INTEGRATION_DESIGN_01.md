@@ -273,14 +273,18 @@ no-inference callback. The request envelope is separately versioned as a
 bootstrap fixture; it does not freeze the proposed application request schema
 or its 811-byte limit.
 
-Seven subprocess/static tests verify source compilation/order, manifest
+Eight subprocess/static tests verify source compilation/order, manifest
 coverage, rejection of empty/one-byte/truncated input, acceptance of the exact
 hard cap up to the bootstrap fingerprint gate, and early rejection of
 cap-plus-one, invalid UTF-8, and duplicate keys before project-path access.
-The combined bootstrap, armed-protocol, release-token, IPC, service-smoke
-mock, and receipt regression suites pass 112/112; py_compile and
-`git diff --check` pass. No valid bootstrap release was
-run: there is no controller/runtime-receipt integration, actual runtime
-fingerprint, or independent review. The candidate is not wired to systemd or
-the request adapter. It supplies no service, inference, OOM, training, score,
-match, or gate evidence.
+An additional offline subprocess fixture completed a valid source-verified
+bootstrap, released it with a request-byte-bound token through the real FIFO
+helpers, and received the no-inference response. The fixture supplied a fake
+cgroup tree and suppressed the system journal marker; it did not create a
+systemd unit. The combined bootstrap, armed-protocol, release-token, IPC,
+service-smoke mock, and receipt regression suites now pass 113/113; py_compile
+and `git diff --check` pass. This does not provide controller/runtime-receipt
+integration, an actual runtime fingerprint, full canonical/schema failure
+coverage, or independent review. The candidate is not wired
+to systemd or the request adapter. It supplies no service, inference, OOM,
+training, score, match, or gate evidence.
