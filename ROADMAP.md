@@ -18,6 +18,26 @@ and failure response remain open; v04 is current and no gate advanced. No
 simulation, root, score, outcome, inference, or training occurred. See
 `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
 
+### 2026-10-07 root-quality/yield calibration stress addendum
+
+Drafted a separate unapproved addendum that isolates within-policy-pair
+root-quality selection using a slot-level shared latent factor, keeps marginal
+validity at 0.40, and calibrates score means under the success-conditional
+selected-root law. Four proposed P2 cells cover global null and +0.05
+boundary alternatives under both signs of the quality/yield association. A
+read-only review requested explicit independence assumptions and exact
+assurance-helper arguments; both were added and the follow-up confirmed those
+findings were resolved. The reviewer found the variance split, target law,
+scenario counts, endpoints, workload and helper structure internally
+consistent under the stated assumptions, without accepting the proposal.
+For 63 endpoints, deterministic assurance is 0.794741 at R=18,000 and
+0.805948 at R=18,200; 18,200 is only a candidate pending review of the 0.80
+target and endpoint family. The pair-yield × root-quality interaction,
+stress adequacy, and local feasibility remain open. No roots, data, scores,
+outcomes, simulations, inference, or training were accessed/generated; v04
+remains current and all gates stay closed. See the addendum and
+`docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
 ### 2026-10-07 independent pre-fit action-sensitivity/regret review
 
 An approved read-only review found the descriptive action-sensitivity and

@@ -300,3 +300,26 @@ model or require added dependence stresses and a newly reviewed version. The
 requirement, tolerances, failure response, and root schedule remain unaccepted;
 v04 remains current. No simulation, root, score, outcome, inference, or training
 was run/accessed, and no gate advanced.
+
+## Follow-up review: root-quality/yield stress addendum 01 (2026-10-07)
+
+An approved read-only reviewer inspected the new, unapproved root-quality
+stress addendum. The initial review requested two corrections: state the
+root-factor independence assumptions needed by the conditional target
+integral, and record the exact assurance-helper parameters because its
+defaults describe the old 31-cell/57-endpoint family. Both corrections were
+made; a follow-up confirmed that those findings are resolved. The reviewer
+found the P2 variance split, conditional root-factor density/target equation,
+four-cell and 63-endpoint counts, workload products, and helper calculation
+consistent under the stated assumptions. This was static review and not
+independent tail recomputation or protocol acceptance.
+
+The addendum remains separate from draft 02 and unapproved. With 63 endpoints,
+the deterministic assurance audit gives a dependence-robust union lower bound
+of `0.7947410752547584564` at `R=18,000`, below the proposed 0.80 target; at
+`R=18,200` it gives `0.8059483244733129964`, making 18,200 a candidate only
+if reviewers retain that target and accept the endpoint family. The exact
+helper command is in the addendum; output is at
+`/tmp/caissa-v212-root-quality-assurance-audit.log`. No synthetic dataset,
+root, score, or outcome was generated or accessed. No simulation, inference,
+training, method freeze, or gate transition occurred; v04 remains current.
