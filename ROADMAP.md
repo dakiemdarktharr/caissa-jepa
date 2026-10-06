@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 diagnostic runtime observation inventory
+
+An approved read-only runtime review established that an offline post-startup
+fingerprint cannot prove executed interpreter, loader, standard-library, or
+native-library bytes without an independently trusted immutable boundary or
+equivalent measurement. Added a standalone, bounded observation-inventory
+candidate with only `partial` and `unavailable` assurance states. Its integrity
+digest is not an attestation, and it is not connected to the release token,
+bootstrap, controller, service, adapter, or receipt. Seven synthetic tests pass.
+No host values were collected in this milestone; prior host feasibility evidence
+is limited to the recorded user/sandbox context. No service, OOM, inference,
+roots, scores, outcomes, simulations, or training were run/accessed, and no gate
+advanced. See `docs/V212_RUNTIME_OBSERVATION_INVENTORY_DRAFT_01.md`.
+
 ### 2026-10-07 root-sampling calibration DGP scope review
 
 An approved read-only review found the shared-arm ordinal calibration proposal
