@@ -105,6 +105,20 @@ integrated, live manager failures and boot-source loss remain unverified, and
 the full failure matrix, runtime attestation, independent review, and all
 service/pilot gates remain open. No live service or model work ran.
 
+### Exact bounded response-byte reader (2026-10-06)
+
+The IPC layer now exposes `read_response_bytes`, which performs the existing
+private-directory, inode, owner, link-count, race, and byte-cap checks before
+returning the exact bytes read. `parse_response_bytes` applies the legacy
+strict UTF-8/object/duplicate-key/non-finite parser to that same in-memory
+buffer; `read_response` delegates through these APIs and retains its existing
+return shape. A regression demonstrates that hashing original whitespace-
+formatted wire bytes differs from hashing a re-serialized object. The focused
+IPC/schema/smoke/receipt/bootstrap regression group passes 137/137. This only
+enables an exact-byte caller path: no v02 response schema validation or
+response digest/length receipt binding is implemented, v02 remains unwired,
+and no service/request/model operation ran.
+
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 
 Added nine orchestration tests in `tests/test_v212_supervision_collector_v01.py`

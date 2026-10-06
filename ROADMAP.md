@@ -2,6 +2,18 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 exact bounded response-byte reader
+
+The IPC helper now returns the exact bounded response bytes after its existing
+path/inode/owner/race checks. A separate parser accepts that same byte buffer,
+and the legacy object-returning helper composes the two without changing its
+API. Tests show that the digest of received wire bytes differs from the digest
+of parsed-and-reserialized JSON when whitespace is present, while size limits
+remain enforced. The focused IPC/schema/smoke/receipt/bootstrap group passes
+137/137. This does not yet validate the v02 response schema or bind exact
+response digest and length into a receipt. No runtime or research gate changed.
+See the request-adapter integration design and failure plan.
+
 ### 2026-10-06 post-exit manager identity before response read
 
 The existing v01 no-inference smoke now binds the post-exit manager snapshot

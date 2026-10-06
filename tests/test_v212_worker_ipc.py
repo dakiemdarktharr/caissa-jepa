@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import stat
@@ -223,6 +224,21 @@ class WorkerIPCTests(unittest.TestCase):
         self.assertEqual(read_response(workspace),
                          {"response_schema": "worker.v1", "action": 3})
 
+    def test_raw_response_reader_preserves_exact_wire_bytes_for_receipt_digest(self):
+        workspace = self._workspace()
+        payload = b'{ "z":1, "a":2 }'
+        self._write_response(workspace, payload)
+        raw = ipc.read_response_bytes(workspace)
+        parsed = ipc.parse_response_bytes(raw)
+        canonical = json.dumps(parsed, sort_keys=True, separators=(",", ":"),
+                               ensure_ascii=False, allow_nan=False).encode("utf-8")
+        self.assertEqual(raw, payload)
+        self.assertEqual(len(raw), len(payload))
+        self.assertEqual(parsed, {"z": 1, "a": 2})
+        self.assertEqual(read_response(workspace), parsed)
+        self.assertNotEqual(hashlib.sha256(raw).digest(),
+                            hashlib.sha256(canonical).digest())
+
     def test_request_rejects_nonfinite_and_oversized_json(self):
         with self.assertRaisesRegex(WorkerIPCError, "finite JSON"):
             create_workspace({"number": float("nan")}, parent=self.parent)
@@ -347,6 +363,8 @@ class WorkerIPCTests(unittest.TestCase):
         self._write_response(workspace, b'{"action":"' + b"x" * 32 + b'"}')
         with self.assertRaisesRegex(WorkerIPCError, "exceeds"):
             read_response(workspace, max_bytes=16)
+        with self.assertRaisesRegex(WorkerIPCError, "exceeds"):
+            ipc.read_response_bytes(workspace, max_bytes=16)
 
 
 if __name__ == "__main__":

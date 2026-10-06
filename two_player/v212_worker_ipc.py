@@ -339,9 +339,9 @@ def _finite_float(value: str) -> float:
     return parsed
 
 
-def read_response(workspace: WorkerIPCWorkspace, *,
-                  max_bytes: int = MAX_IPC_BYTES) -> dict[str, Any]:
-    """Read one bounded object response without following or trusting a new path."""
+def read_response_bytes(workspace: WorkerIPCWorkspace, *,
+                        max_bytes: int = MAX_IPC_BYTES) -> bytes:
+    """Read exact bounded response bytes without trusting a replacement path."""
     if type(max_bytes) is not int or not 1 <= max_bytes <= MAX_IPC_BYTES:
         raise ValueError("max_bytes must be between 1 and the IPC hard limit")
     try:
@@ -397,24 +397,41 @@ def read_response(workspace: WorkerIPCWorkspace, *,
                 or after_path.st_size != total):
             raise WorkerIPCError("response file changed while it was read")
 
-        try:
-            parsed = json.loads(
-                b"".join(chunks).decode("utf-8", errors="strict"),
-                object_pairs_hook=_pairs_without_duplicates,
-                parse_constant=_reject_nonfinite,
-                parse_float=_finite_float,
-            )
-        except WorkerIPCError:
-            raise
-        except (UnicodeError, json.JSONDecodeError, RecursionError, ValueError) as exc:
-            raise WorkerIPCError("response is not valid UTF-8 JSON") from exc
-        if not isinstance(parsed, dict):
-            raise WorkerIPCError("response must be one JSON object")
-        return parsed
+        return b"".join(chunks)
     except WorkerIPCError:
         raise
     except OSError as exc:
         raise WorkerIPCError("response file could not be safely read") from exc
+
+
+def parse_response_bytes(response_bytes: bytes, *,
+                         max_bytes: int = MAX_IPC_BYTES) -> dict[str, Any]:
+    """Parse one bounded response byte string using the legacy v01 rules."""
+    if type(max_bytes) is not int or not 1 <= max_bytes <= MAX_IPC_BYTES:
+        raise ValueError("max_bytes must be between 1 and the IPC hard limit")
+    if type(response_bytes) is not bytes or len(response_bytes) > max_bytes:
+        raise WorkerIPCError("response exceeds the configured IPC byte limit")
+    try:
+        parsed = json.loads(
+            response_bytes.decode("utf-8", errors="strict"),
+            object_pairs_hook=_pairs_without_duplicates,
+            parse_constant=_reject_nonfinite,
+            parse_float=_finite_float,
+        )
+    except WorkerIPCError:
+        raise
+    except (UnicodeError, json.JSONDecodeError, RecursionError, ValueError) as exc:
+        raise WorkerIPCError("response is not valid UTF-8 JSON") from exc
+    if not isinstance(parsed, dict):
+        raise WorkerIPCError("response must be one JSON object")
+    return parsed
+
+
+def read_response(workspace: WorkerIPCWorkspace, *,
+                  max_bytes: int = MAX_IPC_BYTES) -> dict[str, Any]:
+    """Read and parse one bounded object response using the legacy v01 rules."""
+    return parse_response_bytes(
+        read_response_bytes(workspace, max_bytes=max_bytes), max_bytes=max_bytes)
 
 
 def open_release_writer(workspace: WorkerIPCWorkspace) -> int | None:
