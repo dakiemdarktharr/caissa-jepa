@@ -190,6 +190,26 @@ request, inference, training, score, or match ran, and no gate changed. See
 `tests/test_v212_supervision_receipt_v03.py` and
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
 
+
+### 2026-10-06 request-byte v02 worker bootstrap candidate
+
+A separate source builder now generates a no-inference worker bootstrap that
+reads raw stdin under the existing IPC hard limit before opening project
+files, validates JSON framing/duplicate keys, checks its bootstrap and five
+helper hashes, compiles the verified helper bytes in dependency order, and
+passes the exact original request bytes to the v02 release verifier. Seven
+static/subprocess tests cover ordering, manifest membership, empty and
+one-byte input, exact-cap and cap-plus-one boundaries, and UTF-8/duplicate-key
+rejection. The combined relevant regression group passes 112/112; py_compile
+and `git diff --check` pass.
+
+The candidate is not connected to the v01 systemd smoke or request adapter,
+and it has not completed a valid release/response cycle. Runtime identity,
+receipt integration, canonical application-schema limits, full failure-map
+coverage, independent review, and external supervision gates remain open. No
+service, inference, OOM, training, score, or match ran. See
+`docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ### 2026-10-05 executed-runtime attestation research
 
 Primary-source review found that descriptor-based `fexecve` avoids pathname

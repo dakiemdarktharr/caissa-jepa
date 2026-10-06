@@ -259,3 +259,28 @@ keys and other parse errors are rejected by the existing v02 parser, but a
 complete stream-to-controller failure matrix and executed-runtime fingerprint
 remain open. No service, request, inference, OOM operation, training, result,
 or game outcome ran, and no gate changed.
+
+## Candidate v02 raw-stdin worker bootstrap (2026-10-06)
+
+Added `two_player/v212_armed_worker_bootstrap_v02.py` as a separate bootstrap
+source builder, preserving the v01 smoke implementation. Its generated worker
+reads stdin with a 65,536-byte cap plus one probe byte, rejects malformed
+UTF-8/JSON and duplicate keys before opening the project source tree, verifies
+the exact bootstrap and five helper-file hashes, compiles those verified
+helper bytes in dependency order, then passes the unchanged raw request bytes
+to `v212_armed_protocol_v02.run_synthetic_armed_worker` before its synthetic
+no-inference callback. The request envelope is separately versioned as a
+bootstrap fixture; it does not freeze the proposed application request schema
+or its 811-byte limit.
+
+Seven subprocess/static tests verify source compilation/order, manifest
+coverage, rejection of empty/one-byte/truncated input, acceptance of the exact
+hard cap up to the bootstrap fingerprint gate, and early rejection of
+cap-plus-one, invalid UTF-8, and duplicate keys before project-path access.
+The combined bootstrap, armed-protocol, release-token, IPC, service-smoke
+mock, and receipt regression suites pass 112/112; py_compile and
+`git diff --check` pass. No valid bootstrap release was
+run: there is no controller/runtime-receipt integration, actual runtime
+fingerprint, or independent review. The candidate is not wired to systemd or
+the request adapter. It supplies no service, inference, OOM, training, score,
+match, or gate evidence.
