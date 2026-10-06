@@ -281,6 +281,12 @@ implementation. The protocol remains a review draft with no thresholds,
 checkpoint selection, root generation, scoring, inference, training, or
 outcome access authorized.
 
+The separately versioned raw-state wiring amendment now proposes a specific
+198-coordinate feature MSE and horizon mask for independent review. This is a
+candidate clarification only; the diagnostic still does not adopt it, and v04
+remains unchanged. See
+`docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md`.
+
 **Independent read-only pre-fit review (2026-10-07): keep gated; no freeze
 approval.** The reviewer confirmed that v04 specifies latent `F` paths for
 the candidate, single-pair, value-only, and single-horizon arms; the raw-state

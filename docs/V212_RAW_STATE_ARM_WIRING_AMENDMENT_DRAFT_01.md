@@ -24,9 +24,54 @@ Initialize `z_hat_0` from the exact root encoder. At each nonterminal step,
 feed `z_hat_k` (the re-encoded prediction) into the next call of `F`; do not
 feed an exact intermediate state or its encoding. Compare each valid `x_pred`
 at horizons 1, 2, and 4 against the exact rule-generated 198-dimensional
-feature target with the raw-state arm's masked feature MSE. Use the already
-specified terminal masks and identical policy/root/rollout-value losses.
-Terminal nodes keep exact game utility and are never decoded as value leaves.
+feature target. This draft proposes the following literal-coordinate
+interpretation of “masked feature MSE” for independent review; it does not
+claim v04 uniquely specifies it:
+
+```text
+e_(b,k) = (1 / 198) * sum_(j=0..197) (x_pred[b,k,j] - x_exact[b,k,j])^2
+L_raw   = sum_(b,k) alpha_k * m_(b,k) * e_(b,k)
+          / sum_(b,k) alpha_k * m_(b,k)
+```
+
+Here `k ∈ {1,2,4}`, `alpha_1=1`, `alpha_2=0.5`, `alpha_4=0.25`, and
+`m_(b,k)=1` only when every transition through horizon `k` is valid, the
+exact target at that horizon exists, and that target is nonterminal. The
+fixed denominator inside `e` includes all 198 coordinates:
+both occupancy/side planes, the in-board indicator plane, zero-valued padded
+cells, and all six game-descriptor coordinates. There is no coordinate-level
+mask or variant-dependent denominator. The outer weighted denominator
+normalizes over valid nonterminal targets, matching the valid-example
+normalization used for the v04 rollout losses. This is a proposed contract,
+not an adopted change to v04.
+
+At the first terminal state on a branch, do not decode/predict that state or
+any later state; use exact game utility for terminal handling. Its feature
+target and every later horizon on that branch have `m=0`. A truncated
+trajectory with a missing nonterminal target also has `m=0` for that horizon,
+but must be counted separately from terminal masks. If a minibatch has no
+valid nonterminal raw-state target, its loss is undefined and the
+implementation must abort the run before any optimizer update. Do not skip,
+replace, or resample that batch: v04 fixes common minibatches and 87 updates
+across arms. No prediction or value leaf is required at or past terminal.
+Keep identical policy/root/rollout-value losses, with the v04 terminal
+utility rule.
+
+For this arm, the candidate total loss is:
+
+```text
+L_raw_arm = L_policy + L_root_value + 1.0*L_outcome_roll + 1.0*L_raw
+            + 0.1*L_variance + 0.01*L_covariance
+```
+
+`L_outcome_roll` uses the same predicted/re-encoded states, labels, horizon
+weights, valid-transition masks, and valid-target normalization as the other
+predictive arms. The variance and covariance terms are the frozen v04 root
+online-latent regularizers with unchanged definitions and coefficients. This
+arm has no EMA-latent `L_roll`; `L_raw` occupies that objective slot and
+compares decoder output to exact features. The formula is a proposed
+instantiation of §4's “same policy/root/rollout-value losses” plus raw-state
+dynamics loss, pending method review.
 
 The decoder is one affine `32 -> 198` layer with a linear output. The exact
 feature adapter emits binary occupancy/side channels and game-descriptor
@@ -96,3 +141,12 @@ path and count would then need a new reconciliation. The current random
 compute pilot applies `tanh` to that direct decoder, so it also differs in
 output activation from this proposed training arm. No implementation, training
 profile, or performance result follows from this proposal.
+
+**Independent read-only follow-up (2026-10-07):** the approved reviewer
+confirmed the transition-validity mask, fail-run behavior for a
+zero-valid-target minibatch, complete raw-arm loss and regularizer terms, and
+the proposal-only/gated status. They found no remaining inconsistency that
+blocks further independent method review. This is not method adoption or fit
+approval. The exact-coordinate MSE and pooled horizon normalization remain
+reviewable method choices. The 5% total training-FLOP check and all other v04
+gates remain mandatory and closed.

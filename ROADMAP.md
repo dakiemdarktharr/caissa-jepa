@@ -1919,3 +1919,22 @@ and only later an independently reviewed/authorized bounded no-outcome
 feasibility pilot to set quotas/caps. No generation, roots, scoring, inference,
 training, or gate transition occurred. See
 `docs/V212_GENERATION_RECEIPT_AUDITOR_CROSSWALK_DRAFT_01.md`.
+
+
+### 2026-10-07 raw-state feature-loss contract proposal
+
+The raw-state wiring proposal now defines a candidate masked loss over all
+198 feature coordinates, including padded zeros and descriptors, and a
+weighted valid-target normalization over horizons 1/2/4. A valid target now
+requires valid transitions through `k`, an available target, and a nonterminal
+state. Terminal branches stop before decode and mask that and later horizons;
+truncated nonterminal targets are tracked separately. The proposed total raw
+arm loss is explicit; a zero-valid-target minibatch aborts the run before any
+update rather than being skipped, replaced, or resampled. These are proposed
+semantics only; v04 remains current. Independent review of the revision is
+complete: the approved read-only reviewer confirmed the requested mask,
+zero-target, and total-loss details and found no blocker to further method
+review. This is not adoption or fit approval. The parameter-count difference is not parameter matching, and the
+measured ≤5% total training-FLOP gate remains mandatory. No trainer, data,
+inference, training, scoring, or gate transition occurred. See
+`docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md`.
