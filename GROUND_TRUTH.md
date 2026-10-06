@@ -2699,3 +2699,8 @@ or gate changed.
 ### Latest continuation delta (2026-10-07; V03 and generation-protocol review)
 
 - An independent read-only static review found no basis for a safe offline production-code change. V03 remains a candidate, not cleared for runtime: sampled RSS is cooperative, and hard worker memory enforcement, caller-observed deadline handling, runtime attestation, and integrated supervision/receipt evidence remain prerequisites. The production generator remains blocked on reviewed decisions for split matrix and quotas, deterministic RNG/policy streams, the 928-window and minibatch contract, lineage/overlap identities, and atomic artifact/receipt behavior. Held-out-root yield rules and finite-sample statistical calibration also remain unresolved; v04 stays current. No tests, service, OOM, inference, training, data generation, scoring, match, or outcome were run/accessed. No code changed and no gate advanced. See `docs/V212_COMPUTE_PILOT_V03.md`, `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`, `docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md`, and `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-07; v02 worker-helper regression)
+
+- Re-ran the bounded v02 candidate suites: raw-stdin worker bootstrap, armed protocol/release binding, and worker IPC pass 49/49 under `unittest` on the current checkout. Coverage includes synthetic subprocess bootstrap and exact request-byte/release handling. This verifies those isolated helpers only; systemd/controller integration, executed-runtime attestation, and service gates remain open. No project data, service, inference, OOM, training, scoring, match, or outcome was accessed or run. No gate advanced.

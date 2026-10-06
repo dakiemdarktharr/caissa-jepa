@@ -2,6 +2,15 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 v02 worker-helper regression
+
+Re-ran the bounded v02 raw-stdin bootstrap, armed protocol/release-binding,
+and worker IPC suites: 49/49 pass under `unittest` on the current checkout.
+This verifies the isolated synthetic helpers only; systemd/controller
+integration, executed-runtime attestation, and service gates remain open. No
+data, inference, OOM, training, score, or match operation ran. See Ground
+Truth and the request-adapter integration design.
+
 ### 2026-10-07 independent V03 and generation-protocol review
 
 An independent read-only static review found no basis for a safe offline
