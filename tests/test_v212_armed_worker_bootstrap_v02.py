@@ -23,6 +23,8 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                         source.index("root=Path(sys.argv[3])"))
         self.assertLess(source.index("root=Path(sys.argv[3])"),
                         source.index("exec(compile(verified[relative]"))
+        self.assertIn('argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]', source)
+        self.assertIn('hashlib.sha256(argv[5])', source)
         self.assertIn("request_bytes=request_raw", source)
         self.assertIn("v212_armed_protocol_v02.py", source)
         self.assertNotIn("v212_request_adapter", source)
@@ -47,7 +49,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                        ) -> subprocess.CompletedProcess:
         source = bootstrap.worker_source()
         return subprocess.run(
-            [sys.executable, "-B", "-c", source, "/missing/ipc",
+            [sys.executable, "-I", "-S", "-B", "-c", source, "/missing/ipc",
              "caissa-test.service", project_root],
             input=raw, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             check=False, timeout=5)
@@ -226,7 +228,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             stream.seek(0)
             source = bootstrap.worker_source()
             result = subprocess.run(
-                [sys.executable, "-B", "-c", source, "/missing/ipc",
+                [sys.executable, "-I", "-S", "-B", "-c", source, "/missing/ipc",
                  "caissa-test.service", "/missing/project-root"],
                 stdin=stream, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 check=False, timeout=5)
@@ -297,7 +299,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             try:
                 env = dict(os.environ, INVOCATION_ID=nonce_invocation)
                 process = subprocess.Popen(
-                    [sys.executable, "-B", "-c", source,
+                    [sys.executable, "-I", "-S", "-B", "-c", source,
                      str(workspace.directory), unit, str(root), str(cgroup_root)],
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE, env=env)
@@ -340,7 +342,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                 altered_process = None
                 try:
                     altered_process = subprocess.Popen(
-                        [sys.executable, "-B", "-c", source,
+                        [sys.executable, "-I", "-S", "-B", "-c", source,
                          str(altered_workspace.directory), unit, str(root),
                          str(cgroup_root)],
                         stdin=subprocess.PIPE, stdout=subprocess.PIPE,

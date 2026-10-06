@@ -16,7 +16,8 @@ class ArmedServiceBootstrapTests(unittest.TestCase):
     def test_bootstrap_compiles_and_verifies_sources_before_project_imports(self):
         source = service._worker_source()
         compile(source, "<armed-worker-bootstrap>", "exec")
-        self.assertLess(source.index("hashlib.sha256(argv[3])"),
+        self.assertIn('argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]', source)
+        self.assertLess(source.index("hashlib.sha256(argv[5])"),
                         source.index("exec(compile(verified[relative]"))
         self.assertIn("armed.run_synthetic_armed_worker", source)
         self.assertNotIn("v212_request_adapter", source)

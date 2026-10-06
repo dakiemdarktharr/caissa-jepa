@@ -64,10 +64,10 @@ if not isinstance(request,dict) or set(request)!={"schema","nonce","source_manif
 if not isinstance(request.get("nonce"),str) or len(request["nonce"])!=32 or any(c not in "0123456789abcdef" for c in request["nonce"]): sys.exit(40)
 root=Path(sys.argv[3]).resolve(strict=True)
 argv=Path("/proc/self/cmdline").read_bytes().split(b"\0")
-if len(argv)<5 or argv[1]!=b"-B" or argv[2]!=b"-c": sys.exit(32)
+if len(argv)<7 or argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]: sys.exit(32)
 manifest=request.get("source_manifest")
 if not isinstance(manifest,dict) or set(manifest)!={"bootstrap_sha256","files"}: sys.exit(33)
-if hashlib.sha256(argv[3]).hexdigest()!=manifest["bootstrap_sha256"]: sys.exit(34)
+if hashlib.sha256(argv[5]).hexdigest()!=manifest["bootstrap_sha256"]: sys.exit(34)
 files=manifest.get("files")
 expected={"two_player/v212_worker_ipc.py","two_player/v212_release_token_v01.py","two_player/v212_armed_protocol_v01.py"}
 if not isinstance(files,dict) or set(files)!=expected: sys.exit(35)
@@ -285,7 +285,7 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
                    "--property=WorkingDirectory=" + str(repo_root),
                    "--property=StandardInput=file:" + str(workspace.request_path),
                    "--property=StandardOutput=truncate:" + str(workspace.response_path),
-                   "--property=StandardError=null", sys.executable, "-B", "-c",
+                   "--property=StandardError=null", sys.executable, "-I", "-S", "-B", "-c",
                    worker_source, str(workspace.directory), unit, str(repo_root)]
         collector._check_deadline(deadline)
         started = True

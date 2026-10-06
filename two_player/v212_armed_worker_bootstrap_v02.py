@@ -69,10 +69,10 @@ if canonical_request!=request_raw: sys.exit(43)
 # The raw request is bounded and parsed before project helper files are opened.
 root=Path(sys.argv[3]).resolve(strict=True)
 argv=Path("/proc/self/cmdline").read_bytes().split(b"\0")
-if len(argv)<5 or argv[1]!=b"-B" or argv[2]!=b"-c": sys.exit(34)
+if len(argv)<7 or argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]: sys.exit(34)
 manifest=request["source_manifest"]
 if not isinstance(manifest,dict) or set(manifest)!={"bootstrap_sha256","files"}: sys.exit(35)
-if hashlib.sha256(argv[3]).hexdigest()!=manifest["bootstrap_sha256"]: sys.exit(36)
+if hashlib.sha256(argv[5]).hexdigest()!=manifest["bootstrap_sha256"]: sys.exit(36)
 expected={"two_player/v212_worker_ipc.py","two_player/v212_release_token_v01.py",
           "two_player/v212_armed_protocol_v01.py","two_player/v212_release_token_v02.py",
           "two_player/v212_armed_protocol_v02.py"}

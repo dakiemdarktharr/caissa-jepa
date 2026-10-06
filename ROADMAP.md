@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 isolated Python startup in armed-worker candidates
+
+The v01 service-smoke worker command and the offline v02 raw-stdin bootstrap
+candidate now require `-I -S -B -c`, and each bootstrap checks the exact option
+sequence before accepting its self-hash at the adjusted `/proc/self/cmdline`
+position. Synthetic/mock bootstrap and orchestration tests pass 54/54. This
+removes environment and `site` startup hooks for these candidate invocations;
+it does not attest the Python executable, loader, native libraries, or mapped
+runtime bytes. No service/systemd smoke was run. The authenticated immutable
+runtime contract, independent review, and adapter integration remain open; no
+gate advanced. See `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+
 ### 2026-10-07 pre-release cgroup gate failure cases
 
 The armed-smoke orchestration test now injects three GATE-01b failures at the
