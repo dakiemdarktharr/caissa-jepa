@@ -2,6 +2,16 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 post-stop manager-query failure coverage
+
+Added a mocked armed-smoke controller case where the stop command succeeds
+but the post-stop manager query fails. It preserves the already-durable
+receipt and IPC workspace and reports unit state as retained/unknown with the
+known invocation and worker-cgroup identifiers. The focused armed-service-
+smoke module passes 40/40. This covers one REC-01 seam only; kill/reap
+attribution, live recovery, and v02 integration remain open. No live service
+or model operation ran. See the failure matrix and test plan.
+
 ### 2026-10-07 request-failure traceability update
 
 Reconciled the failure-test plan's REQ-01a/REQ-01b rows with the existing

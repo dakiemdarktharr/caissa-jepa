@@ -2709,3 +2709,8 @@ or gate changed.
 ### Latest continuation delta (2026-10-07; request-failure traceability update)
 
 - Updated the failure-test plan's REQ-01a/REQ-01b references to include the v02 raw-stdin rejection-before-FIFO and exact-request release-digest regressions, while retaining the partial/integrated-gaps disposition. A read-only AST audit resolved all 49 fully qualified test references in the plan; none were missing. `git diff --check` passes. This reconciles traceability only; no assertion coverage or controller/runtime behavior was added, and no service, inference, OOM, training, data, scoring, match, or outcome ran. No gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; post-stop manager-query failure)
+
+- Added a mocked v01 controller-flow case where the stop command returns but the post-stop `systemctl show` query fails. It verifies the already-durable receipt is byte-preserved, the IPC workspace remains, and diagnostics report the unit as retained/unknown with invocation and worker-cgroup identifiers. The focused armed-service-smoke module passes 40/40; `git diff --check` passes. This closes only that mocked REC-01 query-failure seam; kill/reap attribution, live recovery, and v02 integration remain open. No service, inference, OOM, training, data, score, match, or outcome ran; no gate advanced. See the failure matrix and test plan.

@@ -84,7 +84,9 @@ assembly without persistence, stop, or workspace cleanup. It also injects a
 stop-command timeout after durable receipt and Ctrl-C at stop after durable
 receipt. The timeout is a mocked command result rather than a
 controlled-clock test of the real stop command; none of these tests establish
-live failure recovery. See the case-by-case map in
+live failure recovery. A new mocked post-stop manager-query failure also keeps
+the durable receipt and IPC workspace and reports unit state as retained or
+unknown; kill/reap attribution remains uncovered. See the case-by-case map in
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
 
 The v02 receipt assembler validates counter identity, order, required counter

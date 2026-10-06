@@ -130,6 +130,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    fail_first_show=False, exited_result="success",
                    exited_status="0", fail_exited_show=False,
                    interrupt_exited_show=False, keep_running_at_exit=False,
+                   fail_post_stop_show=False,
                    first_show_load_state="loaded", raw_response=None,
                    interrupt_release=False, timeout_stop=False,
                    interrupt_stop=False, fail_event_sample=None,
@@ -214,6 +215,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 if exited_overrides:
                     exited.update(exited_overrides)
                 return exited
+            if fail_post_stop_show:
+                raise collector.CollectorError("mock post-stop manager query failed")
             return {"LoadState": "not-found"}
 
         def release_when_ready(workspace, snapshot, **kwargs):
@@ -629,6 +632,22 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertEqual(state["sequence"].count("persist_complete"), 1)
         self.assertIn("stop", state["sequence"])
         self.assertTrue(self.receipt.exists())
+        self.assertEqual(self.receipt.read_bytes(), state["receipt_bytes_after_persist"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_post_stop_manager_query_failure_keeps_receipt_and_recovery_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack, fail_post_stop_show=True)
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "post-stop manager query failed.*receipt_persisted") as caught:
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        message = str(caught.exception)
+        self.assertIn("unit_retained_or_state_unknown", message)
+        self.assertIn("invocation_id=" + "a" * 32, message)
+        self.assertIn("worker_cgroup=/user.slice/" + state["unit"], message)
+        self.assertEqual(state["sequence"].count("persist_complete"), 1)
+        self.assertIn("stop", state["sequence"])
         self.assertEqual(self.receipt.read_bytes(), state["receipt_bytes_after_persist"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
