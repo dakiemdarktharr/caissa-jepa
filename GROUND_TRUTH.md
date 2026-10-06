@@ -2719,3 +2719,9 @@ or gate changed.
 ### Latest continuation delta (2026-10-07; request watchdog boundary checks)
 
 - Using the already-present NumPy 2.5.3 package under `/tmp/caissa-jepa-pv-deps` without changing project dependencies, five isolated request-adapter tests pass: fake-cgroup finite-bound validation, mocked request-startup deadline/fallback, stalled child kill/reap, mocked cgroup-inheritance preflight, and mocked post-worker audit-delay deadline. These tests do not execute the random-weight search/inference path, create a service, or induce OOM. They establish helper/control behavior only; systemd integration, cgroup-attributed kill/reap, runtime attestation, and V05 operational headroom remain open. Updated REC-01/MGR-03 test traceability; a read-only AST audit resolves all 52 fully qualified test references in the failure plan. No gate advanced.
+
+
+### Latest continuation delta (2026-10-07; request/response schema proposal parser audit)
+
+- Read the unreviewed request/response schema v02 proposal and its offline validator, then ran `python -m unittest -v tests.test_v212_request_schema_v02_proposal_audit`: 13/13 pass. This includes closed field/type domains, canonical decoding and duplicate-key rejection, exact request/response binding, and maximum 811/747-byte witnesses. A bounded static audit found no concrete validator defect in the inspected code.
+- The schema and caps remain unreviewed proposals. Worker/caller stream cap tests, controller and accepted-receipt integration, resource-profile reconciliation, and runtime attestation remain open; RESP-01b stays partial. No service, inference, OOM, training, generation, scoring, match, or outcome ran/accessed, and no gate advanced. See `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.

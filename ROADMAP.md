@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 request/response schema proposal parser audit
+
+Reviewed the unintegrated, unreviewed v02 closed-schema validator against its
+proposal and ran its focused standard-library suite: 13/13 pass. The fixtures
+cover canonical encoding, duplicate keys, invalid encodings, field bounds,
+request binding, and exact 811/747-byte witnesses. No concrete validator
+defect was found in this bounded offline audit. This does not independently
+approve the schema or byte caps: caller/worker stream boundary tests,
+request-controller and receipt integration, resource-profile reconciliation,
+runtime attestation, and independent design review remain open. No service,
+inference, OOM, training, generation, scoring, or match ran; no gate advanced.
+See the schema proposal and RESP-01b in the failure test plan.
+
 ### 2026-10-07 request watchdog boundary checks
 
 Five isolated request-adapter tests pass using the existing NumPy 2.5.3
