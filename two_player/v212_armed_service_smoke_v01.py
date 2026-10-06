@@ -327,6 +327,7 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
         events_before = live.read_memory_events_local(
             cgroup_root=Path("/sys/fs/cgroup"), control_group=worker_cgroup,
             boot_id=boot, captured_monotonic_us=collector._monotonic_us())
+        collector._check_deadline(deadline)
         release_snapshot = {
             "schema": release.SCHEMA,
             "request_nonce": nonce,
@@ -349,6 +350,7 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
         events_after = live.read_memory_events_local(
             cgroup_root=Path("/sys/fs/cgroup"), control_group=worker_cgroup,
             boot_id=boot, captured_monotonic_us=collector._monotonic_us())
+        collector._check_deadline(deadline)
 
         exited_props: dict[str, str] | None = None
         while time.monotonic() < deadline:

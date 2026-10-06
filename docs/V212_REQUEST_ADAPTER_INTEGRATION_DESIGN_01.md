@@ -128,15 +128,16 @@ The 139-test focused group passes. This remains proposal-audit code, not a
 runtime protocol or receipt publisher; independent review and the integrated
 response-to-receipt failure matrix remain required.
 
-### Caller deadline after response parsing (2026-10-06)
+### Caller deadline after response parsing and counter snapshots (2026-10-06)
 
 The existing v01 smoke checks the caller deadline immediately after its
 bounded response read and parse, before response acceptance or journal
-collection. A controlled mocked expiry at that boundary verifies no journal
-query, receipt publication, or unit stop occurs and the IPC workspace remains
-available for reconciliation. The focused armed-smoke/collector/live-evidence/
-receipt group passes 90/90. This covers only the post-response boundary;
-deadline crossings during counter reads and other evidence operations and the
+collection, and after each `memory.events.local` sample. Controlled mocked
+expiry after response parsing blocks journal collection; after the first
+counter sample it blocks release; after the second it blocks exit polling.
+Each case skips receipt publication/unit stop and retains the IPC workspace.
+The focused armed-smoke/collector/live-evidence/receipt group passes 91/91.
+This covers only these three v01 boundaries; other evidence operations and the
 v02 controller remain untested. No live service or model operation ran.
 
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)

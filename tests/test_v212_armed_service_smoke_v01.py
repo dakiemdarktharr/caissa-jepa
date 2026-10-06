@@ -585,6 +585,35 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
 
+    def test_deadline_expiry_during_counter_read_blocks_next_lifecycle_step(self):
+        for expired_sample in (1, 2):
+            with self.subTest(sample=expired_sample), ExitStack() as stack:
+                state = self._mock_host(stack)
+                original_check = collector._check_deadline
+
+                def check_deadline(deadline):
+                    if state["event_samples"] == expired_sample:
+                        raise collector.CollectorError(
+                            f"mock caller deadline expired after counter sample {expired_sample}")
+                    original_check(deadline)
+
+                stack.enter_context(patch.object(
+                    collector, "_check_deadline", side_effect=check_deadline))
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError,
+                        f"deadline expired after counter sample {expired_sample}.*receipt_not_attempted"):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertEqual(state["event_samples"], expired_sample)
+                self.assertNotIn("exited_snapshot", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertFalse(self.receipt.exists())
+                self.assertTrue(self.workspaces[-1].directory.exists())
+                if expired_sample == 1:
+                    self.assertNotIn("release", state["sequence"])
+                else:
+                    self.assertIn("release", state["sequence"])
+
     def test_deadline_expiry_while_unit_remains_running_retains_handles(self):
         with ExitStack() as stack:
             state = self._mock_host(stack, keep_running_at_exit=True)

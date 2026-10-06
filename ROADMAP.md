@@ -2,14 +2,14 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-06 deadline check after response read
+### 2026-10-06 deadline checks after response and counter evidence
 
-The v01 no-inference smoke now checks the caller deadline directly after its
-bounded response read and parse, before accepting the response or querying
-the journal. A controlled mock expiry at that point proves no journal
-collection, receipt publication, or unit stop begins, and the IPC workspace
-is retained. The focused armed-smoke/collector/live-evidence/receipt group
-passes 90/90. Counter/evidence-capture deadline crossings and the v02
+The v01 no-inference smoke checks the caller deadline after bounded response
+read/parse and after each local counter snapshot. Controlled expiry after the
+response blocks journal collection; after the first counter it blocks release;
+after the second it blocks exit polling. All retain the workspace and skip
+receipt publication/unit stop. The focused armed-smoke/collector/live-evidence/
+receipt group passes 91/91. Other evidence-operation boundaries and the v02
 controller remain open. No live service, inference, OOM, training, score, or
 match ran; no gate changed. See CLK-01 in the supervision failure plan.
 
