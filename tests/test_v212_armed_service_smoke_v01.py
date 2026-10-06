@@ -135,7 +135,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    interrupt_release=False, timeout_stop=False,
                    interrupt_stop=False, fail_event_sample=None,
                    exited_overrides=None, journal_records=None,
-                   event_mutator=None, event_reader=None):
+                   exited_omissions=None, event_mutator=None,
+                   event_reader=None):
         state = {"workspace": None, "show": 0, "sequence": [],
                  "event_samples": 0, "persist_durable": False}
         original_create = ipc.create_workspace
@@ -212,6 +213,8 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 exited = dict(unit_props, ControlGroup="", ActiveState="inactive",
                               SubState="exited", Result=exited_result,
                               ExecMainStatus=exited_status)
+                for key in exited_omissions or ():
+                    exited.pop(key, None)
                 if exited_overrides:
                     exited.update(exited_overrides)
                 return exited
@@ -753,13 +756,37 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             ({"ControlGroup": "/user.slice/foreign.service"},
              "identity did not match active worker"),
             ({"InvocationID": ""}, "systemd property InvocationID is missing"),
+            ({"InvocationID": "a" * 31}, "InvocationID is malformed"),
             ({"Result": ""}, "systemd property Result is missing"),
+            ({"ExecMainStatus": ""}, "systemd property ExecMainStatus is missing"),
             ({"ExecMainStatus": "invalid"},
              "systemd property ExecMainStatus is malformed"),
+            ({"ExecMainStatus": "-1"},
+             "systemd property ExecMainStatus is malformed"),
+            ({"ExecMainStatus": "18446744073709551616"},
+             "systemd property ExecMainStatus is out of range"),
         )
         for overrides, expected_error in cases:
             with self.subTest(overrides=overrides), ExitStack() as stack:
                 state = self._mock_host(stack, exited_overrides=overrides)
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError, expected_error):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertFalse(self.receipt.exists())
+                self.assertNotIn("response_read", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertTrue(self.workspaces[-1].directory.exists())
+
+    def test_exit_snapshot_rejects_omitted_required_fields_before_response_read(self):
+        cases = {
+            "InvocationID": "systemd property InvocationID is missing",
+            "Result": "systemd property Result is missing",
+            "ExecMainStatus": "systemd property ExecMainStatus is missing",
+        }
+        for field, expected_error in cases.items():
+            with self.subTest(field=field), ExitStack() as stack:
+                state = self._mock_host(stack, exited_omissions={field})
                 with self.assertRaisesRegex(
                         service.ArmedServiceSmokeError, expected_error):
                     service.run_no_inference_armed_smoke(receipt_path=self.receipt)

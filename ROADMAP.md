@@ -1983,3 +1983,22 @@ advanced. Continue static design toward a trusted immutable runtime source and
 integrated failure contract before any service/pilot transition. See
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md` and the updated
 supervision test map.
+
+### 2026-10-07 manager exit-snapshot failure cases
+
+Extended the mocked v01 post-exit snapshot table to reject a malformed short
+invocation ID and missing, negative, malformed, or uint64-overflow
+`ExecMainStatus`. The focused omission test and all 41 armed-service smoke tests pass. The test
+verifies rejection before response read or receipt, with the dispatched
+workspace retained. The MGR-01 map now names these cases. Coverage remains partial: v02 controller
+composition, live manager failures, and the full property/failure cross-product
+are still open. No service, request, inference, OOM, training, score, match, or
+outcome ran; no gate advanced.
+
+A read-only reviewer noted the earlier new cases used empty strings rather than
+omitted manager keys. Added a separate fixture that omits `InvocationID`,
+`Result`, and `ExecMainStatus`; all are rejected before response read, receipt,
+and stop while preserving the workspace. Missing `ActiveState`/`SubState` is
+handled through the state-poll deadline path and was not misrepresented as a
+snapshot-parser test. The focused omitted-fields test passes; MGR-01 remains
+partial.
