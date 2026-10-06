@@ -2,6 +2,16 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 request-failure traceability update
+
+Reconciled the failure-test plan's REQ-01a/REQ-01b rows with the existing
+v02 raw-stdin and exact-request release-digest tests. A read-only AST audit
+resolved all 49 fully qualified test references; none were missing. The
+disposition remains partial because these helper tests do not establish
+controller/runtime integration or complete failure behavior. No tests or
+runtime work were needed for this documentation change, and no gate advanced.
+See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and Ground Truth.
+
 ### 2026-10-07 v02 worker-helper regression
 
 Re-ran the bounded v02 raw-stdin bootstrap, armed protocol/release-binding,

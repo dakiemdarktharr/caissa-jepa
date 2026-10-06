@@ -2704,3 +2704,8 @@ or gate changed.
 ### Latest continuation delta (2026-10-07; v02 worker-helper regression)
 
 - Re-ran the bounded v02 candidate suites: raw-stdin worker bootstrap, armed protocol/release binding, and worker IPC pass 49/49 under `unittest` on the current checkout. Coverage includes synthetic subprocess bootstrap and exact request-byte/release handling. This verifies those isolated helpers only; systemd/controller integration, executed-runtime attestation, and service gates remain open. No project data, service, inference, OOM, training, scoring, match, or outcome was accessed or run. No gate advanced.
+
+
+### Latest continuation delta (2026-10-07; request-failure traceability update)
+
+- Updated the failure-test plan's REQ-01a/REQ-01b references to include the v02 raw-stdin rejection-before-FIFO and exact-request release-digest regressions, while retaining the partial/integrated-gaps disposition. A read-only AST audit resolved all 49 fully qualified test references in the plan; none were missing. `git diff --check` passes. This reconciles traceability only; no assertion coverage or controller/runtime behavior was added, and no service, inference, OOM, training, data, scoring, match, or outcome ran. No gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
