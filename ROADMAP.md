@@ -162,6 +162,21 @@ them forward. No live service, adapter, inference or OOM operation is in scope. 
 `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 
+
+### 2026-10-06 bounded raw-stdin helper for request-byte v02
+
+Added an isolated helper that reads worker stdin through EOF while retaining no
+more than the existing 65,536-byte IPC cap plus one probe byte, then forwards
+the exact bytes into the v02 request digest/parser/release path. Focused tests
+cover short EOF, exact and over-cap streams, invalid bounds, and invalid
+UTF-8 and truncated-JSON rejection before release or callback; all ten v02
+protocol tests pass.
+This does not integrate a bootstrap, set the proposed 811-byte schema cap, or
+close runtime identity, receipt, failure-map, or independent-review gaps. A
+non-terminating stream still depends on the outer caller deadline. No service,
+request adapter, inference, OOM, training, score, or match ran; all related
+gates remain closed. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
 ### 2026-10-05 executed-runtime attestation research
 
 Primary-source review found that descriptor-based `fexecve` avoids pathname

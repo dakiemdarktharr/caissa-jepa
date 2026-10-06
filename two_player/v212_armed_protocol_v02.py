@@ -62,6 +62,33 @@ def _parse_request_bytes(request_bytes: bytes) -> tuple[dict[str, Any], str]:
     return parsed, hashlib.sha256(request_bytes).hexdigest()
 
 
+def read_bounded_request_bytes(fd: int = 0, *,
+                               max_bytes: int = ipc.MAX_IPC_BYTES,
+                               chunk_bytes: int = 4096) -> bytes:
+    """Read one raw request through EOF with a buffer bounded by its cap.
+
+    The extra byte distinguishes an exactly-at-cap stream from an oversized
+    one. A caller deadline must bound a stream that never reaches EOF.
+    """
+    if type(fd) is not int or fd < 0:
+        raise ArmedProtocolError("request file descriptor must be a nonnegative integer")
+    if (type(max_bytes) is not int or not 1 <= max_bytes <= ipc.MAX_IPC_BYTES
+            or type(chunk_bytes) is not int or chunk_bytes <= 0):
+        raise ArmedProtocolError("raw request read limits are invalid")
+    chunks = bytearray()
+    while True:
+        remaining_with_probe = max_bytes + 1 - len(chunks)
+        try:
+            block = os.read(fd, min(chunk_bytes, remaining_with_probe))
+        except OSError as exc:
+            raise ArmedProtocolError("raw request stream could not be read") from exc
+        if not block:
+            return bytes(chunks)
+        chunks.extend(block)
+        if len(chunks) > max_bytes:
+            raise ArmedProtocolError("raw request stream exceeds its byte limit")
+
+
 def _validate_snapshot(snapshot: Mapping[str, Any], *,
                        deadline_monotonic_ns: int) -> bytes:
     if not isinstance(snapshot, Mapping) or set(snapshot) != _SNAPSHOT_FIELDS:
@@ -190,6 +217,17 @@ def run_synthetic_armed_worker(
     return on_release(token)
 
 
+def run_synthetic_armed_worker_from_stdin(
+        workspace: ipc.WorkerIPCWorkspace, *, request_fd: int = 0,
+        max_request_bytes: int = ipc.MAX_IPC_BYTES, **worker_kwargs: Any) -> Any:
+    """Read bounded raw stdin, then enter the exact-byte v02 release path."""
+    request_bytes = read_bounded_request_bytes(
+        request_fd, max_bytes=max_request_bytes)
+    return run_synthetic_armed_worker(
+        workspace, request_bytes=request_bytes, **worker_kwargs)
+
+
 __all__ = ["ArmedProtocolError", "EXPECTED_EFFECTIVE_PROPERTIES",
-           "_parse_request_bytes", "release_when_ready",
-           "run_synthetic_armed_worker"]
+           "_parse_request_bytes", "read_bounded_request_bytes",
+           "release_when_ready", "run_synthetic_armed_worker",
+           "run_synthetic_armed_worker_from_stdin"]

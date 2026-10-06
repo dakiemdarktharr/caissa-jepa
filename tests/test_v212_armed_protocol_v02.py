@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import tempfile
 import threading
 import time
@@ -137,6 +138,89 @@ class ArmedProtocolV02Tests(unittest.TestCase):
             with self.subTest(payload_len=len(payload)):
                 with self.assertRaises(armed.ArmedProtocolError):
                     armed._parse_request_bytes(payload)
+
+    def test_raw_request_reader_handles_eof_and_exact_limit(self):
+        for payload in (b"", b"{\"nonce\":\"short\"}", b"x" * 32):
+            with self.subTest(payload_length=len(payload)):
+                with tempfile.TemporaryFile() as stream:
+                    stream.write(payload)
+                    stream.seek(0)
+                    self.assertEqual(
+                        armed.read_bounded_request_bytes(
+                            stream.fileno(), max_bytes=max(1, len(payload)),
+                            chunk_bytes=3),
+                        payload)
+
+    def test_raw_request_reader_rejects_limit_plus_one(self):
+        with tempfile.TemporaryFile() as stream:
+            stream.write(b"x" * 33)
+            stream.seek(0)
+            with self.assertRaisesRegex(armed.ArmedProtocolError,
+                                        "exceeds its byte limit"):
+                armed.read_bounded_request_bytes(
+                    stream.fileno(), max_bytes=32, chunk_bytes=7)
+
+    def test_raw_request_reader_requires_valid_bounds_and_fd(self):
+        with self.assertRaisesRegex(armed.ArmedProtocolError, "file descriptor"):
+            armed.read_bounded_request_bytes(True)
+        with self.assertRaisesRegex(armed.ArmedProtocolError, "limits"):
+            armed.read_bounded_request_bytes(0, max_bytes=ipc.MAX_IPC_BYTES + 1)
+        with self.assertRaisesRegex(armed.ArmedProtocolError, "limits"):
+            armed.read_bounded_request_bytes(0, chunk_bytes=0)
+
+    def test_stdin_wrapper_rejects_invalid_utf8_before_release_or_callback(self):
+        workspace = self._workspace()
+        read_fd, write_fd = os.pipe()
+        callbacks = []
+        try:
+            os.write(write_fd, b'{"nonce":"' + b"\xff" + b'"}')
+            os.close(write_fd)
+            write_fd = -1
+            with self.assertRaisesRegex(armed.ArmedProtocolError,
+                                        "bounded UTF-8 JSON"):
+                armed.run_synthetic_armed_worker_from_stdin(
+                    workspace, request_fd=read_fd,
+                    expected_nonce=self.nonce,
+                    expected_service_unit=self.snapshot["service_unit"],
+                    invocation_id=self.snapshot["invocation_id"],
+                    boot_id=self.snapshot["boot_id"],
+                    self_control_group=self.control_group,
+                    expected_source_manifest_sha256=self.source_sha256,
+                    cgroup_root=self.cgroup_root,
+                    on_release=lambda token: callbacks.append(token))
+            self.assertEqual(callbacks, [])
+            self.assertFalse(workspace.release_writer_state.claimed)
+        finally:
+            os.close(read_fd)
+            if write_fd >= 0:
+                os.close(write_fd)
+            ipc.cleanup_workspace(workspace)
+
+    def test_stdin_wrapper_rejects_truncated_json_at_eof_before_release(self):
+        workspace = self._workspace()
+        read_fd, write_fd = os.pipe()
+        try:
+            os.write(write_fd, b'{"nonce":')
+            os.close(write_fd)
+            write_fd = -1
+            with self.assertRaisesRegex(armed.ArmedProtocolError,
+                                        "bounded UTF-8 JSON"):
+                armed.run_synthetic_armed_worker_from_stdin(
+                    workspace, request_fd=read_fd,
+                    expected_nonce=self.nonce,
+                    expected_service_unit=self.snapshot["service_unit"],
+                    invocation_id=self.snapshot["invocation_id"],
+                    boot_id=self.snapshot["boot_id"],
+                    self_control_group=self.control_group,
+                    expected_source_manifest_sha256=self.source_sha256,
+                    cgroup_root=self.cgroup_root,
+                    on_release=lambda _token: self.fail("callback must not run"))
+            self.assertFalse(workspace.release_writer_state.claimed)
+        finally:
+            os.close(read_fd)
+            if write_fd >= 0:
+                os.close(write_fd)
+            ipc.cleanup_workspace(workspace)
 
     def test_invalid_request_is_rejected_before_waiting_on_release_fifo(self):
         workspace = self._workspace()

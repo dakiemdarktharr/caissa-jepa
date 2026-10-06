@@ -237,3 +237,25 @@ Before live integration, freeze hashes for the controller, worker bootstrap/entr
 - Official systemd v262 `systemd.exec`: `BindReadOnlyPaths=` creates a unit-specific read-only bind view; that setting does not by itself freeze the host-side source bytes.
 
 No request-adapter code, inference, training, project data, game score, or outcome was run or accessed for this design review. The request-adapter test modules remain unverified in the installed Python runtimes because NumPy is unavailable.
+
+## Request-byte v02 raw-stdin helper (2026-10-06)
+
+`two_player/v212_armed_protocol_v02.py` now provides
+`read_bounded_request_bytes(fd=0)`, which reads until EOF while retaining at
+most the existing 65,536-byte IPC bound plus one probe byte. The companion
+`run_synthetic_armed_worker_from_stdin` passes that exact byte string to the
+v02 digest/parser/release helper. Tests cover short EOF, a configured exact
+limit, limit-plus-one, invalid reader bounds, and invalid UTF-8 rejection
+before waiting on the release FIFO or invoking a callback. A truncated JSON
+stream ending at EOF is also rejected before release. The focused v02 suite
+passes 10/10; compileall and `git diff --check` pass.
+
+This is still an isolated helper, not a worker entrypoint, source-verified
+bootstrap, systemd smoke, or request adapter. It does not select the proposed
+811-byte request-schema cap; it uses the existing IPC hard limit until a
+versioned request schema is accepted. A stream that never reaches EOF relies
+on the outer caller deadline, which this helper does not enforce. Duplicate
+keys and other parse errors are rejected by the existing v02 parser, but a
+complete stream-to-controller failure matrix and executed-runtime fingerprint
+remain open. No service, request, inference, OOM operation, training, result,
+or game outcome ran, and no gate changed.
