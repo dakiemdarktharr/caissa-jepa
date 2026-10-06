@@ -2,6 +2,69 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 bounded-reference provenance/resource audit
+
+Static source inspection found the bounded-reference helper validates the
+shape of caller-supplied evaluator hashes but does not bind them to the
+callable/configuration actually executed. Its hard cap counts transitions;
+node count is telemetry and there is no internal wall/RSS bound. The rules
+adapter implementation is not included in the current root fingerprint. A
+protocol-level provenance/resource contract is recorded in the regret design
+draft. An approved static review confirmed the source findings and the
+proposed pre-freeze requirements. No evaluator, horizon, budget, or
+terminal-root policy is selected. No roots or outputs were read or generated;
+scoring and all downstream gates remain closed.
+See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md` and
+`two_player/v212_bounded_reference_v01.py`.
+
+### 2026-10-07 action-sensitivity diagnostic protocol draft
+
+Prepared a non-operative candidate protocol for one-step exact-successor
+prediction error/action retrieval and multi-step open-loop latent prediction.
+It separates transition-bearing arms from not-applicable arms, defines
+per-arm action exposure and exact state-action support, excludes only
+exact-tuple duplicate-successor pairs from retrieval, and distinguishes
+expected terminal masks from missing outputs. Multi-step branches intervene
+on each legal first action and reuse the root receipt's policy pair. The
+approved static review found the support, collision, terminal-mask, and
+intervention logic mostly coherent, while identifying remaining freeze
+conditions. The current revision specifies separate marginal support strata,
+paired eligible-row denominators, and branch-identity serialization; actual
+six-arm graph and raw-state target/mask checks remain open. The all-legal
+first-action expansion may still be infeasible; no cap, threshold, root
+schedule, or estimator is selected. Independent graph/mask disposition and an
+accepted root schedule are prerequisites for freeze; no roots, branches,
+model outputs, or outcomes were generated, and no gate advanced.
+See `docs/V212_ACTION_SENSITIVITY_DIAGNOSTIC_PROTOCOL_DRAFT_01.md`.
+
+### 2026-10-07 pre-fit action-sensitivity and regret review
+
+An approved independent reviewer reconsidered the six-arm v04 scope against
+UWM-JEPA, ActSWM, and AD-WM and found retaining it defensible for the narrow
+fixed contrast family, without adding an arm or certifying novelty. The
+action-sensitivity diagnostic and reference-regret protocol remain unfrozen.
+Resolve support buckets, latent metric/horizons, terminal/pass handling,
+reference strata and identity, charged work/resource budgets, ties/order,
+incomplete-cell behavior, and realistic feasibility before any fit. The
+scalar and interval regret candidates are not interchangeable. No method,
+arm, threshold, or solver was selected; no gate advanced. See
+`docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md` and
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+### 2026-10-07 root-sampling calibration-prerequisite review
+
+An approved independent static review found the v05 first-valid-slot IID
+argument coherent only under its stated slot assumptions and found the
+seed × slot bootstrap structurally aligned with its estimand. Finite-sample
+coverage/FWER are not established. The reviewer recommends design-matched
+synthetic calibration before nomination, without treating that as a gate
+decision. Freeze the estimand, situation-count interpretation, weights, RNG
+and validity contract, global yield/pass-probability rule, calibration grid,
+tolerances, outer/inner replication and uncertainty reporting, and failure
+response before any simulation. No method version or gate changed; v04 remains
+current and calibration/root generation remain unauthorized. See
+`docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
 ### 2026-10-07 schema proposal bounded stream reader
 
 Added an audit-only fd reader to the unreviewed response/request schema

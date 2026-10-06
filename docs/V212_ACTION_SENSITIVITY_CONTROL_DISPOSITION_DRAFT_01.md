@@ -15,9 +15,17 @@ exclusion only; it does not freeze the regret protocol or open any fit gate.
 
 **Literature follow-up (2026-10-06):** the targeted source refresh identified
 UWM-JEPA's counterfactual-target action-binding result, which is not cited in
-the 2026-10-04 disposition. Do not treat the earlier conditional acceptance
-as explicit review of this source. The six-arm v04 panel remains unchanged;
-its narrow-scope exclusion requires reviewer reconsideration before any fit.
+the 2026-10-04 disposition.
+
+**Independent pre-fit reconsideration (2026-10-07):** a read-only reviewer
+explicitly considered UWM-JEPA together with ActSWM and AD-WM. The reviewer
+found exclusion of these methods from v04's fixed six-arm contrast family
+defensible: they establish action-sensitivity and related mechanisms, but do
+not provide matched controls for the current deterministic board-game/minimax
+estimand. No v04 arm needs to be retrofitted or added on that basis. This is
+scope review only, not novelty certification or fit-gate approval. Claims
+remain limited to the six named arms; they cannot establish superiority over
+action-sensitive JEPA or broader latent-planning methods.
 
 ## Decision to review
 
@@ -103,12 +111,11 @@ action-sensitive JEPA, the current panel is insufficient; version and review a
 separate benchmark arm before fitting.
 
 The 2026-10-04 disposition conditionally addressed the narrow v04 contrast
-family against the sources then listed. UWM-JEPA adds relevant mechanism
-evidence not cited there, so the scope question is not fully closed until an
-independent reviewer explicitly considers whether the v04 estimand intentionally
-excludes counterfactual-target/action-sensitivity training. This does not
-establish action sensitivity or permit broader comparative claims. Fitting
-remains blocked by this review follow-up, the unfrozen legal-root regret
+family against the sources then listed. The 2026-10-07 reconsideration now
+explicitly includes UWM-JEPA and confirms that the current narrow scope can be
+retained without a new arm. This does not establish action sensitivity or
+permit broader comparative claims. The decision-facing diagnostic remains
+unfrozen, and fitting remains blocked by its protocol, the legal-root regret
 protocol, and the other open gates.
 
 ## Required decision-facing measurement, still unfrozen
@@ -138,16 +145,20 @@ depth/evaluator, budget, incomplete-cell policy, multiplicity, and thresholds
 remain unresolved in
 `V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`. The prior draft and
 this memo do not advance that gate. The failed Reversi8 2.0-second p90 gate
-also remains open.
+also remains open. A candidate descriptive transition-sensitivity protocol is
+recorded in `V212_ACTION_SENSITIVITY_DIAGNOSTIC_PROTOCOL_DRAFT_01.md`. Static
+review found its initial support, collision, terminal-mask, and intervention
+logic mostly coherent but left graph/mask and other pre-freeze conditions
+open; a revised draft and final read-only review do not resolve the regret
+reference, amend v04, or authorize roots or model output.
 
 ## Source and claim limits
 
 The source claims above were checked against the ActSWM and AD-WM arXiv v2
 full texts. The 2026-10-06 refresh additionally checked the UWM-JEPA arXiv
-full text and author repository. These are preprints in this source snapshot;
-reported results are author-reported. This targeted comparison is not a
-systematic literature review, reproduction, or novelty certification. The
-2026-10-04 conditional review disposition cites ActSWM and AD-WM but not
-UWM-JEPA, so its scope exclusion should receive explicit reviewer
-reconsideration before fit. No external code, model, dataset, game state,
-score, or outcome was used in this analysis.
+full text and author repository. The 2026-10-07 reviewer reconsidered these
+sources for scope, but did not reproduce them or certify novelty. They are
+preprints in this source snapshot; reported results are author-reported. This
+targeted comparison is not a systematic literature review, reproduction, or
+novelty certification. No external code, model, dataset, game state, score,
+or outcome was used in this analysis.

@@ -156,3 +156,32 @@ independence factorization also depends on the slot-stream assumptions. See
 `V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_DRAFT_01.md`. The yield gate, root
 schedule, bootstrap calibration, and all downstream research gates remain
 unapproved/closed; no roots or simulations were made.
+
+## Follow-up calibration-prerequisite review (2026-10-07)
+
+An approved independent read-only review found the first-16-valid-slot IID
+argument mathematically coherent under its stated assumptions: IID candidate
+slots within each variant × band, slot-local predeclared validity, identical
+within-stratum generation, and no adaptive or identity/score/outcome-based
+rejection. The proposed seed × slot bootstrap structurally preserves the
+pairing and fixed weights, but neither that alignment nor 10,000 inner
+replicates establishes finite-sample coverage or familywise error control.
+The proposal remains a material change to v04, which stays current.
+
+The reviewer recommends design-matched synthetic calibration before using the
+bootstrap for nomination. This is a recommendation, not a theory-established
+requirement or gate disposition. Before any calibration run, the unresolved
+decisions must be frozen: the 48-slot versus ≥40-situation interpretation;
+equal band and macro weighting; policy, seat, RNG, slot-bound, validity, and
+global-yield semantics; any minimum six-stratum schedule-pass probability;
+calibration method/comparators; coverage, FWER, power and interval-width
+tolerances; outer replication and uncertainty reporting; inner bootstrap
+count or precision rule; and failure consequences. The scenario grid must
+preserve the 15-contrast family and macro-contrast identity, paired seats and
+shared-arm dependence, and cover global/partial nulls, heterogeneous crossed
+effects and covariance, bounded/tied outcomes, first-valid/yield conditioning,
+near-boundary alternatives, and fail-closed cases. Schedule yield must be
+reported separately from conditional inferential error rates.
+
+These findings are a static review only. No method wording or gate changed;
+no calibration simulation, root, score, or outcome was produced or accessed.

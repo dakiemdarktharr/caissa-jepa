@@ -31,6 +31,21 @@ conservative. Tiny-game containment tests, compute-cap feasibility, and
 configuration remain pending; this interval estimand is distinct from scalar
 bounded-`h_ref` regret and must not be pooled with it.
 
+**Independent pre-fit protocol review (2026-10-07):** the scalar bounded-
+reference and interval regret definitions are mathematically coherent under
+their stated assumptions, but neither protocol is frozen. The scalar
+implementation still scores every root action, so its measured cost is not
+the proposed selected-action-only primary-query plan. It has only a transition
+cap, and evaluator hashes are caller-supplied labels rather than verified
+callable/configuration identities. The interval implementations use different
+budget units and expansion policies; they are not interchangeable. Before
+adoption, resolve evaluator and rules fingerprints, root-terminal handling,
+root/action ordering and tie semantics, charged versus reported work, per-root
+wall/node/memory limits, incomplete-cell policy, and the exact-vs-bounded
+strata. Tiny-fixture correctness does not establish realistic feasibility or
+complete adapter coverage. This review selects no estimator, solver, budget,
+threshold, or run.
+
 ## Source-code audit: evaluator provenance and minimum regret queries (2026-10-04)
 
 This is a design amendment proposal based on the repository source, not a
@@ -634,3 +649,38 @@ reports the inverse-loss main effect and interaction with JEPA family. It does
 not yet pass independent review or authorize an objective change. Goal-action
 targets from policy-mixture trajectories remain behavior labels, not minimax
 targets. Training and outcome gates remain closed.
+
+
+## Bounded-reference provenance and resource contract audit (2026-10-07)
+
+Static inspection of `two_player/v212_bounded_reference_v01.py` confirms that
+the candidate rejects malformed evaluator SHA-256 strings and returns a
+digest of its own source file, but it accepts
+`evaluator_source_sha256` and `evaluator_config_sha256` as caller-provided
+labels. It does not recompute either digest from the callable, configuration
+bytes, or the code actually loaded for that callable. The root digest binds
+the game name, canonical state key, board, and player; it does not attest the
+loaded implementation of the game/transition adapter. The candidate's hard
+budget counts exact transitions only. Node visits are telemetry; it has no
+internal wall-time or RSS cap. It rejects terminal roots and returns a full
+exact Q table for all legal root actions.
+
+These limits do not invalidate the fixed-horizon recurrence, but they prevent
+the result object from serving as a frozen evaluator receipt or a resource
+guarantee. Before protocol freeze or scoring, a separately reviewed runner
+contract must specify how the exact evaluator/configuration and rules/adapter
+artifacts are fingerprinted from bytes tied to the executed implementation;
+which interpreter/runtime identity is recorded; how canonical evaluator
+configuration bytes are hashed; how terminal roots are handled by the root
+schedule; and the hard transition, node, wall-time, and memory limits with
+charged-work semantics. A hash-shaped caller string is not identity evidence.
+The library's cooperative checks cannot replace external process/cgroup
+containment and caller deadline enforcement.
+
+The all-action Q table may be used to establish the bounded-reference root
+maximum and retain per-action values in one computation, but its cost must be
+charged as the actual full-table work. Any later optimized maximum/selected-
+action query plan needs its own correctness proof against the exact table and
+an independently reviewed cost allocation. No evaluator, depth, budget,
+terminal-root policy, or query plan is selected here. This source audit used
+no roots, model outputs, scores, or outcomes and advances no gate.
