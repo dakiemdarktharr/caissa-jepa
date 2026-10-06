@@ -2,6 +2,21 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 independent V03 and generation-protocol review
+
+An independent read-only static review found no basis for a safe offline
+production-code change. V03 remains a candidate and is not cleared for runtime:
+sampled RSS is cooperative, while hard worker memory enforcement,
+caller-observed deadlines, runtime attestation, and integrated
+supervision/receipt evidence remain prerequisites. Do not implement the
+production generator until a reviewed protocol freezes split matrix/quotas,
+RNG and policy-stream semantics, the 928-window/minibatch contract,
+lineage/overlap identities, and atomic artifact/receipt behavior. The
+held-out-root yield rule and finite-sample calibration remain unresolved, so
+v04 stays current. No tests or runtime/research operations ran; no code changed
+and no gate advanced. See Ground Truth and the V03, generation-protocol, and
+root-sampling review documents.
+
 ### 2026-10-07 post-exit boot identity revalidation
 
 The v01 armed-smoke controller rereads the host boot ID after a successful
