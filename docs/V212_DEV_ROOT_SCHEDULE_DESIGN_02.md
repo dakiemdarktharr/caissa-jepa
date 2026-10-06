@@ -22,10 +22,18 @@ eligible root reached by a predeclared policy-mixture rollout from
 the assigned band at or after four legal plies. This is the
 success-conditional first-passage distribution described in
 `METHOD_SPEC_V212_ROOT_SAMPLING_AMENDMENT_DRAFT_01.md`. It is not uniform over
-all reachable states or over unique board positions. The 48 observations meet
-the method's minimum of 40 situations only if independent review accepts
-candidate-slot independence and this conditional target as the meaning of
-independently generated situations.
+all reachable states or over unique board positions. The 48 accepted slots
+meet the method's numeric minimum of 40 only if independent review interprets
+"independently generated situations" as independent generation events
+(candidate-slot IDs), not 40 distinct board states. The slots are allocated
+16 per occupancy band, whose success-conditional distributions may differ;
+they are not 48 IID draws from one variant-wide population. This schedule
+therefore proposes an equal-weight mixture of three band-specific
+first-passage populations. V04 does not define whether repeated states count
+as separate situations or whether a single variant-wide IID population is
+required, so this is an explicit estimand/method amendment that must be
+accepted in place of v04 §7 before generation. It is not evidence of unchanged
+v04 compliance.
 
 ## Fixed candidate schedule
 

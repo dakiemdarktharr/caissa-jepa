@@ -29,6 +29,23 @@ boards, and equal occupancy-band weighting is not natural game occupancy
 frequency. Describe it as an **equal occupancy-band mixture**, not an equal
 phase mixture, unless cross-game phase comparability is separately justified.
 
+### Follow-up: interpretation of the v04 minimum count (2026-10-07)
+
+An approved read-only review found 48 accepted Design02 slots can meet
+v04's numeric minimum of 40 only if "independently generated situations"
+means independent generation events (slot IDs), not distinct board values.
+Repeated states do not invalidate independence of the underlying draws under
+the IID slot assumptions, but v04 does not specify whether repeats count.
+Further, Design02 allocates 16 slots to each of three band-conditional
+first-passage distributions. Even if the slot draws are independent across
+bands, the resulting 48 observations are not necessarily IID from one
+variant-wide population. Design02 therefore changes both the sampling-unit
+interpretation and the estimand to an equal-weight mixture of band-specific
+populations. This is a coherent proposed amendment under its assumptions, not
+automatic compliance with unchanged v04. Explicit method disposition remains
+required; the review accepts neither Design02 nor the calibration protocol and
+does not authorize root generation or advance a gate.
+
 The stratified crossed bootstrap preserves the proposed seed/root pairing,
 seat assignments, and fixed weights. That structural alignment does not
 establish finite-sample coverage, familywise error control, or calibration of

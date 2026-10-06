@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 root-schedule minimum-count interpretation
+
+An approved static follow-up found that design 02's 48 accepted slots meet
+v04's numeric minimum of 40 only if “independently generated situations”
+means independent generation events, not 40 distinct board states. Its 16
+slots per occupancy band come from three band-conditional first-passage
+populations, so the 48 are not necessarily IID from one variant-wide
+population. Design 02 therefore proposes an equal-weight mixture and a
+material estimand amendment; v04 is ambiguous on both the unit and population.
+This is not unchanged-v04 compliance or schedule acceptance. No roots or
+simulations ran and no gate advanced. See the root-schedule design and review.
+
 ### 2026-10-07 corrected six-arm dense-forward MAC inventory
 
 Independent static review found the first inventory counted only three
