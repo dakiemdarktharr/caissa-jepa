@@ -13,6 +13,7 @@ from typing import Any
 
 REQUEST_SCHEMA = "caissa.synthetic.armed-bootstrap-request.v02"
 MAX_REQUEST_BYTES = 65_536
+MAX_SOURCE_BYTES = 262_144
 WORKER_MODULES = (
     "two_player/v212_worker_ipc.py",
     "two_player/v212_release_token_v01.py",
@@ -24,10 +25,11 @@ WORKER_MODULES = (
 
 def worker_source() -> str:
     """Return a small no-inference worker entrypoint using exact raw stdin."""
-    return r'''import hashlib,json,os,sys,syslog,time,types
+    return r'''import hashlib,json,os,stat,sys,syslog,time,types
 from pathlib import Path
 
 MAX_REQUEST_BYTES=65536
+MAX_SOURCE_BYTES=262144
 def read_raw_request():
     chunks=bytearray()
     while True:
@@ -70,13 +72,39 @@ expected={"two_player/v212_worker_ipc.py","two_player/v212_release_token_v01.py"
           "two_player/v212_armed_protocol_v02.py"}
 files=manifest.get("files")
 if not isinstance(files,dict) or set(files)!=expected: sys.exit(37)
+if (not hasattr(os,"O_NOFOLLOW") or not hasattr(os,"O_DIRECTORY")
+        or not hasattr(os,"O_NONBLOCK") or not hasattr(os,"O_NOCTTY")): sys.exit(41)
+def read_verified_source(relative,digest):
+    parts=relative.split("/")
+    if len(parts)!=2 or parts[0]!="two_player": sys.exit(38)
+    opened=[]
+    try:
+        root_fd=os.open(root,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+        opened.append(root_fd)
+        package_fd=os.open(parts[0],os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=root_fd)
+        opened.append(package_fd)
+        source_fd=os.open(parts[1],os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK|os.O_NOCTTY,
+                           dir_fd=package_fd)
+        opened.append(source_fd)
+        info=os.fstat(source_fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_size>MAX_SOURCE_BYTES: sys.exit(42)
+        content=bytearray()
+        while True:
+            block=os.read(source_fd,min(65536,MAX_SOURCE_BYTES+1-len(content)))
+            if not block: break
+            content.extend(block)
+            if len(content)>MAX_SOURCE_BYTES: sys.exit(42)
+        data=bytes(content)
+        if hashlib.sha256(data).hexdigest()!=digest: sys.exit(39)
+        return data
+    except OSError:
+        sys.exit(38)
+    finally:
+        for fd in reversed(opened): os.close(fd)
+
 verified={}
 for relative,digest in files.items():
-    path=(root/relative).resolve(strict=True)
-    if not path.is_relative_to(root): sys.exit(38)
-    data=path.read_bytes()
-    if hashlib.sha256(data).hexdigest()!=digest: sys.exit(39)
-    verified[relative]=data
+    verified[relative]=read_verified_source(relative,digest)
 canonical=json.dumps(manifest,sort_keys=True,separators=(",",":"),allow_nan=False).encode("utf-8")
 if hashlib.sha256(canonical).hexdigest()!=request.get("source_manifest_sha256"): sys.exit(40)
 
@@ -173,5 +201,5 @@ def request_bytes(nonce: str, manifest: dict[str, Any],
                       ensure_ascii=False, allow_nan=False).encode("utf-8")
 
 
-__all__ = ["MAX_REQUEST_BYTES", "REQUEST_SCHEMA", "WORKER_MODULES",
+__all__ = ["MAX_REQUEST_BYTES", "MAX_SOURCE_BYTES", "REQUEST_SCHEMA", "WORKER_MODULES",
            "request_bytes", "source_manifest", "worker_source"]

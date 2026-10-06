@@ -133,6 +133,37 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         self.assertEqual(result.returncode, 39)
         self.assertEqual(result.stdout, b"")
 
+    def test_manifest_rejects_oversized_helper_before_reading_it(self):
+        source_root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        with tempfile.TemporaryDirectory(prefix="caissa-bootstrap-oversize-") as td:
+            project_root = Path(td) / "project"
+            self._copy_worker_helpers(source_root, project_root)
+            manifest, digest = bootstrap.source_manifest(project_root, source)
+            helper = project_root / bootstrap.WORKER_MODULES[-1]
+            helper.write_bytes(b"x" * (bootstrap.MAX_SOURCE_BYTES + 1))
+            result = self._run_bootstrap(
+                bootstrap.request_bytes("a" * 32, manifest, digest),
+                str(project_root))
+        self.assertEqual(result.returncode, 42)
+        self.assertEqual(result.stdout, b"")
+
+    def test_manifest_rejects_helper_fifo_without_blocking(self):
+        source_root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        with tempfile.TemporaryDirectory(prefix="caissa-bootstrap-fifo-") as td:
+            project_root = Path(td) / "project"
+            self._copy_worker_helpers(source_root, project_root)
+            manifest, digest = bootstrap.source_manifest(project_root, source)
+            helper = project_root / bootstrap.WORKER_MODULES[-1]
+            helper.unlink()
+            os.mkfifo(helper, 0o600)
+            result = self._run_bootstrap(
+                bootstrap.request_bytes("a" * 32, manifest, digest),
+                str(project_root))
+        self.assertEqual(result.returncode, 42)
+        self.assertEqual(result.stdout, b"")
+
     def test_manifest_rejects_helper_symlink_outside_project_root(self):
         source_root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()
