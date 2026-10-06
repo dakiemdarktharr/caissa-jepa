@@ -2085,3 +2085,21 @@ and stop while preserving the workspace. Missing `ActiveState`/`SubState` is
 handled through the state-poll deadline path and was not misrepresented as a
 snapshot-parser test. The focused omitted-fields test passes; MGR-01 remains
 partial.
+
+### 2026-10-07 policy-yield × root-quality interaction stress
+
+Drafted four candidate P2 cells crossing the existing low/high policy-pair
+yield groups with the prior root-quality factor. A deterministic, no-RNG
+audit preserves marginal q=.40, accepted group weights .25/.75, group-
+conditional targets, and root-slot variance; its six focused tests pass.
+Read-only review found no major math or inventory mismatch. It requested a
+convergence check for selected-root second moments and variance; those checks
+and a written 1e-10 cross-order contract are now present, with follow-up
+confirmation that the finding is resolved. Under the cumulative 39-cell/69-
+endpoint proposal, the analytic assurance union bound is .806789 at R=18,450
+and .794551 at R=18,500 because of the discrete cutoff. R=18,450 is only a
+grid candidate, not an adopted replication rule; the 7.1955 billion inner
+bootstrap / 107.9325 billion contrast workload remains unmeasured locally.
+This draft does not revise calibration draft 02 or accept the earlier root-
+quality addendum. No simulation, roots, scores, outcomes, inference, or
+training occurred; v04 and all gates remain unchanged.
