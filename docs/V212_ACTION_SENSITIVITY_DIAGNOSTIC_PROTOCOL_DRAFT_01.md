@@ -258,6 +258,12 @@ selection are wanted, freeze their estimand, error control, uncertainty
 method, and sample-size rationale in a new reviewed version before any model
 output is examined.
 
+The proposed open-loop subdiagnostic reports horizons 2 and 4 on its
+intervened, receipt-policy-pair-conditioned branches. It does not replace or
+reduce METHOD_SPEC v04's separate latent-error reporting at horizons 1, 2, 4,
+and 8, and it does not estimate the behavior-policy first-action or uniform
+legal-continuation distribution.
+
 ## Decisions required before freeze
 
 Independent review must check the metric against the actual six-arm forward

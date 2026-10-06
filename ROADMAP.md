@@ -2,6 +2,21 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 action-sensitivity/regret decision register
+
+An approved read-only review found the one-step retrieval and horizon
+denominators coherent as proposals, but both diagnostics remain gated. A
+cross-draft register now names the open root-population/weight/yield choices,
+missing trainer and raw-state evidence, all-legal-action feasibility and
+charged-work needs, regret-reference alternatives and provenance/resource
+contract, and metric-priority/result-schema decisions. Terminology now
+distinguishes exact fixed-horizon values from exact full-game minimax, regret's
+local “primary” quantity from v04's secondary status, and the proposed
+horizon-2/4 action-sensitive rollout from v04's separate latent-error
+horizons 1/2/4/8. No protocol, arm, metric, threshold, root schedule, or gate
+was frozen. No roots, branches, outcomes, inference, or training were
+accessed/run. See `docs/V212_PREFIT_ACTION_REGRET_DECISION_REGISTER_DRAFT_01.md`.
+
 ### 2026-10-07 ResDreamer prior-art refresh
 
 Full-text review of ICML 2026 ResDreamer adds a nearby combat-world-model

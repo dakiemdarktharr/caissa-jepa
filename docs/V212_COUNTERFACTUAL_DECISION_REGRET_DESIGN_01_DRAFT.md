@@ -7,6 +7,10 @@ amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
 or root generation, training, matches, or outcome access. The reference depth,
 leaf evaluator, sampling schedule, and compute allocation remain unselected.
 
+In this draft, “primary executed-action regret” names the main quantity within
+the regret diagnostic only. METHOD_SPEC v04 still makes regret secondary to
+the paired head-to-head development score.
+
 **Independent static review of the prior formulation (2026-10-04): no remaining blocker within that scope.** The review
 confirmed that regret must use the action returned under the frozen planner
 caps, kept separate from any extra-compute full-window score-ranking
@@ -73,6 +77,12 @@ incumbent window is insufficient. Then regret is
 `V_ref(s) - Q_ref(s,a_m^exec)` for that declared bounded reference. One
 action-independent `V_ref` can be shared across arms, while action-value
 queries may be cached by root fingerprint and action.
+
+Here “exact fixed-horizon” means exact under the declared finite search
+horizon and evaluator, including exact terminal utility if a terminal state is
+reached. It does not mean exact full-game minimax unless search reaches and
+solves terminal states. Keep such bounded-reference regret separate from
+exact-solved position strata and from sound interval regret.
 
 Proposed protocol split: keep a complete legal-action fingerprint and prove
 the reference maximization covered every legal action, but record exact
@@ -471,6 +481,10 @@ co-primary. Then version the method/protocol and freeze code/config hashes and
 analysis before scoring. No metric threshold or nomination rule is supplied
 here, and this draft does not establish that the remaining benchmark question
 is novel or that any JEPA arm will perform better.
+
+For a cross-draft checklist of shared decisions, evidence prerequisites, and
+responsible workstreams, see
+`docs/V212_PREFIT_ACTION_REGRET_DECISION_REGISTER_DRAFT_01.md`.
 
 
 ## Existing exact-regret precedent and scope
