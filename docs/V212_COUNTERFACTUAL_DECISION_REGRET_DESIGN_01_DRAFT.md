@@ -684,3 +684,18 @@ action query plan needs its own correctness proof against the exact table and
 an independently reviewed cost allocation. No evaluator, depth, budget,
 terminal-root policy, or query plan is selected here. This source audit used
 no roots, model outputs, scores, or outcomes and advances no gate.
+
+**Independent read-only action-sensitivity/regret review (2026-10-07): no
+freeze or estimator adoption.** The reviewer judged the executed-action regret
+and optional ranking definitions coherent under their stated assumptions, but
+identified unresolved pre-freeze choices: scalar bounded-horizon regret versus
+sound interval regret (distinct estimands); reference evaluator/depth and exact
+versus bounded strata; root population, seat/variant weighting, and failure
+yield treatment; and evaluator/rules identity plus charged transition, node,
+wall-time, and memory budgets. Do not convert bounded values into points or
+pool the scalar and interval estimands. The reviewer also confirmed that the
+action-sensitivity diagnostic is conditional on the receipt-assigned policy
+pair and is not a behavior-policy or uniform-continuation rollout estimand.
+No solver, reference, budget, threshold, metric priority, or schedule was
+selected. No roots, scores, outcomes, simulations, inference, or training were
+accessed or run.

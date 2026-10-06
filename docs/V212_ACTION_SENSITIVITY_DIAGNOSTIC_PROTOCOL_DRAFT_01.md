@@ -301,3 +301,19 @@ feature masks and terminal handling, and separately resolve the accepted root
 schedule and resource/denominator rules. The decision-regret protocol remains
 a separate unresolved gate. No roots, outputs, simulations, inference, or
 training were accessed or run.
+
+**Independent read-only action-sensitivity/regret review (2026-10-07): no
+freeze approval.** The reviewer found the descriptive one-step support,
+terminal, collision, and denominator concepts mostly coherent, but identified
+three blockers shared with the regret design: actual per-arm trainer/loss
+graphs and raw-state target/mask behavior are unavailable; the accepted-root
+population, occupancy strata, repeated-state weighting, and failure/yield
+estimand are not frozen; and all-legal-action branch expansion has no measured
+feasibility or predeclared charged-work allocation. Before freeze, operationally
+define occupancy strata and how terminal branch cells enter horizon
+denominators/failure summaries. Preserve the explicit conditioning of the
+multi-step diagnostic on the receipt-assigned policy pair; it does not estimate
+behavior-policy first-action or uniform-legal-continuation performance. The
+review adopted no arm, metric, root schedule, threshold, or allocation. No
+roots, branches, model outputs, simulations, inference, or training were
+accessed or run.
