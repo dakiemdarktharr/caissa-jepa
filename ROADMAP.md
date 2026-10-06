@@ -1957,3 +1957,29 @@ closed. See `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_02.md`.
 Implemented deterministic target and η auditing for all 31 proposed draft-02 scenarios. The manifest serializes 990 solved profile/band/policy-pair targets; the maximum absolute residual is `9.910895715226076e-11`. The control-major contrast order now explicitly matches the document and N-ATOMIC indexing. N-MACRO's V1 +0.10 / V2 −0.10 orientation is called out as a proposed convention requiring independent disposition before simulation.
 
 Eleven profile/target tests pass. Read-only `gpt-6-luna/high` review confirmed the mapping and convention are consistent across protocol, tool, and tests. This is deterministic analytic reproducibility only: no random draws, calibration datasets, roots, scores, outcomes, or model runs were generated/accessed. It does not accept the protocol or open any gate; v04 remains current. Obtain independent statistical disposition of the draft and its open conventions before any simulation. See `tools/v212_calibration_target_audit.py`, its tests, and the draft-02 calibration protocol.
+
+### 2026-10-07 v02 bootstrap import-path audit
+
+A canary showed the worker's `sys.path[0] = project root` allowed an
+unmanifested root-level `dataclasses.py` to shadow a standard-library import
+made by a verified helper. The bootstrap now leaves isolated interpreter
+imports alone, removes the project directory from the synthetic package search
+path, and compiles only the five allowlisted helper byte buffers. A subprocess
+regression confirms the unmanifested canary is not run. Added a second test
+that reaches the bootstrap self-hash rejection with a canonical request and a
+valid recomputed manifest digest. The focused bootstrap/protocol/release-token/
+IPC suites pass 60/60; an approved read-only `gpt-6-luna/high` reviewer
+confirmed the source-level fixes and helper import order.
+
+The v02 request-carried source manifest is still not authenticated by an
+independent trust anchor. Python startup/stdlib, loader and native runtime
+remain unattested, with no runtime fingerprint in the release or accepted
+receipt. The v01 controller also collects source hashes after importing its
+Python dependencies, and its runtime receipt describes service/cgroup
+properties; neither attests already-loaded code. v02 remains unwired to the
+systemd controller/adapter; the failure matrix remains partial. No service,
+adapter, inference, OOM, training, score, match, or outcome ran. No gate
+advanced. Continue static design toward a trusted immutable runtime source and
+integrated failure contract before any service/pilot transition. See
+`docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md` and the updated
+supervision test map.

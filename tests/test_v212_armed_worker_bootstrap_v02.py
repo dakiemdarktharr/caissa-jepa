@@ -25,6 +25,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                         source.index("exec(compile(verified[relative]"))
         self.assertIn('argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]', source)
         self.assertIn('hashlib.sha256(argv[5])', source)
+        self.assertNotIn('sys.path.insert(0,str(root))', source)
         self.assertIn("request_bytes=request_raw", source)
         self.assertIn("v212_armed_protocol_v02.py", source)
         self.assertNotIn("v212_request_adapter", source)
@@ -136,6 +137,17 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         self.assertEqual(result.returncode, 40)
         self.assertEqual(result.stdout, b"")
 
+    def test_manifest_rejects_incorrect_bootstrap_hash_before_source_loading(self):
+        root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        manifest, _ = bootstrap.source_manifest(root, source)
+        manifest["bootstrap_sha256"] = "0" * 64
+        request = bootstrap.request_bytes(
+            "a" * 32, manifest, self._manifest_digest(manifest))
+        result = self._run_bootstrap(request, str(root))
+        self.assertEqual(result.returncode, 36)
+        self.assertEqual(result.stdout, b"")
+
     def test_manifest_rejects_helper_bytes_changed_after_preflight(self):
         source_root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()
@@ -220,6 +232,24 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                 bootstrap.request_bytes("a" * 32, manifest, digest),
                 str(project_root))
         self.assertEqual(result.returncode, 38)
+        self.assertEqual(result.stdout, b"")
+
+    def test_unmanifested_project_module_cannot_shadow_stdlib_import(self):
+        source_root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        with tempfile.TemporaryDirectory(prefix="caissa-bootstrap-shadow-") as td:
+            project_root = Path(td) / "project"
+            self._copy_worker_helpers(source_root, project_root)
+            project_root.mkdir(parents=True, exist_ok=True)
+            (project_root / "dataclasses.py").write_text(
+                'raise RuntimeError("UNMANIFESTED_STDLIB_SHADOW")\n',
+                encoding="utf-8")
+            manifest, digest = bootstrap.source_manifest(project_root, source)
+            request = bootstrap.request_bytes("a" * 32, manifest, digest)
+            result = self._run_bootstrap(request, str(project_root))
+        self.assertNotIn(b"UNMANIFESTED_STDLIB_SHADOW", result.stderr)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(b"FileNotFoundError", result.stderr)
         self.assertEqual(result.stdout, b"")
 
     def test_cap_plus_one_is_rejected_before_project_source_access(self):

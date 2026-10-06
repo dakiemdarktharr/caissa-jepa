@@ -362,3 +362,37 @@ canonical request enforcement, controller/runtime-receipt integration, an
 actual runtime fingerprint, or independent review. The candidate is not wired
 to systemd or the request adapter. It supplies no service, inference, OOM,
 training, score, match, or gate evidence.
+
+### Import-path hardening and bootstrap-hash regression (2026-10-07)
+
+A subprocess canary exposed an import-path issue in the offline bootstrap:
+placing the project root at `sys.path[0]` let a root-level, unmanifested
+`dataclasses.py` shadow the standard-library dependency imported by a verified
+helper. The generated worker now leaves the isolated interpreter's ordinary
+import path intact, does not change its working directory to the project, and
+sets the synthetic `two_player` package path empty. Its five approved helper
+modules are still compiled from the verified byte buffers and installed in
+dependency order. A regression with a throwing unmanifested `dataclasses.py`
+now reaches the later missing-workspace boundary without executing that file.
+
+A second test supplies a canonical request with a valid recomputed manifest
+digest but a deliberately wrong embedded-bootstrap digest; it reaches exit 36
+at the bootstrap-hash check before helper loading. This covers a rejection
+branch that the earlier bad-manifest-digest fixture did not reach. The focused
+bootstrap/protocol/release-token/IPC set passes 60/60, and `git diff --check`
+passes. An approved read-only `gpt-6-luna/high` follow-up confirmed the import
+path remains sufficient for all compiled helper imports and scoped the result
+to these source-level seams.
+
+This does not authenticate the request-carried manifest against an independent
+trusted digest. Python startup/stdlib, the dynamic loader, native dependencies,
+and actual mapped bytes remain unattested; no runtime fingerprint is bound to
+the release token or accepted receipt; and the v02 bootstrap is still separate
+from the v01 controller and request adapter. The manager/journal/counter
+failure map and full controller composition remain incomplete. The approved
+review also found that the v01 controller imports its Python dependencies
+before collecting source-file hashes; those later hashes establish file
+stability, not the bytes in already-loaded code objects, and its runtime
+receipt fields describe service limits/cgroups rather than Python/runtime
+identity. No service, request adapter, inference, OOM, training, score, match,
+or outcome ran. No gate changed.

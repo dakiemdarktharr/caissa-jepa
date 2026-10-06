@@ -114,10 +114,8 @@ for relative,digest in files.items():
 canonical=json.dumps(manifest,sort_keys=True,separators=(",",":"),allow_nan=False).encode("utf-8")
 if hashlib.sha256(canonical).hexdigest()!=request.get("source_manifest_sha256"): sys.exit(40)
 
-os.chdir(root)
-sys.path.insert(0,str(root))
 package=types.ModuleType("two_player")
-package.__path__=[str(root/"two_player")]
+package.__path__=[]
 package.__package__="two_player"
 sys.modules["two_player"]=package
 module_files=(
