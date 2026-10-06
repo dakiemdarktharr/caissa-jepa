@@ -385,6 +385,19 @@ Aggregate per root first, then by predeclared variant and seat with the locked
 weighting. Do not pool root actions as if they were independent root
 observations.
 
+**Conditional root/weighting alignment candidate, not an accepted estimand:**
+if `V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` and its paired seat schedule are
+accepted unchanged, reuse its accepted slot IDs and preserve repeated boards
+as separate root draws. Compute each seat-assignment record separately, average
+the two seat assignments within each slot/model-seed cell as required by
+`METHOD_SPEC_V212.md` §7, average slots equally within each of the three
+occupancy bands, then weight the bands equally within variant and variants
+equally for the macro. Keep exact-solved and bounded-reference strata separate.
+The proposed first-16-valid-of-64 rule and global six-band yield failure apply
+only if the root schedule is independently accepted. Until then, root
+population, weighting, and yield/failure handling remain open; this candidate
+does not select between scalar bounded-reference and interval regret.
+
 ## Completeness, alpha-beta bounds, and failures
 
 The legal-action set is always fingerprinted, and the reference root search
@@ -699,3 +712,11 @@ pair and is not a behavior-policy or uniform-continuation rollout estimand.
 No solver, reference, budget, threshold, metric priority, or schedule was
 selected. No roots, scores, outcomes, simulations, inference, or training were
 accessed or run.
+
+**Root/seat aggregation crosswalk (2026-10-07):** a conditional candidate now
+aligns the regret aggregation with the proposed design-02 root schedule and
+v04's two-seat pairing rule. It keeps repeated slot draws, averages seats
+within slot/model-seed, then uses equal occupancy-band and variant weights.
+This is explicitly contingent on independent schedule acceptance and does not
+resolve the reference, budget, identity, or failure-policy choices. No root,
+reference, metric priority, or gate was adopted.

@@ -40,6 +40,20 @@ encoder and predictor hashes, target-encoder rule, action order, root receipt,
 policy configuration, branch RNG derivation, and software versions before
 diagnostic computation.
 
+**Conditional alignment candidate, not an accepted schedule:** if
+`V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` is accepted unchanged, use its three
+root-occupancy bands `[0,1/3)`, `[1/3,2/3)`, and `[2/3,1)`, where occupancy is
+occupied cells divided by board area (the four initial Reversi discs count;
+forced passes advance ply but do not change occupancy). Keep each accepted
+slot as a root draw, including repeated boards; average root-slot summaries
+equally within each variant × band, weight the three bands equally within a
+variant, and weight the two variants equally for a macro summary. The proposed
+schedule's first-16-valid-of-64-per-band rule and global failure if any of the
+six bands under-yields also govern only if that schedule is independently
+accepted. Until then, root population, weights, and failure/yield treatment
+remain open; this paragraph does not authorize generation or choose a
+schedule.
+
 Before evaluating predictions, derive support labels per arm from its frozen
 training-window manifest and objective masks, without using model outputs. An
 eligible occurrence is a unique source transition `(episode_id, ply_index)`
@@ -200,12 +214,19 @@ continuations. The action expansion cost and feasibility remain unknown.
 For horizon `h`, an expected-terminal mask applies when the branch reaches a
 terminal state at or before `h`; no predicted state error is defined at or
 after that event. Report the mask ply and terminal count separately at each
-horizon. It is not a missing or failed prediction. For a nonterminal state at
-`h`, the prediction/target row is required; interruption, nonfinite output,
-or unavailable nonterminal target is incomplete and invalidates its
-predeclared aggregate. Denominators are the nonterminal accepted-root ×
-first-action branch cells at that horizon; report numerator, denominator, and
-terminal masks.
+horizon. It is not a missing or failed prediction. For operational accounting,
+report (i) planned branch cells, one per accepted root-slot × legal first
+action; (ii) expected-terminal cells, determined by the exact branch and
+masked at or before `h`; and (iii) target-eligible cells, whose exact branch
+is nonterminal at `h`. The error denominator is the target-eligible count, not
+the planned count; terminal cells remain in the planned ledger and are
+reported separately. Every target-eligible cell must have a prediction and
+target. Interruption, nonfinite output, or unavailable nonterminal target is
+an incomplete cell, not an expected mask, and invalidates its predeclared
+aggregate. For each horizon report `N_planned`, `N_terminal`,
+`N_target_eligible = N_planned - N_terminal`, and `N_complete`; a valid error
+aggregate requires `N_complete = N_target_eligible`. Report the incomplete
+count and reasons when they differ.
 
 First average applicable action rows within root, then roots within the
 accepted variant × occupancy stratum, then use only weights explicitly
@@ -317,3 +338,13 @@ behavior-policy first-action or uniform-legal-continuation performance. The
 review adopted no arm, metric, root schedule, threshold, or allocation. No
 roots, branches, model outputs, simulations, inference, or training were
 accessed or run.
+
+**Aggregation crosswalk (2026-10-07):** the root-population and terminal-cell
+accounting are now stated as a conditional alignment candidate above. It
+reuses design 02's three occupancy bands, repeated-slot sampling unit,
+equal-band/equal-variant weights, and global under-yield stop only if an
+independent method review accepts that schedule unchanged. It also distinguishes
+planned, terminal-masked, target-eligible, and completed horizon cells. This
+resolves wording ambiguity but does not resolve the underlying root-schedule
+acceptance, sample-size rationale, trainer graph, or branch feasibility; no
+protocol or gate is frozen.

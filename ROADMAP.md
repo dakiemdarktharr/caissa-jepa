@@ -17,6 +17,19 @@ the rollout's receipt-assigned policy-pair conditioning in interpretation.
 No roots, outputs, scores, outcomes, simulations, inference, or training were
 accessed or run. No gate advanced. See the two protocol drafts.
 
+### 2026-10-07 action/regret aggregation crosswalk candidate
+
+Added a conditional consistency proposal to both drafts: if development-root
+schedule design 02 is accepted unchanged, use its three occupancy bands,
+repeated slot IDs, equal within-band root weights, equal band and variant
+weights, and global six-band under-yield stop; for regret, also average v04's
+two seat assignments within each slot/model-seed cell. The action-sensitivity
+ledger now separates planned branch cells, expected-terminal masks,
+target-eligible cells, and completed predictions. These clarifications do not
+accept the root schedule or resolve its independence/yield assumptions, trainer
+graph, reference estimand, resource allocation, or branch feasibility. No roots
+or model outputs were generated. No gate advanced.
+
 ### 2026-10-07 bounded-reference provenance/resource audit
 
 Static source inspection found the bounded-reference helper validates the
