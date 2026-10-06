@@ -68,12 +68,27 @@ so the binding covers bytes rather than parsed-object equivalence.
 
 Five focused protocol tests pass, including matching-byte release,
 same-nonce/different-byte rejection before callback, tampered release digest,
-and malformed/oversized request rejection before the FIFO wait. This is only
-a synthetic API/contract candidate: the v01 systemd smoke and current request
-adapter do not call v02, the worker bootstrap has not yet been changed to read
-bounded raw stdin into this API, and no live service or request was run. It
-does not close the runtime fingerprint or remaining manager/journal/counter
-failure map, receive independent review, or open adapter/pilot/OOM gates.
+and malformed/oversized request rejection before the FIFO wait. The separate
+v02 bootstrap now reads bounded raw stdin, enforces canonical request bytes,
+and passes the exact bytes to that API. This remains a synthetic candidate:
+the v01 systemd smoke and current request adapter do not call v02, and no live
+service or request was run. It does not close the runtime fingerprint or
+remaining manager/journal/counter failure map, receive independent review, or
+open adapter/pilot/OOM gates.
+
+### Canonical raw-request bootstrap enforcement (2026-10-06)
+
+The separate v02 bootstrap now re-encodes the parsed request using the pinned
+sorted-key, compact, UTF-8 JSON encoding and compares those bytes with bounded
+stdin before opening project helper files. Subprocess fixtures reject trailing
+whitespace, a leading newline, reordered keys, and an exact-cap non-canonical
+request; the exact canonical source-verified release-to-response fixture still
+passes. The focused bootstrap/protocol/release-token/IPC/service-smoke/receipt
+regression group passes 139/139. This remains offline candidate evidence: v02
+is not wired into the current systemd smoke or adapter, and caller deadline,
+executed runtime identity, integrated failure mapping, independent review, and
+all live-service gates remain open. No service, request, inference, OOM,
+training, score, or match ran.
 
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 

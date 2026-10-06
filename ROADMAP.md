@@ -2,6 +2,20 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 canonical request bytes at the v02 bootstrap boundary
+
+The separate v02 bootstrap re-encodes the parsed bounded stdin request using
+the pinned sorted-key/compact UTF-8 JSON form and byte-compares it before
+opening project helper files. Offline subprocess fixtures reject trailing
+whitespace, a leading newline, reordered keys, and a non-canonical request at
+the exact byte cap; canonical source-verified release-to-response still
+passes. The focused bootstrap/protocol/release-token/IPC/service-smoke/receipt
+group passes 139/139. This does not wire v02 into systemd or the adapter and
+does not establish caller deadlines, executed runtime identity, complete
+failure mapping, or independent review. No live service, request, inference,
+OOM, training, score, or match ran; no gate changed. See the integration design
+and supervision failure plan.
+
 ### 2026-10-06 strict journal evidence parsing
 
 The collector now rejects duplicate JSON keys at every nesting level and

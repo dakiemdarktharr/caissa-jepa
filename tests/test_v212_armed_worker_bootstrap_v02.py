@@ -70,6 +70,22 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         self.assertEqual(result.returncode, 31)
         self.assertEqual(result.stdout, b"")
 
+    def test_noncanonical_request_bytes_are_rejected_before_project_access(self):
+        root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        manifest, digest = bootstrap.source_manifest(root, source)
+        canonical = bootstrap.request_bytes("a" * 32, manifest, digest)
+        reordered = dict(reversed(list(json.loads(canonical).items())))
+        variants = (canonical + b" ", b"\n" + canonical,
+                    json.dumps(reordered, sort_keys=False,
+                               separators=(",", ":"), ensure_ascii=False,
+                               allow_nan=False).encode("utf-8"))
+        for raw in variants:
+            with self.subTest(request_suffix=raw[-8:]):
+                result = self._run_bootstrap(raw)
+                self.assertEqual(result.returncode, 43)
+                self.assertEqual(result.stdout, b"")
+
     def test_wrong_schema_extra_request_field_and_nonfinite_value_are_rejected(self):
         nonce = b"a" * 32
         cases = (
@@ -217,7 +233,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         self.assertEqual(result.returncode, 30)
         self.assertEqual(result.stdout, b"")
 
-    def test_exact_hard_cap_reaches_bootstrap_fingerprint_gate(self):
+    def test_exact_hard_cap_reaches_canonical_request_gate(self):
         root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()
         manifest, _ = bootstrap.source_manifest(root, source)
@@ -231,7 +247,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         raw += b" " * (bootstrap.MAX_REQUEST_BYTES - len(raw))
         self.assertEqual(len(raw), bootstrap.MAX_REQUEST_BYTES)
         result = self._run_bootstrap(raw, str(root))
-        self.assertEqual(result.returncode, 36)
+        self.assertEqual(result.returncode, 43)
         self.assertEqual(result.stdout, b"")
 
     def test_verified_bootstrap_releases_on_exact_stdin_and_returns_response(self):
@@ -332,11 +348,8 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                     altered_process.stdin.write(raw_request + b" ")
                     altered_process.stdin.close()
                     altered_process.stdin = None
-                    armed.release_when_ready(
-                        altered_workspace, snapshot,
-                        deadline=time.monotonic() + 5)
                     altered_stdout, _ = altered_process.communicate(timeout=5)
-                    self.assertNotEqual(altered_process.returncode, 0)
+                    self.assertEqual(altered_process.returncode, 43)
                     self.assertEqual(altered_stdout, b"")
                 finally:
                     if (altered_process is not None

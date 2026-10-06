@@ -59,6 +59,12 @@ if (not isinstance(request,dict) or set(request)!={"schema","nonce","source_mani
 nonce=request.get("nonce")
 if not isinstance(nonce,str) or len(nonce)!=32 or any(c not in "0123456789abcdef" for c in nonce):
     sys.exit(33)
+try:
+    canonical_request=json.dumps(request,sort_keys=True,separators=(",",":"),
+                                 ensure_ascii=False,allow_nan=False).encode("utf-8")
+except (TypeError,ValueError,UnicodeError,RecursionError):
+    sys.exit(43)
+if canonical_request!=request_raw: sys.exit(43)
 
 # The raw request is bounded and parsed before project helper files are opened.
 root=Path(sys.argv[3]).resolve(strict=True)
