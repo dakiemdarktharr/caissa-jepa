@@ -2,21 +2,27 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-07 six-arm dense-forward MAC inventory
+### 2026-10-07 corrected six-arm dense-forward MAC inventory
 
-A deterministic source-level inventory counts dense forward MACs implied by
-v04 and the unadopted raw-state proposal. Per complete nonterminal 1/2/4-ply
-window it gives 37,536 for multi-step JEPA and 56,544 for raw-state (+50.64%);
-value-only has 18,528, single-pair/single-horizon 24,864, and direct-leaf
-14,816. The raw-state graph adds decoder and online re-encoder calls, while
-JEPA arms use EMA target encodes. This highlights that common samples/updates
-do not guarantee close compute. The count excludes backward, optimizer,
-activations, losses, masks, EMA update, and data movement; it does not prove
-the 5% measured training-FLOP gate fails. Three deterministic tests pass. No
-model or data was instantiated and no gate advanced. The next required
-evidence remains an independently reviewed, same-batch forward/backward
-profile after the six graphs and raw-state arm are frozen. See the architecture
-reconciliation draft and `tools/v212_arm_dense_forward_macs_audit.py`.
+Independent static review found the first inventory counted only three
+recursive transitions for horizons 1/2/4. Constructing horizon 4 requires
+four predictor calls, including an unsupervised transition-3 intermediate;
+the unadopted raw-state graph also needs four decoder and online re-encoder
+calls. Corrected counts per fully valid nonterminal four-ply window are
+40,864 for multi-step JEPA, 72,544 for raw-state (+77.53%), 21,856 for
+value-only, 28,192 for single-pair and single-horizon, and 14,816 for
+direct-leaf. The earlier published values are superseded. Common samples and
+updates do not guarantee close compute. This operation count excludes
+backward, optimizer, activations, losses, masks, EMA update, and data movement;
+it does not establish whether the 5% measured training-FLOP gate passes.
+Regression checks assert four transition calls, three rollout-value calls
+for horizons 1/2/4, and four raw-state decoder/re-encoder calls. EMA target
+encodes remain arm-specific: three for multi-step JEPA and one each for
+single-pair and single-horizon JEPA. No model or data was instantiated and no
+gate advanced. The next required evidence remains an
+independently reviewed, same-batch forward/backward profile after the six
+graphs and raw-state arm are frozen. See the architecture reconciliation
+draft and `tools/v212_arm_dense_forward_macs_audit.py`.
 
 ### 2026-10-07 raw-state feature coordinate audit
 

@@ -109,13 +109,18 @@ bounded `tanh` output is not treated as an equivalent training objective.
 
 Added `tools/v212_arm_dense_forward_macs_audit.py` to count only dense
 matrix multiply-accumulates implied by v04 and the unadopted latent-then-decode
-proposal, per fully valid nonterminal 1/2/4-ply window. The candidate JEPA
-inventory is 37,536 MACs; the proposed recursive raw-state graph is 56,544
-(+50.64%); value-only latent rollout is 18,528; single-pair and single-horizon
-JEPA are each 24,864; and direct-leaf value is 14,816. The raw-state count
-includes three 32-to-198 decoder calls and three online 198-to-32 re-encodes;
-the JEPA count includes three EMA target encodes. This makes clear that equal
-windows, batches, and update counts do not imply close dense forward work.
+proposal, per fully valid nonterminal four-ply window with 1/2/4 targets. The
+first published inventory undercounted recursion by omitting transition 3,
+which is needed to construct horizon 4. After independent review, the audit
+and regression expectations now count four predictor calls and, for the
+proposed raw-state graph, four 32-to-198 decoder calls plus four online
+198-to-32 re-encodes. Corrected counts are 40,864 MACs for multi-step JEPA;
+72,544 for recursive raw-state (+77.53%); 21,856 for value-only latent
+rollout; 28,192 for single-pair and single-horizon JEPA; and 14,816 for
+direct-leaf value. The former counts (37,536, 56,544, 18,528, and 24,864)
+are superseded. The JEPA count includes three EMA target encodes. Equal
+windows, batches, and update counts therefore do not imply close dense forward
+work.
 
 This is a static operation inventory, not a complete FLOP count, not a
 forward/backward dry-run, and not a verdict that the v04 5% gate fails. It
@@ -126,7 +131,11 @@ any trainer or fit, independently resolve the arm graphs and run the required
 same-batch forward/backward FLOP profile; if the measured panel exceeds 5%,
 version and review a method change rather than adding filler work.
 
-Three standard-library tests verify the shape arithmetic and graph call counts.
+Three standard-library tests verify the shape arithmetic and corrected graph
+call counts: four recursive predictor transitions, three rollout-value calls
+at horizons 1/2/4, and four raw-state decode/re-encode transitions. EMA target
+encodes are arm-specific: three for multi-step JEPA and one for each
+single-target JEPA arm.
 The deterministic JSON is at `/tmp/caissa-v212-arm-dense-forward-macs-audit.json`;
 the output is not a dataset or performance result. No model was instantiated
 and no roots, outcomes, inference, training, or matches were run/accessed.

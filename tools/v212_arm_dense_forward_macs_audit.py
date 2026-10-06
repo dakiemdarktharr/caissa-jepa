@@ -14,6 +14,7 @@ VALUE_HEAD = (32, 1)
 PREDICTOR = (104, 32)
 DECODER = (32, 198)
 HORIZONS = (1, 2, 4)
+TRANSITION_STEPS = max(HORIZONS)
 
 
 def macs(layer: tuple[int, int]) -> int:
@@ -35,10 +36,14 @@ def inventory() -> dict:
     root_and_task_heads = (
         macs(ENCODER) + macs(POLICY_HEAD) + macs(VALUE_HEAD)
     )
-    recursive_predictor = len(HORIZONS) * macs(PREDICTOR)
+    # Reaching horizon 4 requires calls at steps 1, 2, 3, and 4. Step 3 is
+    # recursive state construction even though it has no direct horizon loss.
+    recursive_predictor = TRANSITION_STEPS * macs(PREDICTOR)
     rollout_value_heads = len(HORIZONS) * macs(VALUE_HEAD)
     latent_target_encodes = macs(ENCODER)
-    raw_decode_and_reencode = len(HORIZONS) * (
+    # Raw-state recurrence decodes/re-encodes every transition, including the
+    # unsupervised intermediate step 3 needed to construct horizon 4.
+    raw_decode_and_reencode = TRANSITION_STEPS * (
         macs(DECODER) + macs(ENCODER)
     )
     direct_leaf_encode = macs(ENCODER) + macs(VALUE_HEAD)
@@ -62,7 +67,7 @@ def inventory() -> dict:
     reference = counts["multi-step-jepa"]
     return {
         "schema": "caissa.v212.arm-dense-forward-macs-audit.v01",
-        "scope": "per fully valid nonterminal 1/2/4-ply training window",
+        "scope": "per fully valid nonterminal four-ply training window with 1/2/4 targets",
         "counting_unit": "dense matrix multiply-accumulates (MACs)",
         "layer_dimensions": {
             "encoder": list(ENCODER),
@@ -77,7 +82,8 @@ def inventory() -> dict:
         },
         "included_operations": {
             "shared_root_encoder_and_policy_value_heads": 1,
-            "recursive_predictor_calls_per_predictive_arm": len(HORIZONS),
+            "transition_steps_per_predictive_arm": TRANSITION_STEPS,
+            "recursive_predictor_calls_per_predictive_arm": TRANSITION_STEPS,
             "rollout_value_head_calls_per_predictive_arm": len(HORIZONS),
             "ema_target_encoder_calls": {
                 "multi-step-jepa": len(HORIZONS),
@@ -86,7 +92,7 @@ def inventory() -> dict:
                 "recursive-raw-state": 0,
                 "value-only-latent-rollout": 0,
             },
-            "raw_decoder_and_online_reencoder_calls": len(HORIZONS),
+            "raw_decoder_and_online_reencoder_calls": TRANSITION_STEPS,
             "direct_leaf_exact_encoder_and_value_calls": 1,
         },
         "limitations": [
