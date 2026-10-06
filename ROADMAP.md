@@ -2103,3 +2103,21 @@ bootstrap / 107.9325 billion contrast workload remains unmeasured locally.
 This draft does not revise calibration draft 02 or accept the earlier root-
 quality addendum. No simulation, roots, scores, outcomes, inference, or
 training occurred; v04 and all gates remain unchanged.
+
+### 2026-10-07 consolidated root-sampling calibration draft 03
+
+Consolidated the shared-arm draft 02 and separate root-quality and
+policy-yield × root-quality extensions into one unapproved candidate protocol.
+The 39-cell map is 30 null plus 9 alternatives, with 30 FWER and 39 coverage
+endpoints. The exact lexicographic low/high ordered policy-pair groups,
+target offsets, P2 root-quality variance split, and N-MACRO orientation are
+now named in one document. The approved read-only reviewer confirmed the
+previous cell-map, pair-group, target-weighting, and endpoint-count findings
+are resolved. The 69-endpoint assurance grid is non-monotone, so no R was
+selected; integer-R assurance search, independent dispositions, the unified
+executable manifest, and local feasibility remain pre-simulation blockers.
+The relevant deterministic suites pass 19/19 and `git diff --check` passes.
+No simulation, root generation, scores, outcomes, inference, or training
+occurred. v04 remains current and no gate advanced. See
+`docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_03.md` and
+`docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
