@@ -2,6 +2,20 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 nonblocking cgroup-counter evidence reads
+
+The live-evidence reader now opens `memory.events.local` with `O_NONBLOCK` and
+`O_NOCTTY` before checking that the descriptor is a regular file. This closes
+a FIFO-substitution hang between the path check and post-open type check.
+Regression fixtures cover that FIFO case plus malformed/duplicate rows,
+non-ASCII bytes, negative and overflowing counts, and oversized input. The
+focused live-evidence and mocked collector suites pass 32/32; run evidence is
+under `/tmp/caissa-v212-counter-failure-tests-20261006.{log,pid}`. This does not
+prove the counter path cannot disappear between real service samples or
+integrate mandatory counter pairs into an accepted request receipt. No live
+service, cgroup, OOM operation, request, inference, training, score, or match
+ran, and no gate changed. See the failure test plan.
+
 ### 2026-10-06 counterfactual-action JEPA literature refresh
 
 A targeted primary-source refresh examined UWM-JEPA and Flow-JEPA. UWM-JEPA

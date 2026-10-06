@@ -130,6 +130,35 @@ class CgroupSnapshotTests(unittest.TestCase):
                                           control_group=CGROUP, boot_id=BOOT,
                                           captured_monotonic_us=14)
 
+    def test_rejects_fifo_counter_substitution_without_blocking(self):
+        path = self.group / "memory.events.local"
+        path.unlink()
+        os.mkfifo(path)
+        with self.assertRaises(live.LiveEvidenceError):
+            live.read_memory_events_local(cgroup_root=self.root,
+                                          control_group=CGROUP, boot_id=BOOT,
+                                          captured_monotonic_us=14)
+
+    def test_rejects_malformed_duplicate_non_ascii_and_oversize_counters(self):
+        valid = b"low 0\nhigh 1\nmax 2\noom 0\noom_kill 0\noom_group_kill 0\n"
+        invalid = {
+            "malformed row": valid + b"pressure\n",
+            "extra field": valid + b"max 3 extra\n",
+            "duplicate name": valid + b"oom_kill 1\n",
+            "negative count": valid.replace(b"max 2", b"max -2"),
+            "overflow": valid.replace(b"max 2", b"max 18446744073709551616"),
+            "non-ascii": valid + b"high \xff\n",
+            "oversize": b" " * (live.MAX_COUNTER_FILE_BYTES + 1),
+        }
+        path = self.group / "memory.events.local"
+        for label, data in invalid.items():
+            with self.subTest(case=label):
+                path.write_bytes(data)
+                with self.assertRaises(live.LiveEvidenceError):
+                    live.read_memory_events_local(
+                        cgroup_root=self.root, control_group=CGROUP,
+                        boot_id=BOOT, captured_monotonic_us=14)
+
 
 class ReceiptPersistenceTests(unittest.TestCase):
     def test_persists_once_atomically_and_refuses_overwrite(self):

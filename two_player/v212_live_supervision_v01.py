@@ -140,7 +140,11 @@ def read_memory_events_local(*, cgroup_root: Path, control_group: str,
         events_path = group_real / "memory.events.local"
         if events_path.is_symlink():
             raise LiveEvidenceError("memory.events.local cannot be a symlink")
-        flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+        # Reject a substituted FIFO/device without waiting for a writer. The
+        # descriptor type is checked immediately after open, but that check is
+        # too late to prevent a blocking FIFO open unless NONBLOCK is set.
+        flags = (os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+                 | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOCTTY", 0))
         fd = os.open(events_path, flags)
     except LiveEvidenceError:
         raise
