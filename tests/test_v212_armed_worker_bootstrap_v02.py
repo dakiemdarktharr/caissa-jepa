@@ -148,6 +148,27 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         self.assertEqual(result.returncode, 42)
         self.assertEqual(result.stdout, b"")
 
+    def test_manifest_accepts_helper_at_exact_source_size_limit(self):
+        source_root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        with tempfile.TemporaryDirectory(prefix="caissa-bootstrap-source-limit-") as td:
+            project_root = Path(td) / "project"
+            self._copy_worker_helpers(source_root, project_root)
+            helper = project_root / bootstrap.WORKER_MODULES[-1]
+            original = helper.read_bytes()
+            padding = b"\n#" + b"x" * (
+                bootstrap.MAX_SOURCE_BYTES - len(original) - 2)
+            helper.write_bytes(original + padding)
+            self.assertEqual(helper.stat().st_size, bootstrap.MAX_SOURCE_BYTES)
+            manifest, digest = bootstrap.source_manifest(project_root, source)
+            raw = bootstrap.request_bytes("a" * 32, manifest, digest)
+            result = self._run_bootstrap(raw, str(project_root))
+        # Source verification and compilation finish. The deliberate missing
+        # IPC fixture fails only after the worker reaches workspace setup.
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(b"FileNotFoundError", result.stderr)
+        self.assertEqual(result.stdout, b"")
+
     def test_manifest_rejects_helper_fifo_without_blocking(self):
         source_root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()

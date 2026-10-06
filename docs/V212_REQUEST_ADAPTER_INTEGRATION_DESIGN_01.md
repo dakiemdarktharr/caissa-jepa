@@ -273,13 +273,15 @@ no-inference callback. The request envelope is separately versioned as a
 bootstrap fixture; it does not freeze the proposed application request schema
 or its 811-byte limit.
 
-Fifteen subprocess/static tests verify source compilation/order, manifest
+Sixteen subprocess/static tests verify source compilation/order, manifest
 coverage, rejection of empty/one-byte/truncated input, acceptance of the exact
 hard cap up to the bootstrap fingerprint gate, and early rejection of
 cap-plus-one, invalid UTF-8, duplicate keys, wrong schema, extra request
 fields, and non-finite JSON values. Manifest negatives cover unexpected
 helper paths, a bad manifest digest, changed helper bytes, oversized helper
-files, and a symlink outside the project root. Helper source is opened via
+files, and a symlink outside the project root. A helper exactly at the 256 KiB
+source bound reaches post-compilation workspace setup; cap-plus-one is rejected.
+Helper source is opened via
 root/package directory descriptors with `O_NOFOLLOW`; helper files open
 nonblocking, must be regular, and are read through the opened descriptor under
 a 256 KiB per-file bound before digest validation. An
@@ -289,7 +291,7 @@ through the real FIFO helpers, and received the no-inference response; an
 altered raw request was rejected before response. The fixture supplied fake
 cgroup files and suppressed the system journal marker; it did not create a
 systemd unit. The combined bootstrap, armed-protocol, release-token, IPC,
-service-smoke mock, and receipt regression suites now pass 120/120; Python
+service-smoke mock, and receipt regression suites now pass 121/121; Python
 bytecode compilation and `git diff --check` pass. This does not provide
 canonical request enforcement, controller/runtime-receipt integration, an
 actual runtime fingerprint, or independent review. The candidate is not wired

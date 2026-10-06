@@ -11,11 +11,11 @@ non-finite JSON, unexpected helper paths, a bad manifest digest, changed helper
 bytes, and a symlink escape. Source loading now opens the fixed project/package
 directories without following symlinks, reads each helper through its pinned
 descriptor with nonblocking file opens, and enforces a 256 KiB per-file cap.
-Tests cover an oversized helper, a substituted FIFO without blocking, and
-source changes after manifest creation. The test uses temporary
+Tests cover exact-limit helper acceptance, an oversized helper, a substituted
+FIFO without blocking, and source changes after manifest creation. The test uses temporary
 cgroup and source-tree fixtures and suppresses the journal marker; it does not
-create a systemd unit. The focused bootstrap suite passes 15/15, and the
-combined protocol/IPC/supervision regression group passes 120/120. Canonical
+create a systemd unit. The focused bootstrap suite passes 16/16, and the
+combined protocol/IPC/supervision regression group passes 121/121. Canonical
 request encoding enforcement, controller and receipt integration, actual
 runtime identity, full failure mapping, and independent review remain open. No
 live service, inference, OOM, training, score, or match ran; no gate changed.
