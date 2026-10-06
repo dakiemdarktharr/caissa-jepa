@@ -2661,3 +2661,9 @@ or gate changed.
 
 - Added a caller-deadline check immediately after journal capture and before receipt assembly in the v01 armed-smoke controller. A controlled mock expiry confirms assembly/publication and unit stop are skipped and the IPC workspace is retained. The focused armed-smoke/collector/live-evidence/receipt suite passes 93/93.
 - This covers one additional mocked CLK-01 boundary only. Other evidence-operation crossings, complete manager/journal/counter failure mapping, runtime attestation, independent review, and v02 controller integration remain open. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; deadline check after post-exit manager snapshot)
+
+- The v01 armed-smoke controller now checks the caller deadline after validating the post-exit manager identity and before reading response bytes. A controlled mock expiry verifies that response/journal reads, receipt persistence, unit stop, and workspace cleanup are skipped while the workspace remains available. The focused armed-smoke/collector/live-evidence/receipt group passes 94/94.
+- This closes only one more mocked CLK-01 boundary. Other evidence capture crossings, complete manager/journal/counter mapping, executed-runtime attestation, independent review, and v02 controller integration remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md`.

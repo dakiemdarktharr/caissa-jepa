@@ -376,6 +376,7 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
             raise ArmedServiceSmokeError(
                 "post-exit manager snapshot identity did not match active worker")
 
+        collector._check_deadline(deadline)
         response = ipc.read_response(workspace)
         collector._check_deadline(deadline)
         if (response.get("schema") != RESPONSE_SCHEMA

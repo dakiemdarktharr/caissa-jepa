@@ -1,6 +1,18 @@
 # CAISSA-JEPA research roadmap
 
-Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
+
+### 2026-10-07 deadline check after post-exit manager snapshot
+
+The v01 armed-smoke controller now checks the caller deadline after validating
+the post-exit unit/invocation/boot/cgroup snapshot and before reading response
+bytes. A controlled mock expiry at this seam blocks response and journal reads,
+receipt persistence, unit stop, and workspace cleanup while retaining the
+workspace. The focused armed-smoke/collector/live-evidence/receipt group passes
+94/94. This is mock evidence for one additional CLK-01 boundary; remaining
+evidence crossings and v02 integration remain open. No service, inference, OOM,
+training, score, or match ran; no gate changed. See CLK-01 in the failure test
+plan.
 
 ### 2026-10-06 deadline check after journal capture
 

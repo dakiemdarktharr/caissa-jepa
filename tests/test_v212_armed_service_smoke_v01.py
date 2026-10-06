@@ -642,6 +642,41 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
 
+    def test_deadline_expiry_after_manager_snapshot_blocks_response_read(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack)
+            original_check = collector._check_deadline
+            original_snapshot = live.snapshot_from_properties
+
+            def snapshot_from_properties(**kwargs):
+                result = original_snapshot(**kwargs)
+                if kwargs.get("active") is False:
+                    state["manager_snapshot_captured"] = True
+                return result
+
+            def check_deadline(deadline):
+                if state.get("manager_snapshot_captured"):
+                    raise collector.CollectorError(
+                        "mock caller deadline expired after manager snapshot")
+                original_check(deadline)
+
+            stack.enter_context(patch.object(
+                live, "snapshot_from_properties",
+                side_effect=snapshot_from_properties))
+            stack.enter_context(patch.object(
+                collector, "_check_deadline", side_effect=check_deadline))
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "deadline expired after manager snapshot.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertTrue(state["manager_snapshot_captured"])
+        self.assertNotIn("response_read", state["sequence"])
+        self.assertNotIn("journal", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
     def test_deadline_expiry_during_counter_read_blocks_next_lifecycle_step(self):
         for expired_sample in (1, 2):
             with self.subTest(sample=expired_sample), ExitStack() as stack:

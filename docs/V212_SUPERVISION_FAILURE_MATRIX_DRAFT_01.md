@@ -67,6 +67,10 @@ duplicate and foreign-invocation records are checked at the same seam.
 The v01 smoke now checks the caller deadline immediately after journal capture;
 a controlled expiry fixture proves receipt assembly, persistence, stop, and
 workspace cleanup are skipped at that boundary.
+It also checks immediately after the validated post-exit manager snapshot and
+before reading response bytes; the corresponding controlled expiry fixture
+proves response and journal reads plus receipt persistence and cleanup are
+skipped.
 The current mock suite also injects failures at both first and second local
 counter reads, a stop-command timeout after durable receipt, and Ctrl-C at stop
 after durable receipt. The timeout is a mocked command result rather than a
