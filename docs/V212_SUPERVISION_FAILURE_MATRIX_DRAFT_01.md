@@ -86,7 +86,10 @@ receipt. The timeout is a mocked command result rather than a
 controlled-clock test of the real stop command; none of these tests establish
 live failure recovery. A new mocked post-stop manager-query failure also keeps
 the durable receipt and IPC workspace and reports unit state as retained or
-unknown; kill/reap attribution remains uncovered. See the case-by-case map in
+unknown. The separate request-adapter candidate has a process-level watchdog
+test that kills and reaps a stalled Python child; it does not test a systemd
+worker, cgroup attribution, or failure-to-reap. Live recovery remains open.
+See the case-by-case map in
 `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
 
 The v02 receipt assembler validates counter identity, order, required counter

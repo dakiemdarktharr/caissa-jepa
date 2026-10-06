@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 request watchdog boundary checks
+
+Five isolated request-adapter tests pass using the existing NumPy 2.5.3
+package under `/tmp` without changing project dependencies. An AST audit
+resolved all 52 fully qualified references in the failure plan. The tests cover
+temporary cgroup-bound parsing, mocked startup-deadline fallback, local child
+kill/reap, mocked cgroup-inheritance preflight, and mocked post-worker audit
+delay. The random-weight search path was not run. These checks verify helper
+behavior only; systemd integration, cgroup-attributed kill/reap, runtime
+attestation, and operational headroom remain open. See Ground Truth and the
+failure plan.
+
 ### 2026-10-07 post-stop manager-query failure coverage
 
 Added a mocked armed-smoke controller case where the stop command succeeds

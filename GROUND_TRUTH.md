@@ -2714,3 +2714,8 @@ or gate changed.
 ### Latest continuation delta (2026-10-07; post-stop manager-query failure)
 
 - Added a mocked v01 controller-flow case where the stop command returns but the post-stop `systemctl show` query fails. It verifies the already-durable receipt is byte-preserved, the IPC workspace remains, and diagnostics report the unit as retained/unknown with invocation and worker-cgroup identifiers. The focused armed-service-smoke module passes 40/40; `git diff --check` passes. This closes only that mocked REC-01 query-failure seam; kill/reap attribution, live recovery, and v02 integration remain open. No service, inference, OOM, training, data, score, match, or outcome ran; no gate advanced. See the failure matrix and test plan.
+
+
+### Latest continuation delta (2026-10-07; request watchdog boundary checks)
+
+- Using the already-present NumPy 2.5.3 package under `/tmp/caissa-jepa-pv-deps` without changing project dependencies, five isolated request-adapter tests pass: fake-cgroup finite-bound validation, mocked request-startup deadline/fallback, stalled child kill/reap, mocked cgroup-inheritance preflight, and mocked post-worker audit-delay deadline. These tests do not execute the random-weight search/inference path, create a service, or induce OOM. They establish helper/control behavior only; systemd integration, cgroup-attributed kill/reap, runtime attestation, and V05 operational headroom remain open. Updated REC-01/MGR-03 test traceability; a read-only AST audit resolves all 52 fully qualified test references in the failure plan. No gate advanced.
