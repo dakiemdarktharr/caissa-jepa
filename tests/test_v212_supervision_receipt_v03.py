@@ -62,6 +62,37 @@ class ReceiptV03CounterPairTests(unittest.TestCase):
         self.assertEqual(out["memory_events_local"]["before"]["captured_monotonic_us"], BEFORE)
         self.assertEqual(out["memory_events_local"]["after"]["captured_monotonic_us"], AFTER)
 
+    def test_v03_rejects_counter_rollback_and_malformed_values(self):
+        before_values = {"low": 0, "high": 0, "max": 0, "oom": 1,
+                         "oom_kill": 1, "oom_group_kill": 0}
+        cases = [
+            ({"low": 0, "high": 0, "max": 0, "oom": 0,
+              "oom_kill": 1, "oom_group_kill": 0}, "moved backwards"),
+            ({"low": 0, "high": 0, "max": 0, "oom": 0,
+              "oom_kill": True, "oom_group_kill": 0}, "malformed"),
+            ({"low": 0, "high": 0, "max": 0, "oom": -1,
+              "oom_kill": 0, "oom_group_kill": 0}, "malformed"),
+            ({"low": 0, "high": 0, "max": 0, "oom": 0.5,
+              "oom_kill": 0, "oom_group_kill": 0}, "malformed"),
+            ({"low": 0, "high": 0, "max": 0, "oom": 0,
+              "oom_kill": 0}, "incomplete"),
+        ]
+        for after_values, message in cases:
+            with self.subTest(message=message, values=after_values):
+                with self.assertRaisesRegex(v03.ReceiptError, message):
+                    v03.assemble_receipt(
+                        requested_unit=UNIT,
+                        request_boot_id=BOOT,
+                        request_started_monotonic_us=START,
+                        worker_snapshot=worker_snapshot(),
+                        manager_snapshot=manager_snapshot(),
+                        journal_records=[marker()],
+                        events_before=counters(captured=BEFORE,
+                                               values=before_values),
+                        events_after=counters(captured=AFTER,
+                                              values=after_values),
+                    )
+
     def test_v02_keeps_legacy_behavior_when_both_counters_are_omitted(self):
         legacy = receipt([marker()])
         self.assertEqual(legacy["schema"], v02.SCHEMA)

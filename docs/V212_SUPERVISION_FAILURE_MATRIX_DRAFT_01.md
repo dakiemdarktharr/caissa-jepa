@@ -42,7 +42,7 @@ Use these failure-state labels consistently:
 | JRN-01 | Journal command/query fails, output is partial/oversized/malformed, or contains no worker marker | Required evidence unavailable | No action; `not_attempted` | Unit, invocation/cgroup, receipt destination, IPC workspace | No receipt/stop/cleanup; error identifies evidence failure and reconciliation handles |
 | JRN-02 | More than one worker marker, duplicate marker, or marker unit/invocation/cgroup/boot/time mismatch | Reject ambiguous or foreign evidence; do not select one record heuristically | No action; `not_attempted` | Raw journal remains in system journal; local handles retained | Exact-one rule enforced; no receipt/action; include marker count or mismatch category without copying raw request data |
 | CNT-01 | Either in-run `memory.events.local` sample disappears, cannot be read, or is malformed | Treat the pair as incomplete, not as zero events | No action; `not_attempted` | Unit, invocation/cgroup, IPC and receipt destination; capture whether the first or second sample failed | Missing either sample blocks amended-schema receipt; no coercion to zero, receipt, or cleanup |
-| CNT-02 | Counter snapshot has wrong source/schema/cgroup/boot/window, or counters move backward | Reject as unbound or inconsistent | No action; `not_attempted` | Same as CNT-01 | No receipt/action; counter source and failing identity dimension are reported |
+| CNT-02 | Counter snapshot has wrong source/schema/cgroup/boot/window, incomplete keys, malformed/Boolean/negative/non-integer values, or counters move backward | Reject as unbound or inconsistent | No action; `not_attempted` | Same as CNT-01 | No receipt/action; counter source and failing identity dimension are reported |
 | CLK-01 | Caller deadline expires during active wait, exit wait, evidence capture, or before durable receipt | Late worker output is never a valid action | No action; `not_attempted` or `uncertain` if publication began | Keep unit/workspace until state is reconciled; record receipt destination/state | Controlled clock covers each boundary; no late response acceptance, no unsafe cleanup |
 | CLK-02 | Deadline expires after durable receipt but during stop/cleanup | The prior receipt stays immutable; operation still returns failure/no action | `persisted`, no action | Preserve receipt; report exact unit and IPC state, including `unknown` if the operation result is ambiguous | No receipt rewrite/delete; retries reconcile instead of replaying stop or receipt publication blindly |
 | REC-01 | Kill/reap or stop command errors, or post-command unit query fails | Do not claim stopped/cleaned from command success alone | No action; receipt state reflects actual publication phase | Unit state `unknown` if not verified; IPC path retained unless verified cleaned | Error retains identifiers and recovery handle; no statement of cleanup success without postcondition |
@@ -71,10 +71,11 @@ live failure recovery. See the case-by-case map in
 The v02 receipt assembler validates counter identity, order, required counter
 keys, and nonnegative deltas when snapshots are supplied. It permits both
 counter snapshots to be omitted. The isolated v03 draft boundary now requires
-both samples, reports its own source digest and the delegated v02 source digest,
-and leaves v02 behavior unchanged. This does not yet integrate an accepted
-request/runtime path or prove the complete end-to-end contract; the collector's
-capture of both samples is not itself acceptance evidence.
+both samples, rejects counter rollback, Boolean, negative, non-integer, and
+missing-key values, reports its own source digest and the delegated v02 source
+digest, and leaves v02 behavior unchanged. This does not yet integrate an
+accepted request/runtime path or prove the complete end-to-end contract; the
+collector's capture of both samples is not itself acceptance evidence.
 
 Before any request-adapter integration proposal, convert every row into a
 versioned test case that names the exact injection seam, expected receipt

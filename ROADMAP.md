@@ -177,6 +177,19 @@ non-terminating stream still depends on the outer caller deadline. No service,
 request adapter, inference, OOM, training, score, or match ran; all related
 gates remain closed. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
 
+
+### 2026-10-06 v03 counter-validation regressions
+
+The isolated v03 receipt boundary now has fixture regressions for counter
+rollback, Boolean, negative, non-integer, and missing-key values, carried
+forward from v02 while both snapshots are mandatory. The combined v02/v03
+receipt suites pass 31/31. This does not establish a live counter capture path
+or the controller-level no-action/no-receipt/retained-handle invariants; those
+integration cases and independent review remain open. No service, OOM test,
+request, inference, training, score, or match ran, and no gate changed. See
+`tests/test_v212_supervision_receipt_v03.py` and
+`docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
 ### 2026-10-05 executed-runtime attestation research
 
 Primary-source review found that descriptor-based `fexecve` avoids pathname
