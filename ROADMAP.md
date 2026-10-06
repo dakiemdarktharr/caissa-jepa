@@ -13,6 +13,15 @@ coverage, not live manager/reboot evidence; the v02 controller and full manager
 failure map remain open. No service or model operation ran. See the failure
 plan and matrix.
 
+### 2026-10-07 post-dispatch request mutation rejection
+
+The mocked v01 controller now changes the request at its final caller-side
+identity/hash check, once with same-length byte mutation and once with a
+request-path symlink substitution. Both cases reject before receipt
+publication or unit stop and retain the IPC workspace. This adds controller-
+flow evidence to REC-02; post-receipt recovery and v02 integration remain open.
+No service or model operation ran. See the failure plan and matrix.
+
 ### 2026-10-07 isolated Python startup in armed-worker candidates
 
 The v01 service-smoke worker command and the offline v02 raw-stdin bootstrap

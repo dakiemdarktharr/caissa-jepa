@@ -87,6 +87,43 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                                     "verified request file could not be hashed"):
             service._hash_verified_request(workspace)
 
+    def test_post_dispatch_request_mutation_prevents_receipt_and_cleanup(self):
+        cases = (
+            ("bytes", "request bytes changed during service run"),
+            ("path", "verified request file could not be hashed"),
+        )
+        for mutation, expected_error in cases:
+            with self.subTest(mutation=mutation), ExitStack() as stack:
+                state = self._mock_host(stack)
+                original_hash = service._hash_verified_request
+                hash_calls = 0
+
+                def mutate_before_final_hash(workspace):
+                    nonlocal hash_calls
+                    hash_calls += 1
+                    if hash_calls == 2:
+                        if mutation == "bytes":
+                            request = workspace.request_path.read_bytes()
+                            workspace.request_path.write_bytes(request[:-1] + b" ")
+                        else:
+                            workspace.request_path.unlink()
+                            workspace.request_path.symlink_to(self.receipt)
+                    return original_hash(workspace)
+
+                stack.enter_context(patch.object(
+                    service, "_hash_verified_request",
+                    side_effect=mutate_before_final_hash))
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError, expected_error):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertEqual(hash_calls, 2)
+                self.assertIn("response_read", state["sequence"])
+                self.assertIn("journal", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertFalse(self.receipt.exists())
+                self.assertTrue(self.workspaces[-1].directory.exists())
+
     def _mock_host(self, stack, *, fail_release=False, fail_profile=False,
                    response_status="released_no_inference", fail_journal=False,
                    fail_persist=None, fail_stop=False, fail_cleanup=False,
