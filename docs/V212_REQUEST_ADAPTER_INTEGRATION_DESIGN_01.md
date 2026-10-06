@@ -273,18 +273,21 @@ no-inference callback. The request envelope is separately versioned as a
 bootstrap fixture; it does not freeze the proposed application request schema
 or its 811-byte limit.
 
-Eight subprocess/static tests verify source compilation/order, manifest
+Thirteen subprocess/static tests verify source compilation/order, manifest
 coverage, rejection of empty/one-byte/truncated input, acceptance of the exact
 hard cap up to the bootstrap fingerprint gate, and early rejection of
-cap-plus-one, invalid UTF-8, and duplicate keys before project-path access.
-An additional offline subprocess fixture completed a valid source-verified
-bootstrap, released it with a request-byte-bound token through the real FIFO
-helpers, and received the no-inference response. The fixture supplied a fake
-cgroup tree and suppressed the system journal marker; it did not create a
+cap-plus-one, invalid UTF-8, duplicate keys, wrong schema, extra request
+fields, and non-finite JSON values. Manifest negatives cover unexpected
+helper paths, a bad manifest digest, changed helper bytes, and a symlink
+outside the project root. An offline subprocess fixture also completed a
+valid source-verified bootstrap, released it with a request-byte-bound token
+through the real FIFO helpers, and received the no-inference response; an
+altered raw request was rejected before response. The fixture supplied fake
+cgroup files and suppressed the system journal marker; it did not create a
 systemd unit. The combined bootstrap, armed-protocol, release-token, IPC,
-service-smoke mock, and receipt regression suites now pass 113/113; py_compile
-and `git diff --check` pass. This does not provide controller/runtime-receipt
-integration, an actual runtime fingerprint, full canonical/schema failure
-coverage, or independent review. The candidate is not wired
+service-smoke mock, and receipt regression suites now pass 118/118; Python
+bytecode compilation and `git diff --check` pass. This does not provide
+canonical request enforcement, controller/runtime-receipt integration, an
+actual runtime fingerprint, or independent review. The candidate is not wired
 to systemd or the request adapter. It supplies no service, inference, OOM,
 training, score, match, or gate evidence.

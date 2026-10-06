@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -67,6 +68,88 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         result = self._run_bootstrap(
             b'{"schema":"x","schema":"y","nonce":"' + b"a" * 32 + b'"}')
         self.assertEqual(result.returncode, 31)
+        self.assertEqual(result.stdout, b"")
+
+    def test_wrong_schema_extra_request_field_and_nonfinite_value_are_rejected(self):
+        nonce = b"a" * 32
+        cases = (
+            b'{"schema":"wrong","nonce":"' + nonce + b'"}',
+            b'{"schema":"' + bootstrap.REQUEST_SCHEMA.encode("ascii")
+            + b'","nonce":"' + nonce + b'","extra":0}',
+            b'{"schema":"' + bootstrap.REQUEST_SCHEMA.encode("ascii")
+            + b'","nonce":"' + nonce + b'","bad":NaN}',
+        )
+        for raw in cases:
+            with self.subTest(request=raw):
+                result = self._run_bootstrap(raw)
+                expected = 31 if b"NaN" in raw else 32
+                self.assertEqual(result.returncode, expected)
+                self.assertEqual(result.stdout, b"")
+
+    def _copy_worker_helpers(self, source_root: Path,
+                             project_root: Path) -> None:
+        for relative in bootstrap.WORKER_MODULES:
+            destination = project_root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source_root / relative, destination)
+
+    def _manifest_digest(self, manifest: dict) -> str:
+        canonical = json.dumps(manifest, sort_keys=True, separators=(",", ":"),
+                               ensure_ascii=False, allow_nan=False).encode("utf-8")
+        return hashlib.sha256(canonical).hexdigest()
+
+    def test_manifest_rejects_extra_helper_before_source_loading(self):
+        root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        manifest, _ = bootstrap.source_manifest(root, source)
+        manifest["files"]["two_player/unexpected.py"] = "0" * 64
+        request = bootstrap.request_bytes(
+            "a" * 32, manifest, self._manifest_digest(manifest))
+        result = self._run_bootstrap(request, str(root))
+        self.assertEqual(result.returncode, 37)
+        self.assertEqual(result.stdout, b"")
+
+    def test_manifest_rejects_incorrect_manifest_digest(self):
+        root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        manifest, _ = bootstrap.source_manifest(root, source)
+        request = bootstrap.request_bytes("a" * 32, manifest, "0" * 64)
+        result = self._run_bootstrap(request, str(root))
+        self.assertEqual(result.returncode, 40)
+        self.assertEqual(result.stdout, b"")
+
+    def test_manifest_rejects_helper_bytes_changed_after_preflight(self):
+        source_root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        with tempfile.TemporaryDirectory(prefix="caissa-bootstrap-source-") as td:
+            project_root = Path(td) / "project"
+            self._copy_worker_helpers(source_root, project_root)
+            manifest, digest = bootstrap.source_manifest(project_root, source)
+            helper = project_root / bootstrap.WORKER_MODULES[-1]
+            helper.write_bytes(helper.read_bytes() + b"\n# changed after manifest\n")
+            result = self._run_bootstrap(
+                bootstrap.request_bytes("a" * 32, manifest, digest),
+                str(project_root))
+        self.assertEqual(result.returncode, 39)
+        self.assertEqual(result.stdout, b"")
+
+    def test_manifest_rejects_helper_symlink_outside_project_root(self):
+        source_root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        with tempfile.TemporaryDirectory(prefix="caissa-bootstrap-symlink-") as td:
+            temp_root = Path(td)
+            project_root = temp_root / "project"
+            self._copy_worker_helpers(source_root, project_root)
+            manifest, digest = bootstrap.source_manifest(project_root, source)
+            helper = project_root / bootstrap.WORKER_MODULES[-1]
+            outside = temp_root / "outside.py"
+            outside.write_bytes(helper.read_bytes())
+            helper.unlink()
+            helper.symlink_to(outside)
+            result = self._run_bootstrap(
+                bootstrap.request_bytes("a" * 32, manifest, digest),
+                str(project_root))
+        self.assertEqual(result.returncode, 38)
         self.assertEqual(result.stdout, b"")
 
     def test_cap_plus_one_is_rejected_before_project_source_access(self):

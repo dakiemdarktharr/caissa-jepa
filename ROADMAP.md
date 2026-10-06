@@ -2,23 +2,21 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-06 offline armed-bootstrap release round trip
+### 2026-10-06 armed-bootstrap release and manifest boundary tests
 
-Added an offline subprocess fixture that sends the exact bootstrap request
-bytes, verifies the generated worker and five helper sources, releases the
-worker through a request-digest-bound FIFO token, and receives the synthetic
-no-inference response. A second path sends semantically equivalent JSON with
-one extra whitespace byte against the original token and confirms the worker
-returns no response. The test uses temporary cgroup files and suppresses
-the journal marker; it does not create a systemd unit. The focused bootstrap
-suite passes 8/8, and the combined protocol/IPC/supervision regression group
-passes 113/113. This closes only the missing positive helper-path observation.
-Altered-byte rejection through the bootstrap subprocess, controller and
-receipt integration, actual runtime identity, full failure mapping, and
-independent review remain open. No live service, inference, OOM, training,
-score, or match ran; no gate changed. Next, cover malformed schema and
-manifest cases, and resolve the runtime fingerprint contract before
-connecting the candidate to systemd or the adapter. See
+Added offline subprocess fixtures for a valid exact-byte release-to-response
+round trip and rejection of an altered request against the original token.
+Additional negative cases reject wrong schema, extra request fields,
+non-finite JSON, unexpected helper paths, a bad manifest digest, changed helper
+bytes, and a symlink escape. The test uses temporary cgroup and source-tree
+fixtures and suppresses the journal marker; it does not create a systemd unit.
+The focused bootstrap suite passes 13/13, and the combined
+protocol/IPC/supervision regression group passes 118/118. Canonical request
+encoding enforcement, controller and receipt integration, actual runtime
+identity, full failure mapping, and independent review remain open. No live
+service, inference, OOM, training, score, or match ran; no gate changed. Next,
+resolve the runtime fingerprint contract and obtain the required architecture
+review before connecting the candidate to systemd or the adapter. See
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md` and the failure test plan.
 
 ### 2026-10-06 incremental single-PV bound-allocation follow-up
