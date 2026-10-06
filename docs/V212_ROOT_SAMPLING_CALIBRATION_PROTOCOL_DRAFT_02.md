@@ -197,9 +197,11 @@ game outcomes. A calibration result remains limited to this frozen DGP.
 Use the same scenario definitions for every contrast family member. Name the
 scenario IDs `N-GLOBAL-01..05`, `N-ATOMIC-01..10`, `N-MACRO-01..05`,
 `N-CONTROL-01..05`, and `A-BOUNDARY`, `A-MODERATE`, `A-LARGE`, `A-HETERO`.
-Use atomic contrast order `(control-01, variant-01)` through
-`(control-05, variant-02)`; for `N-ATOMIC-kk`, the zero is the kk-th atomic
-contrast in that order. For `A-HETERO`, controls 01/03/05 have variant base
+Use this exact atomic contrast order:
+`(control-01, variant-01)`, `(control-01, variant-02)`,
+`(control-02, variant-01)`, `(control-02, variant-02)`, …,
+`(control-05, variant-01)`, `(control-05, variant-02)`. For `N-ATOMIC-kk`,
+the zero is the kk-th atomic contrast in that order. For `A-HETERO`, controls 01/03/05 have variant base
 means `(+0.10,+0.05)` and controls 02/04 have `(+0.05,+0.10)`; add band
 offsets `(+0.10,0,-0.10)` for low/middle/high bands to each atomic mean.
 Assign P1–P5 to `N-GLOBAL-01..05` in order. For every remaining principal ID
@@ -234,7 +236,7 @@ points, loadings, means, and profile assignment before execution.
 | --- | ---: | --- | --- |
 | N-GLOBAL | 5 | All ten atomic means zero; cover seed-dominant, slot-dominant, balanced, interaction-dominant, and band/arm-heteroskedastic profiles, including discrete ties | Global-null FWER and joint interval coverage across covariance/tie profiles |
 | N-ATOMIC | 10 | One atomic contrast exactly zero; the other nine are +0.075; rotate over five controls × two variants | Partial-null strong-FWER behavior and coverage of true zero contrasts |
-| N-MACRO | 5 | For one control, its two variant means are +0.10 and −0.10, so its macro mean is exactly zero; all other atomic means are +0.075 | Macro-only null coverage and familywise testing with exact contrast dependence |
+| N-MACRO | 5 | For one control, variant-01 is +0.10 and variant-02 is −0.10, so its macro mean is exactly zero; all other atomic means are +0.075 | Macro-only null coverage and familywise testing with exact contrast dependence |
 | N-CONTROL | 5 | Both variant means are zero for one control; other controls’ atomic means are +0.075 | Correlated pair of atomic nulls plus their macro null |
 | A-BOUNDARY | 1 | All atomic means +0.05 | Power and interval width at the proposed per-variant nomination boundary |
 | A-MODERATE | 1 | All atomic means +0.075 | Power and interval width above the boundary |
@@ -249,6 +251,12 @@ variance, band and arm heteroskedasticity, positive shared-arm and negative
 matchup covariance. If reviewers require a full cross of all
 mean patterns with all profiles, the cell count and compute budget must be
 recalculated and reviewed before execution. Do not silently omit or add cells.
+
+**Open convention pending independent disposition:** the `N-MACRO` orientation
+above fixes variant-01 at +0.10 and variant-02 at −0.10. This is a proposed
+draft convention made explicit for auditability, not an accepted methodological
+choice. Resolve it in independent review before any simulation; do not treat
+this deterministic manifest audit as approval of the convention or protocol.
 
 Use two yield mechanisms: (a) equal validity probability `q=0.40` for every
 ordered policy-pair as the principal conditional-inference case; (b) a
