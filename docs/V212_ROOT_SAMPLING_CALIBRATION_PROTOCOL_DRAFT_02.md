@@ -280,16 +280,21 @@ Bonferroni CP procedure, exact binomial calculation at the boundary rates
 of 0.5854 at `R=6,000`; the dependence-robust union bound gives no useful
 joint assurance there. At `R=18,000`, the individual pass probability is
 0.9971 and the union-bound lower limit on all 57 endpoints passing is 0.8322.
-Specifically, with `alpha=0.05/57 = 0.0008771929824561404`, the FWER
+Specifically, with exact Bonferroni level `alpha=0.05/57`, the FWER
 acceptance count is at most 981 because
-`P[Binomial(18,000,0.06) ≤ 981] = 0.0008665164123139177 ≤ alpha`, while the
-boundary pass probability is
-`P[Binomial(18,000,0.05) ≤ 981] = 0.9970554080688392`. The lower union bound
-is `1 − 57 × (1 − 0.9970554080688392) = 0.8321582599238337`.
+`P[Binomial(18,000,0.06) ≤ 981] = 0.0008665164123315592 ≤ alpha`, while the
+next count has tail `0.0009669245316312552 > alpha`. The boundary pass
+probability is
+`P[Binomial(18,000,0.05) ≤ 981] = 0.9970554080891540`. The lower union bound
+is `1 − 57 × (1 − 0.9970554080891540) = 0.8321582610817799`.
 The coverage condition is its binomial complement at 0.94/0.95. At `R=6,000`,
 the corresponding FWER count is at most 303 because the tail is
-`0.0008337079827290311 ≤ alpha`; its boundary pass probability is
-`0.5854327569149984`. These are analytic binomial-tail calculations only.
+`0.0008337079827294281 ≤ alpha`; the next count has tail
+`0.001012439845082235 > alpha`; its boundary pass probability is
+`0.5854327569152956`. Reproduce these tails with
+`tools/v212_calibration_assurance.py`, which cross-checks downward recurrence,
+log-PMF summation, and 60-digit Decimal evaluation. These are analytic
+binomial-tail calculations only.
 Thus `R=18,000` is the proposal for at least 80% joint pass assurance at
 boundary rates, without assuming endpoint independence. This is an analytic
 binomial assurance calculation, not a simulation or empirical calibration;

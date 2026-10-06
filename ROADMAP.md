@@ -133,6 +133,18 @@ remaining inconsistency in the edits, but did not accept the overall protocol
 or independently recompute the binomial tails. Calibration and all downstream
 gates remain closed.
 
+### 2026-10-07 calibration assurance arithmetic reproduction
+
+Added `tools/v212_calibration_assurance.py` to reproduce the proposed K=57
+Bonferroni Clopper–Pearson assurance with downward recurrence, log-PMF
+summation, and 60-digit Decimal tails. It only computes binomial probabilities;
+no synthetic dataset is generated. It confirms cutoff 981 at R=18,000,
+individual boundary pass assurance 0.9970554080891540, and dependence-robust
+union lower bound 0.8321582610817799. At R=6,000, cutoff 303 gives individual
+assurance 0.5854327569152956 and no useful joint bound. This corrects about
+1e-11 numerical drift in the earlier double-only values. The calibration
+protocol remains unapproved; the calculation opens no gate.
+
 ### 2026-10-07 schema proposal bounded stream reader
 
 Added an audit-only fd reader to the unreviewed response/request schema

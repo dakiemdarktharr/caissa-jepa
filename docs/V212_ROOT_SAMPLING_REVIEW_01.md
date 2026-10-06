@@ -260,3 +260,20 @@ feasibility, or open a gate. The grid remains finite and excludes P4
 alternative coverage. No simulation, root, score, outcome, inference, or
 training was performed or accessed; v04 remains current and downstream
 activity remains closed.
+
+## High-precision assurance reproduction (2026-10-07)
+
+Added `tools/v212_calibration_assurance.py` to make the analytic K=57 outer
+replication assurance reproducible without generating datasets. It compares
+downward binomial recurrence, log-PMF summation, and 60-digit Decimal tails;
+the latter uses integer `choose(n,k)` and verifies both sides of each
+acceptance cutoff. It confirms the R=18,000 cutoff is 981, with boundary tail
+at the cutoff `0.0008665164123315592`, next-count tail
+`0.0009669245316312552`, individual pass assurance `0.9970554080891540`, and
+dependence-robust lower bound `0.8321582610817799`. At R=6,000 the cutoff is
+303 and individual assurance is `0.5854327569152956`, so the joint union
+bound is uninformative. This corrected roughly 1e-11-scale rounding drift in
+the preceding double-only report. The independent reviewer did not
+recompute these tails; the script and output are an auditable local analytic
+calculation, not independent statistical acceptance or a simulation. No
+gate advanced.
