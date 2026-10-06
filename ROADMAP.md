@@ -38,6 +38,18 @@ outcomes, simulations, inference, or training were accessed/generated; v04
 remains current and all gates stay closed. See the addendum and
 `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
 
+### 2026-10-07 deterministic root-quality proposal audit
+
+Added a no-RNG audit for the proposed Simpson integration, validity
+intercepts, selected-root ordinal targets, P2 covariance split, 120-row
+manifest, and revised assurance family. Its seven focused fixture tests pass;
+temporary outputs are under `/tmp`. The current runtime was Python 3.14.7,
+unlike the Python 3.11.9 Windows runtime in the research lock; this is
+recorded, not selected for calibration. Read-only source review found no
+major math/scope issue and requested a dedicated intercept width tolerance.
+The fix is applied and read-only follow-up confirmed it resolves the finding.
+No simulation or roots were generated and no gate advanced.
+
 ### 2026-10-07 independent pre-fit action-sensitivity/regret review
 
 An approved read-only review found the descriptive action-sensitivity and

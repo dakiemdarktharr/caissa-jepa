@@ -52,13 +52,13 @@ P(valid | H, policy_pair) = logistic(a_gamma + gamma * H)
 
 where `gamma` is the signed value in the cell table and `a_gamma` is the
 unique intercept satisfying `E[logistic(a_gamma + gamma*H)] = 0.40`.
-Solve the intercept before any simulation using standard-normal Gauss-Hermite
-quadrature at candidate orders
-32 and 64, with monotone bisection on `[-8,+8]` and absolute residual
-tolerance `1e-12`. Transform Hermite nodes by `sqrt(2)` and weights by
-`1/sqrt(pi)`; pin the NumPy version and serialize the resulting nodes and
-weights. Require the intercept and validity integral to agree across orders
-within `1e-10`.
+Solve the intercept before any simulation using composite Simpson integration
+of the standard-normal density on `[-10,+10]`, at 4,096 and 8,192 equal
+subintervals. Use monotone bisection on `[-8,+8]` with absolute residual
+tolerance `1e-12`. The omitted normal tail probability is below `2e-23`.
+Record the Python version, interval counts, bisection residual, and validity
+integral at both orders. Require the intercept and validity integral to agree
+across orders within `1e-10`.
 
 This preserves marginal `q=0.40`, so under the stated IID slot assumptions
 the six-stratum schedule-pass probability remains the same as the ordinary
@@ -105,13 +105,15 @@ integral f_gamma(h | valid)
 
 where `F` is draft 02's exact seat-averaged ordinal-score expectation. This
 sets the population mean under the success-conditional root distribution,
-not the preselection distribution. Use the same 32/64-point deterministic
-Gauss-Hermite pair to evaluate this integral. Require the solved `eta` and
-achieved conditional mean to agree across orders within `1e-10`; use the
-existing `[-8,+8]` `eta` bisection and `1e-10` residual tolerance with the
-draft-02 normal CDF. These quadrature and stopping choices are proposals and
-must be independently reviewed before implementation or use. If convergence
-fails, do not increase the order silently; revise and review the protocol.
+not the preselection distribution. Use the same 4,096/8,192-subinterval
+Simpson pair on `[-10,+10]` to evaluate the integral. Require the solved
+`eta` and achieved conditional mean to agree across orders within `1e-10`;
+use the existing `[-8,+8]` `eta` bisection and `1e-10` residual tolerance
+with the draft-02 normal CDF. Record the Python version, domain, interval
+counts, and both estimates. These integration and stopping choices are
+proposals and must be independently reviewed before implementation or use.
+If convergence fails, do not increase the interval count silently; revise and
+review the protocol.
 
 The calibration audit manifest must include `gamma`, `a_gamma`, marginal
 yield residual, root-quality loadings/covariance, remaining root-slot
@@ -171,3 +173,19 @@ resolved, v04 remains current, calibration remains unapproved, and root
 generation, simulation, scoring, inference, training, and match gates remain
 closed. No random draws, roots, model outputs, scores, or outcomes were
 accessed or generated in preparing this proposal.
+
+## Deterministic proposal audit (2026-10-07)
+
+`tools/v212_root_quality_calibration_audit.py` implements the proposed
+composite-Simpson intercept/conditional-mean calculations, P2 root-slot
+covariance split, 120-row cell × band × contrast manifest, and 63-endpoint
+assurance call without an RNG. Its seven standard-library fixture tests pass;
+the focused test log is `/tmp/caissa-v212-root-quality-calibration-tests.log`
+and the JSON manifest is `/tmp/caissa-v212-root-quality-calibration-audit.json`.
+The current audit runtime is Python 3.14.7, whereas the research runtime lock
+records Python 3.11.9 on Windows. This audit does not change or satisfy the
+runtime pin; simulator runtime and numerical/source fingerprints must be
+frozen and independently reviewed before any calibration run. Read-only
+source review found no major formula/scope issue; its requested dedicated
+intercept bracket-width constant is implemented and follow-up confirmed
+resolution.

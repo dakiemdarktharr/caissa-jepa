@@ -323,3 +323,24 @@ helper command is in the addendum; output is at
 `/tmp/caissa-v212-root-quality-assurance-audit.log`. No synthetic dataset,
 root, score, or outcome was generated or accessed. No simulation, inference,
 training, method freeze, or gate transition occurred; v04 remains current.
+
+## Deterministic root-quality audit implementation (2026-10-07)
+
+Added `tools/v212_root_quality_calibration_audit.py` to calculate the proposed
+composite-Simpson validity intercepts and success-conditional ordinal-score
+targets, serialize the P2 covariance split and 120 target rows, and call the
+analytic assurance helper with 63 endpoints/35 cells. It contains no RNG or
+sample-generation path. Seven focused standard-library tests pass in
+13.1 seconds; `git diff --check` passes. The audit output and test log are
+under `/tmp/caissa-v212-root-quality-calibration-audit.json` and
+`/tmp/caissa-v212-root-quality-calibration-tests.log`, respectively.
+
+The audit records Python 3.14.7, while `requirements-research-lock.txt`
+describes a Windows Python 3.11.9 runtime. This mismatch is noted and neither
+runtime is selected by this proposal. The approved read-only source review
+found no major formula/scope mismatch; it requested a dedicated intercept
+bracket-width constant instead of sharing the eta constant. That clarity fix
+is now in the source, and read-only follow-up confirmed resolution. No calibration
+simulation, roots, scores, outcomes, inference, or training occurred. The
+tool does not amend or accept draft 02 or the root-quality addendum; v04
+remains current and all research gates remain closed.
