@@ -2,6 +2,16 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 schema proposal bounded stream reader
+
+Added an audit-only fd reader to the unreviewed response/request schema
+proposal helper. The focused suite passes 17/17; pipe fixtures exercise empty,
+exact 811/747-byte caps, cap-plus-one rejection, short reads, and invalid
+bounds. The helper retains at most `cap+1` bytes. It has no caller deadline and
+is not wired to the worker bootstrap, request controller, or receipt publisher.
+RESP-01b and schema review remain partial; no gate advanced. See the schema
+proposal and failure-test traceability.
+
 ### 2026-10-07 raw-state control wiring proposal
 
 Converted the architecture audit into a reviewable clarification proposal:
@@ -44,11 +54,11 @@ scores were generated. See the sensitivity note and root-sampling review.
 ### 2026-10-07 request/response schema proposal parser audit
 
 Reviewed the unintegrated, unreviewed v02 closed-schema validator against its
-proposal and ran its focused standard-library suite: 13/13 pass. The fixtures
+proposal and ran its focused standard-library suite: 17/17 pass. The fixtures
 cover canonical encoding, duplicate keys, invalid encodings, field bounds,
-request binding, and exact 811/747-byte witnesses. No concrete validator
+request binding, exact 811/747-byte witnesses, and isolated stream caps. No concrete validator
 defect was found in this bounded offline audit. This does not independently
-approve the schema or byte caps: caller/worker stream boundary tests,
+approve the schema or byte caps: worker/caller integration of stream boundaries,
 request-controller and receipt integration, resource-profile reconciliation,
 runtime attestation, and independent design review remain open. No service,
 inference, OOM, training, generation, scoring, or match ran; no gate advanced.

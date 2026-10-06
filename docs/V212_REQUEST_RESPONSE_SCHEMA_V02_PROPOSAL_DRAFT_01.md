@@ -180,13 +180,19 @@ largest board variant. The corrected standalone proposal auditor is
 `two_player/v212_request_schema_v02_proposal_audit.py`; its tests validate the
 closed field/range domains, all four variant-specific extremal request
 witnesses, duplicate-key and canonical-byte rejection, and the 811/747-byte
-caps. It remains unreviewed design-audit code and is not imported by the
-request adapter. The structural request witness is not evidence of a reachable
+caps. The helper `read_wire_bytes_bounded` also reads actual file-descriptor
+streams through EOF while retaining at most `cap + 1` bytes. Pipe fixtures
+cover empty, exact-cap and cap-plus-one streams for both proposed caps, plus
+short reads and invalid bounds. This is an offline proposal-audit reader, not
+the worker bootstrap or caller controller; a blocking stream still requires
+an external caller deadline. The helper remains unreviewed design-audit code
+and is not imported by the request adapter. The structural request witness is
+not evidence of a reachable
 game position: the eventual caller must separately verify root-state hash,
 legality, and nonterminal status against the named game's rules. Before any
 adapter implementation, review the verifier and add worker/caller stream tests
 for zero, exact-cap, and cap-plus-one inputs. This audit does not implement
-those integration checks.
+those integration checks; its pipe fixtures cover only the isolated reader.
 
 Review must specifically decide whether the digest-only cgroup identity is
 sufficiently clear/reproducible, whether the current root-ply and node caps

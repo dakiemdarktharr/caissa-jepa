@@ -1,11 +1,67 @@
 import copy
 import hashlib
+import os
 import unittest
+from unittest.mock import patch
 
 from two_player import v212_request_schema_v02_proposal_audit as audit
 
 
 class RequestSchemaProposalAuditTests(unittest.TestCase):
+    @staticmethod
+    def _read_pipe(payload: bytes, cap: int) -> bytes:
+        reader, writer = os.pipe()
+        try:
+            if payload:
+                os.write(writer, payload)
+            os.close(writer)
+            writer = -1
+            return audit.read_wire_bytes_bounded(reader, cap)
+        finally:
+            os.close(reader)
+            if writer >= 0:
+                os.close(writer)
+
+    def test_request_stream_reader_accepts_zero_and_exact_cap(self):
+        empty = self._read_pipe(b"", audit.MAX_REQUEST_BYTES)
+        self.assertEqual(empty, b"")
+        with self.assertRaises(ValueError):
+            audit.decode_canonical(empty, audit.MAX_REQUEST_BYTES)
+
+        raw = audit.canonical_bytes(
+            audit.request_witness("connect4-gravity-8x8"))
+        self.assertEqual(len(raw), audit.MAX_REQUEST_BYTES)
+        self.assertEqual(self._read_pipe(raw, audit.MAX_REQUEST_BYTES), raw)
+
+    def test_response_stream_reader_accepts_zero_and_exact_cap(self):
+        empty = self._read_pipe(b"", audit.MAX_RESPONSE_BYTES)
+        self.assertEqual(empty, b"")
+        with self.assertRaises(ValueError):
+            audit.decode_canonical(empty, audit.MAX_RESPONSE_BYTES)
+
+        request = audit.request_witness("reversi8")
+        request_bytes = audit.canonical_bytes(request)
+        response = audit.response_witness(request["nonce"], request_bytes)
+        raw = audit.canonical_bytes(response)
+        self.assertEqual(len(raw), audit.MAX_RESPONSE_BYTES)
+        self.assertEqual(self._read_pipe(raw, audit.MAX_RESPONSE_BYTES), raw)
+
+    def test_stream_reader_rejects_cap_plus_one_for_both_wire_types(self):
+        for cap in (audit.MAX_REQUEST_BYTES, audit.MAX_RESPONSE_BYTES):
+            with self.subTest(cap=cap):
+                with self.assertRaisesRegex(ValueError, "byte cap"):
+                    self._read_pipe(b"x" * (cap + 1), cap)
+
+    def test_stream_reader_handles_short_reads_and_invalid_bounds(self):
+        with patch.object(audit.os, "read", side_effect=[b"ab", b"c", b""]) as read:
+            self.assertEqual(audit.read_wire_bytes_bounded(7, 3, chunk_bytes=2),
+                             b"abc")
+        self.assertEqual([call.args[1] for call in read.call_args_list], [2, 2, 1])
+        for args in ((True, 4), (1, True), (1, 0)):
+            with self.subTest(args=args):
+                with self.assertRaises(ValueError):
+                    audit.read_wire_bytes_bounded(*args)
+
     def test_valid_variant_witnesses_and_caps(self):
         self.assertEqual(audit.verify_proposal_caps(),
                          (811, "connect4-gravity-8x8", 64))

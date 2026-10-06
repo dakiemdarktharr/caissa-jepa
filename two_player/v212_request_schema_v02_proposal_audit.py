@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from typing import Any
 
@@ -78,6 +79,32 @@ def _reject_float(value: str) -> None:
 
 def _reject_constant(value: str) -> None:
     raise ValueError("non-finite JSON constants are forbidden")
+
+
+def read_wire_bytes_bounded(fd: int, cap: int, *, chunk_bytes: int = 4096) -> bytes:
+    """Read at most cap+1 bytes from a stream for proposal-boundary tests.
+
+    This audit helper deliberately does not provide a caller deadline. The
+    eventual controller/worker must bound the lifetime of a blocking stream.
+    """
+    if type(fd) is not int or fd < 0:
+        raise ValueError("file descriptor must be a nonnegative integer")
+    if type(cap) is not int or cap <= 0:
+        raise ValueError("byte cap must be a positive integer")
+    if type(chunk_bytes) is not int or chunk_bytes <= 0:
+        raise ValueError("read chunk size must be a positive integer")
+    chunks = bytearray()
+    while True:
+        remaining_with_probe = cap + 1 - len(chunks)
+        try:
+            block = os.read(fd, min(chunk_bytes, remaining_with_probe))
+        except OSError as exc:
+            raise ValueError("bounded wire stream could not be read") from exc
+        if not block:
+            return bytes(chunks)
+        chunks.extend(block)
+        if len(chunks) > cap:
+            raise ValueError("wire stream exceeds byte cap")
 
 
 def _integer(value: Any, low: int, high: int, field: str) -> None:

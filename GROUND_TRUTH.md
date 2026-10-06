@@ -2723,8 +2723,8 @@ or gate changed.
 
 ### Latest continuation delta (2026-10-07; request/response schema proposal parser audit)
 
-- Read the unreviewed request/response schema v02 proposal and its offline validator, then ran `python -m unittest -v tests.test_v212_request_schema_v02_proposal_audit`: 13/13 pass. This includes closed field/type domains, canonical decoding and duplicate-key rejection, exact request/response binding, and maximum 811/747-byte witnesses. A bounded static audit found no concrete validator defect in the inspected code.
-- The schema and caps remain unreviewed proposals. Worker/caller stream cap tests, controller and accepted-receipt integration, resource-profile reconciliation, and runtime attestation remain open; RESP-01b stays partial. No service, inference, OOM, training, generation, scoring, match, or outcome ran/accessed, and no gate advanced. See `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+- Read the unreviewed request/response schema v02 proposal and its offline validator, then ran `python -m unittest -v tests.test_v212_request_schema_v02_proposal_audit`: 17/17 pass. This includes closed field/type domains, canonical decoding and duplicate-key rejection, exact request/response binding, maximum 811/747-byte witnesses, and an isolated fd reader's empty/exact-cap/cap-plus-one pipe boundaries and short reads. A bounded static audit found no concrete validator defect in the inspected code.
+- The schema and caps remain unreviewed proposals. Actual worker/caller stream integration, controller and accepted-receipt integration, resource-profile reconciliation, and runtime attestation remain open; RESP-01b stays partial. The reader does not enforce its own caller deadline. No service, inference, OOM, training, generation, scoring, match, or outcome ran/accessed, and no gate advanced. See `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
 
 
 ### Latest continuation delta (2026-10-07; root-schedule yield sensitivity)
@@ -2743,3 +2743,9 @@ or gate changed.
 
 - Prepared a versioned amendment proposal resolving §4's raw-state control as latent-then-decode: share the action-conditioned 104→32 predictor, decode to 198 exact-state features, and re-encode predicted features for recurrence. Source inspection shows exact features include 0/1 targets, so the draft uses a linear decoder with masked MSE; the compute pilot instead applies `tanh` to a different direct 104→198 path. The proposal defines target/mask and initialization handling, separates the 18,440 online parameter count, and retains the existing 5% training-FLOP gate. Existing pilot results are not rewritten.
 - This proposal is unreviewed and not adopted; METHOD_SPEC_V212-04 and all arms remain unchanged. FLOP parity, the other data/compute/supervision gates, and pre-fit review remain open. No trainer, inference, or training ran and no gate advanced. See `docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md` and `docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.
+
+
+### Latest continuation delta (2026-10-07; schema proposal bounded stream reader)
+
+- Added an audit-only file-descriptor reader to the unreviewed schema proposal helper. The focused schema suite passes 17/17, including zero-byte, exact proposed cap, cap-plus-one for request and response, and short-read cases. It retains no more than `cap+1` bytes before rejection.
+- This does not enforce a deadline, implement the application worker/caller/controller stream boundary, or bind response wire metadata into an accepted receipt. The reader is not imported by the bootstrap or request adapter; schema review and RESP-01b remain partial. No live request, service, inference, OOM, training, generation, scoring, or match ran, and no gate advanced.
