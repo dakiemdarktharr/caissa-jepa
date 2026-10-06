@@ -354,14 +354,16 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertNotIn("stop", state["sequence"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
-    def test_ambiguous_or_foreign_journal_marker_retains_unit_and_workspace(self):
-        cases = ("duplicate", "foreign")
+    def test_missing_ambiguous_or_foreign_journal_marker_retains_handles(self):
+        cases = ("missing", "duplicate", "foreign")
         for case in cases:
             with self.subTest(case=case), ExitStack() as stack:
                 injected = lambda record: [record, dict(record)]
                 if case == "foreign":
                     injected = lambda record: [dict(
                         record, MESSAGE=collector.MARKER_PREFIX + "c" * 32)]
+                elif case == "missing":
+                    injected = lambda record: []
                 state = self._mock_host(stack, journal_records=injected)
                 with self.assertRaisesRegex(
                         service.ArmedServiceSmokeError,

@@ -2,6 +2,17 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 empty journal collection at the consumer boundary
+
+Extended the mocked armed-smoke marker injection to include an empty record
+collection alongside the duplicate and foreign-invocation cases. All three
+fail before receipt persistence or unit stop and retain the workspace. The
+focused armed-smoke/collector/live-evidence/receipt group passes 92/92. This
+does not replace collector parser coverage or establish live journal behavior;
+amended-controller receipt mapping remains open. No service, inference, OOM,
+training, score, or match ran; no gate changed. See JRN-01/JRN-02 in the
+supervision failure plan and matrix.
+
 ### 2026-10-06 duplicate and foreign journal-marker orchestration cases
 
 The armed-smoke mock now injects duplicate marker records and a marker whose

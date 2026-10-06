@@ -2649,3 +2649,9 @@ or gate changed.
 
 - Added a mocked armed-smoke test that injects either duplicate marker records or a marker message bound to a different invocation. Both fail at the consumer boundary before receipt persistence or unit stop and retain the IPC workspace; the focused armed-smoke/collector/live-evidence/receipt suite passes 92/92.
 - This does not exercise system journal behavior, the amended v02 controller, or a complete receipt-certainty contract. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. JRN-02 coverage remains partial. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-06; empty journal collection at consumer boundary)
+
+- Extended the existing mocked armed-smoke journal injection with an empty record collection. Together with duplicate and foreign-invocation fixtures, all fail before receipt persistence or unit stop and retain the IPC workspace. The focused armed-smoke/collector/live-evidence/receipt suite passes 92/92.
+- This adds consumer-seam mock evidence for JRN-01/JRN-02 only. It does not verify live journal behavior or amended-controller receipt/action mapping; all research and operational gates remain unchanged. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run. See `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.

@@ -61,6 +61,9 @@ The armed synthetic service and collector tests already exercise some rows:
 non-success manager result, missing/duplicate/mismatched worker marker,
 response deadline while active, start-state query/race, receipt publication and
 durability uncertainty, stop/cleanup failure, and Ctrl-C at several phases.
+At the current consumer seam, an empty journal-marker collection is also
+injected and checked for no receipt attempt, unit stop, or workspace cleanup;
+duplicate and foreign-invocation records are checked at the same seam.
 The current mock suite also injects failures at both first and second local
 counter reads, a stop-command timeout after durable receipt, and Ctrl-C at stop
 after durable receipt. The timeout is a mocked command result rather than a
