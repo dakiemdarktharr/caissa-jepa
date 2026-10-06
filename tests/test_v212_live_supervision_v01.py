@@ -47,6 +47,23 @@ class SystemdSnapshotTests(unittest.TestCase):
                 ActiveState="inactive", SubState="dead"), boot_id=BOOT,
                 captured_monotonic_us=9, active=True)
 
+    def test_active_snapshot_rejects_missing_required_properties(self):
+        cases = {
+            "InvocationID": "systemd property InvocationID is missing",
+            "ControlGroup": "active service has no ControlGroup",
+            "ActiveState": "systemd property ActiveState is missing",
+            "SubState": "systemd property SubState is missing",
+        }
+        for field, expected_error in cases.items():
+            with self.subTest(field=field):
+                incomplete = properties()
+                del incomplete[field]
+                with self.assertRaisesRegex(
+                        live.LiveEvidenceError, expected_error):
+                    live.snapshot_from_properties(
+                        unit=UNIT, properties=incomplete, boot_id=BOOT,
+                        captured_monotonic_us=9, active=True)
+
     def test_exit_snapshot_requires_finished_unit_and_exit_properties(self):
         out = live.snapshot_from_properties(unit=UNIT, properties=properties(
             ControlGroup="", ActiveState="inactive", SubState="exited"),
@@ -85,13 +102,20 @@ class SystemdSnapshotTests(unittest.TestCase):
                 captured_monotonic_us=10, active=False)
 
     def test_exit_snapshot_rejects_missing_post_exit_state_properties(self):
-        for field in ("ActiveState", "SubState"):
+        cases = {
+            "InvocationID": "systemd property InvocationID is missing",
+            "ActiveState": "systemd property ActiveState is missing",
+            "SubState": "systemd property SubState is missing",
+            "Result": "systemd property Result is missing",
+            "ExecMainStatus": "systemd property ExecMainStatus is missing",
+        }
+        for field, expected_error in cases.items():
             with self.subTest(field=field):
-                incomplete = properties(ControlGroup="")
+                incomplete = properties(
+                    ControlGroup="", ActiveState="inactive", SubState="exited")
                 del incomplete[field]
                 with self.assertRaisesRegex(
-                        live.LiveEvidenceError,
-                        f"systemd property {field} is missing"):
+                        live.LiveEvidenceError, expected_error):
                     live.snapshot_from_properties(
                         unit=UNIT, properties=incomplete, boot_id=BOOT,
                         captured_monotonic_us=10, active=False)

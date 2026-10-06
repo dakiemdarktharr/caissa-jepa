@@ -2842,7 +2842,7 @@ or gate changed.
 
 ### Latest continuation delta (2026-10-07; post-exit manager state parsing)
 
-- Added a direct parser regression for post-exit systemd snapshots that omit `ActiveState` or `SubState`. The parser rejects either missing field with a dimension-specific error. This closes only the helper-level omission case; at the mocked controller polling boundary, missing state fields still progress to the caller deadline rather than producing a distinct immediate failure. The broader MGR-01 matrix, v02 controller integration, live manager behavior, and receipt certainty remain partial.
+- Added direct snapshot-parser regressions for absent active-state fields (`InvocationID`, `ControlGroup`, `ActiveState`, `SubState`) and post-exit fields (`InvocationID`, `ActiveState`, `SubState`, `Result`, `ExecMainStatus`). The parser rejects each required omission with a dimension-specific error. The live-supervision parser and armed-service mocked-orchestration suites pass 55/55 and `git diff --check` passes. This closes only the helper-level schema omissions; at the mocked controller polling boundary, missing state fields still progress to the caller deadline rather than producing a distinct immediate failure. The broader MGR-01 matrix, v02 controller integration, live manager behavior, and receipt certainty remain partial.
 - No service, request adapter, inference, OOM operation, training, score, match, or outcome ran. No manager/journal/counter integration gate advanced.
 
 ### 2026-10-07 calibration scenario-target audit
