@@ -2,6 +2,17 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 duplicate and foreign journal-marker orchestration cases
+
+The armed-smoke mock now injects duplicate marker records and a marker whose
+message names a different invocation. Both cases reject at the controller
+consumer boundary before receipt persistence or unit stop, and retain the IPC
+workspace. The focused armed-smoke/collector/live-evidence/receipt group passes
+92/92. These remain synthetic mock cases: they do not verify live journal
+behavior or the amended controller/receipt path. No service, inference, OOM,
+training, score, or match ran; no gate changed. See JRN-02 in the supervision
+failure test plan.
+
 ### 2026-10-06 deadline checks after response and counter evidence
 
 The v01 no-inference smoke checks the caller deadline after bounded response

@@ -2643,3 +2643,9 @@ or gate changed.
 
 - Added `two_player/v212_release_token_v02.py` and `two_player/v212_armed_protocol_v02.py` as versioned candidates; v01 remains unchanged. The v02 worker path hashes the exact bounded raw request bytes, rejects duplicate-key/malformed/non-object JSON, and requires the release token to carry the same request digest before callback execution. Five focused tests pass, including same-nonce byte mutation rejection before callback and malformed request rejection before FIFO wait.
 - This is not wired into the existing no-inference systemd smoke or request adapter; the bootstrap still needs a v02 exact-raw-stdin integration. No service/request/inference/OOM stress, project data, outcome, training, or scoring was run. Runtime identity, operational failure map, independent review, and adapter/pilot gates remain open. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+
+### Latest continuation delta (2026-10-06; journal marker orchestration cases)
+
+- Added a mocked armed-smoke test that injects either duplicate marker records or a marker message bound to a different invocation. Both fail at the consumer boundary before receipt persistence or unit stop and retain the IPC workspace; the focused armed-smoke/collector/live-evidence/receipt suite passes 92/92.
+- This does not exercise system journal behavior, the amended v02 controller, or a complete receipt-certainty contract. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. JRN-02 coverage remains partial. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.

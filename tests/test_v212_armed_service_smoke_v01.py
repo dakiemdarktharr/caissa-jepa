@@ -95,7 +95,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    first_show_load_state="loaded", raw_response=None,
                    interrupt_release=False, timeout_stop=False,
                    interrupt_stop=False, fail_event_sample=None,
-                   exited_overrides=None):
+                   exited_overrides=None, journal_records=None):
         state = {"workspace": None, "show": 0, "sequence": [],
                  "event_samples": 0, "persist_durable": False}
         original_create = ipc.create_workspace
@@ -213,14 +213,19 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
             state["sequence"].append("journal")
             if fail_journal:
                 raise collector.CollectorError("mock journal marker missing")
-            return [{
+            valid_record = {
                 "__CURSOR": "mock", "_BOOT_ID": "b" * 32,
                 "__MONOTONIC_TIMESTAMP": "16000",
                 "_SYSTEMD_USER_UNIT": unit,
                 "_SYSTEMD_INVOCATION_ID": invocation_id,
                 "_SYSTEMD_CGROUP": worker_cgroup,
                 "MESSAGE": collector.MARKER_PREFIX + invocation_id,
-            }]
+            }
+            if journal_records is not None:
+                if callable(journal_records):
+                    return journal_records(dict(valid_record))
+                return [dict(record) for record in journal_records]
+            return [valid_record]
 
         event_samples = 0
 
@@ -348,6 +353,25 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertFalse(self.receipt.exists())
         self.assertNotIn("stop", state["sequence"])
         self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_ambiguous_or_foreign_journal_marker_retains_unit_and_workspace(self):
+        cases = ("duplicate", "foreign")
+        for case in cases:
+            with self.subTest(case=case), ExitStack() as stack:
+                injected = lambda record: [record, dict(record)]
+                if case == "foreign":
+                    injected = lambda record: [dict(
+                        record, MESSAGE=collector.MARKER_PREFIX + "c" * 32)]
+                state = self._mock_host(stack, journal_records=injected)
+                with self.assertRaisesRegex(
+                        service.ArmedServiceSmokeError,
+                        "armed marker did not bind the active invocation.*receipt_not_attempted"):
+                    service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+                self.assertFalse(self.receipt.exists())
+                self.assertIn("journal", state["sequence"])
+                self.assertNotIn("persist_attempt", state["sequence"])
+                self.assertNotIn("stop", state["sequence"])
+                self.assertTrue(self.workspaces[-1].directory.exists())
 
     def test_receipt_publication_failure_is_uncertain_and_retains_reconciliation_handles(self):
         with ExitStack() as stack:
