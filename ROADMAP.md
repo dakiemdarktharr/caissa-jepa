@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 root-schedule yield sensitivity
+
+Added an exact Binomial-tail sensitivity for the proposed six-stratum schedule
+(64 slots, at least 16 valid per stratum). Under equal assumed slot-yield and
+independence, the all-six schedule passes with probability 36.1% at `p=0.30`,
+82.1% at `p=0.35`, and 97.6% at `p=0.40`; illustrative 90/95/99% schedule
+targets imply equal per-slot yields of about 0.366/0.383/0.418. This is
+analytic sensitivity, not an estimate of any game-policy stratum's yield.
+No reliability threshold was selected. The root schedule, yield model,
+bootstrap calibration, and method amendment remain unapproved; no roots or
+scores were generated. See the sensitivity note and root-sampling review.
+
 ### 2026-10-07 request/response schema proposal parser audit
 
 Reviewed the unintegrated, unreviewed v02 closed-schema validator against its

@@ -141,3 +141,18 @@ literature note. The reviewer agrees calibration is a prudent recommendation,
 not a requirement established by theory, and that any calibration conclusion
 is limited to its frozen scenarios. This static review is not statistical
 acceptance; no gate advanced.
+
+## Follow-up schedule-yield sensitivity (2026-10-07)
+
+An exact Binomial-tail calculation now quantifies the design-02 global yield
+gate under equal assumed per-slot validity and independent slots: for 64
+candidates and 16 required in each of six strata, the all-six pass chance is
+about 36.1% at `p=0.30`, 82.1% at `p=0.35`, and 97.6% at `p=0.40`. Equal
+per-slot yields of approximately 0.366, 0.383, and 0.418 correspond to
+illustrative global pass targets of 0.90, 0.95, and 0.99. These are analytic
+sensitivity values, not observed yields or accepted reliability thresholds.
+For unequal strata, the joint probability depends on all six yields; the
+independence factorization also depends on the slot-stream assumptions. See
+`V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_DRAFT_01.md`. The yield gate, root
+schedule, bootstrap calibration, and all downstream research gates remain
+unapproved/closed; no roots or simulations were made.

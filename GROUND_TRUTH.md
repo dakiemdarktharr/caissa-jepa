@@ -2725,3 +2725,9 @@ or gate changed.
 
 - Read the unreviewed request/response schema v02 proposal and its offline validator, then ran `python -m unittest -v tests.test_v212_request_schema_v02_proposal_audit`: 13/13 pass. This includes closed field/type domains, canonical decoding and duplicate-key rejection, exact request/response binding, and maximum 811/747-byte witnesses. A bounded static audit found no concrete validator defect in the inspected code.
 - The schema and caps remain unreviewed proposals. Worker/caller stream cap tests, controller and accepted-receipt integration, resource-profile reconciliation, and runtime attestation remain open; RESP-01b stays partial. No service, inference, OOM, training, generation, scoring, match, or outcome ran/accessed, and no gate advanced. See `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; root-schedule yield sensitivity)
+
+- Calculated exact Binomial-tail schedule-pass sensitivity for six proposed independent strata, each with 64 candidate slots and a requirement of at least 16 valid slots. With a common assumed per-slot yield, global pass probabilities are 0.360846 at `p=0.30`, 0.820767 at `p=0.35`, and 0.976176 at `p=0.40`; global 0.90/0.95/0.99 targets correspond to per-slot yields 0.366219/0.383364/0.417880. This uses no random draws or root data.
+- The assumed yields are not estimates, the equal-yield and independence assumptions are unverified, and no global reliability threshold was chosen. The root schedule and method amendment remain unapproved; no roots, simulations, scoring, training, or match ran and no gate advanced. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_DRAFT_01.md` and the follow-up in `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
