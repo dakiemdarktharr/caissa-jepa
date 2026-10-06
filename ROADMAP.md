@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 counter-file disappearance between controller samples
+
+The armed-smoke test now drives the actual bounded `memory.events.local`
+reader against a temporary cgroup-shaped tree, removes the file after the first
+sample, and verifies the second read fails closed through the mocked controller.
+No receipt is written, the unit is not stopped, and the IPC workspace remains.
+The focused armed-smoke/collector/live-evidence/receipt group passes 96/96;
+compileall and `git diff --check` pass. This does not establish live cgroup or
+service behavior; amended v03 receipt integration remains open. No inference,
+OOM, training, score, or match ran. See CNT-01a.
+
 ### 2026-10-07 counter evidence rejection at the armed-smoke receipt boundary
 
 The armed-smoke mock can now mutate worker-local counter snapshots at the

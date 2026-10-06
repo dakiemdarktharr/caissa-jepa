@@ -71,8 +71,10 @@ It also checks immediately after the validated post-exit manager snapshot and
 before reading response bytes; the corresponding controlled expiry fixture
 proves response and journal reads plus receipt persistence and cleanup are
 skipped.
-The current mock suite also injects failures at both first and second local
-counter reads and invalid counter records for source, schema, cgroup, boot,
+The current suite injects failures at both first and second local counter
+reads and removes a real temporary `memory.events.local` file between reader
+calls to exercise disappearance during the mocked controller flow. It also
+injects invalid counter records for source, schema, cgroup, boot,
 time order/window, Boolean values, and rollback; all reject during receipt
 assembly without persistence, stop, or workspace cleanup. It also injects a
 stop-command timeout after durable receipt and Ctrl-C at stop after durable

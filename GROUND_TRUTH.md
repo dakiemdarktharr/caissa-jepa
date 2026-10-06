@@ -2673,3 +2673,9 @@ or gate changed.
 
 - Added table-driven armed-smoke injections for wrong counter source/schema/cgroup/boot, out-of-window and unordered sample times, Boolean values, and rollback. All reject during receipt assembly before receipt persistence or unit stop, retain the IPC workspace, and preserve `receipt_not_attempted`. The focused armed-smoke/collector/live-evidence/receipt suite passes 95/95; compileall and `git diff --check` pass.
 - This adds mocked CNT-02 action/evidence lifecycle assertions only. Actual counter-file disappearance between samples, live service behavior, amended v03 receipt integration, and independent review remain open. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. See the failure matrix and test plan.
+
+
+### Latest continuation delta (2026-10-07; counter-file disappearance between samples)
+
+- Added a controller-flow test using the actual bounded `memory.events.local` reader against a temporary cgroup-shaped tree. The test removes the file after the first read; the second read fails closed, without receipt persistence or unit stop, and the IPC workspace remains. The focused armed-smoke/collector/live-evidence/receipt group passes 96/96; compileall and `git diff --check` pass.
+- This is temporary-filesystem plus mocked-service evidence, not live cgroup behavior. Amended v03 receipt integration, runtime attestation, and independent review remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See CNT-01a in the failure plan and matrix.

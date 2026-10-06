@@ -96,7 +96,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                    interrupt_release=False, timeout_stop=False,
                    interrupt_stop=False, fail_event_sample=None,
                    exited_overrides=None, journal_records=None,
-                   event_mutator=None):
+                   event_mutator=None, event_reader=None):
         state = {"workspace": None, "show": 0, "sequence": [],
                  "event_samples": 0, "persist_durable": False}
         original_create = ipc.create_workspace
@@ -266,8 +266,9 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                                                       str(collector.MEMORY_HIGH), "0"]))
         stack.enter_context(patch.object(collector, "_journal_markers", side_effect=journal))
         stack.enter_context(patch.object(collector.time, "sleep", return_value=None))
-        stack.enter_context(patch.object(live, "read_memory_events_local",
-                                         side_effect=read_events))
+        stack.enter_context(patch.object(
+            live, "read_memory_events_local",
+            side_effect=read_events if event_reader is None else event_reader))
         stack.enter_context(patch.object(ipc, "create_workspace", side_effect=create))
         stack.enter_context(patch.object(ipc, "read_response", side_effect=read_response))
         stack.enter_context(patch.object(live, "persist_receipt_once", side_effect=persist))
@@ -440,6 +441,44 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                                         "local counter read failure.*receipt_not_attempted"):
                 service.run_no_inference_armed_smoke(receipt_path=self.receipt)
         self.assertEqual(state["event_samples"], 2)
+        self.assertIn("release", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
+    def test_counter_file_disappearance_between_samples_retains_handles(self):
+        with ExitStack() as stack:
+            cgroup_root = Path(stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="caissa-counter-cgroup-")))
+            original_reader = live.read_memory_events_local
+            sample_count = 0
+            sample_path = None
+
+            def read_disappearing_file(**kwargs):
+                nonlocal sample_count, sample_path
+                sample_count += 1
+                sample_path = (cgroup_root / kwargs["control_group"].lstrip("/")
+                               / "memory.events.local")
+                if sample_count == 1:
+                    sample_path.parent.mkdir(parents=True)
+                    sample_path.write_text(
+                        "low 0\nhigh 0\nmax 0\noom 0\n"
+                        "oom_kill 0\noom_group_kill 0\n", encoding="ascii")
+                read_kwargs = dict(kwargs, cgroup_root=cgroup_root)
+                result = original_reader(**read_kwargs)
+                if sample_count == 1:
+                    sample_path.unlink()
+                return result
+
+            state = self._mock_host(stack, event_reader=read_disappearing_file)
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "memory.events.local is unavailable.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        self.assertEqual(sample_count, 2)
+        self.assertIsNotNone(sample_path)
+        self.assertFalse(sample_path.exists())
         self.assertIn("release", state["sequence"])
         self.assertNotIn("persist_attempt", state["sequence"])
         self.assertNotIn("stop", state["sequence"])
