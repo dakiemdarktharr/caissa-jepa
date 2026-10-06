@@ -335,15 +335,19 @@ for this family reports dependence-robust joint lower bounds:
 | 18,600 | .810013 | passes this grid point |
 
 These are deterministic binomial calculations, not simulated calibration.
-They show why choosing R from a coarse grid is insufficient. No R, assurance
-target, or final precision rule is selected. A reviewer must independently
-verify the endpoint mapping, reproduce a sufficiently resolved search over
-integer R (including cut-off changes), select and justify a replication
-rule, and review local feasibility before any calibration simulation.
-Do not infer a minimum R from the displayed candidates. At R=18,450 and
-B=10,000, arithmetic workload is 7.1955 billion inner bootstrap replicates,
-up to 107.9325 billion contrast evaluations; this is not a local runtime or
-feasibility measurement.
+An exhaustive integer scan over R=1..18,600 found 145 values meeting the
+proposed 0.80 assurance target. The first within this searched range is
+R=18,378, where the union lower bound is 0.8020521569 and the exact cutoff is
+1,001; R=18,377 is 0.7822841053. The discrete cutoff then produces 0.8010068175
+at R=18,379 and 0.7999565426 at R=18,380. A 60-digit Decimal check around the
+first crossing agrees with the recurrence/log-PMF reference within the audit
+tolerance. This establishes only the first crossing in the finite searched
+range. No R, assurance target, or final precision rule is selected. A reviewer
+must disposition the endpoint mapping and assurance target, select and justify
+a replication rule, and review local feasibility before any calibration
+simulation. At the first searched crossing, R=18,378 and B=10,000 imply
+7.16742 billion inner bootstrap replicates, up to 107.5113 billion contrast
+evaluations; this is not a local runtime or feasibility measurement.
 
 ## 6. Proposed reporting, decision, and failure rules
 
@@ -377,9 +381,9 @@ Independent statistical and method reviewers must explicitly disposition:
    root-quality variance split, gamma magnitudes, and interaction law are
    adequate or need revision; explicitly disposition the `N-MACRO` orientation
    (V1 +0.10, V2 −0.10).
-4. The endpoint definitions, simultaneous limits, assurance target, exact
-   replication count and inner B, integer-R assurance search, and local
-   feasibility.
+4. The endpoint definitions, simultaneous limits, assurance target, whether
+   and how to use the finite integer-R search result, exact replication count
+   and inner B, and local feasibility.
 5. Failure handling, schedule-passage reporting, numerical tolerances,
    quadrature, RNG/runtime/source pinning, and the complete executable
    manifest schema.

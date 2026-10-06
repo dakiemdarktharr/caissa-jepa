@@ -2129,3 +2129,28 @@ were verified first; GitHub main was then advanced without force and with
 expected-head `c3e96c45462f2eba0ba98bca018e45a2ce3ed0c8` to commit
 `434dfb1b65c6f9c0dfb8866a4ef13fe0c961c67b`, whose tree matches the local
 milestone tree. The GitHub ref/commit APIs confirm the destination and tree.
+
+### 2026-10-07 integer assurance scan and executable manifest audit
+
+Added a pure deterministic integer-R scan for the proposal's K=69 endpoint
+family and a consolidated manifest audit that joins the target, covariance,
+root-quality, and yield-interaction calculations. The scan covers every
+integer R=1..18,600: 145 values meet the proposed 0.80 union-bound threshold,
+with the first in-range crossing at R=18,378 (0.8020521569, cutoff 1,001).
+Because the cutoff changes discretely, R=18,380 falls back below the target
+(0.7999565426). The 60-digit Decimal neighborhood check agrees with the
+recurrence/log-PMF reference. The first crossing is not an adopted replication
+rule and says nothing about local compute feasibility.
+
+The regenerated temporary manifest has 18,720 conditional target rows, all
+39 cells and 69 endpoints, 180 pair-yield target checks, the exact v05 method
+source hash, and the assurance-search result/digest. The previous output was
+stale relative to final reviewed source and was regenerated. The focused
+search/manifest tests pass 5/5; compile and whitespace checks pass. Updated
+draft 03 records the arithmetic scan and workload of 7.16742 billion inner
+bootstrap replicates (up to 107.5113 billion contrast evaluations) at the
+first crossing with B=10,000. Independent methodological disposition and a
+local feasibility assessment remain required before any simulation. No R was
+selected; no simulation, roots, scores, outcomes, inference, or training ran.
+v04 remains current, all gates remain closed, and no superiority claim is
+supported.
