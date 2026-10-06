@@ -232,8 +232,9 @@ terminal/missing/invalid-transition counts, and uniform coordinate weighting
 with pooled horizon normalization. The reviewer confirmed that the 77.53%
 dense-forward MAC difference warns of parity risk but cannot establish the
 5% total-training-FLOP gate. Draft 02 records these choices for disposition;
-no graph is frozen, no implementation/profile is authorized, and no gate
-advanced. No model, root, simulation, inference, or training was run.
+at that point, before the draft-02 disposition below, no graph had yet been
+frozen even as a candidate. No implementation/profile was authorized and no
+gate advanced. No model, root, simulation, inference, or training was run.
 
 **Independent read-only method disposition of draft 02 (2026-10-07):** the
 reviewer found the candidate internally coherent with v04's stated controls,
