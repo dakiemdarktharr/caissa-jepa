@@ -87,6 +87,25 @@ class ResponseSchemaProposalAuditTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(self.request_bytes).hexdigest(),
                          self.response["request_sha256"])
 
+    def test_response_wire_validation_binds_exact_digest_schema_and_length(self):
+        raw = audit.canonical_bytes(self.response)
+        validated, evidence = audit.validate_response_wire(
+            raw, self.request, self.request_bytes)
+        self.assertEqual(validated, self.response)
+        self.assertEqual(evidence, {
+            "response_schema": audit.RESPONSE_SCHEMA,
+            "response_sha256": hashlib.sha256(raw).hexdigest(),
+            "response_byte_length": len(raw),
+        })
+
+    def test_response_wire_validation_rejects_noncanonical_and_oversized_bytes(self):
+        raw = audit.canonical_bytes(self.response)
+        for payload in (raw + b" ", b" " * (audit.MAX_RESPONSE_BYTES + 1)):
+            with self.subTest(length=len(payload)):
+                with self.assertRaises(ValueError):
+                    audit.validate_response_wire(
+                        payload, self.request, self.request_bytes)
+
     def test_response_wire_cap_rejects_cap_plus_one(self):
         with self.assertRaisesRegex(ValueError, "byte cap"):
             audit.decode_canonical(b" " * (audit.MAX_RESPONSE_BYTES + 1),

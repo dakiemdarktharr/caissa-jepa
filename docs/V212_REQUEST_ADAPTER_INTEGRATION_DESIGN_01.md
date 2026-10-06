@@ -119,6 +119,15 @@ enables an exact-byte caller path: no v02 response schema validation or
 response digest/length receipt binding is implemented, v02 remains unwired,
 and no service/request/model operation ran.
 
+The offline schema-proposal auditor now has `validate_response_wire`: it
+applies the proposal's canonical byte cap and closed response schema, validates
+nonce/request-digest/cgroup/memory bindings against the request, and derives
+response schema, SHA-256, and byte length from the same raw buffer. Tests cover
+valid maximum-size bytes, byte metadata, non-canonical bytes, and cap-plus-one.
+The 139-test focused group passes. This remains proposal-audit code, not a
+runtime protocol or receipt publisher; independent review and the integrated
+response-to-receipt failure matrix remain required.
+
 ## Implementation progress: mocked collector lifecycle boundaries (2026-10-04)
 
 Added nine orchestration tests in `tests/test_v212_supervision_collector_v01.py`

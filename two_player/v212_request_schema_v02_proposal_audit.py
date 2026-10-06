@@ -182,6 +182,23 @@ def validate_response(value: Any, request: dict[str, Any],
     _integer(value["worker_memory_max"], 1, MAX_I64, "worker_memory_max")
 
 
+def validate_response_wire(response_bytes: bytes, request: dict[str, Any],
+                           request_bytes: bytes) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Validate proposal response bytes and derive metadata from those bytes.
+
+    This offline audit helper does not publish or authenticate a supervision
+    receipt. Its digest and length describe the exact bounded wire buffer.
+    """
+    value = decode_canonical(response_bytes, MAX_RESPONSE_BYTES)
+    validate_response(value, request, request_bytes)
+    evidence = {
+        "response_schema": value["schema"],
+        "response_sha256": hashlib.sha256(response_bytes).hexdigest(),
+        "response_byte_length": len(response_bytes),
+    }
+    return value, evidence
+
+
 def request_witness(variant: str) -> dict[str, Any]:
     cells = VARIANT_CELLS[variant]
     return {

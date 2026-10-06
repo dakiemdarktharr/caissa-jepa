@@ -2,6 +2,18 @@
 
 Updated: 2026-10-06. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-06 raw response validation in the schema proposal audit
+
+The offline v02 proposal auditor now validates a bounded canonical response
+buffer, checks the closed schema and request-bound fields, and returns the
+validated object with schema, SHA-256, and byte-length metadata derived from
+that exact buffer. Maximum-size success, metadata values, non-canonical bytes,
+and cap-plus-one failure are covered. The focused IPC/schema/smoke/receipt/
+bootstrap group passes 139/139. This helper does not publish receipts or
+integrate a worker/controller response boundary; independent review and full
+failure mapping remain ahead of integration. No gate changed. See the
+request-adapter design and RESP-01b traceability.
+
 ### 2026-10-06 exact bounded response-byte reader
 
 The IPC helper now returns the exact bounded response bytes after its existing
