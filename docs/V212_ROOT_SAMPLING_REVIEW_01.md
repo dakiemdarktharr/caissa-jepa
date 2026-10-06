@@ -277,3 +277,26 @@ the preceding double-only report. The independent reviewer did not
 recompute these tails; the script and output are an auditable local analytic
 calculation, not independent statistical acceptance or a simulation. No
 gate advanced.
+
+## Follow-up calibration draft-02 scope review (2026-10-07)
+
+An approved read-only `gpt-6-luna/high` reviewer inspected the current shared-
+arm calibration DGP, its deterministic profile/target audit tools, root
+schedule design 02, and the v05 root-sampling amendment. Static inspection
+found the arm/seed/slot dependence, seat-swap complement, macro derivation,
+covariance normalization, P5 cross-band seed construction, target mapping,
+scenario inventory, endpoint counts, and workload arithmetic consistent
+under the draft's assumptions. The reviewer did not independently recompute
+binomial tails or run the audit tools.
+
+The reviewer identified a material scope limit: slot validity depends on
+policy-pair yield `q_p`, but conditional on the pair is independent of score
+effects/residuals. The DGP therefore has no state/prefix-level score-yield
+association or within-pair root-quality selection. It tests an abstract
+success-conditional law, not the actual first-passage root-state/score joint
+distribution. Before any simulation, independently accept this limited stress
+model or require added dependence stresses and a newly reviewed version. The
+48-slot interpretation, equal-band estimand, yield contract, calibration
+requirement, tolerances, failure response, and root schedule remain unaccepted;
+v04 remains current. No simulation, root, score, outcome, inference, or training
+was run/accessed, and no gate advanced.

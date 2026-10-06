@@ -2,9 +2,12 @@
 
 **Status: unapproved protocol proposal.** This revision replaces the
 contrast-level copula proposal in protocol draft 01 with a shared-arm,
-seat-swapped match-score generator. It proposes a finite, design-matched
-synthetic calibration for the v05 root-sampling and bootstrap draft. It does
-not amend current METHOD SPEC v04, resolve any root-sampling decision,
+seat-swapped match-score generator. It proposes finite synthetic calibration
+for the v05 root-sampling and bootstrap draft, matching its abstract arm,
+seed, slot, contrast, and seat-pairing layout. Its yield mechanism does not
+model state- or prefix-level score associations in the actual first-passage
+root distribution. It does not amend current METHOD SPEC v04, resolve any
+root-sampling decision,
 authorize a simulation, generate roots, expose scores/outcomes, or advance a
 research gate. Independent statistical and method review must accept/revise
 the generator and disposition the v05 estimand first. Calibration would
@@ -185,6 +188,17 @@ match results for those accepted slots and condition inference summaries on
 all six strata passing. Compute/report the exact schedule-pass probability
 separately; these assumptions are synthetic design choices, not evidence
 about actual root yield.
+
+This selection proxy varies validity probability only by ordered policy pair.
+It does not model validity or accepted-slot composition associated with latent
+root quality, prefix length/state, or score effects within a policy pair.
+Consequently the yield stress tests a shifted success-conditional policy-pair
+mix under its declared pair-specific score means; it does not reproduce the
+actual policy-mixture first-passage state/score joint distribution. Before
+simulation, reviewers must either accept this limited abstract target for the
+intended error-calibration question or require additional dependence stresses
+and a new reviewed version. Until that disposition, describe this as a
+synthetic structural proxy, not a design-matched calibration.
 
 The model is an abstract shared-arm ordinal outcome generator, not a game
 simulator. It guarantees arm-level dependence, paired seat-swap structure,

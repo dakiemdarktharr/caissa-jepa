@@ -216,17 +216,23 @@ terminal state at or before `h`; no predicted state error is defined at or
 after that event. Report the mask ply and terminal count separately at each
 horizon. It is not a missing or failed prediction. For operational accounting,
 report (i) planned branch cells, one per accepted root-slot × legal first
-action; (ii) expected-terminal cells, determined by the exact branch and
-masked at or before `h`; and (iii) target-eligible cells, whose exact branch
-is nonterminal at `h`. The error denominator is the target-eligible count, not
-the planned count; terminal cells remain in the planned ledger and are
-reported separately. Every target-eligible cell must have a prediction and
-target. Interruption, nonfinite output, or unavailable nonterminal target is
-an incomplete cell, not an expected mask, and invalidates its predeclared
-aggregate. For each horizon report `N_planned`, `N_terminal`,
-`N_target_eligible = N_planned - N_terminal`, and `N_complete`; a valid error
-aggregate requires `N_complete = N_target_eligible`. Report the incomplete
-count and reasons when they differ.
+action; (ii) expected-terminal cells, whose exact branch is observed to reach
+terminal at or before `h`; and (iii) target-eligible cells, which are every
+planned cell without an observed expected-terminal event. Thus a branch
+interrupted before reaching `h`, without a terminal already observed, is
+target-eligible but incomplete, not terminal-masked. The error denominator is
+the target-eligible count, not the planned count; terminal cells remain in the
+planned ledger and are reported separately. Every target-eligible cell must
+have an exact state at `h`, its required prediction, and target. Interruption,
+nonfinite output, or unavailable nonterminal target is an incomplete cell,
+not an expected mask, and invalidates its predeclared aggregate. For each
+variant × occupancy stratum and horizon, report schedule-level `N_planned`,
+`N_terminal`, and `N_target_eligible = N_planned - N_terminal`. Report
+`N_complete` separately per arm and model seed; a valid error aggregate
+requires `N_complete = N_target_eligible`. Report incomplete counts and
+reasons when they differ. The reported horizon error is conditional on exact
+branches that remain nonterminal at `h`; it is not an unconditional average
+over all planned branches.
 
 First average applicable action rows within root, then roots within the
 accepted variant × occupancy stratum, then use only weights explicitly

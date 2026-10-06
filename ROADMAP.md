@@ -2,6 +2,22 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 root-sampling calibration DGP scope review
+
+An approved read-only review found the shared-arm ordinal calibration proposal
+internally consistent by inspection, including its arm/seed/slot dependence,
+seat-swap structure, macro derivation, covariance/profile mapping, endpoint
+counts, and workload arithmetic. The reviewer did not recompute tails or run
+audit tools. A material scope limitation remains: pair-only validity does not
+model root-quality, state/prefix, or within-pair score-yield associations, so
+the proposal is an abstract success-conditional structural proxy rather than
+the actual first-passage root-state/score joint law. Reviewers must accept this
+limited scope or request added dependence stresses before simulation. The
+estimand, root schedule, yield contract, calibration requirement, tolerances,
+and failure response remain open; v04 is current and no gate advanced. No
+simulation, root, score, outcome, inference, or training occurred. See
+`docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
 ### 2026-10-07 independent pre-fit action-sensitivity/regret review
 
 An approved read-only review found the descriptive action-sensitivity and
@@ -25,10 +41,20 @@ repeated slot IDs, equal within-band root weights, equal band and variant
 weights, and global six-band under-yield stop; for regret, also average v04's
 two seat assignments within each slot/model-seed cell. The action-sensitivity
 ledger now separates planned branch cells, expected-terminal masks,
-target-eligible cells, and completed predictions. These clarifications do not
-accept the root schedule or resolve its independence/yield assumptions, trainer
-graph, reference estimand, resource allocation, or branch feasibility. No roots
-or model outputs were generated. No gate advanced.
+target-eligible cells, and completed predictions. A follow-up review found an
+incomplete-prefix classification ambiguity; the draft now counts a pre-horizon
+interruption without an observed terminal as target-eligible but incomplete,
+and labels horizon error as conditional on exact nonterminal branches. These
+clarifications do not accept the root schedule or resolve its independence/
+yield assumptions, trainer graph, reference estimand, resource allocation, or
+branch feasibility. No roots or model outputs were generated. No gate advanced.
+An additional read-only follow-up confirmed this ledger and the conditional
+crosswalk against schedule design 02 and METHOD_SPEC v04 by inspection. It
+reaffirmed that schedule population/independence/yield choices, six-arm and
+raw-state support, all-legal-action feasibility, and regret reference/budget/
+evaluator/failure policy remain unresolved. No acceptance or freeze is
+appropriate; no roots, scores, outcomes, simulations, inference, or training
+were accessed or run.
 
 ### 2026-10-07 bounded-reference provenance/resource audit
 
@@ -93,27 +119,24 @@ response before any simulation. No method version or gate changed; v04 remains
 current and calibration/root generation remain unauthorized. See
 `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
 
-### 2026-10-07 synthetic calibration protocol proposal
+### 2026-10-07 synthetic calibration protocol proposal (draft 01; superseded)
 
-Prepared `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_01.md` as a
-reviewable, unapproved proposal for design-matched synthetic calibration of
-the v05 crossed bootstrap. It specifies the ten atomic and five algebraically
-derived macro contrasts, a 29-cell null/alternative and yield-stress grid,
-outer/inner replication proposals, Monte Carlo uncertainty, candidate
-acceptance limits, and stop conditions. The synthetic generator is an
-abstract discrete dependence stress model; whether it adequately preserves
-the intended shared-arm structure remains under independent review. The
-proposed workload is 5.22 billion inner bootstrap replicates at R=18,000, so
-feasibility is unproven. The approved static reviewer found the scenario
-arithmetic coherent but did not accept the protocol: the contrast-level
-copula does not enforce shared-arm/seat-swap dependence. The draft now uses a
-dependence-robust union bound for within-scenario FWER/coverage endpoints; an
-analytic boundary-rate calculation gives a joint assurance lower limit of
-0.8439 across 53 endpoints. Reviewer acceptance of that calculation/target,
-adequacy of the abstract generator, and local feasibility remain open. No
-simulations, roots, scores, or outcomes were accessed or generated. v04
-remains current; calibration, root generation, and downstream gates remain
-closed. See the draft protocol and `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+Initial protocol draft 01 proposed design-matched synthetic calibration of
+the v05 crossed bootstrap with ten atomic and five algebraically derived macro
+contrasts, a 29-cell null/alternative and yield-stress grid, and
+outer/inner-replication proposals. Its abstract contrast-level generator did
+not enforce shared-arm/seat-swap dependence, as the approved reviewer noted.
+The final draft-01 text added a dependence-robust union bound and reported a
+5.22-billion-replicate workload, 53 endpoints, and 0.8439 boundary assurance.
+Draft 01 is retained as superseded history, not the current calibration
+proposal. Draft 02 replaces it with shared-arm ordinal outcomes, 31 cells, 57
+endpoints, 5.58 billion inner replicates, and 0.8322 assurance; those numbers
+are the current proposal and remain unapproved. No simulations, roots, scores,
+or outcomes were accessed or generated. v04 remains current; calibration,
+root generation, and downstream gates remain closed. See
+`docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_01.md`,
+`docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_02.md`, and
+`docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
 
 ### 2026-10-07 shared-arm calibration DGP proposal
 
