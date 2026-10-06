@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 raw-state feature coordinate audit
+
+The raw-state wiring draft now names the exact 198 adapter coordinates and
+records their source in `BoardGame.features`. A deterministic test covers
+Connect Four and Reversi at training and held-out sizes, including padded-grid
+indicators and descriptor values; a separate fixture verifies that forced
+pass swaps the side-relative occupancy planes while leaving the board and
+descriptor planes unchanged. Both focused tests pass. This is adapter mapping
+evidence only; decoder/loss/mask/gradient behavior and the actual six-arm
+training graph remain unverified, and no protocol is adopted. No model, root,
+score, or outcome was generated. No gate advanced. See the raw-state amendment
+and `tests/test_v212_raw_state_feature_contract_audit.py`.
+
 ### 2026-10-07 manager/journal failure-map regressions
 
 Mocked armed-smoke validation now rejects a contradictory post-exit manager

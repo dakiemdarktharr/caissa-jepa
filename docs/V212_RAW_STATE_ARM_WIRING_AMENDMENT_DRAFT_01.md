@@ -28,6 +28,18 @@ feature target. This draft proposes the following literal-coordinate
 interpretation of “masked feature MSE” for independent review; it does not
 claim v04 uniquely specifies it:
 
+The proposed coordinates follow the existing `BoardGame.features` adapter:
+`x[0:64]` is the current player's occupancy on the shared 8×8 grid,
+`x[64:128]` is the opponent's occupancy, `x[128:192]` is the in-board
+indicator, and `x[192:198]` is `(rows/8, cols/8, k/8, placement_flag,
+reversi_flag, gravity_flag)`. Grid indices are `row*8+column`; cells outside
+the board are zero in the first three planes. Occupancy planes are relative to
+the side to move, including after a forced Reversi pass; the six descriptor
+coordinates are unchanged by the pass. `tests/test_v212_raw_state_feature_contract_audit.py`
+checks this existing adapter mapping on both training and held-out sizes and
+checks the forced-pass role switch. This is evidence about feature encoding
+only, not decoder outputs, the proposed loss/masks, or a trained arm.
+
 ```text
 e_(b,k) = (1 / 198) * sum_(j=0..197) (x_pred[b,k,j] - x_exact[b,k,j])^2
 L_raw   = sum_(b,k) alpha_k * m_(b,k) * e_(b,k)

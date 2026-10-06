@@ -1,5 +1,10 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; raw-state feature coordinate audit)
+
+- Made the proposed 198-coordinate raw-state target explicit against `BoardGame.features`: current-player occupancy at `[0:64]`, opponent occupancy at `[64:128]`, board indicator at `[128:192]`, and `(rows/8, cols/8, k/8, placement, reversi, gravity)` at `[192:198]`, on a row-major 8×8 padded grid. Added deterministic fixtures for both training and held-out sizes and a forced-pass perspective swap. The two focused tests pass under Python 3.14.7 with the existing NumPy runtime; compile and whitespace checks pass.
+- This verifies only existing adapter feature coordinates and side-to-move behavior. It does not verify decoder outputs, loss normalization/masks, gradients, raw-state training graph, compute parity, or any learned model. The amendment remains a proposal and all training/scoring/pilot gates remain closed. No root schedule or model result changed.
+
 ## Latest continuation delta (2026-10-07; manager and journal failure-map regressions)
 
 - Closed a contradiction in the mocked armed-smoke success path: a post-exit manager snapshot with `ActiveState=failed` and `SubState=failed` could pass when `Result=success` and `ExecMainStatus=0`. The armed synthetic-success flow now rejects that combination before response read, receipt, stop, or workspace cleanup. Generic receipt parsing still retains raw failed state for OOM evidence.
