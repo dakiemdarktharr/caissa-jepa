@@ -84,6 +84,18 @@ class SystemdSnapshotTests(unittest.TestCase):
                 ActiveState="activating", SubState="start"), boot_id=BOOT,
                 captured_monotonic_us=10, active=False)
 
+    def test_exit_snapshot_rejects_missing_post_exit_state_properties(self):
+        for field in ("ActiveState", "SubState"):
+            with self.subTest(field=field):
+                incomplete = properties(ControlGroup="")
+                del incomplete[field]
+                with self.assertRaisesRegex(
+                        live.LiveEvidenceError,
+                        f"systemd property {field} is missing"):
+                    live.snapshot_from_properties(
+                        unit=UNIT, properties=incomplete, boot_id=BOOT,
+                        captured_monotonic_us=10, active=False)
+
 
 class CgroupSnapshotTests(unittest.TestCase):
     def setUp(self):

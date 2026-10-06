@@ -2162,3 +2162,13 @@ blocked by the system SSH-config ownership check. Verified `main` at
 GitHub Git Database API with `force=false` and that expected old SHA to
 `0d74266883a7539e60738478c76ff6e420e84bb6`; GitHub confirms its tree matches
 the local milestone tree exactly.
+
+### 2026-10-07 post-exit manager snapshot parser boundary
+
+Added a direct regression proving the systemd snapshot parser fails closed
+when post-exit `ActiveState` or `SubState` is omitted. This is parser-level
+coverage only. The caller's polling path still treats absent state fields as
+not yet post-exit and can terminate at its deadline; MGR-01 therefore remains
+partial alongside v02 controller composition and live systemd failure
+coverage. No service, request, inference, OOM test, training, score, match,
+or outcome ran; no gate advanced.
