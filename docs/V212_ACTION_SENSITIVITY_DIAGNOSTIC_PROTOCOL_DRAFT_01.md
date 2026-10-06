@@ -246,3 +246,52 @@ The all-legal first-action expansion may be infeasible under available compute
 and must not be assumed practical without measurement. Any revised allocation
 requires a new draft and independent review. The 2.0-second Reversi8 p90
 failure and all other pre-fit gates remain unchanged.
+
+## Static spec/pilot graph reconciliation (2026-10-07)
+
+This reconciliation reads METHOD_SPEC_V212-04, the random-weight pilot model
+and its v02/v03 wrappers, plus the raw-state wiring proposal. It does not
+establish a trained or optimizer graph: no V2.12 trainer is present in the
+tracked `two_player/` inventory. The pilot uses fixed random weights and is a
+compute/inference proxy only.
+
+| Arm | v04-specified transition path | Random-weight pilot path | Diagnostic status |
+| --- | --- | --- | --- |
+| Multi-step JEPA candidate | Recursive action-conditioned latent `F`; JEPA targets at 1/2/4 plies | `advance` uses the shared 104-to-32 latent predictor | Latent probe is structurally applicable to the proxy; trained graph and support ledger are absent |
+| Single-pair JEPA | Same recursive `F`; latent target only at the 2-ply point | Same latent-predictor path as other non-raw predictive arms | Latent probe is structurally applicable to the proxy; target-path training support is unverified |
+| Recursive raw-state dynamics | “Shared encoder/predictor trunk and a decoder”; exact placement of `F` is unresolved in v04 | Direct 104-to-198 action-conditioned decoder with `tanh`, then re-encode; allocated 104-to-32 `predictor_w` is unused on this branch | Do not score as the v04 raw-state arm. The latent-then-decode wiring proposal is not adopted; feature target, masks, and terminal/horizon contract remain unresolved |
+| Value-only latent rollout | Recursive action-conditioned `F`; outcome targets at predicted 1/2/4-ply states; no latent/raw-state transition target | Same 104-to-32 latent-predictor path | Structurally qualifies at spec and proxy level, but an actual trained graph/support path is unavailable |
+| Direct-leaf value | No learned transition predictor | No `advance`; values exact encoded leaves | Transition diagnostic is not applicable, not zero error |
+| Single-horizon JEPA | Recursive action-conditioned `F`; JEPA target at one ply | Same 104-to-32 latent-predictor path | Latent probe is structurally applicable to the proxy; trained graph and support ledger are absent |
+
+The pilot class allocates a predictor matrix for every arm, including the
+raw-state arm, but allocation is not execution or effective capacity. Its
+v02/v03 runners reuse this model path; their wrapper changes do not provide a
+trainer or resolve the raw-state graph. Consequently, this audit narrows the
+static applicability decision but does not satisfy the independent graph
+verification required for protocol freeze. Keep raw-state metrics not
+estimable/not applicable pending a reviewed wiring contract; do not substitute
+the pilot decoder or compare its feature error numerically with latent MSE.
+
+No raw-state target masks were inferred from the diagnostic wording, and no
+arm was removed or changed. Value-only qualification here means only that the
+v04 and proxy paths expose a recursive action-conditioned latent transition;
+it does not validate its outcome-label support or establish a trained
+implementation. The protocol remains a review draft with no thresholds,
+checkpoint selection, root generation, scoring, inference, training, or
+outcome access authorized.
+
+**Independent read-only pre-fit review (2026-10-07): keep gated; no freeze
+approval.** The reviewer confirmed that v04 specifies latent `F` paths for
+the candidate, single-pair, value-only, and single-horizon arms; the raw-state
+arm is a distinct feature-prediction path whose predictor/decoder placement
+and target contract are unresolved; and direct-leaf has no transition output.
+The pilot verifies only its random-weight proxy graph, not a future training
+graph or value-only loss/support implementation. The diagnostic's evaluation
+target distinction, N/A treatment, and stated one-step terminal/collision
+rules were considered coherent as a proposal. Before freeze, review the
+eventual trainer's six forward/loss graphs, adopt and specify raw-state wiring,
+feature masks and terminal handling, and separately resolve the accepted root
+schedule and resource/denominator rules. The decision-regret protocol remains
+a separate unresolved gate. No roots, outputs, simulations, inference, or
+training were accessed or run.

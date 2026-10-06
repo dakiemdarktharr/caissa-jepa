@@ -1884,3 +1884,22 @@ integration, actual loaded-runtime fingerprint, remaining supervision failure
 map, and independent review are still required. No service, adapter, inference,
 or OOM test ran, and no downstream gate opened. See
 `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+
+### 2026-10-07 pre-fit action-sensitivity graph audit
+
+Static reconciliation distinguishes the six-arm v04 specification from the
+random-weight inference proxy: four arms specify recursive action-conditioned
+latent `F`, raw-state specifies a feature-prediction path with unresolved
+predictor/decoder placement, and direct-leaf has no transition output. The
+pilot uses a direct action-conditioned feature decoder for raw-state; the
+proposed latent-then-decode wiring amendment is not adopted. No V2.12 trainer
+exists in the tracked `two_player/` inventory, so this does not verify the
+training graph. The approved read-only review found the diagnostic coherent
+as a proposal but recommends keeping it gated until the trainer's six
+forward/loss graphs, raw-state wiring/masks/terminal rules, root schedule, and
+resource/denominator rules are reviewed. Decision regret remains a separate
+unresolved gate. No freeze or gate change follows. No roots, scores, outcomes,
+model outputs, inference, or training were produced/accessed. See
+`docs/V212_ACTION_SENSITIVITY_DIAGNOSTIC_PROTOCOL_DRAFT_01.md` and
+`docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.
