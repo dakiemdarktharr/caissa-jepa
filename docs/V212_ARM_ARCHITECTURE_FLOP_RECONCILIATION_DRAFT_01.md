@@ -150,3 +150,15 @@ the old random-weight pilot path. The actual six-arm trainer implementation
 and same-batch forward/backward FLOP profile still do not exist. The ≤5%
 training-FLOP gate remains untested and unpassed; the MAC inventory above is
 still a risk signal only.
+
+### Current-source provenance correction (2026-10-07)
+
+The static inventory's original contemporaneous description above records its
+2026-10-07 proposal status. The latent-then-decode graph was subsequently
+adopted in v05 and remains current in v06. The executable inventory now names
+`METHOD_SPEC_V212.md` v06 as its graph source; the MAC totals are unchanged.
+An approved read-only six-arm review confirmed the adopted raw-state recurrence
+and the reported dense-forward figures, while retaining **NO** graph freeze
+and an **untested/unpassed** ≤5% compute gate. The six-arm mask schedule,
+trainer, complete source/runtime counter, and forward/backward parity profile
+remain absent.

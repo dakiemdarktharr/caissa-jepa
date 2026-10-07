@@ -1,7 +1,7 @@
-"""Static dense forward-MAC inventory for the proposed V2.12 arm panel.
+"""Static dense forward-MAC inventory for the adopted V2.12 v06 arm panel.
 
 This is architecture arithmetic only. It does not execute a model, count
-backward/optimizer/elementwise work, or demonstrate the v04 FLOP-parity gate.
+backward/optimizer/elementwise work, or demonstrate the six-arm FLOP-parity gate.
 """
 from __future__ import annotations
 
@@ -96,7 +96,7 @@ def inventory() -> dict:
             "direct_leaf_exact_encoder_and_value_calls": 1,
         },
         "limitations": [
-            "Static graph interpretation of METHOD_SPEC_V212-04 plus the unadopted raw-state wiring draft.",
+            "Static graph interpretation of adopted METHOD_SPEC_V212.md v06, including the v05 latent-then-decode raw-state amendment.",
             "No activations, bias additions, loss/reduction, masks, backward pass, optimizer, EMA update, data movement, or padding effects are counted.",
             "All three horizons are assumed valid and nonterminal; masks can change executed work.",
             "This inventory is not a training-FLOP measurement or parity decision.",

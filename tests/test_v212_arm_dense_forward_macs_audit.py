@@ -29,6 +29,8 @@ class ArmDenseForwardMacsAuditTests(unittest.TestCase):
             31_680 / 40_864)
         self.assertIn("not a training-FLOP measurement or parity decision",
                       report["limitations"][-1])
+        self.assertIn("adopted METHOD_SPEC_V212.md v06", report["limitations"][0])
+        self.assertNotIn("unadopted", report["limitations"][0])
 
     def test_mac_dimension_validation_rejects_bad_shapes(self):
         with self.assertRaises(TypeError):

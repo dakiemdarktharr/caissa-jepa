@@ -3132,3 +3132,15 @@ standard-library tests pass, along with compile and whitespace checks. This
 narrows a source-accounting gap without completing the eigensolver counter or
 opening the six-arm ≤5% compute gate. No eigensolver, model, data, profile,
 inference, or training ran.
+
+### 2026-10-07 six-arm raw-state/parity source review
+
+The approved read-only `gpt-6-luna/high` review confirmed that the adopted
+v05/v06 raw-state `F→D→E` recurrence and objective are represented consistently
+in the method spec and no-update model. It verified the static dense-forward
+figures (40,864 MAC/window for multi-step JEPA; 72,544 for recursive raw-state)
+and distinguished them from the separate mask-based batch accounting. The
+review caught stale source provenance in the MAC inventory; the tool now names
+adopted v06. Graph freeze remains **NO** and the ≤5% gate remains **untested
+and unpassed** because trainer/replay, the 20×87 mask schedule, full counter,
+and runtime/LAPACK identity are still missing.
