@@ -6,6 +6,11 @@ raw-state contract record; draft 01 remains unchanged history. The adoption
 does not authorize a trainer, data generation, fitting, model scoring, or
 open any gate. The six-arm panel and negative results remain unchanged.
 
+The proposal-stage wording below is retained as review history. For the
+currently adopted contract, use `METHOD_SPEC_V212.md` and
+`METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md`; this draft is not the current
+normative source.
+
 ## Proposed resolution
 
 Interpret the §4 raw-state control's “shared encoder/predictor trunk and a

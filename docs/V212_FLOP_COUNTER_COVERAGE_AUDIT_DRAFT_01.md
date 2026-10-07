@@ -121,3 +121,21 @@ this audit.
 These references establish the documented/reference call path only. They do
 not identify which LAPACK binary is linked into a future execution environment,
 so the source-level count remains incomplete.
+
+## Follow-up: action-validation accounting (2026-10-07)
+
+The source-level `actions.sum(axis=2)` operation noted above has been replaced
+in `preflight_batch` by `np.count_nonzero(actions, axis=2)`, after the same
+finite/range/binary checks. The one-hot acceptance rule is unchanged: existing
+transitions require exactly one nonzero and absent transitions require zero.
+Synthetic regression cases cover valid input, multiple set bits, action bits in
+padding, and a nonbinary value. The focused six-module suite passes 28/28;
+`compileall` and `git diff --check` pass.
+
+This removes the identified floating-point summation from that validation path;
+it does not establish a net runtime or total-work reduction. The count still
+scans 256×65 entries per batch, and its integer/comparison implementation must
+be represented separately in the eventual counter. No counter/profile,
+selected-window data, roots, inference, outcomes, or training ran. This source
+change does not address the unresolved linked-LAPACK eigensolver path or open
+any D03 gate; the six-arm ≤5% compute gate remains **untested and unpassed**.

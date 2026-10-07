@@ -2,6 +2,35 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 action-validation accounting follow-up
+
+Replaced repeated `actions.sum(axis=2)` one-hot validation inside
+`preflight_batch` with integer `np.count_nonzero` after the same finite/range/
+binary checks. The accepted input contract is unchanged: one set bit for each
+present transition and none for padding. Four synthetic malformed/valid cases
+are covered; the focused model, window, trajectory, raw-state, MAC, and scratch
+optimizer suite passes 28/28, and compile/diff checks pass. This removes the
+previously counted 16,384 FP additions per call, but still scans all 256×65
+entries; no total runtime/work reduction is inferred, and the counter must
+separately account for integer/comparison work. No data, roots, profile,
+inference, scores, outcomes, or training ran. The linked-LAPACK trace, trainer,
+selected-window replay, runtime fingerprint, and independent counter review
+remain open; the ≤5% six-arm compute gate remains **untested and unpassed**.
+
+### 2026-10-07 V2.12 raw-state and six-arm parity readiness review
+
+An approved read-only `gpt-6-luna/high` review found the adopted v06 raw-state
+`F→D→E` contract coherent with the no-update graph and found no arithmetic
+contradiction in that graph. It did not establish exact-rule training data,
+decoder behavior on real batches, or trainer integration. Freeze/profile
+readiness remains **NO**: selected-window manifest/replay, the actual 20×87
+mask schedule, a full counter and branch bounds, and a pinned runtime/LAPACK
+fingerprint are absent. The ≤5% total-training-FLOP gate remains
+**untested and unpassed**; no profile or model operation occurred. The review
+also identified proposal-stage wording under draft 02's adopted status; that
+file now identifies the wording as history and names the adopted v05/v06
+documents as normative. No method or gate changed.
+
 ### 2026-10-07 V2.12 LAPACK eigensolver path audit
 
 Followed the eigensolver gap to primary implementation references: NumPy 2.4

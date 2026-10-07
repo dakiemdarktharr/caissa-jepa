@@ -161,6 +161,27 @@ class V212ModelTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "invalid selected transition"):
             V212Model().loss_grad(batch)
 
+    def test_action_validation_counts_binary_entries_without_float_reduction(self):
+        batch = synthetic_batch()
+        self.assertEqual(preflight_batch(batch)["counts"][1]["valid_nonterminal"], 3)
+
+        multiple_ones = synthetic_batch()
+        multiple_ones["actions"][0, 0, 1] = 1.0
+        with self.assertRaisesRegex(ValueError, "one-hot vector"):
+            preflight_batch(multiple_ones)
+
+        padded_action = synthetic_batch()
+        padded_action["transition_exists"][0, 3] = False
+        padded_action["transition_valid"][0, 3] = False
+        padded_action["target_exists"][0, 3] = False
+        with self.assertRaisesRegex(ValueError, "one-hot vector"):
+            preflight_batch(padded_action)
+
+        nonbinary = synthetic_batch()
+        nonbinary["actions"][0, 0, 0] = 0.5
+        with self.assertRaisesRegex(ValueError, "one-hot vector"):
+            preflight_batch(nonbinary)
+
     def test_terminal_and_truncated_rows_skip_future_model_operations(self):
         batch = synthetic_batch()
         batch["terminal"][0, 0] = True

@@ -1,5 +1,41 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; action-validation accounting follow-up)
+
+- Changed `preflight_batch` action validation from a floating-point row sum to
+  `np.count_nonzero` after the existing finite/range/binary checks. Acceptance
+  semantics remain exactly one set bit for a present transition and zero for
+  an absent transition. Synthetic regression coverage includes valid,
+  multiple-bit, padded-action, and nonbinary inputs; the focused model/window/
+  trajectory/raw-state/MAC/scratch-optimizer suite passes 28/28, with
+  `compileall` and `git diff --check` passing.
+- This removes the previously identified floating-point reduction but still
+  scans the same 256×65 action entries; the integer count/comparison work must
+  be itemized separately by a future counter. No runtime reduction is claimed.
+  No profile, roots, data, inference, scores, outcomes, or training ran. The
+  linked-LAPACK coverage gap, missing trainer/data/replay/runtime fingerprint,
+  and all pre-fit gates remain open. The six-arm ≤5% compute gate remains
+  **untested and unpassed**; preserve prior negative results and novelty risks.
+
+## Latest continuation delta (2026-10-07; raw-state and six-arm parity review)
+
+- An approved read-only `gpt-6-luna/high` source review found the adopted v06
+  raw-state `F→D→E` contract coherent with the no-update objective graph and
+  found no arithmetic contradiction in that graph. This is static consistency
+  evidence only: adapter fixtures establish feature coordinates, while exact-
+  rules selected-window replay, transition/label provenance, decoder behavior
+  on real batches, and trainer integration remain unevidenced.
+- Six-arm graph freeze/profile readiness is **NO**. The trainer, selected-
+  window manifest and replay runner, real 20×87 mask schedule, full counter
+  and branch bounds, and pinned runtime/LAPACK fingerprint remain absent. The
+  dense-forward MAC difference remains a risk signal only; the ≤5% total
+  training-FLOP gate is **untested and unpassed**. No tests, roots, simulation,
+  inference, profile, scores, outcomes, or training were run by the reviewer.
+- The review spotted proposal-stage wording in raw-state draft 02 despite its
+  adoption header. The draft now labels that wording as preserved history and
+  points readers to the adopted v05/v06 method spec and amendment. No method,
+  arm, gate, or negative finding changed.
+
 ## Latest continuation delta (2026-10-07; LAPACK eigensolver path audit)
 
 - Followed the counter-coverage gap through the pinned NumPy 2.4 reference and Netlib LAPACK source. NumPy documents `_syevd` for the real symmetric covariance; reference `DSYEVD` in eigenvalues-only mode calls `DSYTRD` and `DSTERF`, with conditional matrix scaling. This narrows the required counter path but does not identify the LAPACK binary/build linked by the future runtime or bound its exact operation trace and convergence work. Added these primary-source references to the counter audit; eigensolver coverage remains open pending a pinned implementation trace or reviewed bound.

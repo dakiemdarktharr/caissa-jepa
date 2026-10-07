@@ -105,10 +105,13 @@ def preflight_batch(batch):
     role_pairs = transition_exists[:, 1:] & transition_exists[:, :-1]
     if np.any((actors[:, 1:] != -actors[:, :-1]) & role_pairs):
         raise ValueError("actor roles must alternate on every transition")
+    # Count integer nonzeros instead of summing a one-hot vector in floating
+    # point; the guard below still rejects values outside the binary domain.
+    action_counts = np.count_nonzero(actions, axis=2)
     if (np.any((actions < 0.0) | (actions > 1.0))
             or np.any((actions != 0.0) & (actions != 1.0))
-            or np.any(actions.sum(axis=2)[transition_exists] != 1.0)
-            or np.any(actions.sum(axis=2)[~transition_exists] != 0.0)):
+            or np.any(action_counts[transition_exists] != 1)
+            or np.any(action_counts[~transition_exists] != 0)):
         raise ValueError("each recorded action must be a one-hot vector")
 
     valid = {}
