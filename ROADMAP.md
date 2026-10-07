@@ -19,6 +19,11 @@ prohibited. No roots, trajectories, simulation, inference, scores, or outcomes
 were generated or accessed. See `GROUND_TRUTH.md` and
 `tests/test_v212_model.py`.
 
+The graph also reports root latent statistics, covariance spectrum/effective
+rank, and per-horizon losses. Independent review confirms these diagnostics do
+not change losses or gradients; their eigenspectrum work must be included in a
+future runtime profile and is not included in the existing dense-MAC inventory.
+
 ### 2026-10-07 V2.12-05 raw-state method adoption
 
 The D02 raw-state contract is adopted as the narrow v05 method change after

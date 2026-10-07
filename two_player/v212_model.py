@@ -203,7 +203,14 @@ class V212Model:
         offdiag = covariance - np.diag(np.diag(covariance))
         covariance_loss = float(np.sum(offdiag ** 2) / d)
         dz += 4.0 * centered @ offdiag / (n * d)
-        return variance, covariance_loss, dz
+        spectrum = np.maximum(np.linalg.eigvalsh(covariance), 0.0)
+        spectrum_sum = float(spectrum.sum())
+        if spectrum_sum <= 1e-12:
+            effective_rank = 0.0
+        else:
+            probabilities = spectrum[spectrum > 1e-12] / spectrum_sum
+            effective_rank = float(np.exp(-np.sum(probabilities * np.log(probabilities))))
+        return variance, covariance_loss, dz, spectrum, effective_rank
 
     def loss_grad(self, batch):
         """Return objective metrics and gradients; never changes model weights."""
@@ -245,13 +252,17 @@ class V212Model:
         grad["vb"] += droot.sum(axis=0)
         dz0 += droot @ p["vw"].T
 
-        variance_loss, covariance_loss, dreg = self._regularize(z0)
+        variance_loss, covariance_loss, dreg, covariance_spectrum, effective_rank = self._regularize(z0)
         dz0 += 0.1 * dreg
         total = policy_loss + root_loss + 0.1 * variance_loss + 0.01 * covariance_loss
         metrics = {
             "arm": self.config.arm, "policy_nll": policy_loss,
             "root_value_mse": root_loss, "variance_loss": 0.1 * variance_loss,
             "covariance_loss": 0.01 * covariance_loss,
+            "latent_mean": z0.mean(axis=0).tolist(),
+            "latent_std": z0.std(axis=0).tolist(),
+            "covariance_spectrum": covariance_spectrum.tolist(),
+            "effective_rank": effective_rank,
             "valid_target_counts": preflight["counts"],
             "executed_predictor_calls": 0,
             "executed_decoder_reencoder_calls": 0,
@@ -317,6 +328,9 @@ class V212Model:
             outcome_loss = 0.0
             raw_loss = 0.0
             rollout_horizons = _JEPA_HORIZONS.get(self.config.arm, ())
+            outcome_by_horizon = {h: 0.0 for h in HORIZONS}
+            latent_by_horizon = {h: 0.0 for h in HORIZONS}
+            raw_by_horizon = {h: 0.0 for h in HORIZONS}
             raw_feature_grads = ([np.zeros_like(future_x[:, step]) for step in range(4)]
                                  if raw else None)
             outcome_den = sum(HORIZON_WEIGHTS[h] * int(preflight["valid"][h].sum()) for h in HORIZONS)
@@ -329,6 +343,7 @@ class V212Model:
                     scale = weight / outcome_den
                     pred_value = self._value(states[h][mask])[:, 0]
                     delta = pred_value - future_value[mask, h - 1]
+                    outcome_by_horizon[h] = float(np.mean(delta ** 2))
                     outcome_loss += scale * float(np.sum(delta ** 2))
                     dv = 2.0 * scale * delta[:, None] * (1.0 - pred_value[:, None] ** 2)
                     grad["vw"] += states[h][mask].T @ dv
@@ -349,6 +364,7 @@ class V212Model:
                     if raw:
                         xhat = predicted_features[horizon - 1][mask]
                         delta = xhat - future_x[mask, horizon - 1]
+                        raw_by_horizon[horizon] = float(np.mean(delta ** 2))
                         raw_loss += scale * float(np.sum(delta ** 2) / FEATURE_SIZE)
                         raw_feature_grads[horizon - 1][mask] += (
                             2.0 * scale / FEATURE_SIZE) * delta
@@ -356,12 +372,16 @@ class V212Model:
                         target = self._encode(future_x[mask, horizon - 1], target=True)
                         metrics["ema_target_encoder_calls"] += int(mask.sum())
                         delta = states[horizon][mask] - target
+                        latent_by_horizon[horizon] = float(np.mean(delta ** 2))
                         rollout_loss += scale * float(np.sum(delta ** 2) / d)
                         dstate[horizon][mask] += (2.0 * scale / d) * delta
 
             metrics["rollout_value_mse"] = outcome_loss
+            metrics["rollout_value_mse_by_horizon"] = outcome_by_horizon
             metrics["latent_roll_loss"] = rollout_loss
+            metrics["latent_roll_loss_by_horizon"] = latent_by_horizon
             metrics["raw_state_loss"] = raw_loss
+            metrics["raw_state_loss_by_horizon"] = raw_by_horizon
             total += outcome_loss + rollout_loss + raw_loss
 
             # Reverse the recurrent chain, including F -> D -> E for raw-state.

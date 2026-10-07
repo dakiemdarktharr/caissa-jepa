@@ -42,6 +42,10 @@ class V212ModelTests(unittest.TestCase):
                 metrics, gradients = model.loss_grad(batch)
                 self.assertTrue(np.isfinite(metrics["loss"]))
                 self.assertTrue(np.isfinite(metrics["gradient_norm"]))
+                self.assertEqual(len(metrics["latent_mean"]), 32)
+                self.assertEqual(len(metrics["latent_std"]), 32)
+                self.assertEqual(len(metrics["covariance_spectrum"]), 32)
+                self.assertTrue(np.isfinite(metrics["effective_rank"]))
                 self.assertEqual(set(gradients), set(model.params))
                 for key in model.params:
                     np.testing.assert_array_equal(model.params[key], before[key])
