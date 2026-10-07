@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 conditional DSTERF scaling bound
+
+Added a conditional reference-source bound for DSTERF's DLASCL path. With
+finite IEEE binary64 D/E values, the DSTERF target scale ratios imply one pass
+per DLASCL call. At N=32, up to 16 non-singleton blocks yield at most 48 calls
+and 80 scaled vector elements. Including each call's `DLAMCH('S')` helper,
+the branch contributes 368 source arithmetic operations. The combined partial
+DSTERF candidate becomes 432,709 arithmetic operations, plus 1,008 separate
+power sites and 2,016 square roots (433,717 if all powers count as multiplies).
+This remains unreviewed and excludes DLANST/DLASRT non-FLOP work and runtime
+identity. Fourteen focused formula tests and static checks pass. No gate
+changed; eigensolver/profile/training remain closed.
+
 ### 2026-10-07 DSTERF helper source sub-bound
 
 Added a separate conditional source count for DSTERF's reference DLAMCH setup

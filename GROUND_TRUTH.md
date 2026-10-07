@@ -1,5 +1,22 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; conditional DSTERF scaling bound)
+
+- Added `tools/v212_dsterf_dlascl_source_bound.py`. Under finite IEEE
+  binary64 tridiagonal inputs, DSTERF's two input-scale calls and one restore
+  call per scaled block have one DLASCL pass; each call also includes its
+  `DLAMCH('S')` helper. At N=32, at most 16 active blocks give 48 calls, 80
+  scaled vector elements, and 368 source arithmetic operations (including 96
+  DLAMCH helper operations).
+- The earlier DSTERF iteration + DLAE2 + DLAMCH/DLAPY2 partial candidate now
+  totals 432,709 arithmetic operations after adding that separate scale
+  sub-bound, plus 1,008 power sites and 2,016 square roots; treating each
+  power as one multiply gives 433,717. This remains unreviewed partial
+  reference-source accounting. DLANST/DLASRT non-FLOP work, actual loaded
+  LAPACK/runtime, compiler behavior, and complete eigensolver coverage remain
+  unresolved. Fourteen focused formula tests, targeted `compileall`, and
+  `git diff --check` pass. No eigensolver/model ran; no gate changed.
+
 ## Latest continuation delta (2026-10-07; DSTERF helper sub-bound)
 
 - Added `tools/v212_dsterf_helper_source_bound.py` as a separate conditional
@@ -10,9 +27,11 @@
   existing deliberately partial DSTERF source inventory, the arithmetic
   subtotal is 432,341 operations plus 1,008 separate power sites (433,349 if
   each power counts as one multiply) and 2,016 square roots.
-- This is not complete DSTERF/eigensolver accounting: DSTERF scaling calls,
-  norm/sort helper work, non-FLOP work, linked runtime/dispatch, and execution
-  identity remain unresolved. The helper sub-bound has not received
+- This is not complete DSTERF/eigensolver accounting: norm/sort helper work,
+  non-FLOP work, linked runtime/dispatch, and execution identity remain
+  unresolved. A later conditional source sub-bound covers the DSTERF DLASCL
+  calls under binary64 assumptions, but does not attest their runtime. The
+  helper sub-bound has not received
   independent review and does not close the `eigvalsh` blocker or advance any
   gate. Seven focused formula tests, targeted `compileall`, and
   `git diff --check` pass. No eigensolver or model was run; graph freeze

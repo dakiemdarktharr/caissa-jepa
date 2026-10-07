@@ -696,10 +696,40 @@ subtotal is 432,341 arithmetic operations plus 1,008 separate power sites
 (433,349 if each maps to one multiplication) and 2,016 square roots. These
 are source candidates, not linked-runtime measurements, and this helper
 supplement has not been independently reviewed. DSTERF's conditional DLASCL
-calls, DLANST norm scan, DLASRT sorting and associated non-FLOP work remain
-excluded; this does not complete DSTERF or the eigensolver. Seven focused
+calls are covered separately below; the DLANST norm scan, DLASRT sorting and
+associated non-FLOP work remain excluded. This does not complete DSTERF or the
+eigensolver. Seven focused
 formula tests, targeted `compileall`, and `git diff --check` pass. No
 eigensolver, model, profile, inference, or training ran; no gate changed.
+
+## DSTERF DLASCL conditional source sub-bound (2026-10-07)
+
+`tools/v212_dsterf_dlascl_source_bound.py` accounts for DSTERF's two input
+scaling calls (D and E) and one output restore call (D) for each scaled
+non-singleton tridiagonal block. At N=32 there can be at most 16 such blocks.
+For finite IEEE binary64 values, `ssfmax=2^511/3` and `ssfmin=2^-405`; the
+largest-magnitude scale ratio in the large-norm branch is below `2^515`, and
+in the small-norm branch below `2^669`. These sit within DLASCL's
+`[2^-970,2^970]` one-pass interval, in either input or restore direction.
+The bound therefore uses at most 48 DLASCL calls and 80 vector-element
+multiplications across all calls. Each call contributes four source
+arithmetic operations for DLASCL's one-pass scalar work plus two from its
+DLAMCH('S') helper, for 368 total arithmetic operations. The per-block
+element and per-call maxima are combined using the same 16-block partition
+that maximizes the aggregate. The path and scale targets follow [reference
+DSTERF](https://www.netlib.org/lapack/explore-html/d9/df2/dsterf_8f_source.html);
+the one-pass conditions and vector scaling loop follow [reference
+DLASCL](https://www.netlib.org/lapack/explore-html/de/d3c/dlascl_8f_source.html)
+and [DLAMCH](https://www.netlib.org/lapack/explore-html/d5/dd4/dlamch_8f_source.html).
+
+This adds to the prior partial DSTERF source candidate to give 432,709
+add/subtract/multiply/divide operations, 1,008 separately counted scalar
+power sites (433,717 if every power maps to one multiplication), and 2,016
+square roots. The derivation is conditional and has not been independently
+reviewed; it does not attest the loaded runtime. DLANST/DLASRT and non-FLOP
+work, the wider eigensolver, and linked-library identity remain open. Fourteen
+focused formula tests, targeted `compileall`, and `git diff --check` pass. No
+eigensolver, profile, or model ran; no gate changed.
 
 ## DLASCL conditional source bound (2026-10-07)
 
