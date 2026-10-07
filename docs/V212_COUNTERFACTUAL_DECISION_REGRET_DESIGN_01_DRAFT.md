@@ -1,15 +1,20 @@
 # V2.12 counterfactual decision-regret design 01 — draft
 
 **Status: draft; prior formulation and both amendments independently reviewed; interval-reference tests pass; bounded-reference implementation candidate added; evaluator configuration, independent implementation review, and protocol freeze remain pending.**
-This proposal makes the action-score and regret terms operationally explicit.
-It does not
-amend METHOD_SPEC_V212-04, freeze an estimand, authorize model scoring, data
-or root generation, training, matches, or outcome access. The reference depth,
-leaf evaluator, sampling schedule, and compute allocation remain unselected.
+METHOD_SPEC V2.12-06 is current; it retains v05's raw-state contract and
+specifies Adam/EMA semantics. This proposal makes the action-score and regret
+terms operationally explicit, but does not amend v06, freeze an estimand,
+authorize model scoring, data or root generation, training, matches, or outcome
+access. The reference depth, leaf evaluator, sampling schedule, and compute
+allocation remain unselected. The development-root schedule in §7 remains the
+v04 method until a versioned amendment is independently accepted.
 
 In this draft, “primary executed-action regret” names the main quantity within
-the regret diagnostic only. METHOD_SPEC v04 still makes regret secondary to
+the regret diagnostic only. Current METHOD_SPEC v06 keeps regret secondary to
 the paired head-to-head development score.
+
+Historical v04/v05 source audits below document earlier method/proxy states;
+they are not operative amendments to v06.
 
 **Independent static review of the prior formulation (2026-10-04): no remaining blocker within that scope.** The review
 confirmed that regret must use the action returned under the frozen planner
@@ -477,10 +482,17 @@ Independent review must resolve the reference depth and heuristic, whether any
 positions can be exactly solved within the declared compute allocation, the
 relationship between this diagnostic cap and the primary match cap, root/seat
 weighting, ranking metric and tie tolerance, and whether this is secondary or
-co-primary. Then version the method/protocol and freeze code/config hashes and
-analysis before scoring. No metric threshold or nomination rule is supplied
-here, and this draft does not establish that the remaining benchmark question
-is novel or that any JEPA arm will perform better.
+co-primary. Select either the current all-action-table computation or a
+selected-action-only primary query plan; charge the actual work of the selected
+plan, and require any optimized plan to match the all-action oracle on its
+declared correctness fixtures. Bind evaluator/configuration hashes to the
+actual callable and configuration bytes via a reviewed execution receipt;
+caller-provided hash strings alone are labels, not identity evidence. Freeze
+hard per-root transition/node/wall-time/memory limits, interruption and
+incomplete-cell treatment, then version the method/protocol and analysis before
+scoring. No metric threshold or nomination rule is supplied here, and this
+draft does not establish that the remaining benchmark question is novel or
+that any JEPA arm will perform better.
 
 For a cross-draft checklist of shared decisions, evidence prerequisites, and
 responsible workstreams, see

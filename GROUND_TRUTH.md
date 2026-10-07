@@ -18,11 +18,13 @@
   generator with an explicit scope limitation around state/prefix/score-linked
   yield; simulation remains gated.
 - The action-sensitivity and executed-action regret estimands are coherent as
-  separate diagnostics, but the drafts are not preregistration-complete and
-  cite stale v04/v05 anchors while current METHOD_SPEC is v06. Rebase before
-  adoption; bind evaluator fingerprints to actual implementation, resolve
-  reference/depth, limits/failure/aggregation and inference status, audit
-  episode/state/augmentation/symmetry overlap, and keep raw latent MSE
+  separate diagnostics, but the drafts are not preregistration-complete. They
+  now name current METHOD_SPEC v06 after editorial rebase; follow-up review
+  confirmed the anchors and added explicit cross-arm latent-scale, split
+  overlap, evaluator-identity, and query-plan caveats. Before adoption, resolve
+  root/reference/depth, limits/failure/aggregation and inference status; bind
+  evaluator fingerprints to actual implementation; audit episode, state,
+  augmentation, and symmetry overlap before model scoring; and keep raw latent MSE
   descriptive within each arm unless a train-only calibration and
   cross-arm estimand are preregistered. No metric or reference was adopted.
 - Raw-state accounting has no identified omission within the current partial

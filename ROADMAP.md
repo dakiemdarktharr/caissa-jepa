@@ -15,9 +15,10 @@ omits state/prefix/score-linked yield dependence. Do not simulate or generate
 roots yet.
 
 The action-sensitivity and executed-action regret concepts are coherent as
-separate estimands but not ready to freeze. Rebase stale v04/v05 anchors on
-current METHOD_SPEC v06; resolve evaluator implementation fingerprints,
-reference/depth, inference status, limits/failure rules, and overlap audit.
+separate estimands but not ready to freeze. The drafts now anchor on current
+METHOD_SPEC v06; resolve evaluator implementation fingerprints,
+reference/depth, inference status, limits/failure rules, and run the split
+overlap audit before scoring.
 Raw latent MSE is within-arm descriptive unless train-only calibration and a
 cross-arm estimand are preregistered. Current raw-state partial FLOP ownership
 looks internally aligned, but the trainer, replay/window receipts, actual

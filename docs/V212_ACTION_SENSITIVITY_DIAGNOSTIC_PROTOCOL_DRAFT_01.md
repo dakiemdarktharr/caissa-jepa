@@ -1,10 +1,16 @@
 # V2.12 action-sensitivity diagnostic protocol — draft 01
 
-**Status: proposal for independent review only.** This draft does not amend
-METHOD_SPEC v05, change any arm, select checkpoints, authorize root or branch
-generation, model scoring, training, inference, matches, or outcomes. The
-root-sampling schedule and decision-regret reference remain separate,
-unapproved designs. No threshold or gate changes here.
+**Status: proposal for independent review only.** METHOD_SPEC V2.12-06 is
+current; it retains the v05 raw-state contract and specifies Adam/EMA update
+semantics. This draft does not amend v06, change any arm, select checkpoints,
+authorize root or branch generation, model scoring, training, inference,
+matches, or outcomes. The root-sampling schedule and decision-regret reference
+remain separate, unapproved design choices. No threshold or gate changes here.
+
+References below to v04/v05 implementation audits are historical records of
+what those versions specified; they do not supersede v06. The development-root
+schedule in §7 remains the v04 schedule until a versioned amendment is
+independently accepted.
 
 ## Question and scope
 
@@ -21,15 +27,20 @@ the frozen inference encoder's latent for the exact successor. This is a
 within-arm evaluation target, not a claim that all arms train against the same
 target; JEPA's EMA target remains its training target. The value-only arm
 qualifies only if final graph inspection confirms it has the explicit
-action-conditioned recursive transition output described by METHOD_SPEC v05.
+action-conditioned recursive transition output described by METHOD_SPEC v06.
 For the recursive raw-state arm, compare its decoded exact-state feature
-prediction with the rule-generated successor features using that arm's
-v05-defined target and validity mask. Do not introduce a new mask
-or compare raw-feature MSE numerically with latent MSE. Mark arms without the
-relevant transition output as not applicable, not as zero error. The raw-state
-target/mask contract is fixed by v05, but the six-arm implementation graph
-and its support ledger must still be verified before this diagnostic is
+prediction with the rule-generated successor features using the raw-state
+target and validity mask retained by v06 from v05. Do not introduce a new
+mask or compare raw-feature MSE numerically with latent MSE. Mark arms without
+the relevant transition output as not applicable, not as zero error. The
+raw-state target/mask contract is fixed by v06, but the six-arm implementation
+graph and its support ledger must still be verified before this diagnostic is
 frozen; this draft does not infer implementation behavior.
+
+Report latent MSE within each arm only. Latent coordinate scales may differ
+across arms, so raw MSE magnitudes do not support cross-arm ranking or a
+cross-arm macro-average. Any cross-arm latent-error estimand would require a
+train-only scale calibration, frozen transform, and separate preregistration.
 
 ## Sampling and support records
 
@@ -40,6 +51,12 @@ only if the accepted root protocol does so. Freeze game/rules, adapter,
 encoder and predictor hashes, target-encoder rule, action order, root receipt,
 policy configuration, branch RNG derivation, and software versions before
 diagnostic computation.
+
+Before any model scoring or interpretation of unsupported-state/action strata,
+audit split overlap at episode, exact state, augmentation, and symmetry-equivalent state levels.
+The exact absolute-board support key does not establish absence of these other
+forms of train/development overlap. Retain the separate overlap report; it must
+not be used to select or reweight roots after scoring.
 
 **Conditional alignment candidate, not an accepted schedule:** if
 `V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` is accepted unchanged, use its three
@@ -261,9 +278,9 @@ output is examined.
 
 The proposed open-loop subdiagnostic reports horizons 2 and 4 on its
 intervened, receipt-policy-pair-conditioned branches. It does not replace or
-reduce METHOD_SPEC v04's separate latent-error reporting at horizons 1, 2, 4,
-and 8, and it does not estimate the behavior-policy first-action or uniform
-legal-continuation distribution.
+reduce the current v06 method's separate latent-error reporting at horizons
+1, 2, 4, and 8, and it does not estimate the behavior-policy first-action or
+uniform legal-continuation distribution.
 
 ## Decisions required before freeze
 
