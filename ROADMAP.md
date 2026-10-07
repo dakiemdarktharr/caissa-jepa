@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 reference DSYEVD driver-site bound
+
+`tools/v212_dsyevd_driver_source_bound.py` isolates the reference LAPACK 3.12.1
+N=32 eigenvalues-only driver's direct arithmetic plus its reference DSCAL
+rescale loop: 2–4 divisions, 0–32 multiplications, and two separately
+reported square-root calls. Conditional DLASCL and DSCAL helper work, DLAMCH,
+DLANSY, DSYTRD/DSTERF internals, and actual NumPy-linked LAPACK dispatch
+remain unresolved. This small source-site interval is not a full eigensolver
+bound and does not clear counter or parity gates. An approved read-only review
+accepted the arithmetic within this boundary and confirmed helper divisions
+remain excluded. Continue static accounting of the remaining helpers and
+loaded runtime; keep profile and training closed.
+
 ### 2026-10-07 static DNRM2 binary candidate
 
 Static inspection of five architecture-specific DNRM2 kernels in the observed

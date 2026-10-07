@@ -1,5 +1,29 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; reference DSYEVD driver sites)
+
+- Added `tools/v212_dsyevd_driver_source_bound.py` for the N=32,
+  eigenvalues-only (`JOBZ='N'`) reference DSYEVD path. The covered driver
+  arithmetic ranges from 2 to 4 divisions and 0 to 32 DSCAL multiplications
+  (2–36 add/subtract/multiply/divide operations total), with two square-root
+  calls reported separately. The interval reflects whether DSYEVD's matrix
+  scaling and eigenvalue-rescaling branch runs; the DSCAL upper count follows
+  the reference unit-stride vector loop.
+- The source call inventory records two DLAMCH calls, one DLANSY, conditional
+  DLASCL/DSCAL calls, then DSYTRD and DSTERF. DLAMCH, DLANSY, DLASCL,
+  DSYTRD/DSTERF internals, the NumPy wrapper, and the actual linked runtime
+  remain outside this bound. It is not added to the partial ledger and does
+  not complete the eigensolver or counter, establish six-arm FLOP parity, or
+  authorize a profile. The scope follows [LAPACK 3.12.1 DSYEVD](https://www.netlib.org/lapack/explore-html/d1/da2/dsyevd_8f_source.html)
+  and [reference DSCAL](https://www.netlib.org/blas/dscal.f).
+- An approved read-only review confirmed the 2–4 driver divisions, 0–32
+  reference DSCAL multiplications, and two separately reported roots under
+  the cited source semantics. The reviewer emphasized that these are only
+  driver-owned sites; helper divisions/work such as DLASCL remain excluded.
+- Only source/formula tests and static checks ran; no eigensolver, model,
+  profile, inference, simulation, score/outcome access, or training ran.
+  Graph freeze remains **NO** and ≤5% remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; static DNRM2 binary candidate)
 
 - Added `tools/v212_openblas_dnrm2_binary_bound.py` and focused formula tests.
