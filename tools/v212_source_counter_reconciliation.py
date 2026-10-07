@@ -39,6 +39,17 @@ def _site_disposition(module: str, site: dict) -> dict:
             "owner": "tools/v212_model_matmul_flop_accounting.py",
             "scope": "explicit dense @ sites; analytical shape formula only",
         }
+    if (module == "two_player/v212_scratch_optimizer.py"
+            and site.get("function") == "scratch_adam_ema_step"
+            and node == "BinOp" and detail in {"Add", "Sub", "Mult", "Div"}):
+        return {
+            "status": "candidate_owner",
+            "owner": "tools/v212_optimizer_flop_accounting.py",
+            "scope": (
+                "scratch Adam/clipping/EMA arithmetic; analytical expression-shape owner, "
+                "with the clipping division represented by its branch interval"
+            ),
+        }
     if node == "BinOp" and detail == "Pow":
         if module == "two_player/v212_model.py":
             return {

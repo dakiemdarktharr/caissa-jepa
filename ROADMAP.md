@@ -3456,3 +3456,17 @@ or a complete eigensolver/counter, and it is not additive to the observed
 architecture-specific DNRM2 binary candidate. Graph freeze remains **NO** and
 six-arm ≤5% parity remains **untested and unpassed**. No eigensolver, model,
 data, profile, inference, or training ran.
+
+### 2026-10-07 scratch-optimizer source-owner reconciliation
+
+The source-operation crosswalk now maps all 24 scratch Adam/clipping/EMA
+add/subtract/multiply/divide syntax sites to the existing analytical optimizer
+inventory. It preserves the gradient-norm clipping division as branch
+dependent. The crosswalk suite passes 6/6; the optimizer-accounting suite
+passes 4/4 under the existing Python 3.14.7 / NumPy 2.5.3 dependency path. The
+deterministic crosswalk digest is
+`e0f02a55da15ffb61e651ff87dcd8ffb04989c30d34926ce52358dce465aef0d`.
+The full-counter flag remains false; this is source traceability, not a
+validated runtime operation trace or complete FLOP total. Continue with the
+blocking eigensolver/runtime and trainer/schedule owners. Graph freeze remains
+**NO** and six-arm ≤5% parity remains **untested and unpassed**.

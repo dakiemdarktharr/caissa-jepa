@@ -637,6 +637,15 @@ execution trace, profile, or protocol amendment. No model/data operation or
 gate transition followed from it; the ≤5% six-arm gate remains **untested and
 unpassed**.
 
+The current crosswalk additionally maps all 24 add/subtract/multiply/divide
+AST sites in `scratch_adam_ema_step` to the existing optimizer arithmetic owner.
+The division used only when the gradient norm exceeds five retains its
+branch-interval qualification. This is site-to-owner traceability, not
+validation that the aggregate formula captures every execution or that input
+validation/copy/runtime work is covered. The focused test asserts these
+dispositions while keeping `full_counter=false`; the deterministic crosswalk
+digest is `e0f02a55da15ffb61e651ff87dcd8ffb04989c30d34926ce52358dce465aef0d`.
+
 ## Six-arm common-work dilution sensitivity (2026-10-07)
 
 `tools/v212_parity_shared_work_sensitivity.py` applies the preregistered D03

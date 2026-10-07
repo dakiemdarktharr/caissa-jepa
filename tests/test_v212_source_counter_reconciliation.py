@@ -110,6 +110,20 @@ class SourceCounterReconciliationTests(unittest.TestCase):
         self.assertEqual(owners["metrics['executed_predictor_active_examples']"], None)
         self.assertTrue(all(site["status"] and site["scope"] for site in sites))
 
+    def test_scratch_optimizer_arithmetic_sites_map_to_its_analytical_owner(self):
+        scratch = self.report["modules"]["two_player/v212_scratch_optimizer.py"]["sites"]
+        arithmetic = [site for site in scratch
+                      if site["function"] == "scratch_adam_ema_step"
+                      and site["node"] == "BinOp"
+                      and site["detail"] in {"Add", "Sub", "Mult", "Div"}]
+        self.assertGreater(len(arithmetic), 0)
+        self.assertTrue(all(site["status"] == "candidate_owner" for site in arithmetic))
+        self.assertTrue(all(site["owner"] == "tools/v212_optimizer_flop_accounting.py"
+                            for site in arithmetic))
+        self.assertTrue(all("branch interval" in site["scope"] for site in arithmetic))
+        self.assertFalse(self.report["coverage"]["all_sites_have_a_validated_cost_owner"])
+        self.assertFalse(self.report["coverage"]["full_counter"])
+
 
 if __name__ == "__main__":
     unittest.main()
