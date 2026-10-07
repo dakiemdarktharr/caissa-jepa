@@ -9,8 +9,10 @@
   deterministic site ordering. It reports 829 model sites (including 37
   augmented assignments) and 135 optimizer sites. The reviewed follow-up also
   added `return` and `raise` control-flow nodes that the first version omitted.
-  All sites remain semantically unresolved by this inventory; this is not a
-  FLOP count or runtime trace.
+  A read-only follow-up confirmed no other currently used arithmetic,
+  indexing, or explicit control-flow syntax class is omitted. All sites remain
+  semantically unresolved by this inventory; this is not a FLOP count or
+  runtime trace.
 - Three standard-library tests pass under Python 3.11.17 and 3.14.7. The
   locked Python 3.11.9 / NumPy 2.4.6 runtime is unavailable locally: Python
   3.11.17 has no NumPy installed, and the available shared NumPy is 2.5.3.
