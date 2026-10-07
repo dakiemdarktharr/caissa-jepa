@@ -684,6 +684,23 @@ targeted `compileall`, and `git diff --check` pass on the Python 3.11.9
 temporary environment. No covariance, eigenvalue, model, data, profile,
 service, or training operation was run; D03 remains unpassed.
 
+## DSTERF helper source sub-bound (2026-10-07)
+
+`tools/v212_dsterf_helper_source_bound.py` separately supplements the DSTERF
+iteration inventory with the three setup DLAMCH calls and up to 960 DLAPY2
+calls, one per shifted QL/QR iteration at N=32. Under the explicit IEEE
+binary64 reference-source assumptions, it adds 3,844
+add/subtract/multiply/divide operations, 960 scalar power sites, and 960
+square-root calls. Combined with the base source inventory, the partial
+subtotal is 432,341 arithmetic operations plus 1,008 separate power sites
+(433,349 if each maps to one multiplication) and 2,016 square roots. These
+are source candidates, not linked-runtime measurements, and this helper
+supplement has not been independently reviewed. DSTERF's conditional DLASCL
+calls, DLANST norm scan, DLASRT sorting and associated non-FLOP work remain
+excluded; this does not complete DSTERF or the eigensolver. Seven focused
+formula tests, targeted `compileall`, and `git diff --check` pass. No
+eigensolver, model, profile, inference, or training ran; no gate changed.
+
 ## DLASCL conditional source bound (2026-10-07)
 
 `tools/v212_dlascl_iteration_bound.py` counts source-visible arithmetic in

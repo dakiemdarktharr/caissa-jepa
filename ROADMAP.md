@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 DSTERF helper source sub-bound
+
+Added a separate conditional source count for DSTERF's reference DLAMCH setup
+and DLAPY2 calls. At N=32, at most 960 shifted iterations imply 960 DLAPY2
+calls; under IEEE binary64, the helper candidate adds 3,844 arithmetic
+operations, 960 scalar power sites, and 960 square roots. Together with the
+existing partial DSTERF inventory this yields 432,341 arithmetic operations,
+1,008 separate power sites (433,349 with each counted as one multiply), and
+2,016 square roots. The supplement is unreviewed and still excludes scaling,
+norm/sort work, non-FLOP operations, and actual linked runtime/dispatch. Seven
+focused formula tests and static checks pass. No numerical solver/model ran and
+no gate changed; graph freeze and profile/training remain closed.
+
 ### 2026-10-07 independent raw-state/six-arm parity re-review
 
 An approved read-only `gpt-6-luna/high` review at HEAD

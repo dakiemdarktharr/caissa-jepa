@@ -1,5 +1,23 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; DSTERF helper sub-bound)
+
+- Added `tools/v212_dsterf_helper_source_bound.py` as a separate conditional
+  supplement for reference DSTERF's three setup DLAMCH calls and at most 960
+  DLAPY2 calls from shifted QL/QR iterations at N=32. Under IEEE binary64,
+  the helper candidate adds 3,844 add/subtract/multiply/divide operations,
+  960 scalar power sites, and 960 square-root calls. Combined with the
+  existing deliberately partial DSTERF source inventory, the arithmetic
+  subtotal is 432,341 operations plus 1,008 separate power sites (433,349 if
+  each power counts as one multiply) and 2,016 square roots.
+- This is not complete DSTERF/eigensolver accounting: DSTERF scaling calls,
+  norm/sort helper work, non-FLOP work, linked runtime/dispatch, and execution
+  identity remain unresolved. The helper sub-bound has not received
+  independent review and does not close the `eigvalsh` blocker or advance any
+  gate. Seven focused formula tests, targeted `compileall`, and
+  `git diff --check` pass. No eigensolver or model was run; graph freeze
+  remains **NO** and ≤5% remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; independent raw-state/parity re-review)
 
 - An approved read-only `gpt-6-luna/high` reviewer rechecked current HEAD
