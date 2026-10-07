@@ -508,11 +508,15 @@ counter ownership map, but every entry is explicitly
 execution, NumPy/LAPACK internals, or operation counts, and it is not a
 complete counter or trace.
 
-The three standard-library tests pass on Python 3.11.17 and 3.14.7. The
-locked Python 3.11.9 / NumPy 2.4.6 runtime is not installed locally; the
-available Python 3.11.17 has no NumPy, and the shared dependency path contains
-NumPy 2.5.3. Therefore this did not verify the locked `np.std` implementation
-or change D03 readiness. No data, profile, or model execution occurred.
+At the time this inventory was first produced, only Python 3.11.17 and 3.14.7
+were available for its tests, with NumPy 2.5.3 on the shared dependency path.
+A later temporary Linux environment now has the exact Python 3.11.9 / NumPy
+2.4.6 version pair; its observed NumPy build is scipy-openblas 0.3.31.188.0.
+That corrects package-version availability, but it does not establish the
+declared Windows runtime or attest the future D03 process. The collector's
+non-atomic mapped-file observation has `execution_bytes_verified=false`; no
+model, profile, or training operation was run. D03 runtime/backend and counter
+readiness remain open.
 
 ## Source-operation candidate ownership crosswalk (2026-10-07)
 

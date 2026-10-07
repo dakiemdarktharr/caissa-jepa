@@ -1,5 +1,30 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; exact-version runtime observation)
+
+- The host contains CPython 3.11.9. A temporary environment under `/tmp`
+  installed NumPy 2.4.6 from its pinned package version, so the prior
+  “locked versions unavailable” statements are historical and superseded for
+  interpreter/package availability. This is a Linux wheel/runtime; the lock
+  file describes a verified Windows CPU environment, so this is not yet the
+  final D03 execution runtime.
+- `tools/v212_runtime_observation.py` reported both version-match flags true,
+  stable normalized executable mappings across its before/after inventory,
+  and matching mapped-file path/device/inode hashes at read time. NumPy build
+  metadata identifies `scipy-openblas` 0.3.31.188.0 with the
+  `OpenBLAS 0.3.31.188.0 USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell`
+  configuration. The mapped OpenBLAS backing file hash was
+  `05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`;
+  NumPy native module hashes and the full observation digest are recorded in
+  the session output (`c415ffe30a5b21ba66db1a37903d19b907af79104276b6143cb85bacae99e4e0`).
+- This collector remains observational: `execution_bytes_verified=false`,
+  thread fields are environment requests only, and the snapshot is not atomic.
+  It did not execute `eigvalsh`, a model, profile, service, or training. It
+  narrows the runtime acquisition gap but does not attest the future D03
+  process, bound LAPACK FLOPs, or clear any gate. No receipt/environment was
+  added to the repository; graph freeze remains **NO** and the six-arm ≤5%
+  gate remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; partial-ledger parity sensitivity)
 
 - Added `tools/v212_parity_shared_work_sensitivity.py` to apply the D03

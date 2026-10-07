@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 exact-version runtime observation
+
+CPython 3.11.9 and NumPy 2.4.6 are now available together in a temporary
+Linux environment. A read-only runtime observation identified the NumPy wheel's
+`scipy-openblas` 0.3.31.188.0 build and matched file-backed executable mappings
+to their backing files at read time. `execution_bytes_verified` remains false;
+the declared lock describes a Windows environment, and no D03 profile process
+was run. This corrects the earlier package-availability note without resolving
+the final runtime identity, LAPACK operation bound, full counter, or six-arm
+parity gate. The temporary environment and receipt were excluded from Git.
+
 ### 2026-10-07 partial-ledger parity sensitivity
 
 `tools/v212_parity_shared_work_sensitivity.py` applies D03's 5% range rule to
