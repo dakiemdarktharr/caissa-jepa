@@ -4405,3 +4405,25 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   `/tmp/caissa-jepa-py3119-np246`; `git diff --check` passes. No model,
   eigensolver, profile, data, inference, roots, scores, simulation, service,
   or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; preflight Boolean inversion accounting)
+
+- Added source-shaped output cardinalities for all 13 Boolean `Invert` AST
+  sites in `preflight_batch`. For batch size 64, fixed mask shapes account for
+  2,176 output elements; inversion of the transition-selected actor membership
+  mask adds 0–256 depending on `transition_exists`, yielding 2,176–2,432.
+  Five sites recur over the three active horizons, for 23 site occurrences on
+  a successful valid path. This counts output cardinalities only; membership
+  internals, other Boolean control, reductions, indexing, and runtime costs
+  remain open.
+- All 13 invert sites now map to the partial preflight scan owner. Across 970
+  AST sites, the crosswalk now records 205 candidate-owner, 72 partial,
+  one runtime-unverified, 36 separately reported, ten separately/partially
+  bounded non-FP, one blocking eigensolver, 174 unresolved, 445 unresolved
+  non-FP, and 26 unresolved/context-owned. Crosswalk digest:
+  `19622b3c664aac1f36cfbb5c499663faae8d87c4946b0d9684506b70dda41320`.
+  Full-counter, runtime, graph-freeze, and parity flags remain false.
+- The focused crosswalk/preflight/owner suites pass 65/65 under the existing
+  Python 3.11.9 / NumPy 2.4.6 environment; targeted `compileall` and
+  `git diff --check` pass. No model, eigensolver, profile, data, inference,
+  roots, scores, simulation, service, or training ran. No gate advanced.

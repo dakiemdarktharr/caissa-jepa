@@ -12,6 +12,7 @@ from two_player.games import ACTION_SIZE, FEATURE_SIZE
 SCHEMA = "caissa.v212.preflight-scan-accounting.v01"
 HORIZON_STEPS = 4
 FINITE_ARRAY_CALLS_PER_PREFLIGHT = 12
+PREFLIGHT_HORIZONS = (1, 2, 4)
 
 
 def accounting(batch_size: int = 64) -> dict:
@@ -36,6 +37,18 @@ def accounting(batch_size: int = 64) -> dict:
         "actor_alternation": n * (HORIZON_STEPS - 1),
         "one_hot_count_domains": action_rows,
     }
+    horizon_mask_inversions = n * len(PREFLIGHT_HORIZONS) * 5
+    boolean_inversions_by_family = {
+        "legal_and_value_masks": 2 * n + n + n * HORIZON_STEPS,
+        "transition_masks": 3 * action_rows,
+        "horizon_masks": horizon_mask_inversions,
+    }
+    fixed_boolean_inversion_elements = sum(boolean_inversions_by_family.values())
+    actor_membership_inversion_elements = {
+        "minimum": 0,
+        "maximum": action_rows,
+        "assumption": "selected actor rows equal transition_exists.sum(); no positive lower bound is implied",
+    }
     scalar_shape_comparison_site_calls = 3 + FINITE_ARRAY_CALLS_PER_PREFLIGHT
     return {
         "schema": SCHEMA,
@@ -51,6 +64,15 @@ def accounting(batch_size: int = 64) -> dict:
         "action_row_count_predicate_evaluations": action_rows,
         "comparison_elements_by_site_family": array_comparisons,
         "array_comparison_element_evaluations": sum(array_comparisons.values()),
+        "boolean_invert_ast_site_count": 13,
+        "boolean_invert_site_occurrences_per_successful_call": 8 + 5 * len(PREFLIGHT_HORIZONS),
+        "boolean_invert_elements_by_family": boolean_inversions_by_family,
+        "fixed_boolean_invert_output_elements": fixed_boolean_inversion_elements,
+        "selected_actor_membership_invert_output_elements": actor_membership_inversion_elements,
+        "boolean_invert_output_elements_interval": {
+            "minimum": fixed_boolean_inversion_elements,
+            "maximum": fixed_boolean_inversion_elements + action_rows,
+        },
         "scalar_shape_comparison_site_calls": scalar_shape_comparison_site_calls,
         "finite_array_shape_comparison_calls": FINITE_ARRAY_CALLS_PER_PREFLIGHT,
         "comparison_ast_site_count": 13,

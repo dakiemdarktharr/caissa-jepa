@@ -40,6 +40,14 @@ def _site_disposition(module: str, site: dict) -> dict:
             "owner": "tools/v212_preflight_scan_accounting.py",
             "scope": "source-shaped comparison cardinalities and helper call count only; reductions, membership internals, invalid-path short-circuiting, and runtime cost remain open",
         }
+    if (module == "two_player/v212_model.py" and node == "UnaryOp"
+            and site.get("function") == "preflight_batch"
+            and detail == "Invert"):
+        return {
+            "status": "candidate_owner_partial",
+            "owner": "tools/v212_preflight_scan_accounting.py",
+            "scope": "Boolean inversion output-element cardinality only; membership internals, indexing, invalid-path short-circuiting, and runtime cost remain open",
+        }
     if node == "BinOp" and detail == "MatMult":
         return {
             "status": "candidate_owner",
@@ -64,7 +72,7 @@ def _site_disposition(module: str, site: dict) -> dict:
             return {
                 "status": "candidate_owner_partial",
                 "owner": "tools/v212_preflight_bitwise_accounting.py",
-                "scope": "Boolean bitwise output-element cardinality only; comparisons, inversion, reductions, indexing, and runtime costs remain open",
+                "scope": "Boolean bitwise output-element cardinality only; reductions, indexing, and runtime costs remain open",
             }
         if detail in {"Add", "Sub", "Mult", "Div"}:
             if (detail == "Add" and " @ p[" in source and " + p[" in source

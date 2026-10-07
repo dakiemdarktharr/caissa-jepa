@@ -3544,3 +3544,18 @@ remain open. The crosswalk digest is
 partial-owner and 445 explicitly unresolved non-FP sites among 970 AST sites.
 Focused crosswalk/preflight/owner suites pass 65/65. Full counter, runtime
 identity, graph freeze, and ≤5% parity remain open/unpassed.
+
+### 2026-10-07 preflight Boolean inversion cardinalities
+
+Extended preflight scan accounting to the 13 explicit Boolean inversion sites.
+The batch-64 fixed-shape total is 2,176 output elements; actor membership over
+the selected transitions adds 0–256, so the successful-path source bound is
+2,176–2,432. Five sites recur over three active horizons, producing 23 site
+occurrences. The selection interval follows `transition_exists` and does not
+assume a complete four-ply trajectory. The updated crosswalk digest is
+`19622b3c664aac1f36cfbb5c499663faae8d87c4946b0d9684506b70dda41320`; among
+970 sites, 72 are partial owners, 445 explicitly unresolved non-FP, and 26
+unresolved/context-owned. The focused crosswalk/preflight/owner suites pass
+65/65; targeted compile and whitespace checks pass. This remains partial
+source accounting; full counter, runtime identity, graph freeze, and ≤5%
+parity remain open/unpassed.

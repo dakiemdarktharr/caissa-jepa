@@ -219,6 +219,16 @@ class SourceCounterReconciliationTests(unittest.TestCase):
                             for site in comparison_preflight))
         self.assertTrue(all("runtime cost remain open" in site["scope"]
                             for site in comparison_preflight))
+        inverted_preflight = [site for site in model
+                              if site["node"] == "UnaryOp"
+                              and site.get("function") == "preflight_batch"
+                              and site["detail"] == "Invert"]
+        self.assertEqual(len(inverted_preflight), 13)
+        self.assertTrue(all(site["status"] == "candidate_owner_partial"
+                            and site["owner"] == "tools/v212_preflight_scan_accounting.py"
+                            for site in inverted_preflight))
+        self.assertTrue(all("runtime cost remain open" in site["scope"]
+                            for site in inverted_preflight))
         self.assertFalse(self.report["coverage"]["full_counter"])
         self.assertFalse(self.report["coverage"]["graph_freeze_eligible"])
 
