@@ -26,7 +26,6 @@ from .v212_trajectory_audit import (
     audit_trajectories,
     window_payload_sha256,
 )
-from .v212_window_batch import windows_to_model_batch
 
 
 @dataclass(frozen=True)
@@ -207,13 +206,14 @@ def compute_receipt_bound_panel_batch(
         if getattr(config, "arm", None) != arm or getattr(config, "seed", None) != seed_record["model_seed"]:
             raise ValueError("model identity/seed does not match the frozen schedule row")
 
-    batch = windows_to_model_batch(list(windows), dict(games), required_split="train")
-    actual_masks = _observed_mask_counts(batch)
-    validate_actual_mask_roster(update["mask_counts_by_arm"], actual_masks)
+    def check_materialized_batch(batch: Mapping[str, Any]) -> None:
+        actual_masks = _observed_mask_counts(batch)
+        validate_actual_mask_roster(update["mask_counts_by_arm"], actual_masks)
 
     scheduled = compute_scheduled_panel_batch(
         list(windows), dict(games), models,
         seed_ordinal=seed_ordinal, update_index=update_index,
+        pre_model_call=check_materialized_batch,
     )
     if scheduled.batch_payload_sha256 != update["batch_payload_sha256"]:
         raise ValueError("scheduled call digest differs from the frozen manifest row")

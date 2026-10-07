@@ -108,6 +108,30 @@ class V212ScheduledBatchTests(unittest.TestCase):
         self.assertNotEqual(window_payload_sha256(window, game),
                             window_payload_sha256(changed, game))
 
+    def test_pre_model_call_observer_sees_shared_batch_and_can_block_all_arms(self):
+        observed = []
+
+        def inspect_batch(batch):
+            observed.append(batch)
+            _SpyModel.assert_read_only(batch)
+
+        compute_scheduled_panel_batch(
+            self.windows, self.games, self.models,
+            seed_ordinal=0, update_index=1, pre_model_call=inspect_batch)
+        self.assertEqual(len(observed), 1)
+        self.assertEqual(id(observed[0]), id(self.calls[0][1]))
+
+        self.calls.clear()
+
+        def reject_batch(_batch):
+            raise ValueError("synthetic pre-model gate rejection")
+
+        with self.assertRaisesRegex(ValueError, "pre-model gate rejection"):
+            compute_scheduled_panel_batch(
+                self.windows, self.games, self.models,
+                seed_ordinal=0, update_index=1, pre_model_call=reject_batch)
+        self.assertEqual(self.calls, [])
+
     def test_raw_batch_mapping_cannot_bypass_the_window_adapter(self):
         with self.assertRaisesRegex(ValueError, "64 audited windows"):
             compute_scheduled_panel_batch(
