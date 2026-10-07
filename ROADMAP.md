@@ -2,6 +2,23 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 no-update six-arm objective graph
+
+`two_player/v212_model.py` now implements the six v05 arm objectives and
+manual gradients without an optimizer or fitting loop. Independent read-only
+review found no remaining source-level objective blocker for a future
+no-outcome dry-run profile after fixes to pooled reductions, terminal/missing
+prefix masks, invalid-transition handling, and latent-coordinate averaging.
+Six synthetic-array tests pass, including pooled-loss checks, finite-difference
+gradients, parameter inventories, and terminal/truncated operation counts.
+This graph does not include the optimizer, clipping, EMA updates, or full
+selected-window exact-rule replay. No FLOP profile ran; the no-outcome compute
+protocol and remaining pre-fit gates still require review. The ≤5% total
+training-FLOP gate remains **untested and unpassed**, and fitting remains
+prohibited. No roots, trajectories, simulation, inference, scores, or outcomes
+were generated or accessed. See `GROUND_TRUTH.md` and
+`tests/test_v212_model.py`.
+
 ### 2026-10-07 V2.12-05 raw-state method adoption
 
 The D02 raw-state contract is adopted as the narrow v05 method change after

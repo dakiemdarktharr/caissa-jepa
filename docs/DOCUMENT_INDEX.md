@@ -23,6 +23,7 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `ROADMAP.md` | Current milestones and evidence/kill gates |
 | `METHOD_SPEC.md` | Frozen original v1; read amendments before implementation |
 | `METHOD_SPEC_V212.md` | Current V2.12-05 specification; only the raw-state contract changed from v04; all unrelated gates remain closed |
+| `two_player/v212_model.py` and `tests/test_v212_model.py` | No-update six-arm objective/gradient graph and synthetic checks; not a trainer, compute profile, or fit authorization |
 | `docs/METHOD_SPEC_V212_V04.md` | Immutable v04 specification archive; includes the Reversi8 2-second p90 negative and pre-v05 raw-state wording |
 | `docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md` | Adopted narrow v05 raw-state amendment; method-level review only, no trainer/fit authorization, ≤5% FLOP gate untested and unpassed |
 | `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md` | Unreviewed §7 replacement originally based on v04; not current v05, must be rebased and versioned before any future adoption |
