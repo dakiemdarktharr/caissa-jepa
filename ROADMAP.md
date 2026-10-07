@@ -2,6 +2,21 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 independent raw-state/six-arm parity re-review
+
+An approved read-only `gpt-6-luna/high` review at HEAD
+`3666804cfded4880d511658e6fee9fd3fb409269` found the adopted v06 raw-state
+`F→D→E` method and no-update model source consistent, including the four-step
+recurrence, pooled masked feature loss, and recurrent gradients. It also
+confirmed the dense-forward MAC inventory's provenance and scope; those
+per-window forward-only figures are distinct from per-batch forward/backward
+matmul FLOPs. No mismatch required correction. An integrated trainer, selected
+window/replay artifacts, actual 20×87 mask schedule, and complete
+runtime/LAPACK counter remain absent. Graph freeze remains **NO** and ≤5%
+remains **untested and unpassed**. The review accessed documents/code only;
+no tests or empirical/model work ran. Continue source/runtime counter closure
+and trainer/replay prerequisites; keep profile and training closed.
+
 ### 2026-10-07 reference DNRM2 source bound
 
 Added `tools/v212_dnrm2_reference_source_bound.py` for Netlib LAPACK 3.12.1

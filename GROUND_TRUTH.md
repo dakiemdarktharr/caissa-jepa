@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; independent raw-state/parity re-review)
+
+- An approved read-only `gpt-6-luna/high` reviewer rechecked current HEAD
+  `3666804cfded4880d511658e6fee9fd3fb409269`. The adopted v06 raw-state
+  recurrence/objective remains consistent across the spec, v05 amendment, and
+  no-update model: recursive `F→D→E`, four transitions including unsupervised
+  step 3, pooled masked exact-feature loss, and recurrent gradients through all
+  three maps. Current dense-forward MAC figures and the per-64-window
+  forward/backward matmul inventory use distinct units and scopes.
+- The review found no source mismatch requiring correction. It confirmed the
+  existing blockers: no integrated trainer/trace, selected-window manifest or
+  exact-rule replay receipt, frozen 20×87 replay-derived mask schedule, or
+  complete counter/runtime/LAPACK bounds. The partial ledger still explicitly
+  marks graph freeze and parity ineligible. Graph freeze remains **NO** and
+  ≤5% remains **untested and unpassed**.
+- The reviewer inspected documents/code only; no tests, eigensolver, data,
+  roots, scores/outcomes, inference, profile, simulation, or training ran.
+  No gate changed.
+
 ## Latest continuation delta (2026-10-07; reference DNRM2 source bound)
 
 - Added `tools/v212_dnrm2_reference_source_bound.py` for the Netlib LAPACK
