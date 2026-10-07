@@ -569,9 +569,10 @@ inventory for `two_player/v212_model.py` and
 `two_player/v212_scratch_optimizer.py`. It records arithmetic/unary operator
 syntax, calls, subscripts, comparisons, and selected control-flow sites,
 including `AugAssign`, `Return`, and `Raise`, sorted by source location, and
-includes source SHA-256 values. The current report has 829 syntax sites in the
+includes source SHA-256 values. The first report had 829 syntax sites in the
 model (37 augmented assignments) and 135 in the optimizer, including 307 call
-sites combined. It can help reviewers find source expressions absent from a
+sites combined. The current source snapshot has 835 model sites (40 augmented
+assignments) and 135 optimizer sites. It can help reviewers find source expressions absent from a
 counter ownership map, but every entry is explicitly
 `unresolved_by_syntax_inventory`. It does not infer array dtypes, branch
 execution, NumPy/LAPACK internals, or operation counts, and it is not a
@@ -587,34 +588,35 @@ non-atomic mapped-file observation has `execution_bytes_verified=false`; no
 model, profile, or training operation was run. D03 runtime/backend and counter
 readiness remain open.
 
-## Source-operation candidate ownership crosswalk (2026-10-07)
+## Source-operation candidate ownership crosswalk (2026-10-07; current snapshot)
 
 `tools/v212_source_counter_reconciliation.py` v02 joins each inventory site to
 a candidate partial subcounter where a source-shaped relation is identifiable,
-or records an explicit unresolved / separately reported disposition. It hashes
-the two classifier/inventory sources and each distinct referenced owner tool
+or records an explicit unresolved / separately reported disposition. Following
+optimizer and regularizer mapping updates, the current recomputation hashes the
+two classifier/inventory sources and each distinct referenced owner tool
 source into the report, in addition to the inventory input hashes:
 
 | Analysis source | SHA-256 |
 | --- | --- |
 | `tools/v212_source_operation_inventory.py` | `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9` |
-| `tools/v212_source_counter_reconciliation.py` | `aa237c91f6935bb0fdc5d7e6e5241a2040867ceb658bb128b7aca7d31bb11d52` |
+| `tools/v212_source_counter_reconciliation.py` | `fd61e68476fe3540508b00bd2b2a16e7148a4c35faec2b61bebd0bbc5ca78d1c` |
 
-All 10 distinct candidate-owner source files existed when the report was
+All 11 distinct candidate-owner source files existed when the report was
 generated; their paths and hashes are included in the JSON output. The report
 binds the inventory to these model input hashes:
 
 | Module | Source SHA-256 | AST sites |
 | --- | --- | ---: |
-| `two_player/v212_model.py` | `964a6d1130f692de6307922980eb8cd4d5b0336bd312ed92ab92c01c5f5e2f66` | 829 |
+| `two_player/v212_model.py` | `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014` | 835 |
 | `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
 
-Crosswalk digest: `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`.
-The 964 site dispositions are 107 candidate-owner, 32 partial candidate-owner,
-one runtime-unverified candidate-owner, six reported separately, ten reported
+Crosswalk digest: `ff2d5a92dffe9bb39d13a0b100695c9b1c4a80646b38a7b30718f17560950152`.
+The 970 site dispositions are 145 candidate-owner, 32 partial candidate-owner,
+one runtime-unverified candidate-owner, ten reported separately, ten reported
 separately or partially bounded non-FP, one blocking-unresolved
-`np.linalg.eigvalsh`, 186 explicitly unresolved, 452 explicitly unresolved
-non-FP, and 169 unresolved or context-owned. These are syntax-site counts,
+`np.linalg.eigvalsh`, 186 explicitly unresolved, 458 explicitly unresolved
+non-FP, and 127 unresolved or context-owned. These are syntax-site counts,
 not operation counts or FLOP totals. The report keeps unmatched sites visible
 and states that no site has a validated complete cost owner. The digest binds
 the serialized report and hashes of inventory inputs, analysis code, and
@@ -640,11 +642,12 @@ unpassed**.
 The current crosswalk additionally maps all 24 add/subtract/multiply/divide
 AST sites in `scratch_adam_ema_step` to the existing optimizer arithmetic owner.
 The division used only when the gradient norm exceeds five retains its
-branch-interval qualification. This is site-to-owner traceability, not
-validation that the aggregate formula captures every execution or that input
-validation/copy/runtime work is covered. The focused test asserts these
-dispositions while keeping `full_counter=false`; the deterministic crosswalk
-digest is `e0f02a55da15ffb61e651ff87dcd8ffb04989c30d34926ce52358dce465aef0d`.
+branch-interval qualification. It now also maps `_regularize` arithmetic into
+the existing disjoint regularizer and effective-rank owners; the two integer
+shape products and two unary negations remain separately reported. Tests check
+these dispositions while keeping `full_counter=false`. This is site-to-owner
+traceability, not validation that the aggregates capture every execution or
+that input validation/copy/runtime work is covered.
 
 ## Six-arm common-work dilution sensitivity (2026-10-07)
 

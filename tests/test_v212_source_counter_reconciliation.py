@@ -124,6 +124,33 @@ class SourceCounterReconciliationTests(unittest.TestCase):
         self.assertFalse(self.report["coverage"]["all_sites_have_a_validated_cost_owner"])
         self.assertFalse(self.report["coverage"]["full_counter"])
 
+    def test_regularizer_arithmetic_sites_follow_disjoint_subcounter_owners(self):
+        model = self.report["modules"]["two_player/v212_model.py"]["sites"]
+        sites = [site for site in model if site["function"] == "_regularize"]
+        arithmetic = [site for site in sites
+                      if site["node"] == "BinOp"
+                      and site["detail"] in {"Add", "Sub", "Mult", "Div"}]
+        self.assertGreater(len(arithmetic), 0)
+        integer_shapes = [site for site in arithmetic
+                          if site["source"] in {"d * n", "n * d"}]
+        self.assertEqual(len(integer_shapes), 2)
+        self.assertTrue(all(site["status"] == "reported_separately"
+                            and site["owner"] == "tools/v212_regularizer_elementwise_accounting.py"
+                            for site in integer_shapes))
+        effective_rank = [site for site in arithmetic
+                          if "spectrum" in site["source"] or "probabilities" in site["source"]]
+        self.assertEqual(len(effective_rank), 2)
+        self.assertTrue(all(site["status"] == "candidate_owner"
+                            and site["owner"] == "tools/v212_effective_rank_branch_accounting.py"
+                            for site in effective_rank))
+        regularizer = [site for site in arithmetic if site not in integer_shapes + effective_rank]
+        self.assertTrue(all(site["status"] == "candidate_owner"
+                            and site["owner"] == "tools/v212_regularizer_elementwise_accounting.py"
+                            for site in regularizer))
+        unary = [site for site in sites if site["node"] == "UnaryOp" and site["detail"] == "USub"]
+        self.assertEqual(len(unary), 2)
+        self.assertTrue(all(site["status"] == "reported_separately" for site in unary))
+
 
 if __name__ == "__main__":
     unittest.main()

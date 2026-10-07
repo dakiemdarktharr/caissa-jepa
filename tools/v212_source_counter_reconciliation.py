@@ -50,6 +50,38 @@ def _site_disposition(module: str, site: dict) -> dict:
                 "with the clipping division represented by its branch interval"
             ),
         }
+    if module == "two_player/v212_model.py" and site.get("function") == "_regularize":
+        if node == "BinOp" and detail in {"Add", "Sub", "Mult", "Div"}:
+            if site["source"] in {"d * n", "n * d"}:
+                return {
+                    "status": "reported_separately",
+                    "owner": "tools/v212_regularizer_elementwise_accounting.py",
+                    "scope": "integer scalar shape product; reported separately, not a FLOP",
+                }
+            if "spectrum" in site["source"] or "probabilities" in site["source"]:
+                return {
+                    "status": "candidate_owner",
+                    "owner": "tools/v212_effective_rank_branch_accounting.py",
+                    "scope": "effective-rank normalization/product arithmetic; branch and selected-count bounds apply",
+                }
+            return {
+                "status": "candidate_owner",
+                "owner": "tools/v212_regularizer_elementwise_accounting.py",
+                "scope": "regularizer elementwise/scalar arithmetic; exclude delegated squares, reductions, and matmuls",
+            }
+        if node == "UnaryOp" and detail == "USub":
+            if site["source"] == "-2.0":
+                return {
+                    "status": "reported_separately",
+                    "owner": "tools/v212_regularizer_elementwise_accounting.py",
+                    "scope": "negative scalar literal; no separate runtime FLOP under the source-level convention",
+                }
+            if site["source"].startswith("-np.sum(probabilities * np.log(probabilities))"):
+                return {
+                    "status": "reported_separately",
+                    "owner": "tools/v212_effective_rank_branch_accounting.py",
+                    "scope": "effective-rank unary negation; reported separately from FLOPs",
+                }
     if node == "BinOp" and detail == "Pow":
         if module == "two_player/v212_model.py":
             return {

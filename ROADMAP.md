@@ -331,26 +331,14 @@ counter, parity, profile and fit eligibility remain false. No gate changed.
 
 ### 2026-10-07 source-operation ownership crosswalk
 
-Added a source-hash-bound candidate crosswalk covering all 964 AST sites in
-the current model and scratch optimizer. Its v02 report digest also includes
-the two analyzer source hashes and the hashes of all referenced owner files
-(all present). Current digest is `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`.
-It records 107 candidate-owner, 32
-partial-owner, one runtime-unverified-owner, six separately reported, ten
-separately/partially bounded non-FP, one blocking unresolved eigensolver, 186
-unresolved, 452 unresolved non-FP, and 169 context-owned/unresolved sites.
-These are syntax-site dispositions, not operation counts. Candidate ownership
-does not validate expression context, branch work, component overlap, runtime
-behavior, or complete accounting. Read-only review caught and corrected the
-`_finite_array` finite-check mapping and the input-dependent `np.asarray`
-conversion classification; the report digest does not attest implementation.
-The 80-test accounting/source suite passes under Python 3.14.7 with NumPy
-2.5.3; the eight standard-library inventory/crosswalk tests also pass under
-Python 3.11.17. Targeted compile and whitespace checks pass. The
-crosswalk explicitly denies full-counter, graph-freeze, and parity eligibility.
-After fetching current `origin/main`, the strict v03 schedule/replay-receipt/
-adapter/model synthetic regression group passes 46/46 under Python 3.14.7 /
-NumPy 2.5.3; production data, trainer, and profile gates remain closed.
+This was the preceding snapshot and is superseded by the latest 970-site
+recomputation below. Its 964-site total, digest
+`a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`, and
+disposition counts are historical only. Candidate ownership remains a pointer
+to partial subcounters; it does not validate expression context, branch work,
+component overlap, runtime behavior, or complete accounting. The prior
+`_finite_array` and input-dependent `np.asarray` review findings remain open.
+The crosswalk denies full-counter, graph-freeze, and parity eligibility.
 
 Next research step remains static closure of semantic ownership and the
 eigensolver/runtime bounds, then independent review and integrated trainer /
@@ -3348,8 +3336,10 @@ false. No receipt was persisted. No D03 runtime gate or profile was advanced.
 Added a deterministic AST inventory for the current model and scratch
 optimizer source. It enumerates arithmetic/unary syntax, calls, indexing,
 comparisons, and control flow, and binds each report to the source hashes.
-There are 829 listed syntax sites in the model, including 37 augmented
-assignments, and 135 in the optimizer. Read-only review identified the initial
+The initial report had 829 listed syntax sites in the model, including 37
+augmented assignments, and 135 in the optimizer. The current source snapshot
+has 835 model sites (40 augmented assignments) and 135 optimizer sites.
+Read-only review identified the initial
 omission of `AugAssign`, then the missing `Return` and `Raise` control-flow
 nodes; the collector and regression now include them. Every site remains
 semantically unresolved. A read-only follow-up found no other currently used
@@ -3470,3 +3460,36 @@ The full-counter flag remains false; this is source traceability, not a
 validated runtime operation trace or complete FLOP total. Continue with the
 blocking eigensolver/runtime and trainer/schedule owners. Graph freeze remains
 **NO** and six-arm ≤5% parity remains **untested and unpassed**.
+
+### 2026-10-07 regularizer source-owner reconciliation
+
+The AST crosswalk now separates `_regularize` arithmetic across the regularizer
+elementwise/scalar owner and effective-rank owner, while retaining matmul and
+array-square ownership in their dedicated inventories. The two integer shape
+products and unary negations remain reported outside FLOPs. This is a source
+traceability improvement only; the linked eigensolver remains blocking and
+`full_counter` stays false. The focused regression asserts the disjoint owner
+mapping; no model, data, eigensolver, profile, inference, or training ran.
+Graph freeze remains **NO** and six-arm ≤5% parity remains **untested and
+unpassed**.
+
+The latest source-hash-bound crosswalk contains 970 AST sites (835 model +
+135 optimizer) with digest
+`ff2d5a92dffe9bb39d13a0b100695c9b1c4a80646b38a7b30718f17560950152` and
+analysis source hash `fd61e68476fe3540508b00bd2b2a16e7148a4c35faec2b61bebd0bbc5ca78d1c`.
+Disposition counts: 145 candidate-owner, 32 partial candidate-owner, one
+runtime-unverified candidate-owner, ten separately reported, ten
+separately/partially bounded non-FP, one blocking unresolved eigensolver, 186
+explicitly unresolved, 458 explicitly unresolved non-FP, and 127
+unresolved/context-owned. The focused crosswalk, regularizer, and effective-
+rank tests pass 15/15 under Python 3.14.7 / NumPy 2.5.3. This static update
+does not clear the unresolved eigensolver/runtime, trainer/schedule, full
+counter, graph-freeze, or parity gates.
+
+An approved read-only raw-state/parity review found the current `F→D→E`
+forward/reverse source path and partial accounting internally consistent, but
+withheld freeze/parity. Linked eigensolver/runtime cost, unresolved sites,
+integrated trainer, exact-rule replay, selected-window manifest, frozen
+20-seed × 87-update masks, and per-batch raw-target/H4-leaf checks remain
+open. Continue static owner reconciliation and independent review before any
+graph-freeze or replay/profile gate transition.

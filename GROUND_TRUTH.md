@@ -466,57 +466,69 @@
   service, or training ran. The ≤5% six-arm gate remains **untested and
   unpassed**.
 
-## Latest continuation delta (2026-10-07; source-operation ownership crosswalk)
+## Superseded source-operation ownership snapshot (2026-10-07)
 
-- Added `tools/v212_source_counter_reconciliation.py`, a deterministic,
-  source-hash-bound disposition of all 964 AST sites in the current model and
-  scratch optimizer (829 + 135). Schema v02 also hashes both analysis modules
-  and every distinct referenced candidate-owner subcounter file; all 12 files
-  were present. The current crosswalk digest is
-  `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9` for
-  analyzer hashes `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9`
-  (inventory) and `aa237c91f6935bb0fdc5d7e6e5241a2040867ceb658bb128b7aca7d31bb11d52`
-  (crosswalk), and for
-  source hashes `964a6d1130f692de6307922980eb8cd4d5b0336bd312ed92ab92c01c5f5e2f66`
-  (`two_player/v212_model.py`) and
-  `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb`
-  (`two_player/v212_scratch_optimizer.py`). Site dispositions are: 107
-  candidate-owner, 32 partial candidate-owner, one runtime-unverified
-  candidate, six reported separately, ten reported separately/partially
-  bounded non-FP, one blocking-unresolved eigensolver, 186 explicitly
-  unresolved, 452 explicitly unresolved non-FP, and 169 unresolved or
-  context-owned. These are AST-site counts, not operation counts.
+- The preceding crosswalk reported 964 AST sites (829 model + 135 optimizer),
+  digest `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`,
+  and earlier disposition counts. That snapshot is superseded by the current
+  970-site recomputation below; its counts and digest are historical only.
 - Candidate owner means only that a relevant partial subcounter exists.
   Expression context, branch cardinality, component overlap, non-FP cost, and
-  runtime behavior are not thereby validated. A read-only reviewer caught
-  that `_finite_array`'s `np.all`/`np.isfinite` calls should reference the
-  preflight finite-cardinality subcounter as partial evidence; the boolean
-  reduction and runtime cost remain uncounted. `np.asarray` is unresolved
-  because dtype-conversion/copy behavior depends on its input. The report
-  digest binds its serialization and recorded source hashes; it does not
-  attest semantic correctness of the classifier or subcounters. It expressly
-  withholds full-counter, parity, and graph-freeze eligibility. The 80-test
-  accounting/source suite passes under Python 3.14.7 with NumPy 2.5.3, and
-  eight standard-library inventory/crosswalk tests pass under Python 3.11.17.
-  Targeted `compileall` and `git diff --check`
-  pass. Neither interpreter matches locked Python 3.11.9 / NumPy 2.4.6.
-- After fetching and integrating the current remote history, the strict v03
-  schedule-mask/replay-receipt/adapter/model regression group passes 46/46
-  under Python 3.14.7 with the existing NumPy 2.5.3 dependency path. These
-  are synthetic boundary tests and do not demonstrate production roster,
-  trainer exclusivity, profile readiness, or a gate transition.
-- This is static source reconciliation only. No profile, data, roots,
-  inference, score/outcome, simulation, service, or training ran; no gate
-  changed. The six-arm ≤5% compute gate remains **untested and unpassed**.
+  runtime behavior are not thereby validated. The previous review's
+  `_finite_array` and `np.asarray` findings remain unresolved as described in
+  the current coverage audit. This crosswalk is not a complete counter or
+  execution trace.
 
-## Latest continuation delta (2026-10-07; V2.12 source-operation inventory)
+## Current source-operation crosswalk snapshot (2026-10-07)
+
+- The current inventory contains 835 model AST sites (40 `AugAssign`) and 135
+  scratch-optimizer sites, 970 total. Current source hashes are
+  `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014`
+  (model) and
+  `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb`
+  (optimizer). The crosswalk source hash is
+  `fd61e68476fe3540508b00bd2b2a16e7148a4c35faec2b61bebd0bbc5ca78d1c`; its
+  current digest is
+  `ff2d5a92dffe9bb39d13a0b100695c9b1c4a80646b38a7b30718f17560950152`.
+  Dispositions are 145 candidate-owner, 32 partial candidate-owner, one
+  runtime-unverified candidate-owner, ten separately reported, ten
+  separately/partially bounded non-FP, one blocking unresolved eigensolver,
+  186 explicitly unresolved, 458 explicitly unresolved non-FP, and 127
+  unresolved/context-owned. These are syntax-site counts, not operation or
+  FLOP counts.
+- The `_regularize` mapping assigns ordinary scalar/elementwise arithmetic to
+  the regularizer owner and spectrum/probability arithmetic to the effective-
+  rank owner; integer shape products and unary negations remain separately
+  reported. The targeted source-crosswalk, regularizer, and effective-rank
+  suites pass 15/15 under Python 3.14.7 / NumPy 2.5.3 from
+  `/tmp/caissa-jepa-pv-deps`; `git diff --check` passes. These tests validate
+  static ownership logic, not model or eigensolver execution.
+- Full counter, runtime verification, graph freeze, fit, and six-arm parity
+  remain ineligible/closed. No data, roots, simulation, inference,
+  scoring, profile, service, or training ran. The ≤5% parity gate remains
+  **untested and unpassed**.
+- The approved read-only six-arm raw-state/parity review found the current
+  `F→D→E` forward/reverse source path and partial source accounting internally
+  consistent, but explicitly withheld graph freeze and parity. Linked
+  eigensolver/runtime cost and unresolved source sites remain; so do the
+  integrated trainer, exact-rule replay, selected-window manifest, frozen
+  20-seed × 87-update mask schedule, and per-batch raw-target/H4-leaf
+  prerequisites. The next admissible work remains static operation-owner
+  reconciliation and independent review; no replay/profile gate advanced.
+  Evidence is in `two_player/v212_model.py`,
+  `tools/v212_partial_flop_ledger.py`,
+  `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md`, and
+  `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md`.
+
+## Initial V2.12 source-operation inventory snapshot (2026-10-07; superseded counts)
 
 - Added `tools/v212_source_operation_inventory.py` to enumerate AST-level
   arithmetic/unary operators, comparisons, calls, indexing, and control-flow
   sites in `two_player/v212_model.py` and
   `two_player/v212_scratch_optimizer.py`, with source SHA-256 values and
-  deterministic site ordering. It reports 829 model sites (including 37
-  augmented assignments) and 135 optimizer sites. The reviewed follow-up also
+  deterministic site ordering. The initial report had 829 model sites
+  (including 37 augmented assignments) and 135 optimizer sites; the current
+  inventory count is in the latest crosswalk entry above. The reviewed follow-up also
   added `return` and `raise` control-flow nodes that the first version omitted.
   A read-only follow-up confirmed no other currently used arithmetic,
   indexing, or explicit control-flow syntax class is omitted. All sites remain
@@ -4305,3 +4317,13 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
 
 - The AST crosswalk now assigns all 24 add/subtract/multiply/divide sites inside `scratch_adam_ema_step` to the optimizer arithmetic inventory. It keeps the gradient-norm clipping division as branch-dependent and does not convert scalar powers, square roots, validation, or copies into FLOPs. The deterministic crosswalk digest is `e0f02a55da15ffb61e651ff87dcd8ffb04989c30d34926ce52358dce465aef0d`; its coverage flags continue to withhold full-counter, parity, and graph-freeze eligibility.
 - The focused crosswalk suite passes 6/6. The optimizer-accounting suite passes 4/4 under the existing Python 3.14.7 / NumPy 2.5.3 dependency path at `/tmp/caissa-jepa-pv-deps`; the bare system interpreter lacks NumPy. No dependency or project environment was changed. This closes traceability only: it does not resolve runtime work or bind a trainer/schedule. No model, profile, data, inference, or training ran. Graph freeze remains **NO**, six-arm parity remains **untested and unpassed**, and all negative findings remain in force.
+
+### Latest continuation delta (2026-10-07; regularizer source-owner reconciliation)
+
+- Extended the syntax crosswalk for `_regularize`: ordinary elementwise/scalar arithmetic maps to the regularizer owner; probability/spectrum arithmetic maps to effective-rank; dense products and array squares retain their existing matmul/square owners; integer shape products and unary negations remain separately reported. This prevents those owners from being summed twice.
+- The new regression covers each arithmetic class and continues to assert that
+  the eigensolver remains blocking and `full_counter` remains false. The
+  crosswalk, regularizer, and effective-rank suites pass 15/15 under Python
+  3.14.7 / NumPy 2.5.3 using `/tmp/caissa-jepa-pv-deps`. No model, data,
+  eigensolver, profile, inference, or training ran. Graph freeze and six-arm
+  parity remain closed/unpassed.
