@@ -1,5 +1,18 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; receipt-publication deadline seam)
+
+- Added a named CLK-02 regression using the real temporary atomic receipt
+  writer and a controlled mocked deadline that expires immediately after the
+  writer reports durable completion. It confirms the receipt bytes remain
+  unchanged, service/workspace reconciliation handles are retained, and stop
+  and cleanup are skipped. Updated the supervision failure map.
+- The armed-service-smoke module passes 44/44; `compileall` and
+  `git diff --check` pass. This is mocked controller evidence only: deadline
+  crossing during write/fsync and production deadline-aware stop/evidence
+  boundaries remain untested. No live service, request adapter, inference,
+  OOM, training, scoring, or match ran; no gate advanced.
+
 ## Latest continuation delta (2026-10-07; approved raw-state/parity review)
 
 - An approved read-only `gpt-6-luna/high` review found the adopted raw-state

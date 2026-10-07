@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 receipt-publication deadline seam
+
+Added a named CLK-02 regression around the post-durability caller-deadline
+check. The test exercises the real temporary atomic receipt writer, then
+injects deadline expiry before the controller can stop the unit; it verifies
+the persisted bytes and reconciliation handles remain and stop/cleanup do not
+run. The armed-service-smoke module passes 44/44, with compile and whitespace
+checks passing. This does not exercise a deadline crossing inside write/fsync,
+production systemd recovery, or any live service path; the supervision gate
+remains partial.
+
 ### 2026-10-07 approved raw-state/parity review
 
 An approved read-only `gpt-6-luna/high` review found no mismatch between the

@@ -660,6 +660,41 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertEqual(self.receipt.read_bytes(), state["receipt_bytes_after_persist"])
         self.assertTrue(self.workspaces[0].directory.exists())
 
+    def test_deadline_expiry_after_durable_receipt_blocks_stop_and_preserves_handles(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack)
+            original_check = collector._check_deadline
+            original_cleanup = ipc.cleanup_workspace
+
+            def check_deadline(deadline):
+                if "persist_complete" in state["sequence"]:
+                    raise collector.CollectorError(
+                        "mock caller deadline expired after durable receipt publication")
+                original_check(deadline)
+
+            stack.enter_context(patch.object(
+                collector, "_check_deadline", side_effect=check_deadline))
+            def cleanup(workspace):
+                state["sequence"].append("cleanup")
+                return original_cleanup(workspace)
+
+            stack.enter_context(patch.object(
+                ipc, "cleanup_workspace", side_effect=cleanup))
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "deadline expired after durable receipt publication.*receipt_persisted") as caught:
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+        message = str(caught.exception)
+        self.assertIn("unit_retained_or_state_unknown", message)
+        self.assertIn("invocation_id=" + "a" * 32, message)
+        self.assertIn("worker_cgroup=/user.slice/" + state["unit"], message)
+        self.assertEqual(state["sequence"].count("persist_complete"), 1)
+        self.assertNotIn("stop", state["sequence"])
+        self.assertNotIn("cleanup", state["sequence"])
+        self.assertTrue(self.receipt.exists())
+        self.assertEqual(self.receipt.read_bytes(), state["receipt_bytes_after_persist"])
+        self.assertTrue(self.workspaces[0].directory.exists())
+
     def test_post_stop_manager_query_failure_keeps_receipt_and_recovery_handles(self):
         with ExitStack() as stack:
             state = self._mock_host(stack, fail_post_stop_show=True)
