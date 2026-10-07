@@ -6,7 +6,8 @@
   writer and a controlled mocked deadline that expires immediately after the
   writer reports durable completion. It confirms the receipt bytes remain
   unchanged, service/workspace reconciliation handles are retained, and stop
-  and cleanup are skipped. Updated the supervision failure map.
+  and cleanup are skipped. Updated both the case inventory and the named-test
+  traceability row in the supervision failure map.
 - The armed-service-smoke module passes 44/44; `compileall` and
   `git diff --check` pass. This is mocked controller evidence only: deadline
   crossing during write/fsync and production deadline-aware stop/evidence

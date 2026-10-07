@@ -8,7 +8,8 @@ Added a named CLK-02 regression around the post-durability caller-deadline
 check. The test exercises the real temporary atomic receipt writer, then
 injects deadline expiry before the controller can stop the unit; it verifies
 the persisted bytes and reconciliation handles remain and stop/cleanup do not
-run. The armed-service-smoke module passes 44/44, with compile and whitespace
+run. The supervision plan now maps the test in both the case inventory and its
+named-test traceability table. The armed-service-smoke module passes 44/44, with compile and whitespace
 checks passing. This does not exercise a deadline crossing inside write/fsync,
 production systemd recovery, or any live service path; the supervision gate
 remains partial.
