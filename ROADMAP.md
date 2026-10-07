@@ -2993,12 +2993,15 @@ false. No receipt was persisted. No D03 runtime gate or profile was advanced.
 Added a deterministic AST inventory for the current model and scratch
 optimizer source. It enumerates arithmetic/unary syntax, calls, indexing,
 comparisons, and control flow, and binds each report to the source hashes.
-There are 762 listed syntax sites in the model and 123 in the optimizer. The
-inventory labels every site semantically unresolved; it is a review map, not a
-counter or execution trace. Its three standard-library tests pass under Python
-3.11.17 and 3.14.7. The locked 3.11.9 / NumPy 2.4.6 runtime is unavailable in
-the local interpreters, so the locked NumPy reduction path was not verified.
-No compute, data, or fit gate advanced.
+There are 829 listed syntax sites in the model, including 37 augmented
+assignments, and 135 in the optimizer. Read-only review identified the initial
+omission of `AugAssign`, then the missing `Return` and `Raise` control-flow
+nodes; the collector and regression now include them. Every site remains
+semantically unresolved, so this is a review map, not a counter or execution
+trace. Its three standard-library tests pass under Python 3.11.17 and 3.14.7.
+The locked 3.11.9 / NumPy 2.4.6 runtime is unavailable in the local
+interpreters, so the locked NumPy reduction path was not verified. No compute,
+data, or fit gate advanced.
 
 Publication: code milestone `c1b503a` is local only. `origin/main` was last
 read at `86eb81b` before the ordinary push attempt. The push and a later

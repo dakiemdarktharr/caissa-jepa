@@ -20,11 +20,14 @@ SOURCE_PATHS = (
 )
 SITE_NODE_TYPES = (
     ast.BinOp,
+    ast.AugAssign,
     ast.UnaryOp,
     ast.BoolOp,
     ast.Compare,
     ast.If,
     ast.IfExp,
+    ast.Return,
+    ast.Raise,
     ast.For,
     ast.While,
     ast.ListComp,
@@ -47,6 +50,8 @@ def _syntax_sites(source: str, filename: str) -> list[dict]:
         if not isinstance(node, SITE_NODE_TYPES):
             continue
         if isinstance(node, ast.BinOp):
+            detail = _operator_name(node.op)
+        elif isinstance(node, ast.AugAssign):
             detail = _operator_name(node.op)
         elif isinstance(node, ast.UnaryOp):
             detail = _operator_name(node.op)
@@ -89,6 +94,8 @@ def inventory_sources(sources: dict[str, str]) -> dict:
             "site_counts_by_node": dict(sorted(Counter(row["node"] for row in sites).items())),
             "binary_operators_by_syntax": dict(sorted(Counter(
                 row["detail"] for row in sites if row["node"] == "BinOp").items())),
+            "augmented_assignment_operators_by_syntax": dict(sorted(Counter(
+                row["detail"] for row in sites if row["node"] == "AugAssign").items())),
             "unary_operators_by_syntax": dict(sorted(Counter(
                 row["detail"] for row in sites if row["node"] == "UnaryOp").items())),
             "call_targets": [

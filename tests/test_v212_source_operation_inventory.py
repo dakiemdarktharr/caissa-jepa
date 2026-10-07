@@ -8,7 +8,16 @@ from tools.v212_source_operation_inventory import (
 
 class SourceOperationInventoryTests(unittest.TestCase):
     def test_inventory_is_deterministic_and_reports_unresolved_syntax(self):
-        source = "result = (x @ w + b) ** 2\nif result > 0 and flag:\n    y = f(result[0])\n"
+        source = (
+            "result = (x @ w + b) ** 2\n"
+            "result += adjustment\n"
+            "if result > 0 and flag:\n"
+            "    y = f(result[0])\n"
+            "def checked(value):\n"
+            "    if value:\n"
+            "        return value\n"
+            "    raise ValueError('missing')\n"
+        )
         first = inventory_sources({"fixture.py": source})
         second = inventory_sources({"fixture.py": source})
         self.assertEqual(first, second)
@@ -16,7 +25,12 @@ class SourceOperationInventoryTests(unittest.TestCase):
         self.assertEqual(module["binary_operators_by_syntax"], {
             "Add": 1, "MatMult": 1, "Pow": 1,
         })
-        self.assertEqual(module["call_targets"][0]["target"], "f")
+        self.assertEqual(module["augmented_assignment_operators_by_syntax"], {"Add": 1})
+        self.assertGreater(module["site_counts_by_node"]["Return"], 0)
+        self.assertGreater(module["site_counts_by_node"]["Raise"], 0)
+        targets = {row["target"] for row in module["call_targets"]}
+        self.assertIn("f", targets)
+        self.assertIn("ValueError", targets)
         self.assertTrue(all(site["semantic_classification"] ==
                             "unresolved_by_syntax_inventory" for site in module["sites"]))
         self.assertFalse(first["coverage"]["complete_operation_semantics"])
@@ -43,6 +57,10 @@ class SourceOperationInventoryTests(unittest.TestCase):
         self.assertIn("np.linalg.eigvalsh", targets)
         self.assertIn("z0.std", targets)
         self.assertIn("np.count_nonzero", targets)
+        self.assertGreater(
+            report["modules"]["two_player/v212_model.py"]["site_counts_by_node"].get("AugAssign", 0),
+            0,
+        )
         self.assertGreater(model["syntax_site_count"], 600)
         self.assertFalse(report["coverage"]["parity_eligible"])
 

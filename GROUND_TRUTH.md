@@ -6,9 +6,11 @@
   arithmetic/unary operators, comparisons, calls, indexing, and control-flow
   sites in `two_player/v212_model.py` and
   `two_player/v212_scratch_optimizer.py`, with source SHA-256 values and
-  deterministic site ordering. It reports 762 model sites and 123 optimizer
-  sites on the current source. All sites remain semantically unresolved by
-  this inventory; this is not a FLOP count or runtime trace.
+  deterministic site ordering. It reports 829 model sites (including 37
+  augmented assignments) and 135 optimizer sites. The reviewed follow-up also
+  added `return` and `raise` control-flow nodes that the first version omitted.
+  All sites remain semantically unresolved by this inventory; this is not a
+  FLOP count or runtime trace.
 - Three standard-library tests pass under Python 3.11.17 and 3.14.7. The
   locked Python 3.11.9 / NumPy 2.4.6 runtime is unavailable locally: Python
   3.11.17 has no NumPy installed, and the available shared NumPy is 2.5.3.

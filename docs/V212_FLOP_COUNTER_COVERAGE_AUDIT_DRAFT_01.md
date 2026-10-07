@@ -498,9 +498,10 @@ D03 runtime/backend or counter-coverage gate.
 `tools/v212_source_operation_inventory.py` creates a deterministic AST-site
 inventory for `two_player/v212_model.py` and
 `two_player/v212_scratch_optimizer.py`. It records arithmetic/unary operator
-syntax, calls, subscripts, comparisons, and control-flow sites, sorted by
-source location, and includes source SHA-256 values. The current report has
-762 syntax sites in the model and 123 in the optimizer, including 307 call
+syntax, calls, subscripts, comparisons, and selected control-flow sites,
+including `AugAssign`, `Return`, and `Raise`, sorted by source location, and
+includes source SHA-256 values. The current report has 829 syntax sites in the
+model (37 augmented assignments) and 135 in the optimizer, including 307 call
 sites combined. It can help reviewers find source expressions absent from a
 counter ownership map, but every entry is explicitly
 `unresolved_by_syntax_inventory`. It does not infer array dtypes, branch
