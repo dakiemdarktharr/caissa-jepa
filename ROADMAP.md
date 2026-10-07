@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 pooled target-gradient multiplier subcounter
+
+Added a mask-parameterized count for the per-coordinate scalar-coefficient
+multiply on enabled latent and raw-feature target gradients. All-valid
+illustrative counts in six-arm order are 6,144 / 2,048 / 38,016 / 0 / 0 /
+2,048. An approved read-only reviewer confirmed the target dimensions and
+horizon masks match the source and found no overlap with activation,
+residual/square, or matmul inventories. The combined focused suite passes
+21/21; compile and whitespace checks pass. This is a small source-shape
+subcounter, not full coverage or parity evidence. No model/data/profile or
+outcome work ran; graph freeze stays **NO** and the ≤5% gate remains **untested
+and unpassed**.
+
 ### 2026-10-07 gradient-accumulation inventory and independent correction
 
 Added a mask-parameterized inventory of candidate array additions at

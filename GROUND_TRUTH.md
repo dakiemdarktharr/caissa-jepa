@@ -1,5 +1,22 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; pooled target-gradient multiplier inventory)
+
+- Added `tools/v212_objective_gradient_elementwise_accounting.py` to count the
+  one per-coordinate multiply of scalar target-gradient coefficient by latent
+  or raw-feature residual. Illustrative full-valid counts are 6,144 / 2,048 /
+  38,016 / 0 / 0 / 2,048 in six-arm order. Outcome-value gradient scaling
+  remains in the activation inventory; residuals/squares, scalar coefficients,
+  gradient accumulation, and matmuls remain separately assigned.
+- The approved read-only `gpt-6-luna/high` review found the formulas source-
+  consistent with enabled horizons and target dimensions, with no overlap in
+  the inspected subcounters. The combined target-gradient, accumulation,
+  activation, residual, and square suites pass 21/21; targeted compile and
+  `git diff --check` pass. No model/data/profile, roots, inference,
+  scores/outcomes, or training ran. This does not establish a full counter or
+  parity: graph freeze remains **NO**, and ≤5% remains **untested and
+  unpassed**.
+
 ## Latest continuation delta (2026-10-07; gradient-accumulation source audit)
 
 - Added `tools/v212_gradient_accumulation_accounting.py` for candidate array
