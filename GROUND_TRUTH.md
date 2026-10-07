@@ -1,5 +1,21 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; DSYEVD source composition correction)
+
+- Added `tools/v212_dsyevd_source_inventory.py` to compose the N=32,
+  eigenvalues-only DSYEVD-owned source scopes. Direct driver/DSCAL work is
+  2–36 operations; its two direct DLAMCH calls add 4. Conditional matrix
+  scaling contributes up to 532 DLASCL-body operations plus 2 from DLASCL's
+  own DLAMCH('S') call, giving a DSYEVD-only interval of 6–574 arithmetic
+  operations and two square roots separately.
+- This caught a component-ownership omission: the previous total included the
+  driver's four DLAMCH operations but not DLASCL's own conditional helper
+  call. The 532 body bound is unchanged; the corrected composed upper is 574.
+  DLANSY('M') scans 528 triangle entries with zero add/subtract/multiply/divide
+  operations. DSYTRD, DSTERF, linked runtime, and full-counter coverage remain
+  outside this DSYEVD-only candidate. Three focused tests pass; no eigensolver
+  or model ran and no gate advanced.
+
 ## Latest continuation delta (2026-10-07; DSTERF scan/sort cardinalities)
 
 - Added `tools/v212_dsterf_scan_sort_source_bound.py` for DLANST/DLASRT source

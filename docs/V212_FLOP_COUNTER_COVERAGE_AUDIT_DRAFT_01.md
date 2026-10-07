@@ -37,7 +37,7 @@ here.
 | `V212Model._encode`, `_value` | Dense projections, bias adds, `tanh` calls and backward derivatives; report each matmul by actual active rows and fixed dimensions | Root encoding is common; future online and target encodes depend on arm and valid-horizon counts |
 | Policy head in `V212Model.loss_grad` | Logit projection, bias, stable max/shift, `exp`, normalization, NLL/log, selected-action gradient, and both backward matmuls | Arithmetic operations count as FLOPs; max/comparison/indexing and `exp`/`log` are separate categories |
 | `V212Model._regularize` | Batch means, centering, squares, standard deviations, shortfall, covariance matmul, diagonal/off-diagonal work, covariance loss and its gradient | Include this diagnostic/loss path for every arm and update; disclose exact reduction treatment |
-| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). Driver, DSTERF, DLASCL, and DLAMCH/DLANSY now have separate partial source-site candidates. Under IEEE binary64/reference-source assumptions, DLASCL contributes at most 532 arithmetic operations; DLAMCH contributes 4, while DLANSY('M') scans 528 entries with zero add/subtract/multiply/divide operations. Runtime identity/dispatch, DSYTRD and helpers, DSTERF helper paths, and independent review remain open; exact coverage remains **unresolved** |
+| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). `tools/v212_dsyevd_source_inventory.py` composes a DSYEVD-only conditional arithmetic interval of 6–574 operations, including 4 operations from its two direct DLAMCH calls and two more for DLASCL's conditional internal DLAMCH('S'). The separate DLASCL body contributes at most 532; DLANSY('M') scans 528 entries with zero add/subtract/multiply/divide operations. Runtime identity/dispatch, DSYTRD/DSTERF integration, and independent review remain open; exact coverage remains **unresolved** |
 | Remaining `V212Model.loss_grad` diagnostics | Root latent mean/std, covariance spectrum output, effective rank, total-loss scalar combination, returned gradient L2 norm, parameter-size aggregation, and finite-value guards | The returned gradient norm is separate from the scratch optimizer's clipping norm and executes once per loss call. Count its coordinate squares/reduction and square root under the declared categories; count comparisons/conversion/serialization separately |
 | Recurrent predictor in `V212Model.loss_grad` | For each active step `s`, predictor projection from 104 to 32 coordinates, bias, `tanh`, and its reverse-pass derivative/parameter/input-gradient matmuls | Rows are `_active_prefix_masks(valid)`; count active rows for all four steps, including unsupervised intermediate prefixes needed by later valid horizons |
 | Recursive raw-state arm | Per active step, 32→198 decoder projection, decoder bias, 198→32 online re-encoding, corresponding tanh and complete reverse `F→D→E` gradient path | This arm has four possible recurrent steps; actual rows come from the common frozen mask schedule. Static forward MAC inventory is not total training FLOPs |
@@ -324,10 +324,11 @@ full-counter coverage, or open profile/training/parity gates.
   only `DSYTRD` → `DSTERF` path, including conditional scaling. This is useful
   algorithmic evidence, not proof of the locked wheel's linked implementation
   or its exact count. The effective-rank branch sub-bound starts only after the
-  eigensolver and fixed spectrum sum. The DSYEVD driver-site candidate is not
-  a full driver bound because helper internals and linked dispatch are open. A
-  frozen implementation trace or reviewed full-schedule bound remains
-  required.
+  eigensolver and fixed spectrum sum. `tools/v212_dsyevd_source_inventory.py`
+  composes DSYEVD's direct, DLAMCH/DLANSY, DLASCL-body, and DLASCL-internal
+  DLAMCH arithmetic into a conditional 6–574 operation interval. It excludes
+  DSYTRD and DSTERF work and does not establish linked dispatch. A frozen
+  implementation trace or reviewed full-schedule bound remains required.
 - The current model calls `preflight_batch` inside every `loss_grad` call.
   Unlike the one-time dataset-level preflight in D03, the repeated structural
   check scans the 256×65 action entries using integer nonzero counting. The
@@ -814,3 +815,17 @@ compiler lowering, non-FLOP details, DLASCL, DSYTRD/DSTERF, and runtime
 identity remain separate or unresolved. Three standard-library tests and
 targeted static checks pass; no numerical eigensolver, model, data, profile,
 inference, or training ran.
+
+## DSYEVD conditional source composition (2026-10-07)
+
+`tools/v212_dsyevd_source_inventory.py` composes three disjoint DSYEVD-owned
+scopes for the N=32, `JOBZ='N'` reference path. Direct driver arithmetic and
+DSCAL contribute 2–36 operations; the driver's two direct DLAMCH calls add 4.
+If DSYEVD scales the matrix, the one-pass DLASCL body contributes at most 532
+operations and its own DLAMCH('S') helper adds two more under the binary64
+assumption. The resulting DSYEVD-only interval is 6–574 add/subtract/
+multiply/divide operations, with two square-root calls separate. This corrects
+the prior component sum, which omitted DLASCL's internal DLAMCH call. DLANSY
+scans 528 triangle entries with zero arithmetic operations under the selected
+convention. The composition remains unreviewed conditional source accounting;
+it excludes DSYTRD, DSTERF, linked-runtime identity, and full-counter coverage.

@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 DSYEVD source composition correction
+
+The new DSYEVD composition report accounts for a previously omitted helper:
+when the driver scales its matrix, DLASCL calls DLAMCH('S') internally. Under
+the reference binary64 path this adds two operations beyond the 532-operation
+DLASCL body. Combining driver/DSCAL work (2–36), the driver's DLAMCH helpers
+(4), and conditional DLASCL plus its helper (0–534) gives a DSYEVD-only
+conditional interval of 6–574 operations and two square roots separately.
+This remains source-level, excludes DSYTRD/DSTERF and linked runtime, and does
+not close eigensolver coverage or any gate.
+
 ### 2026-10-07 DSTERF scan/sort source cardinalities
 
 Added an unreviewed reference-source inventory for DSTERF's remaining
