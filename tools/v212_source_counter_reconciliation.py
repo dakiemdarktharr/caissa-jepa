@@ -13,7 +13,21 @@ from pathlib import Path
 from .v212_source_operation_inventory import collect_source_inventory
 
 
-SCHEMA = "caissa.v212.source-counter-reconciliation.v01"
+SCHEMA = "caissa.v212.source-counter-reconciliation.v02"
+ANALYSIS_SOURCE_PATHS = (
+    "tools/v212_source_operation_inventory.py",
+    "tools/v212_source_counter_reconciliation.py",
+)
+
+
+def _source_record(root: Path, relative_path: str) -> dict:
+    path = root / relative_path
+    if not path.is_file():
+        return {"exists": False, "source_sha256": None}
+    return {
+        "exists": True,
+        "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
 
 
 def _site_disposition(module: str, site: dict) -> dict:
@@ -226,6 +240,18 @@ def reconcile_source(repo_root: str | Path = ".") -> dict:
             "syntax_site_count": module["syntax_site_count"],
             "sites": sites,
         }
+    candidate_owner_paths = sorted({
+        site["owner"]
+        for module in modules.values()
+        for site in module["sites"]
+        if site["owner"] is not None
+    })
+    analysis_source_hashes = {
+        path: _source_record(root, path) for path in ANALYSIS_SOURCE_PATHS
+    }
+    candidate_owner_source_hashes = {
+        path: _source_record(root, path) for path in candidate_owner_paths
+    }
     report = {
         "schema": SCHEMA,
         "scope": "static candidate ownership crosswalk for AST sites in the model and scratch optimizer",
@@ -234,10 +260,19 @@ def reconcile_source(repo_root: str | Path = ".") -> dict:
             "unresolved entries remain open; this is not a complete counter or execution trace"
         ),
         "modules": modules,
+        "analysis_source_hashes": analysis_source_hashes,
+        "candidate_owner_source_hashes": candidate_owner_source_hashes,
         "disposition_counts": dict(sorted(status_counts.items())),
         "candidate_owner_or_none_site_counts": dict(sorted(owner_counts.items())),
         "coverage": {
             "all_inventory_sites_have_a_disposition": True,
+            "all_analysis_sources_present": all(
+                record["exists"] for record in analysis_source_hashes.values()
+            ),
+            "all_candidate_owner_sources_present": all(
+                record["exists"]
+                for record in candidate_owner_source_hashes.values()
+            ),
             "all_sites_have_a_validated_cost_owner": False,
             "full_counter": False,
             "parity_eligible": False,

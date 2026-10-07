@@ -4,8 +4,13 @@
 
 - Added `tools/v212_source_counter_reconciliation.py`, a deterministic,
   source-hash-bound disposition of all 964 AST sites in the current model and
-  scratch optimizer (829 + 135). The crosswalk digest is
-  `fd34b4c7359b398edb157f259c730e93d55da561c4ac63cd3c58241c45622647` for
+  scratch optimizer (829 + 135). Schema v02 also hashes both analysis modules
+  and every distinct referenced candidate-owner subcounter file; all 12 files
+  were present. The current crosswalk digest is
+  `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9` for
+  analyzer hashes `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9`
+  (inventory) and `aa237c91f6935bb0fdc5d7e6e5241a2040867ceb658bb128b7aca7d31bb11d52`
+  (crosswalk), and for
   source hashes `964a6d1130f692de6307922980eb8cd4d5b0336bd312ed92ab92c01c5f5e2f66`
   (`two_player/v212_model.py`) and
   `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb`
@@ -22,12 +27,12 @@
   preflight finite-cardinality subcounter as partial evidence; the boolean
   reduction and runtime cost remain uncounted. `np.asarray` is unresolved
   because dtype-conversion/copy behavior depends on its input. The report
-  digest binds its serialization and inventoried model/optimizer hashes; it
-  does not attest the classifier or subcounter implementation. It expressly
-  withholds full-counter, parity, and graph-freeze eligibility. The 76-test accounting /
-  source suite passes under Python 3.14.7 with the existing NumPy 2.5.3
-  dependency path, and the seven standard-library inventory/crosswalk tests
-  pass under Python 3.11.17. Targeted `compileall` and `git diff --check`
+  digest binds its serialization and recorded source hashes; it does not
+  attest semantic correctness of the classifier or subcounters. It expressly
+  withholds full-counter, parity, and graph-freeze eligibility. The 77-test
+  accounting/source suite passes under Python 3.14.7 with NumPy 2.5.3, and
+  eight standard-library inventory/crosswalk tests pass under Python 3.11.17.
+  Targeted `compileall` and `git diff --check`
   pass. Neither interpreter matches locked Python 3.11.9 / NumPy 2.4.6.
 - After fetching and integrating the current remote history, the strict v03
   schedule-mask/replay-receipt/adapter/model regression group passes 46/46

@@ -5,7 +5,10 @@ Updated: 2026-10-07. This is an adaptive research plan, not a promise of a posit
 ### 2026-10-07 source-operation ownership crosswalk
 
 Added a source-hash-bound candidate crosswalk covering all 964 AST sites in
-the current model and scratch optimizer. It records 107 candidate-owner, 32
+the current model and scratch optimizer. Its v02 report digest also includes
+the two analyzer source hashes and the hashes of all referenced owner files
+(all present). Current digest is `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`.
+It records 107 candidate-owner, 32
 partial-owner, one runtime-unverified-owner, six separately reported, ten
 separately/partially bounded non-FP, one blocking unresolved eigensolver, 186
 unresolved, 452 unresolved non-FP, and 169 context-owned/unresolved sites.
@@ -14,9 +17,9 @@ does not validate expression context, branch work, component overlap, runtime
 behavior, or complete accounting. Read-only review caught and corrected the
 `_finite_array` finite-check mapping and the input-dependent `np.asarray`
 conversion classification; the report digest does not attest implementation.
-The 76-test accounting/source suite passes
-under Python 3.14.7 with NumPy 2.5.3; the seven standard-library tests also
-pass under Python 3.11.17. Targeted compile and whitespace checks pass. The
+The 77-test accounting/source suite passes under Python 3.14.7 with NumPy
+2.5.3; the eight standard-library inventory/crosswalk tests also pass under
+Python 3.11.17. Targeted compile and whitespace checks pass. The
 crosswalk explicitly denies full-counter, graph-freeze, and parity eligibility.
 After fetching current `origin/main`, the strict v03 schedule/replay-receipt/
 adapter/model synthetic regression group passes 46/46 under Python 3.14.7 /

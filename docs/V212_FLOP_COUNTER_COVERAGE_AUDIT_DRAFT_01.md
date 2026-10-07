@@ -516,17 +516,27 @@ or change D03 readiness. No data, profile, or model execution occurred.
 
 ## Source-operation candidate ownership crosswalk (2026-10-07)
 
-`tools/v212_source_counter_reconciliation.py` joins each inventory site to a
-candidate partial subcounter where a source-shaped relation is identifiable,
-or records an explicit unresolved / separately reported disposition. The
-report binds the inventory to these source hashes:
+`tools/v212_source_counter_reconciliation.py` v02 joins each inventory site to
+a candidate partial subcounter where a source-shaped relation is identifiable,
+or records an explicit unresolved / separately reported disposition. It hashes
+the two classifier/inventory sources and each distinct referenced owner tool
+source into the report, in addition to the inventory input hashes:
+
+| Analysis source | SHA-256 |
+| --- | --- |
+| `tools/v212_source_operation_inventory.py` | `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9` |
+| `tools/v212_source_counter_reconciliation.py` | `aa237c91f6935bb0fdc5d7e6e5241a2040867ceb658bb128b7aca7d31bb11d52` |
+
+All 10 distinct candidate-owner source files existed when the report was
+generated; their paths and hashes are included in the JSON output. The report
+binds the inventory to these model input hashes:
 
 | Module | Source SHA-256 | AST sites |
 | --- | --- | ---: |
 | `two_player/v212_model.py` | `964a6d1130f692de6307922980eb8cd4d5b0336bd312ed92ab92c01c5f5e2f66` | 829 |
 | `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
 
-Crosswalk digest: `fd34b4c7359b398edb157f259c730e93d55da561c4ac63cd3c58241c45622647`.
+Crosswalk digest: `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`.
 The 964 site dispositions are 107 candidate-owner, 32 partial candidate-owner,
 one runtime-unverified candidate-owner, six reported separately, ten reported
 separately or partially bounded non-FP, one blocking-unresolved
@@ -534,8 +544,9 @@ separately or partially bounded non-FP, one blocking-unresolved
 non-FP, and 169 unresolved or context-owned. These are syntax-site counts,
 not operation counts or FLOP totals. The report keeps unmatched sites visible
 and states that no site has a validated complete cost owner. The digest binds
-the serialized report and inventoried input-source hashes, not the correctness
-of the classifier or subcounter implementations.
+the serialized report and hashes of inventory inputs, analysis code, and
+candidate-owner files; hashes establish byte identity only, not semantic
+correctness or completeness of the classifier/subcounters.
 
 Candidate ownership only identifies a potentially relevant existing partial
 ledger. In particular, an owner label does not resolve enclosing expression

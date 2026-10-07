@@ -1,4 +1,6 @@
+import hashlib
 import unittest
+from pathlib import Path
 
 from tools.v212_source_counter_reconciliation import reconcile_source
 
@@ -25,6 +27,28 @@ class SourceCounterReconciliationTests(unittest.TestCase):
                          sum(module["syntax_site_count"] for module in modules.values()))
         self.assertEqual(report["crosswalk_sha256"], reconcile_source()["crosswalk_sha256"])
         self.assertIn("<none>", report["candidate_owner_or_none_site_counts"])
+        self.assertTrue(report["coverage"]["all_analysis_sources_present"])
+        self.assertTrue(report["coverage"]["all_candidate_owner_sources_present"])
+        referenced_owners = {
+            site["owner"]
+            for module in modules.values()
+            for site in module["sites"]
+            if site["owner"] is not None
+        }
+        self.assertEqual(referenced_owners,
+                         set(report["candidate_owner_source_hashes"]))
+
+    def test_report_binds_classifier_inventory_and_candidate_owner_sources(self):
+        root = Path(__file__).resolve().parents[1]
+        report = self.report
+        for path, record in report["analysis_source_hashes"].items():
+            self.assertTrue(record["exists"])
+            expected = hashlib.sha256((root / path).read_bytes()).hexdigest()
+            self.assertEqual(record["source_sha256"], expected)
+        for path, record in report["candidate_owner_source_hashes"].items():
+            self.assertTrue(record["exists"])
+            expected = hashlib.sha256((root / path).read_bytes()).hexdigest()
+            self.assertEqual(record["source_sha256"], expected)
 
     def test_specific_fp_owners_and_blocking_gaps_are_distinguished(self):
         model = self.report["modules"]["two_player/v212_model.py"]["sites"]
