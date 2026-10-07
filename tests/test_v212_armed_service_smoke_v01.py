@@ -955,6 +955,52 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
         self.assertFalse(self.receipt.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
 
+    def test_deadline_expiry_after_receipt_assembly_blocks_publication(self):
+        with ExitStack() as stack:
+            state = self._mock_host(stack)
+            original_check = collector._check_deadline
+            original_assemble = service.assembler.assemble_receipt
+            original_cleanup = ipc.cleanup_workspace
+
+            def assemble(*args, **kwargs):
+                state["sequence"].append("receipt_assembly")
+                result = original_assemble(*args, **kwargs)
+                state["deadline_crossed_during_assembly"] = True
+                return result
+
+            def check_deadline(deadline):
+                if state.get("deadline_crossed_during_assembly"):
+                    raise collector.CollectorError(
+                        "mock caller deadline expired during receipt assembly")
+                original_check(deadline)
+
+            def cleanup(workspace):
+                state["sequence"].append("cleanup")
+                return original_cleanup(workspace)
+
+            stack.enter_context(patch.object(
+                service.assembler, "assemble_receipt", side_effect=assemble))
+            stack.enter_context(patch.object(
+                collector, "_check_deadline", side_effect=check_deadline))
+            stack.enter_context(patch.object(
+                ipc, "cleanup_workspace", side_effect=cleanup))
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "deadline expired during receipt assembly.*receipt_not_attempted") as caught:
+                service.run_no_inference_armed_smoke(receipt_path=self.receipt)
+
+        message = str(caught.exception)
+        self.assertIn("unit_retained_or_state_unknown", message)
+        self.assertIn("invocation_id=" + "a" * 32, message)
+        self.assertIn("worker_cgroup=/user.slice/" + state["unit"], message)
+        self.assertIn("journal", state["sequence"])
+        self.assertIn("receipt_assembly", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertNotIn("cleanup", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[0].directory.exists())
+
     def test_deadline_expiry_after_manager_snapshot_blocks_response_read(self):
         with ExitStack() as stack:
             state = self._mock_host(stack)

@@ -1,6 +1,6 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-07; receipt-publication deadline seam)
+## Latest continuation delta (2026-10-07; pre-publication deadline seam)
 
 - Added a named CLK-02 regression using the real temporary atomic receipt
   writer and a controlled mocked deadline that expires immediately after the
@@ -8,7 +8,10 @@
   unchanged, service/workspace reconciliation handles are retained, and stop
   and cleanup are skipped. Updated both the case inventory and the named-test
   traceability row in the supervision failure map.
-- The armed-service-smoke module passes 44/44; `compileall` and
+- Added a CLK-01 regression that finishes receipt assembly, injects deadline
+  expiry at the next check, and confirms no receipt publication, stop, or
+  cleanup occurs while dispatched handles remain available.
+- The armed-service-smoke module passes 45/45; `compileall` and
   `git diff --check` pass. This is mocked controller evidence only: deadline
   crossing during write/fsync and production deadline-aware stop/evidence
   boundaries remain untested. No live service, request adapter, inference,

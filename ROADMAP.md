@@ -2,17 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-07 receipt-publication deadline seam
+### 2026-10-07 pre-publication deadline seams
 
 Added a named CLK-02 regression around the post-durability caller-deadline
 check. The test exercises the real temporary atomic receipt writer, then
 injects deadline expiry before the controller can stop the unit; it verifies
 the persisted bytes and reconciliation handles remain and stop/cleanup do not
 run. The supervision plan now maps the test in both the case inventory and its
-named-test traceability table. The armed-service-smoke module passes 44/44, with compile and whitespace
-checks passing. This does not exercise a deadline crossing inside write/fsync,
-production systemd recovery, or any live service path; the supervision gate
-remains partial.
+named-test traceability table. Also added a CLK-01 case where assembly
+completes but the next deadline check expires; it proves publication, stop and
+cleanup are skipped and dispatched handles remain. The armed-service-smoke
+module passes 45/45, with compile and whitespace checks passing. These mocks
+do not exercise expiry inside write/fsync, production systemd recovery, or any
+live service path; the supervision gate remains partial.
 
 ### 2026-10-07 approved raw-state/parity review
 
