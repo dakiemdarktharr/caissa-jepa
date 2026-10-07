@@ -463,3 +463,32 @@ allocation/copy/control flow, NumPy implementation cost, and the one-time
 dataset preflight remain outside it. It does not aggregate 20×87 updates or
 change any D03 precondition. No batch/data, profile, or training was run.
 Graph freeze remains **NO** and the ≤5% gate remains **untested and unpassed**.
+
+## Runtime observation utility (2026-10-07)
+
+`tools/v212_runtime_observation.py` adds a read-only collector for Python and
+NumPy versions/configuration, environment thread controls, platform fields,
+and file-backed executable mappings whose path, device and inode can be
+matched while hashing the backing file. Its receipt digest is deterministic
+for identical collected fields. It reports whether the process versions match
+the declared Python 3.11.9 / NumPy 2.4.6 lock.
+
+This is operationally useful inventory only. The collector marks the result
+`observational_only` and `execution_bytes_verified=false`: a hash read after
+startup does not prove the bytes already executed or currently mapped pages.
+The thread fields capture environment requests, not active native threadpool
+state; NumPy build configuration and mapped names do not alone prove the
+runtime's active BLAS/LAPACK dispatch. The collector imports the relevant
+NumPy native modules before taking its mapping list, removes map-order-only
+fields, and compares normalized executable segment ranges, permissions,
+offsets and backing-object identities before and after backing-file hashing.
+The normalized segment inventory is also hashed into the report. This can
+detect observed changes but is not an atomic snapshot. Three tests cover maps
+parsing, mapped device/inode checks and the explicit
+non-attestation contract. A one-off in-memory check on Python 3.14.7 / NumPy
+2.5.3 matched 36 mapped executable backing files by path/device/inode at read
+time, found equal normalized segment
+inventories before and after hashing, and recomputed the digest. The lock-match
+flag was false; both NumPy native modules resolved under
+`/tmp/caissa-jepa-pv-deps`. No receipt was persisted. This does not clear the
+D03 runtime/backend or counter-coverage gate.

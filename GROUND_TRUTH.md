@@ -1,5 +1,36 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; V2.12 runtime observation utility)
+
+- Added `tools/v212_runtime_observation.py`, a read-only collector for the
+  current Python/NumPy versions and build config, process thread-control
+  environment, host identifiers, and hashes of file-backed executable maps
+  when their device/inode can be matched at read time. It emits a deterministic
+  observation digest and reports whether Python 3.11.9 / NumPy 2.4.6 match.
+- The collector explicitly reports `identity_status=observational_only` and
+  `execution_bytes_verified=false`: post-startup file hashes do not prove the
+  bytes already executed or mapped pages. Thread variables are environment
+  values only; active threadpool state is not queried. It loads the relevant
+  NumPy native modules before reading maps, removes map-order-dependent fields,
+  and compares normalized segment ranges, permissions, offsets and backing
+  identities before and after hashing. This can detect observed changes, but
+  is not an atomic snapshot and cannot satisfy
+  the D03 runtime freeze or request-service executed-byte attestation contract.
+- The combined source-counter/runtime-observation suite passes 65/65 under
+  Python 3.14.7 / NumPy 2.5.3, with targeted compile and whitespace checks
+  passing. An approved read-only reviewer confirmed sorted segment comparison,
+  stable segment digest, and explicit non-atomic/non-attesting semantics; the
+  reviewer did not run tests or the collector. A one-off in-memory collector
+  check observed Python 3.14.7 / NumPy 2.5.3 and
+  36 mapped executable backing files; all 36 path/device/inode hashes matched
+  at read time, normalized segment-inventory equality held before/after
+  hashing, and the observation digest recomputed. Both NumPy native modules
+  were observed under `/tmp/caissa-jepa-pv-deps`, and the lock-match flag was
+  false. No receipt was persisted. This is not the locked runtime. No D03
+  counter/profile, model, data, root, inference, scoring, simulation, or
+  training ran. Graph freeze remains **NO** and ≤5% parity remains **untested
+  and unpassed**.
+
 ## Latest continuation delta (2026-10-07; repeated preflight scan accounting)
 
 - Added `tools/v212_preflight_scan_accounting.py` and composed its narrowly

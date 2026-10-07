@@ -2971,3 +2971,19 @@ the default client, and a read-only `/dev/null` config retry could not resolve
 `github.com`. Remote `main` therefore remains unverified and publication is
 pending restored network/SSH access; no force push or alternate write path was
 used.
+
+### 2026-10-07 V2.12 runtime observation utility
+
+Added a read-only utility that can record the Python/NumPy build and version,
+host/platform fields, thread-control environment values, and hashes of
+file-backed executable mappings after checking device/inode identity. It
+explicitly labels these as observations rather than executed-byte attestation;
+active BLAS threadpool state and loaded-page identity remain unproven. It now
+removes map-order-dependent digest fields and compares mappings before and
+after file hashing using normalized segment ranges, permissions, offsets and
+backing identities. This detects observed changes but is not an atomic
+snapshot. Three focused tests pass. An in-memory run on Python 3.14.7 / NumPy
+2.5.3 observed 36 mapped executable files whose backing-file path/device/inode
+hashes matched at read time with matching normalized segment inventories
+before/after hashing; its digest recomputed, while its locked-version check was
+false. No receipt was persisted. No D03 runtime gate or profile was advanced.
