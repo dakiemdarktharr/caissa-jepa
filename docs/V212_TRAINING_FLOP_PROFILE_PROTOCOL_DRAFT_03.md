@@ -100,6 +100,11 @@ Every FLOP table must label units explicitly. The primary table reports
 included). Any per-example average is derived by dividing that invocation's
 count by 64 and labeled **FLOPs per example, descriptive only**; it is not the
 gate estimand. Call-count tables distinguish invocations from active rows.
+In the current no-update graph, `executed_predictor_prefix_invocations`,
+`executed_raw_decoder_reencoder_prefix_invocations`, and
+`ema_target_encoder_invocations` count nonempty vectorized prefix/horizon
+bundles; matching `*_active_examples` fields count rows processed. These row
+totals are not function-call or matrix-call counts.
 Report the mask and transition counts above for every seed, update, and arm so
 shared exposure and arm-specific operation counts remain auditable.
 

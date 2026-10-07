@@ -265,9 +265,12 @@ class V212Model:
             "covariance_spectrum": covariance_spectrum.tolist(),
             "effective_rank": effective_rank,
             "valid_target_counts": preflight["counts"],
-            "executed_predictor_calls": 0,
-            "executed_decoder_reencoder_calls": 0,
-            "ema_target_encoder_calls": 0,
+            "executed_predictor_prefix_invocations": 0,
+            "executed_predictor_active_examples": 0,
+            "executed_raw_decoder_reencoder_prefix_invocations": 0,
+            "executed_raw_decoder_reencoder_active_examples": 0,
+            "ema_target_encoder_invocations": 0,
+            "ema_target_encoder_active_examples": 0,
         }
 
         # Cache each recurrent state and local Jacobian inputs. Gradients from
@@ -319,10 +322,12 @@ class V212Model:
                     xhat = pred_z @ p["dw"] + p["db"]
                     states[step + 1][rows] = np.tanh(xhat @ p["ew"] + p["eb"])
                     predicted_features[step][rows] = xhat
-                    metrics["executed_decoder_reencoder_calls"] += len(rows)
+                    metrics["executed_raw_decoder_reencoder_prefix_invocations"] += 1
+                    metrics["executed_raw_decoder_reencoder_active_examples"] += len(rows)
                 else:
                     states[step + 1][rows] = pred_z
-                metrics["executed_predictor_calls"] += len(rows)
+                metrics["executed_predictor_prefix_invocations"] += 1
+                metrics["executed_predictor_active_examples"] += len(rows)
 
             dstate = [np.zeros_like(z) for z in states]
             rollout_loss = 0.0
@@ -371,7 +376,8 @@ class V212Model:
                             2.0 * scale / FEATURE_SIZE) * delta
                     else:
                         target = self._encode(future_x[mask, horizon - 1], target=True)
-                        metrics["ema_target_encoder_calls"] += int(mask.sum())
+                        metrics["ema_target_encoder_invocations"] += 1
+                        metrics["ema_target_encoder_active_examples"] += int(mask.sum())
                         delta = states[horizon][mask] - target
                         latent_by_horizon[horizon] = float(np.mean(delta ** 2))
                         rollout_loss += scale * float(np.sum(delta ** 2) / d)

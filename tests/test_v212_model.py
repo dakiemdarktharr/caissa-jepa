@@ -196,8 +196,10 @@ class V212ModelTests(unittest.TestCase):
         batch["actions"][1, 3] = 0.0
         batch["actors"][1, 3] = 0.0
         metrics, _ = V212Model(V212Config(arm="recursive-raw-state")).loss_grad(batch)
-        self.assertEqual(metrics["executed_predictor_calls"], 6)
-        self.assertEqual(metrics["executed_decoder_reencoder_calls"], 6)
+        self.assertEqual(metrics["executed_predictor_prefix_invocations"], 4)
+        self.assertEqual(metrics["executed_predictor_active_examples"], 6)
+        self.assertEqual(metrics["executed_raw_decoder_reencoder_prefix_invocations"], 4)
+        self.assertEqual(metrics["executed_raw_decoder_reencoder_active_examples"], 6)
 
     def test_valid_endpoint_keeps_intermediate_prediction_active_without_target(self):
         batch = synthetic_batch()
@@ -214,9 +216,22 @@ class V212ModelTests(unittest.TestCase):
                 continue
             with self.subTest(arm=arm):
                 metrics, _ = V212Model(V212Config(arm=arm, seed=31)).loss_grad(batch)
-                self.assertEqual(metrics["executed_predictor_calls"], 12)
+                self.assertEqual(metrics["executed_predictor_prefix_invocations"], 4)
+                self.assertEqual(metrics["executed_predictor_active_examples"], 12)
+                target_horizons = {
+                    "multi-step-jepa": (1, 2, 4),
+                    "single-pair-jepa": (2,),
+                    "single-horizon-jepa": (1,),
+                }.get(arm, ())
+                self.assertEqual(metrics["ema_target_encoder_invocations"], len(target_horizons))
+                self.assertEqual(
+                    metrics["ema_target_encoder_active_examples"],
+                    sum(metrics["valid_target_counts"][h]["valid_nonterminal"]
+                        for h in target_horizons),
+                )
                 if arm == "recursive-raw-state":
-                    self.assertEqual(metrics["executed_decoder_reencoder_calls"], 12)
+                    self.assertEqual(metrics["executed_raw_decoder_reencoder_prefix_invocations"], 4)
+                    self.assertEqual(metrics["executed_raw_decoder_reencoder_active_examples"], 12)
                     self.assertNotEqual(metrics["raw_state_loss_by_horizon"][4], 0.0)
 
     def test_sampled_gradients_match_finite_difference(self):

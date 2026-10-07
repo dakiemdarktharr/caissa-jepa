@@ -1,5 +1,20 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; model execution telemetry units)
+
+- An approved read-only `gpt-6-luna/high` review found no discrepancy between
+  the adopted v06 raw-state `F→D→E` objective and the no-update graph. It
+  noted that three `executed_*_calls` fields counted active examples rather
+  than invocation units. Renamed the model metrics to distinguish nonempty
+  vectorized prefix/horizon bundle invocations from active examples for the
+  predictor, raw decoder/re-encoder, and EMA target encoder.
+- Focused model tests pass 8/8 and source-counter reconciliation tests pass
+  5/5 under the temporary Python 3.11.9 / NumPy 2.4.6 environment; targeted
+  compile and `git diff --check` pass. These are instrumentation-label checks,
+  not a trainer trace or compute profile. No gate advanced: the full counter,
+  runtime/LAPACK identity, trainer/replay schedule, graph freeze, and six-arm
+  ≤5% parity remain open / untested and unpassed.
+
 ## Latest continuation delta (2026-10-07; approved read-only protocol reviews)
 
 - Four approved `gpt-6-luna/high` reviews inspected documents/code only; no

@@ -102,11 +102,12 @@ class SourceCounterReconciliationTests(unittest.TestCase):
     def test_augmented_assignments_have_contextual_candidate_or_unresolved_disposition(self):
         model = self.report["modules"]["two_player/v212_model.py"]["sites"]
         sites = [site for site in model if site["node"] == "AugAssign"]
-        self.assertEqual(len(sites), 37)
+        self.assertEqual(len(sites), 40)
         owners = {site["target"]: site["owner"] for site in sites}
         self.assertEqual(owners["grad['pw']"], "tools/v212_gradient_accumulation_accounting.py")
         self.assertEqual(owners["dlogits"], "tools/v212_policy_softmax_accounting.py")
-        self.assertEqual(owners["metrics['executed_predictor_calls']"], None)
+        self.assertEqual(owners["metrics['executed_predictor_prefix_invocations']"], None)
+        self.assertEqual(owners["metrics['executed_predictor_active_examples']"], None)
         self.assertTrue(all(site["status"] and site["scope"] for site in sites))
 
 

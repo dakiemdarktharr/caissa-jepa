@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 model execution telemetry units
+
+An approved read-only v06 raw-state/parity review found the objective and
+no-update graph consistent, but observed that `executed_*_calls` metrics added
+active-example counts. The model now reports nonempty vectorized prefix/horizon
+bundle invocations separately from active examples for the predictor, raw
+decoder/re-encoder, and EMA target encoder; the D03 and coverage-audit wording
+now requires those units to remain separate. Focused model tests pass 8/8,
+source-counter reconciliation tests pass 5/5, and targeted compile/whitespace
+checks pass. No trainer, profile, or empirical run occurred. This improves
+instrumentation clarity only: full-counter, runtime/LAPACK, replay/schedule,
+graph-freeze, and ≤5% parity gates remain closed / untested and unpassed.
+
 ### 2026-10-07 approved read-only protocol reviews
 
 Four approved `gpt-6-luna/high` reviews used documents/code only and cleared no
