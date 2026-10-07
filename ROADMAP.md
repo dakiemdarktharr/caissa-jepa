@@ -3559,3 +3559,17 @@ unresolved/context-owned. The focused crosswalk/preflight/owner suites pass
 65/65; targeted compile and whitespace checks pass. This remains partial
 source accounting; full counter, runtime identity, graph freeze, and ≤5%
 parity remain open/unpassed.
+
+### 2026-10-07 v02 request-independent manifest comparison
+
+Hardened the offline v02 worker bootstrap to compare the request's internally
+consistent source-manifest digest with a separate expected digest supplied by
+the launcher. The comparison occurs before project-root resolution or helper
+file access. A subprocess fixture with a changed helper hash and recomputed
+request digest rejects at exit 44; the exact-byte release fixture passes with
+the caller digest. The focused bootstrap/protocol/release-token/IPC suites pass
+64/64, plus compilation and whitespace checks. This removes self-authorization
+by the request within this candidate contract only. Caller provenance is not
+independently authenticated, runtime identity and receipt binding remain open,
+and no systemd/request-adapter integration or service run occurred. No gate
+advanced.

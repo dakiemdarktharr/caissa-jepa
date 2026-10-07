@@ -49,12 +49,13 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                       request)
 
     def _run_bootstrap(self, raw: bytes,
-                       project_root: str = "/missing/project-root"
+                       project_root: str = "/missing/project-root",
+                       expected_manifest_sha256: str = "0" * 64,
                        ) -> subprocess.CompletedProcess:
         source = bootstrap.worker_source()
         return subprocess.run(
             [sys.executable, "-I", "-S", "-B", "-c", source, "/missing/ipc",
-             "caissa-test.service", project_root],
+             "caissa-test.service", project_root, expected_manifest_sha256],
             input=raw, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             check=False, timeout=5)
 
@@ -125,29 +126,31 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         source = bootstrap.worker_source()
         manifest, _ = bootstrap.source_manifest(root, source)
         manifest["files"]["two_player/unexpected.py"] = "0" * 64
+        digest = self._manifest_digest(manifest)
         request = bootstrap.request_bytes(
-            "a" * 32, manifest, self._manifest_digest(manifest))
-        result = self._run_bootstrap(request, str(root))
+            "a" * 32, manifest, digest)
+        result = self._run_bootstrap(request, str(root), digest)
         self.assertEqual(result.returncode, 37)
         self.assertEqual(result.stdout, b"")
 
     def test_manifest_rejects_incorrect_manifest_digest(self):
         root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()
-        manifest, _ = bootstrap.source_manifest(root, source)
+        manifest, trusted_digest = bootstrap.source_manifest(root, source)
         request = bootstrap.request_bytes("a" * 32, manifest, "0" * 64)
-        result = self._run_bootstrap(request, str(root))
+        result = self._run_bootstrap(
+            request, expected_manifest_sha256=trusted_digest)
         self.assertEqual(result.returncode, 40)
         self.assertEqual(result.stdout, b"")
 
     def test_manifest_rejects_incorrect_bootstrap_hash_before_source_loading(self):
         root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()
-        manifest, _ = bootstrap.source_manifest(root, source)
+        manifest, trusted_digest = bootstrap.source_manifest(root, source)
         manifest["bootstrap_sha256"] = "0" * 64
         request = bootstrap.request_bytes(
             "a" * 32, manifest, self._manifest_digest(manifest))
-        result = self._run_bootstrap(request, str(root))
+        result = self._run_bootstrap(request, str(root), trusted_digest)
         self.assertEqual(result.returncode, 36)
         self.assertEqual(result.stdout, b"")
 
@@ -162,8 +165,20 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             helper.write_bytes(helper.read_bytes() + b"\n# changed after manifest\n")
             result = self._run_bootstrap(
                 bootstrap.request_bytes("a" * 32, manifest, digest),
-                str(project_root))
+                str(project_root), digest)
         self.assertEqual(result.returncode, 39)
+        self.assertEqual(result.stdout, b"")
+
+    def test_request_cannot_choose_its_own_manifest_trust_digest(self):
+        root = Path(bootstrap.__file__).resolve().parents[1]
+        source = bootstrap.worker_source()
+        manifest, trusted_digest = bootstrap.source_manifest(root, source)
+        manifest["files"][bootstrap.WORKER_MODULES[-1]] = "0" * 64
+        request_digest = self._manifest_digest(manifest)
+        request = bootstrap.request_bytes("a" * 32, manifest, request_digest)
+        result = self._run_bootstrap(
+            request, expected_manifest_sha256=trusted_digest)
+        self.assertEqual(result.returncode, 44)
         self.assertEqual(result.stdout, b"")
 
     def test_manifest_rejects_oversized_helper_before_reading_it(self):
@@ -177,7 +192,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             helper.write_bytes(b"x" * (bootstrap.MAX_SOURCE_BYTES + 1))
             result = self._run_bootstrap(
                 bootstrap.request_bytes("a" * 32, manifest, digest),
-                str(project_root))
+                str(project_root), digest)
         self.assertEqual(result.returncode, 42)
         self.assertEqual(result.stdout, b"")
 
@@ -195,7 +210,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             self.assertEqual(helper.stat().st_size, bootstrap.MAX_SOURCE_BYTES)
             manifest, digest = bootstrap.source_manifest(project_root, source)
             raw = bootstrap.request_bytes("a" * 32, manifest, digest)
-            result = self._run_bootstrap(raw, str(project_root))
+            result = self._run_bootstrap(raw, str(project_root), digest)
         # Source verification and compilation finish. The deliberate missing
         # IPC fixture fails only after the worker reaches workspace setup.
         self.assertEqual(result.returncode, 1)
@@ -214,7 +229,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             os.mkfifo(helper, 0o600)
             result = self._run_bootstrap(
                 bootstrap.request_bytes("a" * 32, manifest, digest),
-                str(project_root))
+                str(project_root), digest)
         self.assertEqual(result.returncode, 42)
         self.assertEqual(result.stdout, b"")
 
@@ -233,7 +248,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
             helper.symlink_to(outside)
             result = self._run_bootstrap(
                 bootstrap.request_bytes("a" * 32, manifest, digest),
-                str(project_root))
+                str(project_root), digest)
         self.assertEqual(result.returncode, 38)
         self.assertEqual(result.stdout, b"")
 
@@ -249,7 +264,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                 encoding="utf-8")
             manifest, digest = bootstrap.source_manifest(project_root, source)
             request = bootstrap.request_bytes("a" * 32, manifest, digest)
-            result = self._run_bootstrap(request, str(project_root))
+            result = self._run_bootstrap(request, str(project_root), digest)
         self.assertNotIn(b"UNMANIFESTED_STDLIB_SHADOW", result.stderr)
         self.assertEqual(result.returncode, 1)
         self.assertIn(b"FileNotFoundError", result.stderr)
@@ -271,7 +286,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
     def test_exact_hard_cap_reaches_canonical_request_gate(self):
         root = Path(bootstrap.__file__).resolve().parents[1]
         source = bootstrap.worker_source()
-        manifest, _ = bootstrap.source_manifest(root, source)
+        manifest, trusted_digest = bootstrap.source_manifest(root, source)
         manifest["bootstrap_sha256"] = "0" * 64
         encoded_manifest = json.dumps(
             manifest, sort_keys=True, separators=(",", ":"),
@@ -281,7 +296,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         self.assertLess(len(raw), bootstrap.MAX_REQUEST_BYTES)
         raw += b" " * (bootstrap.MAX_REQUEST_BYTES - len(raw))
         self.assertEqual(len(raw), bootstrap.MAX_REQUEST_BYTES)
-        result = self._run_bootstrap(raw, str(root))
+        result = self._run_bootstrap(raw, str(root), trusted_digest)
         self.assertEqual(result.returncode, 43)
         self.assertEqual(result.stdout, b"")
 
@@ -292,7 +307,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
         worker_source = bootstrap.worker_source().replace(
             "expected_source_manifest_sha256=request[\"source_manifest_sha256\"],",
             "expected_source_manifest_sha256=request[\"source_manifest_sha256\"],\n"
-            "    cgroup_root=Path(sys.argv[4]),")
+            "    cgroup_root=Path(sys.argv[5]),")
         source = ("import syslog; syslog.syslog=lambda *args,**kwargs:None\n"
                   + worker_source)
         manifest, manifest_digest = bootstrap.source_manifest(root, source)
@@ -333,7 +348,8 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                 env = dict(os.environ, INVOCATION_ID=nonce_invocation)
                 process = subprocess.Popen(
                     [sys.executable, "-I", "-S", "-B", "-c", source,
-                     str(workspace.directory), unit, str(root), str(cgroup_root)],
+                     str(workspace.directory), unit, str(root), manifest_digest,
+                     str(cgroup_root)],
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE, env=env)
                 process.stdin.write(raw_request)
@@ -377,7 +393,7 @@ class ArmedWorkerBootstrapV02Tests(unittest.TestCase):
                     altered_process = subprocess.Popen(
                         [sys.executable, "-I", "-S", "-B", "-c", source,
                          str(altered_workspace.directory), unit, str(root),
-                         str(cgroup_root)],
+                         manifest_digest, str(cgroup_root)],
                         stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE, env=env)
                     altered_process.stdin.write(raw_request + b" ")

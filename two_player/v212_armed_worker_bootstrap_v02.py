@@ -67,9 +67,12 @@ except (TypeError,ValueError,UnicodeError,RecursionError):
 if canonical_request!=request_raw: sys.exit(43)
 
 # The raw request is bounded and parsed before project helper files are opened.
-root=Path(sys.argv[3]).resolve(strict=True)
 argv=Path("/proc/self/cmdline").read_bytes().split(b"\0")
-if len(argv)<7 or argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]: sys.exit(34)
+if len(argv)<10 or argv[1:5]!=[b"-I",b"-S",b"-B",b"-c"]: sys.exit(34)
+expected_manifest_sha256=sys.argv[4]
+if (len(expected_manifest_sha256)!=64
+        or any(c not in "0123456789abcdef" for c in expected_manifest_sha256)):
+    sys.exit(34)
 manifest=request["source_manifest"]
 if not isinstance(manifest,dict) or set(manifest)!={"bootstrap_sha256","files"}: sys.exit(35)
 if hashlib.sha256(argv[5]).hexdigest()!=manifest["bootstrap_sha256"]: sys.exit(36)
@@ -78,6 +81,11 @@ expected={"two_player/v212_worker_ipc.py","two_player/v212_release_token_v01.py"
           "two_player/v212_armed_protocol_v02.py"}
 files=manifest.get("files")
 if not isinstance(files,dict) or set(files)!=expected: sys.exit(37)
+canonical=json.dumps(manifest,sort_keys=True,separators=(",",":"),allow_nan=False).encode("utf-8")
+manifest_digest=hashlib.sha256(canonical).hexdigest()
+if (request.get("source_manifest_sha256")!=manifest_digest): sys.exit(40)
+if manifest_digest!=expected_manifest_sha256: sys.exit(44)
+root=Path(sys.argv[3]).resolve(strict=True)
 if (not hasattr(os,"O_NOFOLLOW") or not hasattr(os,"O_DIRECTORY")
         or not hasattr(os,"O_NONBLOCK") or not hasattr(os,"O_NOCTTY")): sys.exit(41)
 def read_verified_source(relative,digest):
@@ -111,9 +119,6 @@ def read_verified_source(relative,digest):
 verified={}
 for relative,digest in files.items():
     verified[relative]=read_verified_source(relative,digest)
-canonical=json.dumps(manifest,sort_keys=True,separators=(",",":"),allow_nan=False).encode("utf-8")
-if hashlib.sha256(canonical).hexdigest()!=request.get("source_manifest_sha256"): sys.exit(40)
-
 package=types.ModuleType("two_player")
 package.__path__=[]
 package.__package__="two_player"

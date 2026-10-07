@@ -4427,3 +4427,21 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   Python 3.11.9 / NumPy 2.4.6 environment; targeted `compileall` and
   `git diff --check` pass. No model, eigensolver, profile, data, inference,
   roots, scores, simulation, service, or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; caller-supplied v02 manifest digest)
+
+- The offline v02 worker bootstrap now requires a separate expected manifest
+  SHA-256 as a launch argument. After bounded raw-stdin parsing and canonical
+  envelope validation, it checks the request's manifest digest against both
+  the recomputed value and the caller-supplied value before resolving the
+  project root or opening helper source. A regression with a self-consistent
+  but altered helper digest fails with exit 44 while the project root is
+  deliberately missing. The exact-byte release fixture supplies the same
+  expected digest and passes.
+- The focused bootstrap/protocol/release-token/IPC suites pass 64/64 using the
+  existing Python 3.11.9 / NumPy 2.4.6 environment; targeted `compileall` and
+  `git diff --check` pass. The caller-supplied value is not independently
+  authenticated; Python startup, loader/native runtime identity, and receipt
+  binding remain open. The candidate is not integrated with systemd or the
+  request adapter. No service, request, inference, OOM, data, score, match,
+  outcome, or training ran. No gate advanced.

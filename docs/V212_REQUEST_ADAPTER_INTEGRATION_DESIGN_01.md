@@ -398,3 +398,24 @@ stability, not the bytes in already-loaded code objects, and its runtime
 receipt fields describe service limits/cgroups rather than Python/runtime
 identity. No service, request adapter, inference, OOM, training, score, match,
 or outcome ran. No gate changed.
+
+### Caller-supplied manifest digest check in the offline v02 bootstrap (2026-10-07)
+
+The generated v02 worker now requires a separate expected manifest SHA-256 in
+its launch arguments. After the bounded raw-stdin request is parsed and its
+canonical envelope is checked, the worker recomputes the manifest digest and
+compares it with both the request's digest and the caller-supplied expected
+digest. A mismatch exits before resolving the project root or opening any
+helper source. A subprocess regression supplies a self-consistent request
+whose helper digest was changed and confirms exit 44 while the project-root
+path is deliberately missing. The exact-byte release-to-response fixture now
+passes the separate expected digest as well. The focused bootstrap/protocol/
+release-token/IPC tests pass 64/64, with targeted compilation and whitespace
+checks.
+
+This closes the request's ability to choose its own self-consistent helper
+manifest in this offline launch contract. It does not authenticate the caller
+or the launch argument, establish a host trust anchor, attest Python/native
+runtime bytes, bind a runtime fingerprint into the release/receipt, or connect
+the candidate to systemd or the request adapter. No service, request adapter,
+inference, OOM, data, score, match, outcome, or training ran. No gate changed.
