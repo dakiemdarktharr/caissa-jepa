@@ -37,7 +37,7 @@ here.
 | `V212Model._encode`, `_value` | Dense projections, bias adds, `tanh` calls and backward derivatives; report each matmul by actual active rows and fixed dimensions | Root encoding is common; future online and target encodes depend on arm and valid-horizon counts |
 | Policy head in `V212Model.loss_grad` | Logit projection, bias, stable max/shift, `exp`, normalization, NLL/log, selected-action gradient, and both backward matmuls | Arithmetic operations count as FLOPs; max/comparison/indexing and `exp`/`log` are separate categories |
 | `V212Model._regularize` | Batch means, centering, squares, standard deviations, shortfall, covariance matmul, diagonal/off-diagonal work, covariance loss and its gradient | Include this diagnostic/loss path for every arm and update; disclose exact reduction treatment |
-| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). A separate source-site candidate now bounds DSYEVD driver-owned scalar arithmetic and reference DSCAL rescaling at 2–36 add/subtract/multiply/divide operations plus two square roots; an approved read-only review accepted these counts under the cited source semantics. This excludes DLASCL (including helper divisions), DLAMCH, DLANSY, DSYTRD/DSTERF internals and the linked runtime, so exact coverage remains **unresolved** |
+| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). The DSYEVD driver-site candidate bounds its own scalar arithmetic and reference DSCAL rescaling; `tools/v212_dlascl_iteration_bound.py` now adds a conditional DLASCL source bound of `530*L+2` operations for `L>0` executed scaling passes on a 32×32 stored triangle. No justified upper bound on L is established from the actual machine parameters and scale ratio. DLAMCH, DLANSY, DSYTRD/DSTERF internals and the linked runtime remain unresolved, so exact coverage remains **unresolved** |
 | Remaining `V212Model.loss_grad` diagnostics | Root latent mean/std, covariance spectrum output, effective rank, total-loss scalar combination, returned gradient L2 norm, parameter-size aggregation, and finite-value guards | The returned gradient norm is separate from the scratch optimizer's clipping norm and executes once per loss call. Count its coordinate squares/reduction and square root under the declared categories; count comparisons/conversion/serialization separately |
 | Recurrent predictor in `V212Model.loss_grad` | For each active step `s`, predictor projection from 104 to 32 coordinates, bias, `tanh`, and its reverse-pass derivative/parameter/input-gradient matmuls | Rows are `_active_prefix_masks(valid)`; count active rows for all four steps, including unsupervised intermediate prefixes needed by later valid horizons |
 | Recursive raw-state arm | Per active step, 32→198 decoder projection, decoder bias, 198→32 online re-encoding, corresponding tanh and complete reverse `F→D→E` gradient path | This arm has four possible recurrent steps; actual rows come from the common frozen mask schedule. Static forward MAC inventory is not total training FLOPs |
@@ -664,3 +664,19 @@ counter, parity result, or profile authorization. Four standard-library tests,
 targeted `compileall`, and `git diff --check` pass on the Python 3.11.9
 temporary environment. No covariance, eigenvalue, model, data, profile,
 service, or training operation was run; D03 remains unpassed.
+
+## DLASCL conditional source bound (2026-10-07)
+
+`tools/v212_dlascl_iteration_bound.py` counts source-visible arithmetic in
+reference LAPACK 3.12.1 DLASCL for the N=32 upper/lower triangle matrix path
+used by DSYEVD scaling. For a caller-declared `L>0` scaling-loop iterations,
+the candidate upper bound is `530*L+2` add/subtract/multiply/divide
+operations: 528 stored-entry multiplications plus one loop multiplication and
+one loop division per pass, at most one terminal scale-ratio division, and
+the one per-call reciprocal initialization. The tool reports zero when there
+is no call/pass. This is conditional bookkeeping, not a finite total bound:
+the iteration cap has not been derived from the actual `DLAMCH` values and
+caller scale ratio, and the linked runtime is not attested. Comparisons,
+branches, `DLAMCH`, and the rest of the eigensolver remain excluded. Three
+standard-library tests and targeted static checks pass. The eigensolver,
+model, data, profile, inference, and training were not run; no gate advanced.

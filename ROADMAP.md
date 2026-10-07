@@ -3121,3 +3121,14 @@ read at `86eb81b` before the ordinary push attempt. The push and a later
 read-only verification both stopped because SSH rejected ownership of
 `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`. No force push or alternate
 write path was used; retry normal publication after SSH access is restored.
+
+### 2026-10-07 DLASCL conditional helper accounting
+
+Added a source-only conditional bound for the reference LAPACK 3.12.1 DLASCL
+upper/lower-triangle path at N=32. With L declared loop passes, the accounted
+arithmetic upper bound is `530*L+2`; this does not establish a finite bound on
+L because the linked `DLAMCH` runtime and scale ratio are not frozen. Three
+standard-library tests pass, along with compile and whitespace checks. This
+narrows a source-accounting gap without completing the eigensolver counter or
+opening the six-arm ≤5% compute gate. No eigensolver, model, data, profile,
+inference, or training ran.
