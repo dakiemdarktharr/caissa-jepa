@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 paired scheduled-batch boundary helper
+
+Added a no-update six-arm call boundary that takes audited windows, enforces
+the exact two training adapters and 32/32 game composition, checks the
+20-seed/87-update index ranges and common paired model seed, and supplies one
+read-only adapter batch to every arm. Its digest covers ordered window IDs
+only. It is not an integrated trainer, manifest verifier, replay receipt,
+profile, or parity result; `loss_grad` remains directly callable. The focused
+scheduled-boundary, adapter, and model suites pass 17/17 with compile and
+whitespace checks under Python 3.14.7 / NumPy 2.5.3, not the locked research
+runtime. Next: specify/freeze the manifest identity and implement
+trainer routing plus cross-update roster checks before attempting any profile
+prerequisite.
+
 ### 2026-10-07 V2.12 raw-state/six-arm readiness recheck
 
 An approved read-only review reconfirmed that the adopted raw-state `F→D→E`

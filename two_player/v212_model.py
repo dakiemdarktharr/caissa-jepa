@@ -7,6 +7,7 @@ training or imply an empirical result.
 """
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 import numpy as np
@@ -63,7 +64,7 @@ def preflight_batch(batch):
     in-memory structural check, not a trajectory generator or exact-rules
     validator.
     """
-    if not isinstance(batch, dict):
+    if not isinstance(batch, Mapping):
         raise TypeError("batch must be a mapping")
     x = np.asarray(batch.get("x"), dtype=np.float64)
     if x.ndim != 2 or x.shape[1] != FEATURE_SIZE or len(x) == 0:

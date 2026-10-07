@@ -1,5 +1,26 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; paired scheduled-batch boundary helper)
+
+- Added `two_player/v212_scheduled_batch.py` as a no-update boundary for one
+  paired six-arm call. It accepts audited `Window` records rather than
+  caller-built arrays, checks the two exact training adapter identities, 64
+  rows with 32 per game, unique within-batch window IDs, all six arms and a
+  common model seed, then materializes once and passes a read-only batch to
+  each arm. The caller supplies seed ordinal/update index in the 20×87 range.
+- Four new spy-model tests plus the existing window-adapter and model suites
+  pass 17/17 under Python 3.14.7 / NumPy 2.5.3; `compileall` and
+  `git diff --check` pass. This is not the locked Python 3.11.9 / NumPy 2.4.6
+  runtime. No real window, schedule, profile, inference, score, outcome,
+  optimizer update, or training was used.
+- This helper does not generate or validate the frozen 20×87 manifest, prove
+  episode/replay provenance, ensure cross-update uniqueness/order, or hash
+  window payloads (its digest covers ordered IDs only). `loss_grad` remains
+  directly callable; a future trainer must route every scheduled call through
+  this boundary. It is not trainer integration and establishes no graph freeze
+  or ≤5% parity. Those gates remain closed and prior negative findings and
+  novelty risks remain unchanged.
+
 ## Latest continuation delta (2026-10-07; independent raw-state/six-arm readiness recheck)
 
 - An approved read-only `gpt-6-luna/high` review rechecked the adopted v06
