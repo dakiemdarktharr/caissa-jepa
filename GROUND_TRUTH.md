@@ -3957,3 +3957,8 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
 
 - Refined the DLASCL source audit with a conditional IEEE binary64 derivation for reference DSYEVD's scale call. Under finite-input/gradual-subnormal assumptions, the DSYEVD sigma branches fall between the reference `smlnum` and `bignum`, so DLASCL takes one matrix-scaling pass; its source arithmetic is bounded by 532 operations. The generic `530*L+2` helper formula remains for caller-supplied L.
 - This remains conditional source evidence: actual linked LAPACK/DLAMCH values and runtime selection are not attested, and this refinement has not received independent review. DLASCL therefore does not close the eigensolver/runtime counter. Focused validation is recorded in the current audit; no eigensolver, model, profile, inference, or training was run, and no gate advanced.
+
+### Latest continuation delta (2026-10-07; DSYEVD DLAMCH/DLANSY helper sub-bound)
+
+- Added `tools/v212_dsyevd_helper_source_bound.py` for the reference DSYEVD `DLAMCH('S')`, `DLAMCH('P')`, and `DLANSY('M')` setup calls. Under IEEE binary64 assumptions, DLAMCH contributes three multiplications and one division; DLANSY scans 528 triangle entries and contributes zero add/subtract/multiply/divide operations under the declared FLOP convention. The helper subcounter includes explicit assumptions and does not claim runtime identity.
+- This source-site sub-bound is not independently reviewed and does not cover DSYTRD/DSTERF or compiler/runtime dispatch. Focused standard-library tests, `compileall`, and whitespace checks pass. No eigensolver, model, profile, inference, or training ran; no gate advanced.

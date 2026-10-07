@@ -37,7 +37,7 @@ here.
 | `V212Model._encode`, `_value` | Dense projections, bias adds, `tanh` calls and backward derivatives; report each matmul by actual active rows and fixed dimensions | Root encoding is common; future online and target encodes depend on arm and valid-horizon counts |
 | Policy head in `V212Model.loss_grad` | Logit projection, bias, stable max/shift, `exp`, normalization, NLL/log, selected-action gradient, and both backward matmuls | Arithmetic operations count as FLOPs; max/comparison/indexing and `exp`/`log` are separate categories |
 | `V212Model._regularize` | Batch means, centering, squares, standard deviations, shortfall, covariance matmul, diagonal/off-diagonal work, covariance loss and its gradient | Include this diagnostic/loss path for every arm and update; disclose exact reduction treatment |
-| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). The DSYEVD driver-site candidate bounds its own scalar arithmetic and reference DSCAL rescaling. The DLASCL helper candidate now derives one scaling pass (532 FP operations upper bound) under explicit IEEE-binary64, finite-input, and reference-source assumptions. The loaded LAPACK implementation/machine parameters are not attested, so the conditional bound does not close runtime coverage. DLAMCH, DLANSY, DSYTRD/DSTERF internals and the linked runtime remain unresolved; exact coverage remains **unresolved** |
+| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). Driver, DSTERF, DLASCL, and DLAMCH/DLANSY now have separate partial source-site candidates. Under IEEE binary64/reference-source assumptions, DLASCL contributes at most 532 arithmetic operations; DLAMCH contributes 4, while DLANSY('M') scans 528 entries with zero add/subtract/multiply/divide operations. Runtime identity/dispatch, DSYTRD and helpers, DSTERF helper paths, and independent review remain open; exact coverage remains **unresolved** |
 | Remaining `V212Model.loss_grad` diagnostics | Root latent mean/std, covariance spectrum output, effective rank, total-loss scalar combination, returned gradient L2 norm, parameter-size aggregation, and finite-value guards | The returned gradient norm is separate from the scratch optimizer's clipping norm and executes once per loss call. Count its coordinate squares/reduction and square root under the declared categories; count comparisons/conversion/serialization separately |
 | Recurrent predictor in `V212Model.loss_grad` | For each active step `s`, predictor projection from 104 to 32 coordinates, bias, `tanh`, and its reverse-pass derivative/parameter/input-gradient matmuls | Rows are `_active_prefix_masks(valid)`; count active rows for all four steps, including unsupervised intermediate prefixes needed by later valid horizons |
 | Recursive raw-state arm | Per active step, 32→198 decoder projection, decoder bias, 198→32 online re-encoding, corresponding tanh and complete reverse `F→D→E` gradient path | This arm has four possible recurrent steps; actual rows come from the common frozen mask schedule. Static forward MAC inventory is not total training FLOPs |
@@ -685,3 +685,20 @@ loaded NumPy-linked LAPACK or machine parameters. Comparisons, branches,
 DLAMCH, and the rest of the eigensolver remain excluded. Four standard-library
 tests and targeted static checks pass. No eigensolver, model, data, profile,
 inference, or training was run; no gate advanced.
+
+## DLAMCH/DLANSY DSYEVD helper sub-bound (2026-10-07)
+
+`tools/v212_dsyevd_helper_source_bound.py` covers the two reference DLAMCH
+calls (`'S'` and `'P'`) and the DSYEVD `DLANSY('M')` scan at N=32 under an
+IEEE binary64 machine assumption. The source-visible DLAMCH arithmetic is
+three multiplications and one division: each call computes epsilon times 0.5;
+the safe-minimum call also computes `1/huge`, and the precision call multiplies
+epsilon by radix. Under binary64, `1/huge < tiny`, so DLAMCH's safe-minimum
+adjustment branch is skipped. DLANSY('M') scans 528 stored triangle entries
+using absolute value and comparison work, with zero add/subtract/multiply/
+divide operations under the stated counting convention. This subcounter is not
+independently reviewed and does not attest actual linked LAPACK behavior;
+compiler lowering, non-FLOP details, DLASCL, DSYTRD/DSTERF, and runtime
+identity remain separate or unresolved. Three standard-library tests and
+targeted static checks pass; no numerical eigensolver, model, data, profile,
+inference, or training ran.

@@ -3155,3 +3155,13 @@ generic parameterized `530*L+2` source formula remains available. Runtime
 selection and actual machine parameters are still unverified, so this does not
 complete the eigensolver counter or clear the ≤5% gate. No numerical
 eigensolver, model, profile, inference, or training ran.
+
+### 2026-10-07 DSYEVD setup-helper source sub-bound
+
+Added a conditional source inventory for reference DSYEVD's two DLAMCH calls
+and its DLANSY('M') matrix scan. Under IEEE binary64, DLAMCH's two calls total
+three multiplies and one divide; DLANSY scans the 528-entry stored triangle
+with absolute-value/comparison work and no add/subtract/multiply/divide FLOPs.
+This is an unreviewed partial subcounter and does not attest the loaded
+runtime. It does not cover DSYTRD/DSTERF or clear the eigensolver/full-counter
+gate.
