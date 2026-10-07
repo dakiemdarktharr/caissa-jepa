@@ -12,12 +12,12 @@ from tools.v212_model_reduction_shape_accounting import (
 class ModelReductionShapeAccountingTests(unittest.TestCase):
     def test_full_valid_recurrent_arms_keep_duplicate_softmax_sums(self):
         expected = {
-            "multi-step-jepa": (54_474, 105),
-            "single-pair-jepa": (46_286, 103),
-            "recursive-raw-state": (182_712, 105),
-            "value-only-latent-rollout": (42_192, 102),
-            "direct-leaf-value": (32_343, 100),
-            "single-horizon-jepa": (46_286, 103),
+            "multi-step-jepa": (58_506, 137),
+            "single-pair-jepa": (50_318, 135),
+            "recursive-raw-state": (186_744, 137),
+            "value-only-latent-rollout": (46_224, 134),
+            "direct-leaf-value": (36_375, 132),
+            "single-horizon-jepa": (50_318, 135),
         }
         for arm in ARMS:
             with self.subTest(arm=arm):
@@ -30,8 +30,17 @@ class ModelReductionShapeAccountingTests(unittest.TestCase):
                 self.assertEqual(len(softmax), 2)
                 self.assertEqual([row["candidate_pairwise_additions"]
                                   for row in softmax], [4096, 4096])
-                self.assertEqual(report["unexpanded_runtime_calls"][
-                    "latent_std_numpy_std_calls"], 1)
+                std = report["latent_std_candidate_operations"]
+                self.assertEqual(std["input_shape"], [64, 32])
+                self.assertEqual(std["mean_reduction_additions"], 2016)
+                self.assertEqual(std["mean_divisions"], 32)
+                self.assertEqual(std["deviation_subtractions"], 2048)
+                self.assertEqual(std["squared_deviation_square_operations"], 2048)
+                self.assertEqual(std["squared_deviation_reduction_additions"], 2016)
+                self.assertEqual(std["population_variance_divisions"], 32)
+                self.assertEqual(std["sqrt_transcendentals"], 32)
+                self.assertEqual(std["candidate_fp_add_subtract_multiply_divide"],
+                                 8192)
 
     def test_direct_leaf_skips_recurrent_loss_reductions(self):
         report = full_valid_batch("direct-leaf-value")
@@ -79,6 +88,16 @@ class ModelReductionShapeAccountingTests(unittest.TestCase):
                  and isinstance(node.func.value, ast.Name)
                  and node.func.value.id == "exp_logits"]
         self.assertEqual(len(calls), 2)
+
+        std_calls = [node for node in ast.walk(tree)
+                     if isinstance(node, ast.Call)
+                     and isinstance(node.func, ast.Attribute)
+                     and node.func.attr == "std"
+                     and isinstance(node.func.value, ast.Name)
+                     and node.func.value.id == "z0"]
+        self.assertEqual(len(std_calls), 1)
+        self.assertEqual([(kw.arg, ast.literal_eval(kw.value))
+                          for kw in std_calls[0].keywords], [("axis", 0)])
 
 
 if __name__ == "__main__":

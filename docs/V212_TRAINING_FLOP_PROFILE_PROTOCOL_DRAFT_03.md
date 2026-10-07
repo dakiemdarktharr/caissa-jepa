@@ -137,9 +137,10 @@ elementwise/reduction work, `tanh` cost, and eigensolver coverage remain open.
 `tools/v212_model_loss_residual_accounting.py` reports residual subtraction
 and square-element shapes. `tools/v212_model_reduction_shape_accounting.py`
 reports candidate addition/division cardinalities for ordinary means and sums
-and makes mask/active-set branches explicit. Neither is independently accepted
-for D03 counting; the `x ** 2` conversion, `np.std` internals, reduction
-implementation/summation behavior, and linked-LAPACK path remain open.
+and makes mask/active-set branches explicit. It now expands the source-level
+NumPy 2.4.6 `std` path for the root latent diagnostic. Neither subcounter is
+independently accepted for D03 counting; the `x ** 2` convention, actually
+loaded NumPy reduction implementation, and linked-LAPACK path remain open.
 
 ## 3. Non-fitting execution and branch-bound contract
 

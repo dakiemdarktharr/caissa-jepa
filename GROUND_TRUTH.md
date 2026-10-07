@@ -1,5 +1,21 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; source-expanded latent-std subcounter)
+
+- Expanded the candidate reduction inventory for the source-pinned NumPy
+  2.4.6 `z0.std(axis=0)` diagnostic (`z0` shape 64×32): 2,016 additions for
+  the internal mean, 32 mean divisions, 2,048 deviation subtractions, 2,048
+  square operations, 2,016 variance-sum additions, 32 variance divisions, and
+  32 square roots per model invocation. These are analytical counts, with the
+  square provisionally treated as one multiply; they do not pin the actually
+  loaded NumPy reduction kernel or establish total FLOPs.
+- Updated the reduction tool and source-shape tests. No data, model graph,
+  profile, inference, scores, outcomes, or training ran. The focused source/
+  synthetic suite passes 5/5; `compileall` and `git diff --check` pass.
+  Independent counting acceptance, the actual runtime/library fingerprint,
+  linked-LAPACK coverage, and other counter gaps remain open; the ≤5% gate
+  remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; reduction-shape inventory)
 
 - Added `tools/v212_model_reduction_shape_accounting.py` to map NumPy
@@ -14,9 +30,10 @@
   effective-rank entries selected, candidate reduction additions range from
   32,343 (direct-leaf) to 182,712 (raw-state), with 100–105 mean divisions.
 - These are candidate operation counts, not accepted FLOPs or runtime results.
-  `np.std` internals, summation implementation/fingerprint, effective-rank
-  branch intervals, LAPACK, scalar/elementwise work, and the rest of the graph
-  remain unresolved or excluded. No data, roots, profile, inference, score,
+  source-level `np.std` arithmetic is now expanded in a later continuation
+  entry, but its loaded runtime/kernel and summation fingerprint, effective-
+  rank branch intervals, LAPACK, scalar/elementwise work, and the rest of the
+  graph remain unresolved or excluded. No data, roots, profile, inference, score,
   outcome, or training ran; the ≤5% compute gate remains **untested and
   unpassed**.
 

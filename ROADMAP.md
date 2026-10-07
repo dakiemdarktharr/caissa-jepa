@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 latent-standard-deviation subcounter
+
+Using NumPy's v2.4.6 source, expanded the root `z0.std(axis=0)` shape path
+for a 64×32 float64 latent batch. The candidate per-call count is 8,192
+add/subtract/multiply/divide operations under one-multiply-per-square
+accounting, plus 32 square roots. All five focused reduction/source tests pass;
+`compileall` and `git diff --check` pass. The reduction-shape tool and tests
+include the internal mean and variance sum. This remains a source-based
+subcounter: loaded runtime/reduction-kernel identity, independent count
+acceptance, LAPACK, and the full compute gate remain open; no model/data ran.
+
 ### 2026-10-07 V2.12 raw-state and compute-freeze review
 
 An approved read-only review found the adopted `F→D→E` raw-state method and
@@ -35,14 +46,18 @@ authorized.
 Added a mask-parameterized inventory of objective `mean`/`sum` call shapes,
 including both separate softmax denominator sums, value/target reductions,
 bias-gradient sums, and per-tensor gradient-norm sums. Effective-rank entropy
-uses explicit branch/activity and selected-spectrum inputs; `np.std` remains
-opaque. Five synthetic/source tests pass, and the combined five-module model,
+uses explicit branch/activity and selected-spectrum inputs. The root latent
+`np.std` path is now expanded from NumPy 2.4.6 source. Five synthetic/source
+tests passed in the earlier inventory; the current focused suite also passes
+5/5. The combined five-module model,
 activation, matmul, residual, and reduction suite passes 25/25. For a fully
-valid illustrative batch with 32 active spectrum entries, candidate ordinary
-reduction additions range from 32,343–182,712 and mean divisions from 100–105.
-These counts require independent acceptance and do not pin the summation tree
-or NumPy implementation; they omit `std`, LAPACK and other work, so they are
-not total FLOPs or a parity result. No gate opens.
+valid illustrative batch with 32 active spectrum entries, the earlier inventory
+reported additions 32,343–182,712 and mean divisions 100–105 before latent-std
+expansion; current totals are 36,375–186,744 and 132–137.
+These candidate counts require independent acceptance and do not pin the actual
+loaded reduction kernel. The `std` estimate is source-expanded only, while
+LAPACK and other work remain omitted, so the figures are not total FLOPs or a
+parity result. No gate opens.
 
 ### 2026-10-07 V2.12 loss-residual and square inventory
 
