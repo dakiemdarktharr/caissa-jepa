@@ -479,7 +479,7 @@
   the current coverage audit. This crosswalk is not a complete counter or
   execution trace.
 
-## Current source-operation crosswalk snapshot (2026-10-07)
+## Preceding source-operation crosswalk snapshot (2026-10-07; superseded below)
 
 - The current inventory contains 835 model AST sites (40 `AugAssign`) and 135
   scratch-optimizer sites, 970 total. Current source hashes are
@@ -4327,3 +4327,29 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   3.14.7 / NumPy 2.5.3 using `/tmp/caissa-jepa-pv-deps`. No model, data,
   eigensolver, profile, inference, or training ran. Graph freeze and six-arm
   parity remain closed/unpassed.
+
+### Latest continuation delta (2026-10-07; loss-graph source-owner reconciliation)
+
+- Extended the source crosswalk from the optimizer/regularizer paths to the
+  identified `loss_grad` arithmetic sites. Policy softmax/NLL, loss residuals,
+  affine and tanh-gradient arithmetic, pooled scalar weighting, target-gradient
+  coefficient products, root regularizer scaling, and raw decoder gradient
+  merge now point to their existing partial owners. Integer/list/index
+  arithmetic is reported separately. This is AST-to-owner traceability; it
+  does not upgrade owner totals to validated costs or combine overlapping
+  inventories.
+- Current source counter hash:
+  `edc559d18196e85709b2efb76ef129a69fdf8c3686cdd766a6c41c24c49f04bb`;
+  crosswalk digest:
+  `073e87299cd75e11e13e03651516654622d8b32cc6d2dab5923a14579d3f12d1`.
+  Across the same 970 AST sites, dispositions are 205 candidate-owner, 34
+  partial candidate-owner, one runtime-unverified candidate-owner, 36
+  separately reported, ten separately/partially bounded non-FP, one blocking
+  unresolved `np.linalg.eigvalsh`, 186 explicitly unresolved, 458 explicitly
+  unresolved non-FP, and 39 unresolved/context-owned. Preflight Boolean
+  bitmask sites remain unresolved.
+- The source crosswalk and eight relevant owner suites pass 41/41 under Python
+  3.14.7 / NumPy 2.5.3 via `/tmp/caissa-jepa-pv-deps`; `git diff --check`
+  passes. No model, eigensolver, profile, data, inference, roots, scoring,
+  simulation, service, or training ran. Full-counter, runtime, graph-freeze,
+  fit, and six-arm ≤5% parity remain closed/untested and unpassed.

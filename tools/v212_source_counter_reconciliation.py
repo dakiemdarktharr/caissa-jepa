@@ -50,6 +50,150 @@ def _site_disposition(module: str, site: dict) -> dict:
                 "with the clipping division represented by its branch interval"
             ),
         }
+    if module == "two_player/v212_model.py" and node == "BinOp":
+        source = site["source"]
+        function = site.get("function")
+        if detail in {"Add", "Sub", "Mult", "Div"}:
+            if (detail == "Add" and " @ p[" in source and " + p[" in source
+                    and function in {"_encode", "_value", "loss_grad"}):
+                return {
+                    "status": "candidate_owner",
+                    "owner": "tools/v212_model_activation_flop_accounting.py",
+                    "scope": "affine bias-addition site; shape totals are partial and separate from matmul work",
+                }
+            if function == "loss_grad":
+                if (detail == "Sub" and (
+                        source.startswith("masked_logits - np.max(")
+                        or source.startswith("np.log(exp_logits.sum(axis=1)) - shifted")
+                )) or (detail == "Div" and source.startswith("exp_logits / exp_logits.sum(")):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_policy_softmax_accounting.py",
+                        "scope": "policy shift/probability/NLL elementwise site; reductions remain separately owned",
+                    }
+                if detail == "Sub" and (
+                        source.startswith("root_value - np.asarray(")
+                        or source in {"pred - labels", "pred_value - future_value[mask, h - 1]",
+                                      "xhat - future_x[mask, horizon - 1]",
+                                      "states[horizon][mask] - target"}
+                ):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_model_loss_residual_accounting.py",
+                        "scope": "objective residual subtraction shape; mask-dependent totals remain partial",
+                    }
+                if detail == "Sub" and source.startswith("1.0 - ") and " ** 2" in source:
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_model_activation_flop_accounting.py",
+                        "scope": "explicit tanh-derivative one-minus-square subtraction; overlaps the square owner",
+                    }
+                if detail == "Mult" and (
+                        source.startswith("2.0 / n * root_delta[:, None]")
+                        or source.startswith("2.0 / len(pred) * delta[:, None]")
+                        or source.startswith("2.0 * scale * delta[:, None]")
+                        or source.startswith("dv @ p['vw'].T * (1.0 - ")
+                        or source.startswith("dstate[step][rows] * (1.0 - ")
+                        or source.startswith("dxhat @ p['dw'].T * (1.0 - ")
+                        or source.startswith("dz0 * (1.0 - ")
+                ):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_model_activation_flop_accounting.py",
+                        "scope": "value-gradient scale or explicit tanh-derivative array multiply; source-shape candidate",
+                    }
+                if detail == "Mult" and source == "0.1 * dreg":
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_regularizer_elementwise_accounting.py",
+                        "scope": "root regularizer gradient scaling; excluded from the general gradient-buffer subtotal",
+                    }
+                if detail == "Add" and source.startswith("raw_feature_grads[") and " + de @ " in source:
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_gradient_accumulation_accounting.py",
+                        "scope": "raw decoder feature-gradient merge addition; source-shape candidate",
+                    }
+                if detail == "Add" and source.startswith("policy_loss + root_loss"):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_regularizer_elementwise_accounting.py",
+                        "scope": "base plus weighted regularizer scalar objective; source-level scalar subtotal",
+                    }
+                if detail == "Mult" and source in {"0.1 * variance_loss", "0.01 * covariance_loss"}:
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_regularizer_elementwise_accounting.py",
+                        "scope": "weighted regularizer scalar objective/metric; source-level scalar subtotal",
+                    }
+                if detail == "Add" and source.startswith("outcome_loss + rollout_loss"):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_objective_scalar_accounting.py",
+                        "scope": "pooled rollout objective scalar accumulation; branch counts remain mask-dependent",
+                    }
+                if detail == "Mult" and "HORIZON_WEIGHTS[h] * int(preflight['valid'][h].sum())" == source:
+                    return {
+                        "status": "candidate_owner_partial",
+                        "owner": "tools/v212_objective_scalar_accounting.py",
+                        "scope": "horizon denominator scalar multiplication; Python sum/control overhead remains open",
+                    }
+                if detail == "Div" and (
+                        source in {"2.0 / n", "2.0 / len(pred)", "weight / outcome_den",
+                                   "weight / target_den", "np.sum(delta ** 2) / FEATURE_SIZE",
+                                   "np.sum(delta ** 2) / d", "2.0 * scale / FEATURE_SIZE",
+                                   "2.0 * scale / d"}
+                ):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_objective_scalar_accounting.py",
+                        "scope": "objective denominator or gradient-coefficient scalar division; branch/mask schedule remains unbound",
+                    }
+                if detail == "Mult" and (
+                        source in {"2.0 * scale", "scale * float(np.sum(delta ** 2))",
+                                   "scale * float(np.sum(delta ** 2) / FEATURE_SIZE)",
+                                   "scale * float(np.sum(delta ** 2) / d)"}
+                ):
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_objective_scalar_accounting.py",
+                        "scope": "objective scalar coefficient/loss weighting; branch/mask schedule remains unbound",
+                    }
+                if detail == "Mult" and source in {
+                        "2.0 * scale / FEATURE_SIZE * delta",
+                        "2.0 * scale / d * delta"}:
+                    return {
+                        "status": "candidate_owner",
+                        "owner": "tools/v212_objective_gradient_elementwise_accounting.py",
+                        "scope": "pooled latent/raw target-gradient coefficient-times-residual array site",
+                    }
+            if ((function == "preflight_batch"
+                 and source in {"terminal_idx + 1", "horizon - 1"})
+                    or (function == "_active_prefix_masks" and source == "step + 1")
+                    or (function == "__init__" and source in {
+                        "d + ACTION_SIZE", "d + ACTION_SIZE + 1",
+                        "d + ACTION_SIZE + 1 + 6"})):
+                return {
+                    "status": "reported_separately",
+                    "owner": None,
+                    "scope": "integer shape, horizon, or index arithmetic; outside FP FLOP totals",
+                }
+            if function == "weight" and source == "1.0 / fan_in":
+                return {
+                    "status": "reported_separately",
+                    "owner": None,
+                    "scope": "parameter-initialization scalar division; outside per-update objective/optimizer totals",
+                }
+            if function == "loss_grad" and (
+                    source == "[z0] + [np.zeros((n, d), dtype=np.float64) for _ in range(4)]"
+                    or source == "[None] * 4"
+                    or source in {"step + 1", "h - 1", "horizon - 1", "step - 1"}
+            ):
+                return {
+                    "status": "reported_separately",
+                    "owner": None,
+                    "scope": "Python list construction or integer state/horizon indexing arithmetic; not FP FLOPs",
+                }
     if module == "two_player/v212_model.py" and site.get("function") == "_regularize":
         if node == "BinOp" and detail in {"Add", "Sub", "Mult", "Div"}:
             if site["source"] in {"d * n", "n * d"}:

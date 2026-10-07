@@ -600,9 +600,9 @@ source into the report, in addition to the inventory input hashes:
 | Analysis source | SHA-256 |
 | --- | --- |
 | `tools/v212_source_operation_inventory.py` | `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9` |
-| `tools/v212_source_counter_reconciliation.py` | `fd61e68476fe3540508b00bd2b2a16e7148a4c35faec2b61bebd0bbc5ca78d1c` |
+| `tools/v212_source_counter_reconciliation.py` | `edc559d18196e85709b2efb76ef129a69fdf8c3686cdd766a6c41c24c49f04bb` |
 
-All 11 distinct candidate-owner source files existed when the report was
+All 13 distinct candidate-owner source files existed when the report was
 generated; their paths and hashes are included in the JSON output. The report
 binds the inventory to these model input hashes:
 
@@ -611,12 +611,12 @@ binds the inventory to these model input hashes:
 | `two_player/v212_model.py` | `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014` | 835 |
 | `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
 
-Crosswalk digest: `ff2d5a92dffe9bb39d13a0b100695c9b1c4a80646b38a7b30718f17560950152`.
-The 970 site dispositions are 145 candidate-owner, 32 partial candidate-owner,
-one runtime-unverified candidate-owner, ten reported separately, ten reported
+Crosswalk digest: `073e87299cd75e11e13e03651516654622d8b32cc6d2dab5923a14579d3f12d1`.
+The 970 site dispositions are 205 candidate-owner, 34 partial candidate-owner,
+one runtime-unverified candidate-owner, 36 reported separately, ten reported
 separately or partially bounded non-FP, one blocking-unresolved
 `np.linalg.eigvalsh`, 186 explicitly unresolved, 458 explicitly unresolved
-non-FP, and 127 unresolved or context-owned. These are syntax-site counts,
+non-FP, and 39 unresolved or context-owned. These are syntax-site counts,
 not operation counts or FLOP totals. The report keeps unmatched sites visible
 and states that no site has a validated complete cost owner. The digest binds
 the serialized report and hashes of inventory inputs, analysis code, and
@@ -639,15 +639,19 @@ execution trace, profile, or protocol amendment. No model/data operation or
 gate transition followed from it; the ≤5% six-arm gate remains **untested and
 unpassed**.
 
-The current crosswalk additionally maps all 24 add/subtract/multiply/divide
-AST sites in `scratch_adam_ema_step` to the existing optimizer arithmetic owner.
-The division used only when the gradient norm exceeds five retains its
-branch-interval qualification. It now also maps `_regularize` arithmetic into
-the existing disjoint regularizer and effective-rank owners; the two integer
-shape products and two unary negations remain separately reported. Tests check
-these dispositions while keeping `full_counter=false`. This is site-to-owner
-traceability, not validation that the aggregates capture every execution or
-that input validation/copy/runtime work is covered.
+The current crosswalk maps all 24 add/subtract/multiply/divide AST sites in
+`scratch_adam_ema_step` to the existing optimizer arithmetic owner, with the
+gradient-norm division retaining its branch-interval qualification. It maps
+`_regularize` arithmetic into disjoint regularizer/effective-rank owners and
+now joins the recognized `loss_grad` arithmetic sites to policy, residual,
+activation, objective-scalar, target-gradient, regularizer, and gradient-
+accumulation owners. Python shape/index arithmetic and list construction are
+reported separately. The preflight bitmask expressions remain explicitly
+unresolved; the crosswalk leaves the blocking eigensolver and every other
+unmatched site visible. The focused source-crosswalk plus eight owner suites
+pass 41/41. This is site-to-owner traceability, not validation that the
+aggregates capture every execution or that input validation/copy/runtime work
+is covered; `full_counter`, parity, and graph-freeze flags remain false.
 
 ## Six-arm common-work dilution sensitivity (2026-10-07)
 

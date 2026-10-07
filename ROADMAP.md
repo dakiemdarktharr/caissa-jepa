@@ -3473,7 +3473,7 @@ mapping; no model, data, eigensolver, profile, inference, or training ran.
 Graph freeze remains **NO** and six-arm ≤5% parity remains **untested and
 unpassed**.
 
-The latest source-hash-bound crosswalk contains 970 AST sites (835 model +
+At that milestone, the source-hash-bound crosswalk contained 970 AST sites (835 model +
 135 optimizer) with digest
 `ff2d5a92dffe9bb39d13a0b100695c9b1c4a80646b38a7b30718f17560950152` and
 analysis source hash `fd61e68476fe3540508b00bd2b2a16e7148a4c35faec2b61bebd0bbc5ca78d1c`.
@@ -3493,3 +3493,21 @@ integrated trainer, exact-rule replay, selected-window manifest, frozen
 20-seed × 87-update masks, and per-batch raw-target/H4-leaf checks remain
 open. Continue static owner reconciliation and independent review before any
 graph-freeze or replay/profile gate transition.
+
+### 2026-10-07 loss-graph source-owner reconciliation
+
+Extended the source crosswalk into identified `loss_grad` operations:
+policy softmax/NLL, residuals, affine and tanh-gradient arithmetic, pooled
+objective scalars, target-gradient products, regularizer scaling, and the raw
+decoder gradient merge now point to existing partial owners. Python
+shape/index/list operations are reported separately; preflight Boolean
+bitmasks remain unresolved. The current crosswalk digest is
+`073e87299cd75e11e13e03651516654622d8b32cc6d2dab5923a14579d3f12d1` at source
+hash `edc559d18196e85709b2efb76ef129a69fdf8c3686cdd766a6c41c24c49f04bb`.
+Its 970 syntax-site dispositions are 205 candidate-owner, 34 partial, one
+runtime-unverified, 36 separately reported, ten separately/partially bounded
+non-FP, one blocking unresolved eigensolver, 186 unresolved, 458 unresolved
+non-FP, and 39 unresolved/context-owned. The crosswalk and eight owner suites
+pass 41/41. This improves traceability without establishing complete cost
+coverage: full counter, runtime identity, trainer/schedule, graph freeze, and
+six-arm ≤5% parity remain open or unpassed.

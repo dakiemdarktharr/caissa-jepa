@@ -151,6 +151,63 @@ class SourceCounterReconciliationTests(unittest.TestCase):
         self.assertEqual(len(unary), 2)
         self.assertTrue(all(site["status"] == "reported_separately" for site in unary))
 
+    def test_loss_graph_arithmetic_is_joined_to_disjoint_partial_owners(self):
+        model = self.report["modules"]["two_player/v212_model.py"]["sites"]
+        sites = [site for site in model
+                 if site["function"] == "loss_grad" and site["node"] == "BinOp"]
+        self.assertTrue(sites)
+        unresolved_arithmetic = [site for site in sites
+                                 if site["detail"] in {"Add", "Sub", "Mult", "Div"}
+                                 and site["status"] in {
+                                     "explicitly_unresolved",
+                                     "explicitly_unresolved_or_context_owned",
+                                 }]
+        self.assertEqual(unresolved_arithmetic, [])
+
+        by_source = {}
+        for site in sites:
+            by_source.setdefault(site["source"], []).append(site)
+
+        expected = {
+            "masked_logits - np.max(masked_logits, axis=1, keepdims=True)":
+                "tools/v212_policy_softmax_accounting.py",
+            "root_value - np.asarray(batch['value'], dtype=np.float64)":
+                "tools/v212_model_loss_residual_accounting.py",
+            "2.0 * scale / FEATURE_SIZE * delta":
+                "tools/v212_objective_gradient_elementwise_accounting.py",
+            "2.0 * scale / d * delta":
+                "tools/v212_objective_gradient_elementwise_accounting.py",
+            "0.1 * dreg": "tools/v212_regularizer_elementwise_accounting.py",
+            "policy_loss + root_loss + 0.1 * variance_loss + 0.01 * covariance_loss":
+                "tools/v212_regularizer_elementwise_accounting.py",
+            "dstate[step][rows] * (1.0 - znext ** 2)":
+                "tools/v212_model_activation_flop_accounting.py",
+            "outcome_loss + rollout_loss + raw_loss":
+                "tools/v212_objective_scalar_accounting.py",
+            "raw_feature_grads[step - 1][rows] + de @ p['ew'].T":
+                "tools/v212_gradient_accumulation_accounting.py",
+        }
+        for source, owner in expected.items():
+            with self.subTest(source=source):
+                self.assertIn(source, by_source)
+                self.assertTrue(all(site["status"] == "candidate_owner"
+                                    and site["owner"] == owner
+                                    for site in by_source[source]))
+
+        index_sites = [site for site in sites if site["source"] == "step - 1"]
+        self.assertTrue(index_sites)
+        self.assertTrue(all(site["status"] == "reported_separately"
+                            and site["owner"] is None for site in index_sites))
+        bitwise_preflight = [site for site in model
+                             if site["function"] == "preflight_batch"
+                             and site["node"] == "BinOp"
+                             and site["detail"] in {"BitAnd", "BitOr"}]
+        self.assertTrue(bitwise_preflight)
+        self.assertTrue(all(site["status"] == "explicitly_unresolved"
+                            for site in bitwise_preflight))
+        self.assertFalse(self.report["coverage"]["full_counter"])
+        self.assertFalse(self.report["coverage"]["graph_freeze_eligible"])
+
 
 if __name__ == "__main__":
     unittest.main()
