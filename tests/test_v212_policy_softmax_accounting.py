@@ -15,6 +15,7 @@ class PolicySoftmaxAccountingTests(unittest.TestCase):
         self.assertEqual(one["shift_subtractions"], 64 * 65)
         self.assertEqual(one["exp_elements"], 64 * 65)
         self.assertEqual(one["probability_divisions"], 64 * 65)
+        self.assertEqual(one["policy_gradient_batch_normalization_divisions"], 64 * 65)
         self.assertEqual(one["nll_log_elements"], 64)
         self.assertEqual(one["nll_residual_subtractions"], 64)
         self.assertEqual(one["policy_label_gradient_subtractions"], 64)
@@ -66,6 +67,14 @@ class PolicySoftmaxAccountingTests(unittest.TestCase):
             sum(isinstance(node, ast.AugAssign)
                 and ast.unparse(node.target) == "dlogits[np.arange(n), policy]"
                 and isinstance(node.op, ast.Sub)
+                for node in ast.walk(loss_grad)),
+            1,
+        )
+        self.assertEqual(
+            sum(isinstance(node, ast.AugAssign)
+                and isinstance(node.target, ast.Name) and node.target.id == "dlogits"
+                and isinstance(node.op, ast.Div)
+                and ast.unparse(node.value) == "n"
                 for node in ast.walk(loss_grad)),
             1,
         )

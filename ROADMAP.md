@@ -2,16 +2,15 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-07 policy softmax elementwise inventory
+### 2026-10-07 elementwise objective subcounters
 
-Added a source-shape subcounter for the fixed 64×65 root policy path: logit
-selection/shift, exponentials, probability normalization, NLL log/residual, and
-the selected-label gradient subtraction. The tool reports max-comparison
-candidates separately and leaves the two denominator sums/NLL mean with the
-reduction counter and matrix products with the matmul counter. AST/shape tests
-pass 3/3. This reduces one objective-coverage gap but does not establish loaded
-NumPy work, complete FLOPs, or parity. Graph freeze remains **NO**; the ≤5% gate
-is **untested and unpassed**.
+Added candidate source-shape subcounters for the fixed 64×65 policy softmax/NLL
+path (including its gradient batch normalization) and the root regularizer's
+elementwise arithmetic/scalar weighting. Reduction, square, matmul, and
+eigensolver components stay separately owned to avoid double counting. Their
+source-AST/shape tests pass 6/6. These additions reduce objective-coverage gaps
+but do not establish loaded NumPy work, complete FLOPs, or parity. Graph freeze
+remains **NO**; the ≤5% gate is **untested and unpassed**.
 
 ### 2026-10-07 schedule mask-integrity schema v03
 

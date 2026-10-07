@@ -1,17 +1,21 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-07; policy softmax elementwise inventory)
+## Latest continuation delta (2026-10-07; regularizer and softmax elementwise inventories)
 
 - Added `tools/v212_policy_softmax_accounting.py` for the fixed 64×65 root
   policy path: 4,160 shift subtractions, exp elements, and probability
-  divisions; 64 NLL log elements and each of the two 64-element subtraction
-  sites; and 4,096 candidate comparisons in the row-max reductions. Across
-  1,740 updates per arm, these source-level counts are multiplied by the
-  schedule size. The two denominator reductions and NLL mean remain assigned
-  to the reduction inventory; matrix products remain assigned to the matmul
-  inventory to avoid double counting.
-- Source-AST/shape tests pass 3/3. This is a candidate elementwise subcounter,
-  not a loaded-kernel trace or accepted full counter. No model/data/profile,
+  divisions, and policy-gradient batch-normalization divisions; 64 NLL log
+  elements and each of the two 64-element subtraction sites; and 4,096
+  candidate comparisons in the row-max reductions. The two denominator sums
+  and NLL mean remain assigned to the reduction inventory; matrix products
+  remain assigned to the matmul inventory.
+- Added `tools/v212_regularizer_elementwise_accounting.py`. Per root call it
+  reports candidate array arithmetic of 4,128 additions, 3,104 subtractions,
+  6,208 multiplications, and 5,120 divisions, plus separate scalar counts.
+  Reductions, squares, matmuls, comparisons, and eigensolver work are explicitly
+  excluded or delegated to their existing inventories to avoid double counting.
+- Policy and regularizer source-AST/shape tests pass 6/6. Both are candidate
+  subcounters, not loaded-kernel traces or a full counter. No model/data/profile,
   roots, inference, scores/outcomes, or training ran. Graph freeze remains
   **NO** and ≤5% parity remains **untested and unpassed**.
 

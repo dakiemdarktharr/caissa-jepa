@@ -31,6 +31,7 @@ def accounting(scheduled_updates: int = DEFAULT_SCHEDULE_UPDATES) -> dict:
         "shift_subtractions": logit_elements,
         "exp_elements": logit_elements,
         "probability_divisions": logit_elements,
+        "policy_gradient_batch_normalization_divisions": logit_elements,
         "nll_log_elements": row_elements,
         "nll_residual_subtractions": row_elements,
         "policy_label_gradient_subtractions": row_elements,
