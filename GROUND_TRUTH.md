@@ -1,5 +1,23 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; activation/bias subcounter)
+
+- Added `tools/v212_model_activation_flop_accounting.py` for affine bias
+  additions, `tanh` element counts, and the explicit square/subtract/multiply
+  arithmetic at tanh-derivative sites, parameterized by the same 64-row horizon
+  masks and active prefixes. An AST regression asserts the four current
+  `np.tanh` source sites; three synthetic accounting tests check all six arms
+  and mask-dependent counts. The combined nine-module regression suite passes
+  38/38; `compileall` and `git diff --check` pass.
+- For a fully valid illustrative batch, affine bias additions range from
+  8,384 to 73,536, `tanh` element counts from 4,224 to 18,688, and
+  tanh-derivative arithmetic from 12,672 to 56,064 FLOPs by arm. These omit
+  other elementwise/reduction work, `tanh` cost, LAPACK, matmul, optimizer,
+  preflight and runtime, so they are not total compute or a parity result. The
+  accounting tool does not execute the model; no real data/profile/inference/
+  training ran. Full counter and pre-fit gates remain open; ≤5% compute remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; explicit model-matmul accounting)
 
 - Added `tools/v212_model_matmul_flop_accounting.py` to derive FLOPs for every

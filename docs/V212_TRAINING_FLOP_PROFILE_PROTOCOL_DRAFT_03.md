@@ -110,6 +110,11 @@ counts and mask fixtures check formulas only. It omits eigensolver and other
 objective operations and is not the full counter or an authorization to
 profile.
 
+`tools/v212_model_activation_flop_accounting.py` additionally counts affine
+bias additions, `tanh` element counts, and explicit `tanh`-derivative
+arithmetic by horizon mask. It is another analytical subcounter only; other
+elementwise/reduction work, `tanh` cost, and eigensolver coverage remain open.
+
 ## 3. Non-fitting execution and branch-bound contract
 
 Protocol approval alone does not authorize data or label access. A future

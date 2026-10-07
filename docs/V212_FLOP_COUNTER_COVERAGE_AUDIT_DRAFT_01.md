@@ -46,6 +46,7 @@ here.
 | `scratch_adam_ema_step` | Input validation/copies, global gradient-square/reduction, clipping multiplication, first/second moments, bias-corrected Adam, parameter update, and EMA for the three JEPA arms | `tools/v212_optimizer_flop_accounting.py` gives an analytical per-arm formula for this helper and bounds `norm <= 5`/`norm > 5`; zero norm uses the no-division branch. It is a subcomponent only, not an executed counter. Keep scratch arrays disposable; report validation, copies and finite checks outside FLOPs |
 | Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
 | Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
+| Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, and the square/subtract/multiply sequence used by each explicit `1-z**2` backward derivative | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. Other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain separate |
 
 ## Required branch accounting
 
@@ -152,6 +153,26 @@ not observed work or the frozen training-mask schedule. They omit
 elementwise/reduction operations, nonlinearities, the LAPACK eigensolver,
 optimizer, preflight, and runtime effects; they cannot decide total parity.
 No data, game positions, model graph execution, profile, or training was used.
+
+## Activation and affine-bias accounting follow-up (2026-10-07)
+
+`tools/v212_model_activation_flop_accounting.py` accounts for every affine
+bias-add output, each `tanh` element, and the explicit elementwise derivative
+`1-z**2` (square, subtraction, and gradient multiplication), using the same
+64-row horizon and shared-prefix masks. An AST check in the tests asserts the
+four current `np.tanh` source sites. Three synthetic tests verify all six
+full-valid arm totals and mask-dependent rows.
+
+For an illustrative fully valid batch, bias additions range from 8,384
+(direct-leaf) to 73,536 (raw-state), `tanh` element counts range from 4,224 to
+18,688, and `tanh` derivative FLOPs range from 12,672 to 56,064. `tanh` itself
+is reported separately as a nonlinear call, not converted to FLOPs. These
+counts omit other elementwise losses/gradients, reductions, the LAPACK
+eigensolver, matmul, optimizer, preflight, and runtime; they do not establish
+total compute or parity. The accounting tests use only synthetic masks and do
+not execute the graph. The combined validation separately includes existing
+no-update model tests on synthetic fixture arrays. No real data or profile was
+used, and no gate opens.
 
 ## Primary implementation references checked
 

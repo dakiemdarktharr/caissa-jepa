@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 activation and affine-bias subcounter
+
+Added a mask-parameterized subcounter for affine bias additions, `tanh`
+element counts, and explicit `1-z**2` derivative arithmetic. Its AST fixture
+tracks all four source `np.tanh` sites; synthetic masks test each arm and
+active-prefix usage. The combined nine-module validation passes 38/38, with
+`compileall` and `git diff --check` passing. Under fully valid illustrative masks, bias additions
+range from 8,384–73,536, `tanh` elements from 4,224–18,688, and derivative
+arithmetic from 12,672–56,064 FLOPs across arms. Nonlinear `tanh` cost and all
+other loss/reduction/LAPACK/optimizer operations remain excluded. This is
+partial analytical coverage and does not establish parity or permit a profile.
+
 ### 2026-10-07 V2.12 explicit model-matmul accounting
 
 Added a mask-parameterized analytical inventory for every explicit dense
