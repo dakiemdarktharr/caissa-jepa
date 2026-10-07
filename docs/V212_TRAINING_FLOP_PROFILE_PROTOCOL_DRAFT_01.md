@@ -65,10 +65,15 @@ missing/truncated, and invalid-transition counts for every arm, including
 horizons without an arm-specific loss, so shared exposure and arm-specific
 operation counts remain auditable.
 
-The current repository has only `two_player/v212_model.py`, a no-update NumPy
-objective and manual-gradient graph. It has no optimizer, clipping, EMA update
-path, data materializer, selected-window manifest, exact-rule replay runner, or
-full training FLOP counter. Therefore no profile can currently satisfy this
+The current repository has a no-update NumPy objective/manual-gradient graph
+and a pure one-step scratch Adam/clipping/EMA helper in
+`two_player/v212_scratch_optimizer.py`. An independent read-only code review
+confirmed that the helper applies the v05 update equations and routes EMA to
+exactly the three JEPA arms; four focused synthetic-array tests cover the
+equations, immutability, and all six routing cases. The helper is not
+integrated with the objective graph or a trainer. Data materialization,
+selected-window manifest, exact-rule replay runner, and full training FLOP
+counter are also absent. Therefore no profile can currently satisfy this
 protocol. A structural run on synthetic arrays could test instrumentation and
 coverage only; it cannot establish the v05 panel gate or represent the frozen
 selected-window mask schedule.

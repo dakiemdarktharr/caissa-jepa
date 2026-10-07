@@ -8,17 +8,21 @@ Added `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md`, a non-operative
 protocol for the six-arm ≤5% total-training-FLOP gate. It requires the full
 forward/loss/backward, clipping, Adam, EMA, and diagnostics on identical
 preflighted batches/masks, with disposable updates and complete counter
-coverage. An approved read-only reviewer found that the initial draft
+coverage. An arm-routed pure one-step scratch Adam/clipping/EMA helper is now
+implemented outside the model graph; four focused synthetic-array tests pass,
+including all six EMA-routing cases, and inputs remain unchanged. Independent
+read-only review confirmed its equations and routing guard. It is not a trainer
+or a measured profile. An approved read-only reviewer found that the initial draft
 conflated mask-mandated per-example skips with skipped scheduled work, and used
 arm ordering rather than 5% pass/fail invariance to constrain uncounted FLOPs.
 A follow-up confirmed corrections to both points and clarified separate
 training-target data/preflight authorization. This was internal-consistency
-review, not protocol acceptance; no profile was run. The current graph omits
-optimizer/clipping/EMA, selected-window materialization and replay are absent,
-and no full FLOP counter exists; synthetic structure checks cannot pass the
-panel gate. The ≤5% threshold remains **untested and unpassed**, and fitting
-remains prohibited. No data, roots, inference, scores, or outcomes were
-accessed. See `GROUND_TRUTH.md` and the protocol draft.
+review, not protocol acceptance; no profile was run. The helper is not
+integrated into the objective graph or a trainer; selected-window
+materialization/replay and a full FLOP counter are absent. Synthetic structure
+checks cannot pass the panel gate. The ≤5% threshold remains **untested and
+unpassed**, and fitting remains prohibited. No data, roots, inference, scores,
+or outcomes were accessed. See `GROUND_TRUTH.md` and the protocol draft.
 
 ### 2026-10-07 V2.12 no-update six-arm objective graph
 

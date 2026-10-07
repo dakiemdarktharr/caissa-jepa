@@ -29,6 +29,7 @@ _JEPA_HORIZONS = {
     "single-pair-jepa": (2,),
     "single-horizon-jepa": (1,),
 }
+EMA_ARMS = frozenset(_JEPA_HORIZONS)
 
 
 @dataclass(frozen=True)
