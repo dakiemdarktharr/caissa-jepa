@@ -15,6 +15,24 @@
   runtime/LAPACK identity, trainer/replay schedule, graph freeze, and six-arm
   ≤5% parity remain open / untested and unpassed.
 
+## Latest continuation delta (2026-10-07; receipt-bound paired-call integration fixture)
+
+- Upgraded the receipt-bound schedule's high-level synthetic fixture to call
+  the real paired six-arm batch boundary with six test-double models. It checks
+  ordered arm invocation and one shared read-only materialized batch.
+  Replay-to-row binding, batch materialization, and mask extraction are still
+  mocked; this is not an adapter/replay end-to-end test or evidence from
+  research data.
+- Focused receipt-bound tests pass 5/5; the episode/trajectory, manifest,
+  scheduled-call, adapter, model, and receipt-bound suites pass 46/46 under
+  Python 3.11.9 / NumPy 2.4.6, with compile and diff checks passing. No corpus,
+  production schedule, roots,
+  scores/outcomes, service, inference, or training were used. This closes a
+  test-wiring gap only; no method or compute gate advances. Exclusive trainer,
+  source/data provenance, actual replay and mask roster, complete counter and
+  runtime identity remain open; graph freeze is **NO** and six-arm ≤5% parity
+  is **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; approved read-only protocol reviews)
 
 - Four approved `gpt-6-luna/high` reviews inspected documents/code only; no

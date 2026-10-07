@@ -15,6 +15,19 @@ checks pass. No trainer, profile, or empirical run occurred. This improves
 instrumentation clarity only: full-counter, runtime/LAPACK, replay/schedule,
 graph-freeze, and ≤5% parity gates remain closed / untested and unpassed.
 
+### 2026-10-07 receipt-bound paired-call integration fixture
+
+The high-level synthetic receipt-bound schedule test now exercises the real
+paired-call boundary with six model test doubles, verifying ordered dispatch
+and one shared read-only batch. Replay-to-row binding, materialization, and
+mask extraction remain mocked; this does not validate actual adapter/replay
+content or research data. The receipt-bound suite passes 5/5, and the combined
+episode/trajectory, manifest, scheduled-call, adapter, model, and
+receipt-bound suites pass 46/46 under Python 3.11.9 / NumPy 2.4.6. It narrows
+a harness wiring gap without opening any gate: there is still no exclusive
+trainer or production corpus/schedule, actual mask/replay proof, full
+counter/runtime binding, graph freeze, or ≤5% parity result.
+
 ### 2026-10-07 approved read-only protocol reviews
 
 Four approved `gpt-6-luna/high` reviews used documents/code only and cleared no

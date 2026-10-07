@@ -55,13 +55,14 @@ shared read-only batch and blocks all arm calls when it rejects. The manifest
 suite checks that a full synthetic 20×87 schedule becomes a detached immutable
 snapshot and rejects direct construction with a forged digest/row tuple. The
 high-level coordination fixture uses a structurally valid synthetic 20×87
-schedule and mocks replay-to-row binding, mask extraction, and the paired-call
-helper; it does not constitute an end-to-end actual data batch. With the
-episode/trajectory, manifest, scheduled-call, adapter and model suites, focused
-validation passes 44/44
-under Python 3.14.7 with temporary NumPy
-2.5.3, not the locked Python 3.11.9 / NumPy 2.4.6 runtime. `compileall` and
-`git diff --check` pass.
+schedule and exercises the real paired-call boundary with six test-double
+models, asserting ordered dispatch and a shared read-only batch. Replay-to-row
+binding, materialization, and mask extraction remain mocked; this is not an
+end-to-end adapter or actual research-data batch. The prior focused subset
+passed 44/44 under Python 3.14.7 with temporary NumPy 2.5.3. After the
+integration fixture change, the episode/trajectory, manifest, scheduled-call,
+adapter, model, and receipt-bound suites pass 46/46 under the locked Python
+3.11.9 / NumPy 2.4.6 environment; `compileall` and `git diff --check` pass.
 
 No research corpus, selected schedule, roots, scores/outcomes, profile,
 inference, or training was loaded or run. Before any profile this seam needs
