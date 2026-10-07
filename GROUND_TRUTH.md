@@ -1,5 +1,29 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; receipt-bound schedule seam)
+
+- Added `two_player/v212_receipt_bound_schedule.py`: build an immutable
+  in-memory episode/window receipt index from the exact-rule audited train
+  collection, then check a frozen manifest row's ordered IDs/payload hashes,
+  receipt membership, paired model seed, and actual adapter-derived masks
+  before the paired six-arm no-update helper. The index is built once so the
+  full train replay is not repeated per update.
+- The seam is not an exclusive trainer: `loss_grad` and the existing helper
+  remain directly callable. It re-materializes a batch for mask checking and
+  the paired helper materializes it again; this overhead is unmeasured and must
+  be counted or removed before profile. Five new synthetic tests cover its
+  components; the high-level coordination test mocks the manifest validator,
+  materializer and paired helper, so it is not an end-to-end 20×87 schedule.
+- Receipt/trajectory/schedule/adapter/model regression passes 41/41 under
+  Python 3.14.7 with temporary NumPy 2.5.3; compile and whitespace checks
+  pass. This is not the locked runtime. No research corpus, selected schedule,
+  roots, scores/outcomes, profile, inference, or training was used.
+- No gate advances. Six-arm graph freeze remains **NO** and ≤5% parity remains
+  **untested and unpassed**. Source-file/data provenance, an exclusive trainer,
+  a valid replay-derived 20×87 mask roster, full counter/branch bounds and
+  pinned runtime/backend/source identity remain open. Preserve negative
+  results and novelty risks.
+
 ## Latest continuation delta (2026-10-07; episode replay receipt candidate)
 
 - Added a strict-schema in-memory episode receipt helper that invokes the
