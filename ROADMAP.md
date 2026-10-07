@@ -3420,3 +3420,23 @@ separately. This raises the previous 58,910 partial DSYTD2 subtotal to 59,240
 before DNRM2; the scalar-square-as-multiply sensitivity is 59,300. The bound
 assumes IEEE binary64/reference sources, remains unreviewed, and does not
 attest runtime dispatch or complete DSYTRD/eigensolver work. No gate changed.
+
+### 2026-10-07 v02 deadline and six-arm readiness crosswalk
+
+The v02 bootstrap's bounded raw-stdin reader limits bytes but waits for EOF;
+it cannot by itself enforce a caller deadline when the input stream remains
+open. Added REQ-01c to the supervision matrix/test plan for open-stdin timeout
+cases, including a valid-looking prefix, and specified that a future controller
+must fail closed without release, action, receipt, or post-dispatch cleanup.
+Also made the v02 mocked composition obligations explicit for manager,
+exact-one journal, and paired counter failures. Existing v01 controller tests
+and isolated v02 helpers remain partial evidence.
+
+An approved read-only `gpt-6-luna/high` review found no contradiction in the
+adopted raw-state `F→D→E` graph or its existing partial source owners. This
+does not close the linked eigensolver/reduction/runtime counter, unresolved
+source sites, trainer/replay, selected-window provenance, or the frozen 20×87
+mask schedule. Graph freeze remains **NO** and ≤5% six-arm compute parity
+remains **untested and unpassed**. Documentation only; no service, request,
+test, OOM, inference, data/root generation, scoring, simulation, or training
+ran. Preserve the existing negative findings and novelty risks.

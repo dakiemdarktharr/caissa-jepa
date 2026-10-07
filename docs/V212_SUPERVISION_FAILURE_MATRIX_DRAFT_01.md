@@ -34,6 +34,7 @@ Use these failure-state labels consistently:
 | ID | Injected condition | Required result | Receipt/action | Evidence retained | Minimum automated assertion |
 | --- | --- | --- | --- | --- | --- |
 | REQ-01 | Request bytes, nonce/digest, release token/FIFO message, source manifest, or runtime binding is malformed, altered, or mismatched | Fail before compute import/callback; never accept a worker response | No action or receipt | After dispatch, retain unit and IPC workspace plus known invocation/cgroup identifiers; report binding mismatch category | Inject each binding failure at its validation boundary; assert no compute callback/import, response read/acceptance, receipt, stop, or workspace cleanup |
+| REQ-01c | Request stdin remains open and never reaches EOF before the caller deadline | Caller/controller enforces the deadline while the worker is blocked in the bounded read; do not wait indefinitely for EOF or treat a partial prefix as a request | No action; no accepted receipt; `not_attempted` unless publication had already begun | After dispatch retain unit and IPC workspace and report unit, invocation/cgroup, deadline, and receipt state for reconciliation | Hold the request pipe open after zero bytes and after a valid-looking prefix; advance a controlled clock to the caller deadline; assert bounded return, no release/compute/response/receipt, and retained post-dispatch handles |
 | GATE-01 | Effective service property, caller/worker cgroup separation, worker `/proc` placement, or live cgroup memory file mismatches | Do not release compute; reject the active service as unverified | No action or receipt | Retain unit and IPC workspace, active unit snapshot, and identifiers needed for reconciliation | Inject each gate mismatch immediately before release; assert no release write, compute import/callback, response, receipt, stop, or workspace cleanup |
 | MGR-01 | Manager query fails after dispatch, returns an incomplete/foreign snapshot, or host boot identity cannot be revalidated | Fail closed; do not infer exit or success from worker response | No action; `not_attempted` unless publication already began | Unit name, invocation ID/cgroup if acquired, IPC path; unit state marked unknown | No response acceptance, receipt write, stop, or IPC cleanup; error carries reconciliation identifiers available at failure point. Mocked v01 coverage now injects unavailable/changed post-exit boot identity; v02 and live failure evidence remain open |
 | MGR-02 | Manager reports failed active/substate, non-success result, or nonzero main status | Treat contradictory or unsuccessful exit evidence as failed execution, even if a response file exists | No action or accepted receipt | Exited manager snapshot, unit and IPC handles | Mocked armed smoke rejects `failed/failed` despite `success`/0 and proves response is not read, with no receipt/stop/cleanup; lower-level receipt parsing still preserves failed state for OOM evidence |
@@ -100,6 +101,27 @@ missing-key values, reports its own source digest and the delegated v02 source
 digest, and leaves v02 behavior unchanged. This does not yet integrate an
 accepted request/runtime path or prove the complete end-to-end contract; the
 collector's capture of both samples is not itself acceptance evidence.
+
+### v02 controller-contract additions before integration
+
+The isolated v02 raw-stdin bootstrap reads at most `MAX_REQUEST_BYTES + 1`
+bytes and validates the exact canonical request before project-source access.
+The byte cap does **not** bound time spent waiting for EOF: the reader blocks
+until EOF or an external controller action. Any future controller must bind
+that wait to the caller deadline and cover REQ-01c before adapter integration.
+The request-carried helper manifest is consistency data, not a trust anchor;
+executed Python, loader, native dependencies, and mapped bytes are not
+attested by the current runtime observer.
+
+The v02 acceptance suite must compose the existing offline helpers with one
+versioned mocked controller/receipt path. It must exercise manager query
+failure and malformed/foreign post-exit fields; exactly-one journal query and
+missing, duplicate, malformed, or foreign markers; and both counter samples,
+including first/second read failure, identity mismatch, malformed values, and
+rollback. Every injected failure must jointly assert no action, no accepted
+receipt, no unsafe stop/cleanup, and preservation/reporting of the unit and
+IPC handles. Existing v01 mocked cases and isolated v02 parser/bootstrap tests
+are component evidence only and do not satisfy this composition contract.
 
 Before any request-adapter integration proposal, convert every row into a
 versioned test case that names the exact injection seam, expected receipt
