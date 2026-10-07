@@ -1,6 +1,9 @@
 import unittest
 
-from tools.v212_dlascl_iteration_bound import source_bound
+from tools.v212_dlascl_iteration_bound import (
+    dsyevd_ieee_binary64_bound,
+    source_bound,
+)
 
 
 class DlasclIterationBoundTests(unittest.TestCase):
@@ -35,6 +38,27 @@ class DlasclIterationBoundTests(unittest.TestCase):
             with self.subTest(invalid=invalid):
                 with self.assertRaises(ValueError):
                     source_bound(invalid)
+
+    def test_ieee_binary64_dsyevd_path_has_one_conditional_pass(self):
+        result = dsyevd_ieee_binary64_bound()
+        self.assertEqual(
+            result["derived_dsyevd_scaling"][
+                "maximum_scaling_iterations_per_call"
+            ],
+            1,
+        )
+        self.assertEqual(
+            result["covered_source_arithmetic_interval"][
+                "combined_add_subtract_multiply_divide"
+            ]["maximum"],
+            532,
+        )
+        self.assertFalse(result["eligibility"]["actual_runtime_attested"])
+        self.assertTrue(
+            result["eligibility"][
+                "finite_total_dlascl_bound_under_declared_assumptions"
+            ]
+        )
 
 
 if __name__ == "__main__":

@@ -3144,3 +3144,14 @@ review caught stale source provenance in the MAC inventory; the tool now names
 adopted v06. Graph freeze remains **NO** and the ≤5% gate remains **untested
 and unpassed** because trainer/replay, the 20×87 mask schedule, full counter,
 and runtime/LAPACK identity are still missing.
+
+### 2026-10-07 conditional IEEE DLASCL bound
+
+Extended the DLASCL source accounting with a finite one-pass result under
+explicit IEEE binary64, gradual-subnormal, finite-input, and reference
+DSYEVD/DLAMCH/DLANSY/DLASCL assumptions. The conditional ceiling is 532
+add/subtract/multiply/divide operations for the N=32 stored triangle. The
+generic parameterized `530*L+2` source formula remains available. Runtime
+selection and actual machine parameters are still unverified, so this does not
+complete the eigensolver counter or clear the ≤5% gate. No numerical
+eigensolver, model, profile, inference, or training ran.

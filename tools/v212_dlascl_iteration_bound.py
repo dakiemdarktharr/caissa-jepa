@@ -83,5 +83,60 @@ def source_bound(iterations: int) -> dict:
     }
 
 
+def dsyevd_ieee_binary64_bound() -> dict:
+    """Return a conditional one-pass bound for DSYEVD's scale call.
+
+    This derives an iteration count from the reference DSYEVD/DLAMCH/DLANSY
+    source under explicit IEEE binary64 assumptions. It does not attest that
+    the NumPy-linked LAPACK uses this implementation or those machine values.
+    """
+    result = source_bound(1)
+    result["schema"] = "caissa.v212.dlascl-dsyevd-ieee-binary64-bound.v01"
+    result["conditional_source_references"] = {
+        "dsyevd_lapack_3_12_1": (
+            "https://www.netlib.org/lapack/explore-html/"
+            "d1/da2/dsyevd_8f_source.html"
+        ),
+        "dlamch_lapack_3_12_1": (
+            "https://www.netlib.org/lapack/explore-html/"
+            "d5/dd4/dlamch_8f_source.html"
+        ),
+        "dlansy_lapack_3_12_1": (
+            "https://www.netlib.org/lapack/explore-html/"
+            "d1/d25/dlansy_8f_source.html"
+        ),
+        "dlascl_lapack_3_12_1": DLASCL_SOURCE,
+    }
+    result["path"]["iteration_basis"] = "derived from DSYEVD scale ratio under declared assumptions"
+    result["conditional_machine_and_input_assumptions"] = {
+        "format": "IEEE 754 binary64 with gradual subnormals",
+        "finite_input_matrix": True,
+        "dlansy_norm": "reference DLANSY('M') returns max(abs(A(i,j)))",
+        "dlamch_safe_minimum": "2**-1022",
+        "dlamch_precision": "2**-52",
+        "least_positive_subnormal": "2**-1074",
+        "largest_finite_value": "strictly below 2**1024",
+    }
+    result["derived_dsyevd_scaling"] = {
+        "smlnum": "2**-970",
+        "bignum": "2**970",
+        "rmin": "2**-485",
+        "rmax": "2**485",
+        "sigma_if_anrm_below_rmin": "1 < sigma <= 2**589",
+        "sigma_if_anrm_above_rmax": "2**-539 < sigma < 1",
+        "conclusion": "both sigma branches satisfy smlnum < sigma < bignum; DLASCL completes its loop on the first pass",
+        "maximum_scaling_calls": 1,
+        "maximum_scaling_iterations_per_call": 1,
+    }
+    result["eligibility"]["finite_total_dlascl_bound_under_declared_assumptions"] = True
+    result["eligibility"]["actual_runtime_attested"] = False
+    result["excluded_or_unresolved"] = [
+        "whether the loaded NumPy-linked LAPACK follows these reference sources and IEEE binary64 assumptions",
+        "DLAMCH, comparisons, branches, indexing, integer arithmetic, and memory work",
+        "the rest of DSYEVD, DSYTRD, and DSTERF (separately inventoried partial scopes)",
+    ]
+    return result
+
+
 if __name__ == "__main__":
-    print(json.dumps(source_bound(1), sort_keys=True, indent=2, allow_nan=False))
+    print(json.dumps(dsyevd_ieee_binary64_bound(), sort_keys=True, indent=2, allow_nan=False))
