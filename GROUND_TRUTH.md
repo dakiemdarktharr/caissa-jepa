@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; raw-state and six-arm parity review)
+
+- An approved read-only `gpt-6-luna/high` review found the raw-state method
+  specified but its selected-window/data lineage not demonstrated. The batch
+  adapter accepts caller-provided windows and outcomes; current synthetic
+  checks do not establish full-episode replay, split/duplicate identity,
+  production manifest provenance, or the 32-window-per-game cross-arm roster.
+- The static dense-forward inventory is 72,544 MAC/window for raw-state versus
+  40,864 for multi-step JEPA on fully valid illustrative masks (+77.53%). This
+  is a material parity risk signal, not a full-graph comparison or verdict:
+  backward/objective work and actual masks are not fully counted. Current
+  matrix, activation, residual/square, reduction, effective-rank, and optimizer
+  counters remain analytical subcomponents; loaded runtime/LAPACK identity and
+  full branch bounds remain open.
+- Graph freeze remains **NO** and the ≤5% gate remains **untested and
+  unpassed**. The reviewer accessed code/documents only; no tests, data, roots,
+  scores/outcomes, simulations, service, inference, profiling, or training ran.
+  No gate advances and no superiority claim is supported.
+
 ## Latest continuation delta (2026-10-07; effective-rank branch interval)
 
 - Added `tools/v212_effective_rank_branch_accounting.py` for the work after

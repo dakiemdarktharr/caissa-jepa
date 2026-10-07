@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 raw-state and six-arm parity review
+
+An approved read-only `gpt-6-luna/high` review found that the method defines
+raw-state targets but current adapters and synthetic fixtures do not prove
+selected-window provenance, full-episode replay, split/duplicate identity, or
+the 32-window-per-game cross-arm roster. The illustrative fully valid dense
+forward inventory is 72,544 MAC/window for raw-state versus 40,864 for
+multi-step JEPA (+77.53%); this is a risk signal, not a complete graph or parity
+verdict. Integrated forward/backward/objective counts, actual masks, linked
+runtime/LAPACK identity, and branch bounds remain open. Graph freeze is still
+**NO** and the ≤5% gate is **untested and unpassed**. No gate advanced.
+
 ### 2026-10-07 V2.12 effective-rank branch interval
 
 Added `tools/v212_effective_rank_branch_accounting.py` to bound the selected-
