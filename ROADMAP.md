@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 clipping branch source correction
+
+The scratch optimizer always materializes `grads[key] * clip_scale` for all
+parameter coordinates, including when `clip_scale` is 1. The branch-specific
+operation is only the scalar division on the norm>5 path. The analytical
+six-arm report now exposes both counts and its test ties them to the source AST;
+optimizer-accounting tests pass 4/4. This corrects source coverage, not total
+compute: objective/LAPACK coverage, frozen masks, and runtime identity remain
+open. Graph freeze is **NO** and the ≤5% gate remains **untested and unpassed**.
+No gate advanced.
+
 ### 2026-10-07 raw-state and six-arm parity review
 
 An approved read-only `gpt-6-luna/high` review found that the method defines

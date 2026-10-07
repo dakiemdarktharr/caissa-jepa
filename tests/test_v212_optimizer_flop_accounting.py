@@ -1,4 +1,6 @@
+import ast
 import unittest
+from pathlib import Path
 
 from tools.v212_optimizer_flop_accounting import ARMS, EMA_ARMS, accounting
 from two_player.v212_model import V212Config, V212Model
@@ -44,6 +46,51 @@ class OptimizerFlopAccountingTests(unittest.TestCase):
         self.assertEqual(report["schedule_updates"], 1740)
         self.assertTrue(any("cannot establish" in item
                             for item in report["limitations"]))
+
+    def test_clipping_branch_matches_source_and_scales_in_both_cases(self):
+        report = accounting()
+        source_path = (Path(__file__).resolve().parents[1]
+                       / "two_player" / "v212_scratch_optimizer.py")
+        tree = ast.parse(source_path.read_text(encoding="utf-8"))
+        function = next(
+            node for node in ast.walk(tree)
+            if isinstance(node, ast.FunctionDef)
+            and node.name == "scratch_adam_ema_step"
+        )
+        scale_assignment = next(
+            node for node in function.body
+            if isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == "clip_scale"
+                    for target in node.targets)
+        )
+        self.assertIsInstance(scale_assignment.value, ast.IfExp)
+        self.assertEqual(ast.unparse(scale_assignment.value.test),
+                         "gradient_norm > GRADIENT_CLIP_NORM")
+        clipped_assignment = next(
+            node for node in ast.walk(function)
+            if isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == "clipped"
+                    for target in node.targets)
+        )
+        self.assertEqual(ast.unparse(clipped_assignment.value),
+                         "grads[key] * clip_scale")
+        self.assertGreater(clipped_assignment.lineno, scale_assignment.lineno)
+        parameter_loop = next(
+            node for node in function.body
+            if isinstance(node, ast.For) and clipped_assignment in node.body
+        )
+        self.assertIsNotNone(parameter_loop)
+        for arm, row in report["arms"].items():
+            n = row["trainable_coordinates"]
+            branches = row["global_clipping_branch"]
+            self.assertEqual(branches["norm_le_5"], {
+                "clip_scale_divisions": 0,
+                "gradient_scale_multiplications": n,
+            })
+            self.assertEqual(branches["norm_gt_5"], {
+                "clip_scale_divisions": 1,
+                "gradient_scale_multiplications": n,
+            })
 
 
 if __name__ == "__main__":

@@ -1,5 +1,19 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; clipping branch source correction)
+
+- Corrected the six-arm optimizer subcounter's branch disclosure: source
+  materializes `grads[key] * clip_scale` for every parameter tensor whether the
+  global norm is ≤5 or >5. The only branch-dependent FP operation is the scalar
+  `5.0 / gradient_norm` division on the >5 path. The report now enumerates both
+  branch components, and an AST regression checks the condition and scaling
+  expression against `scratch_adam_ema_step`.
+- Optimizer-accounting tests pass 4/4; no optimizer step, model objective,
+  data, profile, roots, score/outcome, inference, or training ran. This corrects
+  source coverage only; objective/LAPACK counts, frozen masks and runtime
+  identity remain open. Six-arm graph freeze stays **NO** and ≤5% compute parity
+  remains **untested and unpassed**. No gate advances.
+
 ## Latest continuation delta (2026-10-07; raw-state and six-arm parity review)
 
 - An approved read-only `gpt-6-luna/high` review found the raw-state method

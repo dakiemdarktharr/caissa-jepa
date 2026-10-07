@@ -75,6 +75,20 @@ def _one_update(arm: str) -> dict:
             "total_flops": {"norm_le_5": base_flops,
                             "norm_gt_5": base_flops + 1},
         },
+        "global_clipping_branch": {
+            "norm_le_5": {
+                "clip_scale_divisions": 0,
+                "gradient_scale_multiplications": n,
+            },
+            "norm_gt_5": {
+                "clip_scale_divisions": 1,
+                "gradient_scale_multiplications": n,
+            },
+            "note": (
+                "The source materializes grads[key] * clip_scale in both branches; "
+                "only computing 5.0 / gradient_norm is branch-dependent."
+            ),
+        },
         "separately_reported_operations": {
             "scalar_powers": 2,
             "square_roots": n + 1,

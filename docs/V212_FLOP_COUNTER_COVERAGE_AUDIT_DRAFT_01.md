@@ -135,9 +135,13 @@ no gate changed.
    source-level sub-bound: it does not bound the eigensolver and does not
    attest the active branch sequence in an actual mask/data schedule. The
    actual wheel/backend path is not established by this source audit.
-4. **Global clipping.** Bound both sides of the norm threshold for every arm,
-   including the scalar division and elementwise clipping only on the greater-
-   than-5 branch. Do not use an observed scratch trajectory to narrow the
+4. **Global clipping.** Bound both sides of the norm threshold for every arm.
+   `scratch_adam_ema_step` materializes `grads[key] * clip_scale` on both
+   branches, so the per-coordinate multiplication is present for either norm;
+   only the scalar `5.0 / gradient_norm` division is exclusive to the greater-
+   than-5 branch. `tools/v212_optimizer_flop_accounting.py` now reports these
+   branch components separately and an AST regression ties the accounting to
+   the current source. Do not use an observed scratch trajectory to narrow the
    preregistered intervals.
 5. **Finite/error guards.** Finite-value checks and failures are comparisons
    and control flow, not successful scheduled updates. Record unsupported or
@@ -190,12 +194,13 @@ gate opens from this audit.
 
 `tools/v212_optimizer_flop_accounting.py` translates the current scratch
 Adam/EMA source expressions into per-arm FP add/subtract/multiply/divide
-counts. It includes the global-norm reduction, per-coordinate clip multiply,
-moment updates, bias correction, parameter update, and the three JEPA encoder
-EMA updates. The only value-dependent FLOP branch in this helper is the
-optional scalar clip-scale division; the report gives per-update and 20×87
-optimizer-only intervals. Scalar powers, square roots, finite predicates, and
-non-FLOP validation/copy work are disclosed separately.
+counts. It includes the global-norm reduction, per-coordinate gradient-scale
+multiply on both clipping branches, moment updates, bias correction, parameter
+update, and the three JEPA encoder EMA updates. The only value-dependent FLOP
+branch in this helper is the optional scalar clip-scale division; the report
+gives per-update and 20×87 optimizer-only intervals. Scalar powers, square
+roots, finite predicates, and non-FLOP validation/copy work are disclosed
+separately.
 
 Three synthetic accounting tests compare parameter and target coordinate/tensor
 counts with the six model-arm definitions and assert the arithmetic formulas
