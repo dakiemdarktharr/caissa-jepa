@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 training-FLOP profile protocol draft
+
+Added `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md`, a non-operative
+protocol for the six-arm ≤5% total-training-FLOP gate. It requires the full
+forward/loss/backward, clipping, Adam, EMA, and diagnostics on identical
+preflighted batches/masks, with disposable updates and complete counter
+coverage. The draft is not independently reviewed and no profile was run. The
+current graph omits optimizer/clipping/EMA, selected-window materialization and
+replay are absent, and no full FLOP counter exists; synthetic structure checks
+cannot pass the panel gate. The ≤5% threshold remains **untested and
+unpassed**, and fitting remains prohibited. No data, roots, inference, scores,
+or outcomes were accessed. See `GROUND_TRUTH.md` and the protocol draft.
+
 ### 2026-10-07 V2.12 no-update six-arm objective graph
 
 `two_player/v212_model.py` now implements the six v05 arm objectives and
