@@ -81,6 +81,25 @@ class PartialFlopLedgerTests(unittest.TestCase):
                              sqrt_elements - 1)
             self.assertEqual(known["optimizer_clip_threshold_comparisons"], 1)
             self.assertEqual(known["optimizer_finite_value_predicates"], finite_predicates)
+            self.assertEqual(known["per_update_preflight_scan"], {
+                "scope": "one successful valid-batch preflight_batch path inside one loss_grad invocation",
+                "batch_size": 64,
+                "model_loss_grad_preflight_calls": 1,
+                "numeric_finite_check_arrays": 7,
+                "numeric_finite_check_elements_by_array": {
+                    "x": 12_672, "policy": 64, "value": 64,
+                    "actions": 16_640, "actors": 256,
+                    "future_x": 50_688, "future_value": 256,
+                },
+                "numeric_finite_check_elements": 80_640,
+                "action_count_nonzero_input_elements": 16_640,
+                "action_count_nonzero_output_rows": 256,
+                "action_domain_predicate_element_evaluations": 66_560,
+                "action_row_count_predicate_evaluations": 256,
+                "predicate_count_assumption": (
+                    "counts assume a valid batch reaches every conditional operand; invalid batches may short-circuit earlier"
+                ),
+            })
 
     def test_ledger_explicitly_withholds_parity_and_graph_freeze(self):
         coverage = accounting()["coverage"]

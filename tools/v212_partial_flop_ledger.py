@@ -23,6 +23,7 @@ from . import (
     v212_objective_scalar_accounting as objective_scalar,
     v212_optimizer_flop_accounting as optimizer,
     v212_policy_softmax_accounting as policy,
+    v212_preflight_scan_accounting as preflight_scan,
     v212_regularizer_elementwise_accounting as regularizer,
 )
 
@@ -128,6 +129,7 @@ def _arm_inventory(arm: str, masks: dict[int, np.ndarray]) -> dict:
         },
     }
     known_base = sum(components.values())
+    preflight = preflight_scan.accounting(batch_size=64)
     lower = known_base + branch_intervals["effective_rank_interval"]["lower"] \
         + branch_intervals["optimizer_interval"]["lower"]
     upper = known_base + branch_intervals["effective_rank_interval"]["upper"] \
@@ -164,6 +166,10 @@ def _arm_inventory(arm: str, masks: dict[int, np.ndarray]) -> dict:
             "optimizer_finite_value_predicates": (
                 opt_details["separately_reported_operations"]["finite_value_predicates"]
             ),
+            "per_update_preflight_scan": {
+                key: value for key, value in preflight.items()
+                if key not in {"schema", "coverage"}
+            },
         },
     }
 
@@ -195,7 +201,7 @@ def accounting(valid_by_horizon: dict[int, np.ndarray] | None = None) -> dict:
                 "np.linalg.eigvalsh and actual linked LAPACK operation bounds",
                 "loaded NumPy reduction/tree and actual runtime/backend fingerprints",
                 "scalar powers and transcendental FLOP conversion",
-                "comparisons, integer/indexing, finite checks, preflight and control-flow work",
+                "most comparisons, integer/indexing, finite checks, preflight guards and control-flow work; only action-scan cardinalities are listed separately",
                 "copies, allocations, validation, serialization and unsupported operators",
                 "replay-derived 20-seed × 87-update masks and mask-dependent schedule aggregation",
                 "integrated trainer trace binding adapter, objective, optimizer and scheduled updates",

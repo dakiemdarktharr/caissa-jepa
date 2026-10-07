@@ -2949,3 +2949,18 @@ its deadline; MGR-01 remains partial alongside v02 controller composition and
 live systemd failure coverage. The parser and mocked orchestration suites pass
 55/55, and `git diff --check` passes. No service, request, inference, OOM
 test, training, score, match, or outcome ran; no gate advanced.
+
+### 2026-10-07 repeated model-preflight scan inventory
+
+Added a bounded source-level inventory of numeric finite-check element
+cardinalities and action-validation scan sizes for the repeated
+`preflight_batch` call inside one `loss_grad` invocation. In the illustrative
+64-row shape this covers 80,640 numeric finite-check inputs and a 16,640-entry
+action nonzero scan; comparison-element counts are reported separately. It
+does not estimate runtime or FLOPs, cover all validation/indexing/control-flow
+work, include the one-time dataset preflight, or aggregate the frozen 20×87
+schedule. The source-counter suite passes 58/58; targeted compile and
+whitespace checks pass. An approved read-only review confirmed the counts and
+requested explicit qualification that malformed inputs can short-circuit the
+predicate path. No data or model run occurred; graph freeze remains **NO** and
+≤5% compute parity remains **untested and unpassed**.

@@ -1,5 +1,30 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; repeated preflight scan accounting)
+
+- Added `tools/v212_preflight_scan_accounting.py` and composed its narrowly
+  scoped counts into each arm's one-invocation partial ledger. At the
+  illustrative 64-row shape, one `loss_grad` call invokes `preflight_batch`
+  once; its numeric finite checks span 80,640 input elements across seven
+  arrays, while action validation passes 16,640 entries to `count_nonzero`,
+  emits 256 row counts, and evaluates 66,560 action-domain predicates. These
+  are source cardinalities/predicate-element counts for a successful valid-
+  batch path, not FLOPs or runtime cost. Invalid inputs may short-circuit and
+  evaluate fewer predicates.
+- The inventory explicitly omits most legal/value/role/transition/mask
+  predicates, row scans, indexing, copying, control flow, NumPy runtime work,
+  and the distinct one-time dataset preflight. It is not a complete
+  preflight/counter inventory and does not aggregate the 20×87 schedule.
+- The focused accounting suite passes 58/58 and targeted `compileall` plus
+  `git diff --check` pass under Python 3.14.7 / NumPy 2.5.3 from
+  `/tmp/caissa-jepa-pv-deps`, not the locked Python 3.11.9 / NumPy 2.4.6
+  runtime. The approved read-only reviewer confirmed arithmetic and scope and
+  prompted the valid-path short-circuit qualification; the reviewer ran no
+  tests or project code. No dataset, profile, roots, inference, scores,
+  outcomes, simulation, or training ran. Graph freeze remains **NO** and the
+  ≤5% compute gate remains **untested and unpassed**; prior negative findings
+  and novelty risks remain in force.
+
 ## Latest continuation delta (2026-10-07; owner-reconciled partial FLOP ledger)
 
 - Added `tools/v212_partial_flop_ledger.py`, which composes the current

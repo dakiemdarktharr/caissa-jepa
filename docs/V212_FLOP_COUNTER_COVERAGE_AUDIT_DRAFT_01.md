@@ -438,3 +438,28 @@ be represented separately in the eventual counter. No counter/profile,
 selected-window data, roots, inference, outcomes, or training ran. This source
 change does not address the unresolved linked-LAPACK eigensolver path or open
 any D03 gate; the six-arm ≤5% compute gate remains **untested and unpassed**.
+
+## Repeated model-preflight scan cardinalities (2026-10-07)
+
+`tools/v212_preflight_scan_accounting.py` reports source-shaped cardinalities
+for the `preflight_batch` call executed by each `loss_grad` invocation. At the
+illustrative 64-row shape, the seven numeric arrays passed through finite
+checks contain 80,640 elements total. The action array contributes 16,640
+entries to `count_nonzero`, 256 output row counts, and 66,560 action-domain
+predicate-element evaluations across the four `<`, `>`, `!=`, `!=` checks.
+These native cardinalities are reported separately from candidate FLOPs and
+are not an estimate of NumPy runtime cost. Predicate totals describe the
+successful valid-batch path: Python `or` short-circuits for malformed batches,
+so failed inputs may evaluate fewer operands and predicates.
+
+Three focused tests pin these values and the source call sites; the partial
+ledger carries the same subinventory for each arm because the invocation's
+preflight is shared by all six. The full accounting suite passes 58/58, and
+targeted `compileall` and `git diff --check` pass. An approved read-only review
+confirmed the counts and scope and prompted the short-circuit qualification;
+the reviewer ran no code. This is deliberately incomplete: other
+legal/value/actor/transition/mask checks, terminal row scans, indexing,
+allocation/copy/control flow, NumPy implementation cost, and the one-time
+dataset preflight remain outside it. It does not aggregate 20×87 updates or
+change any D03 precondition. No batch/data, profile, or training was run.
+Graph freeze remains **NO** and the ≤5% gate remains **untested and unpassed**.
