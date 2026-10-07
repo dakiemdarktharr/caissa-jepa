@@ -45,6 +45,7 @@ here.
 | `preflight_batch` and metric serialization | Mask construction, `np.isin`/finite checks, integer nonzero counting, indexing, Python control flow, and list/dict conversion | Action validation uses `np.count_nonzero(actions, axis=2)` over 256×65 entries per `loss_grad` invocation. It adds no floating-point row-sum reduction; account for the integer/comparison scan separately on every call because structural preflight reruns. Dataset-level exact-rule preflight remains a separate one-time cost under D03 |
 | `scratch_adam_ema_step` | Input validation/copies, global gradient-square/reduction, clipping multiplication, first/second moments, bias-corrected Adam, parameter update, and EMA for the three JEPA arms | `tools/v212_optimizer_flop_accounting.py` gives an analytical per-arm formula for this helper and bounds `norm <= 5`/`norm > 5`; zero norm uses the no-division branch. It is a subcomponent only, not an executed counter. Keep scratch arrays disposable; report validation, copies and finite checks outside FLOPs |
 | Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
+| Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
 
 ## Required branch accounting
 
@@ -129,6 +130,28 @@ optimizer or a FLOP instrumentation/profile. It omits all objective-graph work,
 including the unresolved linked-LAPACK eigensolver. Therefore it cannot decide
 the ≤5% panel gate or satisfy D03's source/runtime, mask, data/replay, or
 independent-review prerequisites. No gate opens.
+
+## Explicit model-matmul accounting follow-up (2026-10-07)
+
+`tools/v212_model_matmul_flop_accounting.py` inventories each source-level
+dense `@` in the objective graph and manual reverse pass using `2*m*k*n`.
+Inputs are the three 64-row horizon-valid masks; the tool derives active prefix
+rows as the union of all valid downstream horizons, matching the graph's
+prefix rule. It reports each call site, active rows, forward projection
+matmuls, covariance matmuls, and the total explicit-matmul FLOPs. It includes
+the raw-state `F→D→E` forward and backward products and the direct-leaf branch.
+
+Four synthetic tests verify the all-valid forward projection inventory against
+the existing six-arm MAC audit, assert the current source-level `@` sites,
+check masked prefixes/target-encoder rows, and reject malformed inputs. These
+accounting tests do not execute the graph; the combined regression command
+also ran existing objective tests on synthetic fixtures. For an illustrative fully valid 64-row
+batch, the explicit matmul totals range from 4,329,472 FLOPs (direct-leaf) to
+26,128,384 FLOPs (raw-state). These are shape-derived matrix-product counts,
+not observed work or the frozen training-mask schedule. They omit
+elementwise/reduction operations, nonlinearities, the LAPACK eigensolver,
+optimizer, preflight, and runtime effects; they cannot decide total parity.
+No data, game positions, model graph execution, profile, or training was used.
 
 ## Primary implementation references checked
 

@@ -103,6 +103,13 @@ arithmetic intervals from the six arms' trainable/EMA shapes and the clipping
 branch, with synthetic formula checks. It is not a full counter, is not
 independently accepted, and does not change the no-profile disposition above.
 
+A mask-parameterized inventory of explicit model matrix products is also
+present at `tools/v212_model_matmul_flop_accounting.py`, covering forward and
+manual-backward `@` sites plus covariance products. Its synthetic full-valid
+counts and mask fixtures check formulas only. It omits eigensolver and other
+objective operations and is not the full counter or an authorization to
+profile.
+
 ## 3. Non-fitting execution and branch-bound contract
 
 Protocol approval alone does not authorize data or label access. A future

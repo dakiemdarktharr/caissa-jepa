@@ -1,5 +1,26 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; explicit model-matmul accounting)
+
+- Added `tools/v212_model_matmul_flop_accounting.py` to derive FLOPs for every
+  explicit dense `@` in the current six-arm objective graph, including
+  backward products and covariance matmuls. It accepts per-horizon masks for
+  the fixed 64-window batch and derives each active prefix from downstream
+  valid horizons. Four synthetic tests match full-valid forward projection
+  counts to the existing MAC inventory, assert all current `@` source sites,
+  and check masked rows and malformed masks.
+- Under a fully valid illustrative batch, explicit-matmul FLOPs range from
+  4,329,472 (direct-leaf) to 26,128,384 (raw-state). This is only matrix-product
+  arithmetic under assumed masks, not the actual scheduled compute or a total
+  FLOP result. The tool omits elementwise/reduction math, nonlinearities,
+  eigensolver/LAPACK, optimizer, preflight, runtime, and non-FLOP work. No
+  trajectory/data, model graph, profile, inference, score, outcome, or training
+  ran. The counting tool itself did not execute the model; the combined
+  regression suite also exercised existing no-update graph tests on synthetic
+  fixture arrays only; the combined eight-module validation passed 35/35.
+  Full-counter, data/replay, runtime, and independent
+  review gates remain open; ≤5% compute remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; optimizer-only FLOP accounting)
 
 - Added `tools/v212_optimizer_flop_accounting.py`, an analytical translation of

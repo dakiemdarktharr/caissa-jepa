@@ -2,6 +2,22 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 explicit model-matmul accounting
+
+Added a mask-parameterized analytical inventory for every explicit dense
+matrix product in the no-update objective and manual backward graph. It reports
+active-prefix rows, target/value rows, each matmul call site, and FLOPs under
+`2*m*k*n`, including raw-state `F→D→E`, direct-leaf and covariance products.
+Four synthetic tests match the existing fully valid forward-MAC audit, assert
+all current source-level `@` sites, and test mask-dependent calls. A fully valid illustrative 64-window batch ranges from
+4,329,472 explicit-matmul FLOPs for direct-leaf to 26,128,384 for raw-state;
+these are assumed-shape counts, not observed schedule work or total FLOPs.
+Elementwise/reduction work, LAPACK, optimizer and runtime remain uncounted, so
+the ≤5% gate cannot be inferred. No real data ran; the counting tool did not
+execute the graph, while the combined eight-module regression suite exercised
+existing no-update graph tests on synthetic arrays and passed 35/35. All
+profile, training and pre-fit gates remain closed.
+
 ### 2026-10-07 V2.12 optimizer-only FLOP accounting
 
 Added an analytical count for the scratch Adam/EMA helper, including
