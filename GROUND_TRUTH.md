@@ -1,5 +1,22 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; pooled objective scalar inventory)
+
+- Added `tools/v212_objective_scalar_accounting.py` for scalar denominator
+  weighting, horizon scales, pooled loss accumulation, and gradient
+  coefficients in the horizon objective. Under illustrative all-valid masks,
+  the candidate subtotal is 42 operations/invocation for multi-step JEPA and
+  recursive raw-state, 28 for single-pair and single-horizon JEPA, 21 for
+  value-only rollout, and 2 for direct-leaf value. These are narrowly scoped
+  source-level subtotals, not comparable total compute estimates. The direct
+  leaf counter rejects schedules without a valid H4 row.
+- Objective scalar, regularizer, and policy softmax source-accounting tests
+  pass 11/11; targeted compile and `git diff --check` pass. A first expected
+  count assertion exposed a test-fixture arithmetic mistake, which was
+  corrected before the passing rerun. No model/data/profile, roots, inference,
+  scores/outcomes, or training ran. Graph freeze remains **NO** and ≤5% parity
+  remains **untested and unpassed**; no gate advances.
+
 ## Latest continuation delta (2026-10-07; regularizer and softmax elementwise inventories)
 
 - Added `tools/v212_policy_softmax_accounting.py` for the fixed 64×65 root
