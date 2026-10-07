@@ -93,6 +93,14 @@ class V212WindowBatchTests(unittest.TestCase):
         self.assertTrue(batch["terminal"][0, 0])
         self.assertFalse(batch["transition_exists"][0, 1:].any())
         self.assertFalse(batch["target_exists"][0, 1:].any())
+        for horizon in (1, 2, 4):
+            counts = masks["counts"][horizon]
+            self.assertEqual(
+                counts["valid_nonterminal"] + counts["terminal_masked"]
+                + counts["missing_or_truncated"],
+                64,
+            )
+            self.assertEqual(counts["invalid_transition"], 0)
         expected_h1_terminal = sum(
             any(horizon == 1 for horizon, _ in window.terminal_targets)
             for window in fixed_windows)

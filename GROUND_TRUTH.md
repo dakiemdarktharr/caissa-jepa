@@ -11,6 +11,9 @@
   cases for unclassified rows and invalid-transition declarations, and updated
   synthetic fixtures to form a complete partition. See
   `docs/V212_SCHEDULE_MANIFEST_AUDIT_DRAFT_03.md`.
+- An exact-rule synthetic adapter batch now asserts the same count partition
+  directly from `preflight_batch`, rather than validating only a declared
+  manifest fixture.
 - Schedule v03/rejection, receipt-bound, adapter, and replay-focused tests pass
   29/29. This validates
   declaration consistency only; it does not prove actual manifest counts,

@@ -33,5 +33,7 @@ necessary; source-data provenance and trainer exclusivity remain open. The
 frozen schedule or compute result. The ≤5% gate remains untested and unpassed.
 
 Focused schedule, receipt-bound, adapter, and trajectory tests use synthetic
-fixtures only. They provide regression evidence for this validator contract,
-not data, profile, training, or superiority evidence.
+fixtures only. One exact-rule synthetic adapter batch also checks the category
+partition directly against `preflight_batch` counts. These tests provide
+regression evidence for this validator contract, not data, profile, training,
+or superiority evidence.
