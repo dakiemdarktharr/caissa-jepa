@@ -243,27 +243,33 @@ no gate changed.
 
 ## Partial DSYTD2 source bound (2026-10-07)
 
-`tools/v212_dsytd2_rank_update_bound.py` counts only the reference-source
-rank-update operations in the unblocked DSYTD2 lower-triangle path. For each
-active reflector order `m=2..31`, the source-proxy formulas are DSYMV
-`2m²+3m`, DDOT `2m`, DSYTD2's scalar alpha expression `2`, DAXPY `2m`, and
-DSYR2 at most `2m²+4m`; the total is **47,165** operations at N=32. The
-size-one reflector returns with zero TAU and skips the update. Source anchors:
+`tools/v212_dsytd2_rank_update_bound.py` counts source-proxy rank-update
+operations in the unblocked DSYTD2 lower-triangle path. For each active
+reflector order `m=2..31`, the formulas are DSYMV `2m²+3m`, DDOT `2m`,
+DSYTD2's scalar alpha expression `2`, DAXPY `2m`, and DSYR2 at most
+`2m²+4m`; this subtotal is **47,165** operations at N=32. The size-one
+reflector returns with zero TAU and skips the update. The tool also counts
+DLARFG's direct scalar expressions plus reference DSCAL vector multiplications
+under KNT≤20: 11,745 operations, bringing the subtotal to 58,910. This
+DLARFG/DSCAL extension has not received independent review. Source anchors:
 [OpenBLAS v0.3.31 DSYTD2](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsytd2.f),
+[DLARFG](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dlarfg.f),
 [reference DSYMV](https://www.netlib.org/blas/dsymv.f),
 [DDOT](https://www.netlib.org/blas/ddot.f),
 [DAXPY](https://www.netlib.org/blas/daxpy.f), and
-[DSYR2](https://www.netlib.org/blas/dsyr2.f).
+[DSYR2](https://www.netlib.org/blas/dsyr2.f), [DSCAL](https://www.netlib.org/blas/dscal.f).
 
-This is a semantic/source proxy for the named reference expressions, not an
-attestation of linked BLAS kernels or compiler instructions. It excludes
-DLARFG and DNRM2/DLAMCH/DLAPY2/DSCAL helper arithmetic; DNRM2 in particular can
-use architecture-dispatched implementations. It also does not establish that
-the eventual DSYTRD call selects this unblocked path: the tagged reference
-`ILAENV` choice and the actual linked ILAENV/runtime must be checked at freeze.
-If DSYTRD takes a blocked path, DLATRD/DSYR2K work is omitted. This subtotal
-does not close the eigensolver coverage item, establish full-counter coverage,
-or open profile/training/parity gates.
+The reference path decision is source-resolved: reference LAPACK v3.12.1
+`ILAENV` gives NB=32 for DSYTRD, while tagged OpenBLAS DSYTRD enters its blocked
+path only for `1 < NB < N`; at N=32 it resets NB=1 and calls DSYTD2 once.
+See [reference ILAENV](https://github.com/Reference-LAPACK/lapack/blob/v3.12.1/SRC/ilaenv.f)
+and [tagged DSYTRD](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsytrd.f).
+This is conditional on those reference sources and does not attest the actual
+NumPy-linked ILAENV/runtime. Reference BLAS expressions are semantic proxies,
+not linked-kernel or compiler-instruction traces. DNRM2, DLAMCH, and DLAPY2
+internals remain excluded; DNRM2 can use architecture-dispatched kernels.
+The subtotal does not close eigensolver coverage, establish full-counter
+coverage, or open profile/training/parity gates.
 
 ## Coverage gaps and next admissible work
 

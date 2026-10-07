@@ -2,19 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-07 partial DSYTD2 rank-update bound
+### 2026-10-07 DSYTRD reference path and partial helper accounting
 
-Added `tools/v212_dsytd2_rank_update_bound.py` for only the reference-source
-unblocked DSYTD2 rank-update work. The active reflector sizes 2–31 sum to
-47,165 candidate add/subtract/multiply/divide operations, excluding DLARFG and
-all helpers. An approved read-only `gpt-6-luna/high` reviewer confirmed the
-formulas and highlighted that DNRM2 is architecture/kernel dispatched and the
-eventual DSYTRD block-size selection must be established before claiming an
-executed path. The subtotal is a reference-source proxy, not a complete
-DSYTD2/eigensolver bound or actual linked-runtime trace. The focused
-DSYTD2/DSTERF suite passes 7/7; targeted compile and whitespace checks pass.
-No eigensolver, model, profile, service, data, simulation, inference, or
-training ran. No gate changed.
+`tools/v212_dsytd2_rank_update_bound.py` now reports 47,165 reference-BLAS
+rank-update operations plus a 11,745 direct DLARFG/DSCAL candidate subtotal,
+for 58,910 candidate operations excluding DNRM2, DLAMCH, and DLAPY2 helper
+internals. The latter subtotal is a source calculation, not independently
+reviewed. Primary-source inspection also establishes that reference
+ILAENV(v3.12.1) returns NB=32 for DSYTRD at N=32; tagged DSYTRD consequently
+falls back to DSYTD2 and omits DLATRD/DSYR2K in that reference path. Actual
+linked ILAENV and kernel dispatch remain unverified, so this is not a complete
+eigensolver or runtime bound. The approved reviewer confirmed only the
+47,165 rank-update formulas/subtotal and emphasized the DNRM2/runtime caveats.
+The focused DSYTD2/DSTERF suite passes 7/7; targeted compile and whitespace
+checks pass. No eigensolver or model ran; no gate changed.
 
 ### 2026-10-07 DSTERF source-bound correction
 

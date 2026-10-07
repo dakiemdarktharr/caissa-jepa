@@ -1,25 +1,29 @@
 # CAISSA-JEPA — Ground Truth
 
-## Latest continuation delta (2026-10-07; partial DSYTD2 rank-update bound)
+## Latest continuation delta (2026-10-07; DSYTRD reference path and partial helper accounting)
 
 - Added `tools/v212_dsytd2_rank_update_bound.py` for the reference-source
-  unblocked DSYTD2 rank-update operations only. Across active reflector orders
-  2–31, its DSYMV, DDOT, scalar-alpha, DAXPY, and DSYR2 subtotal is 47,165
-  candidate add/subtract/multiply/divide operations per 32×32 reduction.
-  The subtotal excludes DLARFG and every helper; DNRM2 remains unresolved
-  because the OpenBLAS implementation can vary by dispatched kernel.
-- An approved read-only `gpt-6-luna/high` review confirmed the formulas and
-  subtotal and cautioned that the DSYTD2-only DSYTRD path is conditional on the
-  eventual linked ILAENV selecting an unblocked branch. Reference BLAS
-  expressions are a source proxy, not evidence of the actual linked binary or
-  kernel trace. DSYTRD block selection, DLARFG/helpers, DSYEVD wrapper/scaling,
-  and actual runtime identity remain open.
-- The focused DSYTD2/DSTERF suite passes 7/7 under the pinned Python 3.11.9
-  temporary environment; targeted `compileall` and `git diff --check` pass.
-  No eigensolver, model, profile, service, inference, simulation, data, or
-  training ran. This partial subtotal does not clear the eigensolver/full
-  counter or six-arm parity gates; graph freeze remains **NO** and ≤5% remains
-  **untested and unpassed**.
+  unblocked DSYTD2 path. Its reference-BLAS rank-update subtotal is 47,165
+  candidate add/subtract/multiply/divide operations across active reflector
+  orders 2–31. A further source expression count adds 11,745 direct DLARFG /
+  DSCAL candidate operations under the 20-pass underflow bound, for a combined
+  subtotal of 58,910. This still excludes DNRM2, DLAMCH, and DLAPY2 internals;
+  it is not a complete DSYTD2 bound.
+- Source inspection now pins the *reference* N=32 DSYTRD branch: reference
+  ILAENV returns NB=32 for DSYTRD, and DSYTRD's `NB>1 .AND. NB<N` condition
+  therefore selects the unblocked DSYTD2 call. This is not evidence that the
+  future NumPy-linked ILAENV/runtime follows that path. DNRM2 architecture
+  dispatch, other helper internals, DSYEVD scaling/wrapper, and actual runtime
+  identity remain open. Reference BLAS expressions remain semantic proxies,
+  not linked-kernel counts.
+- An approved read-only `gpt-6-luna/high` review confirmed the rank-update
+  formulas and 47,165 subtotal; the added DLARFG/DSCAL callsite subtotal is a
+  separate unreviewed source calculation. The focused DSYTD2/DSTERF suite
+  passes 7/7 under the pinned Python 3.11.9 temporary environment; targeted
+  `compileall` and `git diff --check` pass. No eigensolver, model, profile,
+  service, inference, simulation, data, or training ran. No eigensolver/full
+  counter or six-arm parity gate is cleared; graph freeze remains **NO** and
+  ≤5% remains **untested and unpassed**.
 
 ## Latest continuation delta (2026-10-07; DSTERF source-bound correction)
 
