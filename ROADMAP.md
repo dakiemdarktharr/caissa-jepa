@@ -20,6 +20,14 @@ inventory but leaves linked-runtime identity, complete eigensolver coverage,
 graph freeze, and the ≤5% gate unresolved. No eigensolver, profile, inference,
 or training ran.
 
+The DSTERF component report now checks additivity across direct DSTERF/DLAE2,
+DLAMCH/DLAPY2, and DLASCL/DLAMCH owners: 432,709 add/subtract/multiply/divide
+operations, with 1,008 power sites and 2,016 square roots separate. DLANST and
+DLASRT add no arithmetic operations under the selected convention; their
+non-FLOP activity stays in native units. The report is still conditional
+reference-source accounting and leaves runtime and full eigensolver coverage
+open.
+
 The approved read-only raw-state/six-arm review found the adopted recurrence,
 loss, gradients, and separated MAC/matmul scopes consistent; replay, masks,
 trainer, and complete counter/runtime evidence remain missing. It also caught

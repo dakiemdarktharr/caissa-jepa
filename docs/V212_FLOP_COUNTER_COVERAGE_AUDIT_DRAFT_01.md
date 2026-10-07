@@ -765,6 +765,16 @@ Three focused tests, targeted compilation, and whitespace checks pass. This
 is unreviewed reference-source evidence, not actual linked-runtime coverage
 or a complete DSTERF/eigensolver bound; no gate advances.
 
+`tools/v212_dsterf_source_inventory.py` composes the non-overlapping N=32
+sub-bound owners as a consistency report: 428,497 direct DSTERF/DLAE2
+arithmetic operations, 3,844 setup-DLAMCH/DLAPY2 helper operations, and 368
+DLASCL/per-call-DLAMCH operations, for 432,709 total. It reports 1,008 power
+sites and 2,016 square roots separately; DLANST and DLASRT add no
+add/subtract/multiply/divide operations under this convention. Their scan,
+comparison, and call cardinalities remain in native non-FLOP units. This
+composition checks subcounter ownership/additivity but does not establish
+runtime identity, full DSTERF non-FLOP coverage, or a complete eigensolver.
+
 ## DLASCL conditional source bound (2026-10-07)
 
 `tools/v212_dlascl_iteration_bound.py` counts source-visible arithmetic in

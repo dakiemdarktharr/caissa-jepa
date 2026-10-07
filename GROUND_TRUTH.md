@@ -20,6 +20,14 @@
   complete the DSTERF/eigensolver counter. Three focused tests, compile, and
   diff checks pass. No numerical solver or model ran; graph freeze remains
   **NO** and the ≤5% gate remains **untested and unpassed**.
+- Added `tools/v212_dsterf_source_inventory.py` to compose the source
+  arithmetic subcounter owners without overlap: 428,497 direct DSTERF/DLAE2,
+  3,844 setup-DLAMCH/DLAPY2, and 368 DLASCL/per-call-DLAMCH operations, totaling
+  432,709. It reports 1,008 scalar power sites and 2,016 square roots
+  separately, and carries DLANST/DLASRT cardinalities in native non-FLOP
+  units. This is a composition consistency check, not runtime evidence or a
+  complete eigensolver/full-counter result. Three new focused tests pass;
+  gates remain unchanged.
 - The approved read-only raw-state/six-arm review found the adopted recurrence,
   loss, gradients, and MAC-vs-matmul scopes internally consistent; trainer,
   selected-window replay, actual 20×87 masks, and complete counter/runtime
