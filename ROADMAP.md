@@ -2,6 +2,28 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 DSTERF scan/sort source cardinalities
+
+Added an unreviewed reference-source inventory for DSTERF's remaining
+DLANST/DLASRT helper activity. DLANST('M') has at most 16 calls at N=32,
+aggregate maxima of 32 diagonal and 31 off-diagonal absolute evaluations, and
+up to 62 relational-comparison and 62 DISNAN call sites; its arithmetic FLOP
+sites are zero. The independent call maximum and scan maxima do not occur on
+the same block partition. DLASRT is called once on successful completion with
+32 entries; detailed value-dependent quicksort/insertion comparison counts
+remain unresolved. Focused formula tests and static checks pass. This narrows
+the source-activity inventory but leaves linked-runtime identity, sorting
+work, complete eigensolver coverage, graph freeze, and the ≤5% gate unresolved.
+No eigensolver, profile, inference, or training ran.
+
+The approved read-only raw-state/six-arm review found the adopted recurrence,
+loss, gradients, and separated MAC/matmul scopes consistent; replay, masks,
+trainer, and complete counter/runtime evidence remain missing. It also caught
+that `2^-970..2^970` belong to DSYEVD's thresholds, while DLASCL's local
+binary64 limits are `2^-1022..2^1022`. The tool and coverage audit now name
+these separately. Existing one-pass conclusions and operation ceilings remain
+conservative; no gate changed.
+
 ### 2026-10-07 conditional DSTERF scaling bound
 
 Added a conditional reference-source bound for DSTERF's DLASCL path. With

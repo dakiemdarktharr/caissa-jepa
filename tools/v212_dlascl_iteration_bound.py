@@ -118,13 +118,20 @@ def dsyevd_ieee_binary64_bound() -> dict:
         "largest_finite_value": "strictly below 2**1024",
     }
     result["derived_dsyevd_scaling"] = {
-        "smlnum": "2**-970",
-        "bignum": "2**970",
+        "dsyevd_smlnum": "2**-970",
+        "dsyevd_bignum": "2**970",
         "rmin": "2**-485",
         "rmax": "2**485",
         "sigma_if_anrm_below_rmin": "1 < sigma <= 2**589",
         "sigma_if_anrm_above_rmax": "2**-539 < sigma < 1",
-        "conclusion": "both sigma branches satisfy smlnum < sigma < bignum; DLASCL completes its loop on the first pass",
+        "dlascl_local_limits": (
+            "under IEEE binary64 DLASCL uses smlnum=DLAMCH('S')=2**-1022 "
+            "and bignum=1/smlnum=2**1022"
+        ),
+        "conclusion": (
+            "both DSYEVD sigma branches are inside DSYEVD's own scaling "
+            "thresholds; DLASCL completes its loop on the first pass"
+        ),
         "maximum_scaling_calls": 1,
         "maximum_scaling_iterations_per_call": 1,
     }

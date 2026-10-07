@@ -48,6 +48,13 @@ class DlasclIterationBoundTests(unittest.TestCase):
             1,
         )
         self.assertEqual(
+            result["derived_dsyevd_scaling"]["dsyevd_smlnum"], "2**-970"
+        )
+        self.assertIn(
+            "2**-1022",
+            result["derived_dsyevd_scaling"]["dlascl_local_limits"],
+        )
+        self.assertEqual(
             result["covered_source_arithmetic_interval"][
                 "combined_add_subtract_multiply_divide"
             ]["maximum"],

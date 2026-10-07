@@ -1,5 +1,29 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; DSTERF scan/sort cardinalities)
+
+- Added `tools/v212_dsterf_scan_sort_source_bound.py` for DLANST/DLASRT source
+  activity in reference DSTERF. At N=32, DLANST has at most 16 calls; aggregate
+  scan maxima are 32 diagonal and 31 off-diagonal absolute evaluations, with
+  up to 62 relational-comparison and 62 DISNAN call sites. These maxima have
+  different block partitions and are reported separately. The norm-mode
+  source has zero add/subtract/multiply/divide operations.
+- On successful completion, DLASRT is called once with 32 values. Its
+  quicksort/insertion-sort source path is recorded, but value-dependent
+  comparison/partition counts remain unresolved. This sub-bound is unreviewed,
+  reference-source-only evidence; it does not attest the loaded runtime or
+  complete the DSTERF/eigensolver counter. Three focused tests, compile, and
+  diff checks pass. No numerical solver or model ran; graph freeze remains
+  **NO** and the ≤5% gate remains **untested and unpassed**.
+- The approved read-only raw-state/six-arm review found the adopted recurrence,
+  loss, gradients, and MAC-vs-matmul scopes internally consistent; trainer,
+  selected-window replay, actual 20×87 masks, and complete counter/runtime
+  evidence remain missing. That review also caught a source-label mix-up:
+  `2^-970..2^970` are DSYEVD's scaling thresholds, while DLASCL's local
+  binary64 `DLAMCH('S')` limits are `2^-1022..2^1022`. Tool/docs labels were
+  clarified; existing one-pass conclusions and operation ceilings are
+  conservative and unchanged. No gate advanced.
+
 ## Latest continuation delta (2026-10-07; conditional DSTERF scaling bound)
 
 - Added `tools/v212_dsterf_dlascl_source_bound.py`. Under finite IEEE

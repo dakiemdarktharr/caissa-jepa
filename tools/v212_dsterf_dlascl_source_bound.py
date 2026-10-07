@@ -76,7 +76,11 @@ def source_bound() -> dict:
             "ratio_envelopes": {
                 "large_norm_branch": "each input/restore ratio lies between 1 and <2**515 in magnitude",
                 "small_norm_branch": "each input/restore ratio lies between 1 and <2**669 in magnitude",
-                "dlascl_ieee64_safe_ratio_interval": "[2**-970, 2**970]",
+                "dlascl_local_ieee64_limits": (
+                    "DLASCL sets smlnum=DLAMCH('S')=2**-1022 and "
+                    "bignum=1/smlnum=2**1022"
+                ),
+                "dsterf_caller_ratio_outer_envelope": "[2**-970, 2**970]",
             },
         },
         "path_upper_bounds": {

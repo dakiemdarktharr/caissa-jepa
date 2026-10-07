@@ -709,8 +709,12 @@ scaling calls (D and E) and one output restore call (D) for each scaled
 non-singleton tridiagonal block. At N=32 there can be at most 16 such blocks.
 For finite IEEE binary64 values, `ssfmax=2^511/3` and `ssfmin=2^-405`; the
 largest-magnitude scale ratio in the large-norm branch is below `2^515`, and
-in the small-norm branch below `2^669`. These sit within DLASCL's
-`[2^-970,2^970]` one-pass interval, in either input or restore direction.
+in the small-norm branch below `2^669`; inverse-direction ratios are bounded
+away from zero by `2^-669`. These caller-derived ratios are inside the more
+conservative `[2^-970,2^970]` outer envelope. DLASCL itself sets its local
+`smlnum=DLAMCH('S')=2^-1022` and `bignum=2^1022` under the binary64 assumption;
+these are distinct from DSYEVD's `safmin/eps` scaling limits. Both directions
+therefore remain within DLASCL's local one-pass range.
 The bound therefore uses at most 48 DLASCL calls and 80 vector-element
 multiplications across all calls. Each call contributes four source
 arithmetic operations for DLASCL's one-pass scalar work plus two from its
@@ -731,6 +735,30 @@ work, the wider eigensolver, and linked-library identity remain open. Fourteen
 focused formula tests, targeted `compileall`, and `git diff --check` pass. No
 eigensolver, profile, or model ran; no gate changed.
 
+## DSTERF DLANST/DLASRT source-cardinality sub-bound (2026-10-07)
+
+`tools/v212_dsterf_scan_sort_source_bound.py` accounts for the remaining
+reference DSTERF helper call and scan cardinalities without converting them
+into FLOPs. For N=32, singleton blocks skip DLANST and at most 16
+non-singleton blocks call `DLANST('M')`. Its source scans `D(N)` once plus
+`D(i)` and `E(i)` for each loop iteration. Aggregate maxima are 32 diagonal
+and 31 off-diagonal absolute-value evaluations (63 total) with one order-32
+block; the separate 16-call maximum occurs with order-2 blocks. The source
+contains at most 62 relational-comparison sites and 62 `DISNAN` call sites.
+For this norm mode, add/subtract/multiply/divide sites are zero.
+
+On successful DSTERF completion, `DLASRT('I',N,D,INFO)` is called once with
+32 values. Its source uses quicksort and insertion sort for partitions up to
+length 21. This sub-bound records the call/input size but leaves comparison,
+partition, indexing, swap, and memory-operation cardinalities unresolved
+rather than infer them from an unproven worst-case formula. Sources are
+[DSTERF](https://netlib.org/lapack/explore-html/d9/df2/dsterf_8f_source.html),
+[DLANST](https://netlib.org/lapack/explore-html/d0/d90/dlanst_8f_source.html),
+and [DLASRT](https://netlib.org/lapack/explore-html/df/ddf/dlasrt_8f_source.html).
+Three focused tests, targeted compilation, and whitespace checks pass. This
+is unreviewed reference-source evidence, not actual linked-runtime coverage
+or a complete DSTERF/eigensolver bound; no gate advances.
+
 ## DLASCL conditional source bound (2026-10-07)
 
 `tools/v212_dlascl_iteration_bound.py` counts source-visible arithmetic in
@@ -745,8 +773,10 @@ the iteration cap depends on the machine model. A second source path derives
 `L=1` and 532 operations under explicit IEEE binary64 with gradual subnormals,
 finite inputs, the reference DLAMCH values, reference DLANSY('M'), and
 reference DSYEVD/DLASCL control flow: DSYEVD's scaling factor lies strictly
-between `smlnum=2^-970` and `bignum=2^970`, so the helper's first pass takes
-its terminal ratio branch. This conditional bound is not an attestation of the
+between DSYEVD's own `smlnum=2^-970` and `bignum=2^970`, so the helper's first
+pass takes its terminal ratio branch. DLASCL separately sets its local
+`smlnum=DLAMCH('S')=2^-1022` and `bignum=2^1022` for binary64. This conditional
+bound is not an attestation of the
 loaded NumPy-linked LAPACK or machine parameters. Comparisons, branches,
 DLAMCH, and the rest of the eigensolver remain excluded. Four standard-library
 tests and targeted static checks pass. No eigensolver, model, data, profile,

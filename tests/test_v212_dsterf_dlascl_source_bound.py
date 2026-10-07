@@ -19,6 +19,11 @@ class DsterfDlasclSourceBoundTests(unittest.TestCase):
         self.assertEqual(arithmetic["add_subtract_multiply_divide"], 368)
         self.assertIn("<2**515", ratios["large_norm_branch"])
         self.assertIn("<2**669", ratios["small_norm_branch"])
+        self.assertIn("2**-1022", ratios["dlascl_local_ieee64_limits"])
+        self.assertEqual(
+            ratios["dsterf_caller_ratio_outer_envelope"],
+            "[2**-970, 2**970]",
+        )
 
     def test_partial_dsterf_aggregate_includes_nonoverlapping_prior_scopes(self):
         combined = source_bound()["combined_partial_dsterf_candidate"]
