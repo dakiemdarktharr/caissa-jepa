@@ -2,27 +2,26 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-07 V2.12 training-FLOP profile protocol draft
+### 2026-10-07 V2.12 training-FLOP profile protocol revision
 
-Added `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md`, a non-operative
-protocol for the six-arm ≤5% total-training-FLOP gate. It requires the full
-forward/loss/backward, clipping, Adam, EMA, and diagnostics on identical
-preflighted batches/masks, with disposable updates and complete counter
-coverage. An arm-routed pure one-step scratch Adam/clipping/EMA helper is now
-implemented outside the model graph; four focused synthetic-array tests pass,
-including all six EMA-routing cases, and inputs remain unchanged. Independent
-read-only review confirmed its equations and routing guard. It is not a trainer
-or a measured profile. An approved read-only reviewer found that the initial draft
-conflated mask-mandated per-example skips with skipped scheduled work, and used
-arm ordering rather than 5% pass/fail invariance to constrain uncounted FLOPs.
-A follow-up confirmed corrections to both points and clarified separate
-training-target data/preflight authorization. This was internal-consistency
-review, not protocol acceptance; no profile was run. The helper is not
-integrated into the objective graph or a trainer; selected-window
-materialization/replay and a full FLOP counter are absent. Synthetic structure
-checks cannot pass the panel gate. The ≤5% threshold remains **untested and
-unpassed**, and fitting remains prohibited. No data, roots, inference, scores,
-or outcomes were accessed. See `GROUND_TRUTH.md` and the protocol draft.
+Draft 01 of `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` remains
+unchanged as history; an approved read-only reviewer rejected it as a
+preregistration because it did not freeze and aggregate the full 20 paired
+seeds × 87 updates or bound value-dependent work under disposable updates.
+Draft 02 now specifies the full pooled estimand, seed-specific batch/mask
+manifest, per-invocation and per-example table units, and conservative
+pass/fail/indeterminate bounds for clipping and covariance active-set branches.
+An approved read-only reviewer accepts it as a preregistration only and confirms
+the interval formulas; the freeze must still pin disposable Adam
+state/timestep semantics and bias-correction work. This accepts no profile or
+data access and opens no gate. The arm-routed pure
+one-step scratch Adam/clipping/EMA helper remains outside the objective graph
+and trainer; four focused synthetic-array tests pass, including all six
+EMA-routing cases. This helper is not a trainer or measured profile.
+Selected-window materialization/replay and a full FLOP counter remain absent.
+No profile ran; the ≤5% threshold remains **untested and unpassed**, fitting
+remains prohibited, and no data, roots, inference, scores, or outcomes were
+accessed. See `GROUND_TRUTH.md` and both versioned protocol drafts.
 
 ### 2026-10-07 V2.12 no-update six-arm objective graph
 

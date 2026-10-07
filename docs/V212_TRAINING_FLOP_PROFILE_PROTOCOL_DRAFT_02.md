@@ -1,0 +1,171 @@
+# V2.12 six-arm training-FLOP profile protocol — draft 02
+
+**Status: non-operative draft; accepted as a preregistration only; no profile
+has been authorized or run.**
+This document defines prerequisites for measuring the frozen v05 six-arm
+training-compute gate. It does not authorize reading or generating trajectories,
+roots, labels, scores, or outcomes; it does not authorize inference, fitting,
+parameter updates, or an empirical claim. The ≤5% gate remains **untested and
+unpassed**. Draft 01 is retained unchanged as review history.
+
+## 1. Question and estimand
+
+The question is whether total forward-and-backward training FLOPs are within 5%
+across all six frozen arms under the common V2.12 training schedule. For arm
+`a`, seed `s`, and scheduled update `u`, let `C[a,s,u]` be the counted FLOPs.
+The primary total is `F[a] = sum(s=1..20) sum(u=1..87) C[a,s,u]`. Report
+`(max_a F[a] - min_a F[a]) / min_a F[a]`; the gate passes only at or below
+`0.05`. Report per-seed and per-update diagnostics, but they do not replace the
+pooled 20-seed × 87-update estimand. A smaller representative schedule is
+inadmissible unless an independent reviewer accepts a proof that its count is
+exactly invariant to omitted seeds and updates, including every branch below.
+
+The denominator for each `C[a,s,u]` is one scheduled update, including the
+arm's full batch of 64 (32 windows from each game), all root and active-horizon
+graph work, loss and gradient computation, global-norm clipping, Adam update
+arithmetic, and EMA update arithmetic where specified. Initialization and
+one-time preflight are reported separately and are not silently spread over
+updates. Diagnostics executed by the training graph—including covariance
+eigenspectrum and effective-rank calculation—are included.
+
+FLOPs count one floating-point addition, subtraction, multiplication, or
+division as one operation; a multiply-add is two. Report transcendental,
+comparison, indexing, and integer operations separately unless the selected
+counter has a documented, consistently applied conversion. MAC-only counts,
+parameter counts, wall time, and hardware utilization cannot substitute for
+total training FLOPs. Disclose the counter implementation, version, coverage,
+and unsupported operators before measurement. Bound omitted floating-point
+work tightly enough to make the ≤5% pass/fail decision invariant to uncertainty;
+unchanged arm ordering alone is insufficient.
+
+## 2. Required freeze before profile execution
+
+Before profile execution, freeze and hash:
+
+1. v05 method and all six arm graphs, including common initialization,
+   target-encoder calls, exact terminal/truncation behavior, and diagnostic
+   outputs;
+2. forward, loss, manual-backward, clipping, Adam, and EMA implementation,
+   including disposable Adam moment initialization, the scheduled timestep used
+   for each update, bias-correction/scalar step-work counting, and EMA scratch
+   initialization;
+3. runtime, numerical libraries, BLAS backend/thread settings, counter, and
+   hardware identity;
+4. a roster of exactly 20 paired seeds and, for each seed, the deterministic
+   87-update batch order, update boundaries, and mask schedule;
+5. per-horizon valid, terminal-masked, missing/truncated, and
+   invalid-transition counts for every arm and scheduled update.
+
+All selected windows must first pass the v05 exact-rule replay and preflight
+requirements. A malformed or invalid selected transition, prohibited
+zero-target batch, mismatched mask, nonfinite value, or changed batch boundary
+rejects the entire panel before profile comparison. No arm may skip scheduled
+batches or updates, bypass method-required operations, or receive a different
+mask or batch. This does not prohibit v05-mandated per-example masking or
+active-prefix execution. Counters must distinguish per-example executed calls
+and work from per-invocation work.
+
+Every FLOP table must label units explicitly. The primary table reports
+**FLOPs per batched invocation** for one 64-window scheduled update and
+**FLOPs per scheduled update** (the same value, with all update components
+included). Any per-example average is derived by dividing that invocation's
+count by 64 and labeled **FLOPs per example, descriptive only**; it is not the
+gate estimand. Call-count tables distinguish invocations from active rows.
+Report the mask and transition counts above for every seed, update, and arm so
+shared exposure and arm-specific operation counts remain auditable.
+
+The current repository has a no-update NumPy objective/manual-gradient graph
+and a pure one-step scratch Adam/clipping/EMA helper in
+`two_player/v212_scratch_optimizer.py`. An independent read-only code review
+confirmed that the helper applies the v05 update equations and routes EMA to
+exactly the three JEPA arms; four focused synthetic-array tests cover the
+equations, immutability, and all six routing cases. The helper is not integrated
+with the objective graph or a trainer. Data materialization, selected-window
+manifest, exact-rule replay runner, and full training FLOP counter are also
+absent. Therefore no profile can currently satisfy this protocol. A structural
+run on synthetic arrays could test instrumentation coverage only; it cannot
+establish the v05 panel gate or represent the frozen selected-window mask
+schedule.
+
+## 3. Non-fitting execution and branch-bound contract
+
+Protocol approval alone does not authorize data or label access. A future
+profile requires separate data/preflight authorization and may use only the
+reviewed training-target batch scope needed to exercise the loss graph; it must
+not read development scores or locked-confirmatory outcomes. Method, compute
+protocol, counter, data/preflight scope, and remaining pre-fit gates require
+their own independent reviews before profile execution.
+
+The profile runs in an isolated process with no checkpoint writer and no
+persistent training/update state. For each paired seed and arm, every scheduled
+batch starts from the frozen initialization; scratch parameter, moment, and EMA
+arrays are discarded after that update and never feed a later batch. Record
+parameter and target hashes before and after to prove no changes persist.
+Forward and backward use the same frozen batches for all arms. Optimizer and
+EMA costs must execute the exact v05 arithmetic into disposable scratch arrays.
+
+Because this contract does not carry updated parameters or optimizer state
+between batches, it does not reproduce an evolving training trajectory and
+cannot be used to ignore value-dependent branches. Before any profile, enumerate
+all such branches and derive per-arm, per-seed, full-87-update lower and upper
+FLOP totals. At minimum, bound both outcomes of the global-norm clipping
+threshold branch and all possible active-set paths in covariance/effective-rank
+diagnostics. Sum bounds over the frozen updates and all 20 seeds. If another
+branch can change FLOPs, include it in the bound. A single-trajectory scratch
+simulation is not a substitute for the branch bounds.
+
+For the gate, use the resulting uncertainty intervals conservatively. The
+profile passes only if the worst-case ratio
+`(max_a upper(F[a]) - min_a lower(F[a])) / min_a lower(F[a])` is at most
+`0.05`. It fails only if even the best-case ratio
+`max(0, max_a lower(F[a]) - min_a upper(F[a])) / min_a upper(F[a])` is greater
+than `0.05`. If all arm intervals share a common value, this best-case ratio is
+zero. Otherwise the result is **indeterminate**, so no fit is authorized.
+An independent reviewer must accept the interval construction and counter
+coverage before the profile; observed representative outcomes cannot tighten
+the bounds after inspection.
+
+If faithful optimizer/EMA arithmetic cannot be exercised without persistent
+changes, instrument a separately reviewed scratch implementation and prove its
+operation trace matches the intended update equations. Do not estimate missing
+work from parameter counts or infer it from a different framework. Warm-up is
+separate from the primary count. Report per-update and 87-update component
+tables by arm and seed, branch-bound intervals, mask counts, source/runtime
+fingerprints, and errors or unsupported operations. Wall time, peak memory,
+and counter overhead are supplemental feasibility telemetry.
+
+## 4. Stop conditions and interpretation
+
+Stop before interpreting parity if any graph, batch, mask, update equation,
+counter coverage, or source/runtime fingerprint differs across arms; parameter
+or optimizer state persists; the profile accesses outcomes beyond the
+separately approved training-target scope; or an operator/branch is omitted
+without a reviewed bound sufficient for the pass/fail decision. Preserve every
+failure and partial receipt as incomplete; do not replace failed cells or rerun
+selectively.
+
+A complete profile above 5% is a negative compute result. It blocks fitting
+under the current six-arm controls. Do not add filler operations, change update
+counts, omit diagnostics, or grant unequal work to manufacture parity. Any
+control/config revision requires a new version and independent review before
+any fit. A passing profile clears only this compute gate; it does not clear
+novelty, data provenance, split/leakage, runtime, root schedule,
+action-sensitivity, regret, inference-budget, or separate pre-fit gates, and it
+establishes no JEPA superiority.
+
+## 5. Current disposition
+
+An approved read-only reviewer rejected draft 01 as a preregistration because
+it did not freeze and aggregate all 20 paired seeds × 87 updates and did not
+bound value-dependent work under the no-persistent-update contract. It also
+requested explicit FLOP-table units. A read-only follow-up accepts draft 02 as
+a preregistration only and confirms the interval formulas are valid and
+conservative for the stated arm-total bounds. Before any profile, the freeze
+must pin disposable Adam state/timestep semantics and count step-dependent
+bias-correction work consistently; §2 now makes this explicit. Acceptance does
+not authorize data access, profile execution, or any other gate. The reviewer
+did not run tests or a profile. No optimizer dry-run, trajectory replay,
+fitting, inference, root generation, score access, or outcome evaluation was
+performed while drafting this revision. No result or gate changed. The
+implementation and data/preflight prerequisites remain open. Keep the existing
+Reversi8 2-second p90 negative and all novelty risks in force.
