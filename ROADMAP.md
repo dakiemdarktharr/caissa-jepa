@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 candidate counter-owner reconciliation
+
+Added a draft field-level owner partition for the existing V2.12 arithmetic
+subcounters, including explicit exclusions for the square/residual/activation/
+reduction/effective-rank overlaps. It emits no combined count and has not been
+independently reviewed or frozen for D03. The reduction export still needs
+owner-filtered rows; linked LAPACK remains unbounded; non-FP/unsupported work,
+replay-derived 20×87 masks, runtime/backend identity, and integrated
+trainer/update trace remain open. This was documentation-only: no data, model,
+profile, roots, inference, outcomes, simulation, or training ran. Graph freeze
+remains **NO** and the ≤5% gate remains **untested and unpassed**.
+
 ### 2026-10-07 source-wide arithmetic ownership review
 
 An approved read-only `gpt-6-luna/high` sweep found plausible source-level

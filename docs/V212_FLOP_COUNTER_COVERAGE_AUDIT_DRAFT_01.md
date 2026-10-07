@@ -59,6 +59,39 @@ here.
 | Effective-rank selected-spectrum branch | Probability normalization, `log`, elementwise probability/log product, entropy reduction, final `exp`, and selected-set comparisons | `tools/v212_effective_rank_branch_accounting.py` bounds the active-set work after eigensolver/spectrum-sum: per call, zero entropy work when inactive, or K=1..32 divisions/logs/multiplies, K-1 candidate additions and one exp when active. Across 1,740 scheduled updates per arm, upper bounds are 55,680 divisions/logs/multiplies, 53,940 candidate additions and 1,740 exp calls. It excludes DSYEVD/LAPACK and does not establish which branches actually occur |
 | Fixed array-square sites | All source `** 2` array expressions in regularization, supervised losses, activation derivatives, recurrent reverse passes, and gradient norm | `tools/v212_model_square_flop_accounting.py` inventories the 20 AST sites and mask-dependent element counts. Under the reviewed semantic convention each element is one candidate multiply; no loaded NumPy power-kernel claim is made. Scalar bias-correction powers are excluded. Existing activation, residual, and latent-`std` reports overlap this inventory and must not be summed with it |
 
+## Candidate additive ownership reconciliation (draft; not independently reviewed)
+
+The subcounter JSON objects are **not** independent totals. A future aggregator
+must use the following owner partition, taking component fields rather than
+adding each tool's headline total. This is a source-level reconciliation
+proposal only: no combined per-invocation or 20×87 number is emitted here.
+
+| Additive component | Sole candidate owner | Remove or do not add from these overlapping reports |
+| --- | --- | --- |
+| Explicit dense products, including the two covariance products | `v212_model_matmul_flop_accounting.py::all_explicit_matmul_flops` | Do not add the matmul counts reported as delegated by the regularizer inventory. Bias additions are separate and remain in activation. |
+| Every model array `** 2` site, including the root-`std` deviation square and all activation/loss/regularizer squares | `v212_model_square_flop_accounting.py::candidate_square_multiplications` | Do not add `square_operation_elements` from the residual inventory, `squares_as_multiplications` from activation, `squared_deviation_square_operations` from reduction, or squared-array counts from regularizer. The optimizer uses `g*g`, not these model AST sites, and remains optimizer-owned. |
+| Loss residual subtractions for value/latent/raw-state losses | `v212_model_loss_residual_accounting.py::residual_subtraction_flops` | Ignore that tool's combined `flops_if_each_square_is_counted_as_one_multiply`; its square portion belongs only to the square owner. It does not own policy NLL/label subtractions or tanh-derivative subtractions. |
+| Affine bias additions, explicit tanh-derivative `1-z²` subtractions and upstream-gradient multiplications, and value-gradient pre-scaling | `v212_model_activation_flop_accounting.py` component fields | From `tanh_derivative_flops`, subtract `tanh_derivative_breakdown.squares_as_multiplications`; those squares belong to the unified square owner. `tanh` calls and element counts are non-FLOP reporting. |
+| Ordinary model reductions (candidate sum additions and mean divisions), excluding effective-rank entropy reduction | `v212_model_reduction_shape_accounting.py::reduction_sites` component records | Do not use only its top-level sums until the `effective_rank_entropy` addition row is excluded; that row is owned by the effective-rank component. For root `std`, the records own internal-mean and squared-deviation-sum additions plus the internal-mean divisions. Separately select deviation subtractions and population-variance divisions from `latent_std_candidate_operations`; exclude its repeated addition, square, and aggregate fields. The square owner handles deviation squares; square roots remain a separate transcendental count. |
+| Effective-rank probability normalization, log/probability products, entropy reduction, and final exp after the spectrum sum | `v212_effective_rank_branch_accounting.py::branch_work` | Its `candidate_fp_additions` owns the entropy reduction additions. Exclude the corresponding effective-rank row from ordinary reduction additions. Do not add the separately listed fixed spectrum-sum reduction twice. The eigensolver itself remains uncounted. |
+| Policy softmax/NLL elementwise arithmetic | `v212_policy_softmax_accounting.py::per_invocation` | Use elementwise fields only. Denominator sum and NLL mean work belongs to reductions; policy/head gradient matmuls belong to matmul. Max comparisons, exp/log calls remain non-FLOP categories. |
+| Root regularizer elementwise/scalar arithmetic, excluding squares, reductions, dense products, and eigensolver | `v212_regularizer_elementwise_accounting.py::per_invocation` | Use only candidate add/subtract/multiply/divide fields. Its separately named square/reduction/matmul delegation fields are references, not extra work. Keep maximum comparisons and square roots outside FLOPs. |
+| Pooled horizon objective scalar arithmetic | `v212_objective_scalar_accounting.py::candidate_fp_scalar_operations_per_invocation` | Do not add loss-array work, reductions, regularizer scalar weighting, or optimizer work. |
+| Explicit objective/gradient-buffer array additions | `v212_gradient_accumulation_accounting.py::candidate_array_additions_per_invocation` | Keep its exclusion of regularizer-owned `dz0 += ...`; do not use the regularizer's separately reported accumulation again. |
+| Target-gradient coefficient × residual array multiplications | `v212_objective_gradient_elementwise_accounting.py::candidate_array_multiplications_total` | Do not add target residual subtraction, square, matmul, scalar-coefficient construction, or subsequent buffer addition from their other owners. |
+| Scratch Adam/clipping/EMA arithmetic, including optimizer `g*g` and both clipping branches' gradient scaling | `v212_optimizer_flop_accounting.py::floating_point_arithmetic` | Do not add its square-root, power, finite-predicate, comparison, copy, validation, or indexing fields to FLOPs. Preserve both clip intervals; zero norm follows `norm_le_5`. |
+
+This partition still does not provide a complete counter. In particular, the
+current reduction export does not itself present owner-filtered rows, the
+linked LAPACK eigensolver has no accepted operation bound, and comparisons,
+integer/indexing, finite guards, allocations/copies, transcendentals, and
+source/runtime dispatch are not fully enumerated. Before an aggregator can be
+used for D03, its field-level exclusions need source-bound regression checks
+and independent review. A complete aggregation also requires the replay-derived
+20×87 masks, actual loaded runtime/backend identity, and a trainer trace proving
+the scheduled objective and optimizer calls. Graph freeze remains **NO** and
+the ≤5% gate remains **untested and unpassed**.
+
 ## Independent source review follow-up (2026-10-07)
 
 An approved read-only source-wide sweep across `_encode`, `_value`,

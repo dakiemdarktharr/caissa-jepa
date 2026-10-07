@@ -1,5 +1,21 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; candidate counter ownership reconciliation)
+
+- Added a draft additive-owner partition to
+  `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md`. It identifies which
+  existing subcounter component could own each arithmetic family and which
+  overlapping headline fields must not be summed. It deliberately emits no
+  combined FLOP total and is not independently reviewed or frozen for D03.
+- The reconciliation confirms remaining source-export work: reduction rows
+  need field-level owner filtering; the linked LAPACK eigensolver lacks an
+  accepted operation bound; and non-FP/unsupported work is incomplete. The
+  replay-derived 20×87 masks, pinned loaded runtime/backend, and integrated
+  trainer trace are also absent.
+- Documentation-only milestone. No tests, model/data, profile, roots,
+  inference, scores/outcomes, simulations, or training ran. Graph freeze stays
+  **NO** and the ≤5% parity gate remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; six-arm arithmetic ownership review)
 
 - The approved read-only `gpt-6-luna/high` source sweep found plausible
