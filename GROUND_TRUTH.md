@@ -1,5 +1,27 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; square-site counter inventory)
+
+- An approved read-only `gpt-6-luna/high` reviewer accepts one candidate
+  multiplication per element for fixed-shape array `x ** 2` as a consistent
+  semantic source-level convention; this does not assert that the loaded
+  NumPy power loop performs one hardware multiply. Ordinary reduction `I-O`
+  additions and mean `O` divisions remain shape-level candidates, not exact
+  loaded-kernel counts.
+- Added `tools/v212_model_square_flop_accounting.py`, mapping all 20 current
+  array-square AST sites to mask-dependent shapes, including regularizer,
+  recurrent derivative, supervised-loss, and returned-gradient-norm squares.
+  Fully valid illustrative candidate counts are 38,242 / 30,050 / 116,712 /
+  25,954 / 16,002 / 30,050 for multi-step JEPA, single-pair JEPA, raw-state,
+  value-only, direct-leaf, and single-horizon respectively. Existing activation,
+  residual and latent-`std` square subcounts overlap; do not sum them again.
+- Square/reduction/residual/activation focused synthetic-source validation
+  passes 17/17; no model, research data, profile, root, inference, score,
+  outcome, or training ran. This is still a subcounter, not full coverage.
+  Linked-LAPACK counts, exact loaded NumPy reductions, frozen masks and
+  full-schedule branch bounds remain open. Six-arm graph freeze remains
+  **NO**; ≤5% parity remains **untested and unpassed**. No gate advances.
+
 ## Latest continuation delta (2026-10-07; reduction-counter source review)
 
 - An approved read-only `gpt-6-luna/high` review found that Python's built-in
