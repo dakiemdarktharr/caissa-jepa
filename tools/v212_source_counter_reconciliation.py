@@ -302,7 +302,7 @@ def _site_disposition(module: str, site: dict) -> dict:
             return {
                 "status": "candidate_owner_partial",
                 "owner": "tools/v212_conversion_site_inventory.py",
-                "scope": "requested array dtype is inventoried; actual cast, copy, element cardinality, and runtime cost remain unverified",
+                "scope": "requested array shape-cardinality/dtype is inventoried; actual cast, hidden copy, and runtime cost remain unverified",
             }
         if target == "np.linalg.eigvalsh":
             return {

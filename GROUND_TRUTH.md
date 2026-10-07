@@ -4465,3 +4465,25 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   The eigensolver, runtime identity, full counter, graph freeze, trainer and
   frozen schedule, and six-arm ≤5% parity remain open/unpassed. No model,
   data, eigensolver, profile, inference, or training ran; no gate advanced.
+
+### Latest continuation delta (2026-10-07; fixed-batch array request cardinality)
+
+- Extended the explicit conversion inventory with requested output-shape
+  element counts for each model/optimizer `np.asarray` path at the frozen
+  batch size 64. Preflight requests 98,496 elements; the common loss branch
+  requests 16,960; direct-leaf adds 50,944, and the other arms add 67,840.
+- Including optimizer input groups, total source-requested element slots are
+  237,288 for multi-step/single-pair/single-horizon JEPA, 257,056 for
+  recursive raw-state, 230,920 for value-only rollout, and 200,584 for
+  direct-leaf value. The optimizer's explicit `.copy()` calls account for
+  53,992 / 73,760 / 47,624 / 34,184 output elements respectively by arm
+  class. These are shape counts only: model `np.asarray` may alias or allocate,
+  and no runtime cast, memory traffic, or time is established.
+- Inventory digest:
+  `14f0f38f976048e8c19e53cf32a3ef49a82740057feb53177561767b32b8ffb0`;
+  crosswalk digest:
+  `c15b3270b212f2763c09244ae11545470c08e4df98b7a607308ac67d04b6dccf`.
+  The combined conversion/crosswalk/partial-ledger suite passes 18/18, plus
+  compilation and whitespace checks. Full counter, runtime identity, graph
+  freeze, and six-arm ≤5% parity remain closed/unpassed. No model, profile,
+  inference, or training ran; no gate advanced.

@@ -3587,3 +3587,16 @@ conversion/crosswalk/partial-ledger suite passes 17/17, with compile and
 whitespace checks. This is source traceability only; runtime identity, the eigensolver, trainer/replay,
 selected windows, frozen 20×87 masks, and six-arm ≤5% parity remain open.
 No profile, model, inference, or training ran; no gate advanced.
+
+### 2026-10-07 fixed-batch array conversion cardinalities
+
+Extended the AST conversion inventory with source-requested array element
+cardinalities by V2.12 arm for batch size 64. Preflight contributes 98,496
+element slots; loss-path branches and the scratch optimizer add arm-specific
+counts. The optimizer's explicit `.copy()` element outputs are separately
+reported. This helps size the non-FLOP conversion/copy inventory but does not
+prove runtime casts, count bytes or hidden temporaries, or establish FLOP
+parity. Eighteen focused inventory/crosswalk/partial-ledger tests pass, with
+compile and whitespace checks. Full counter/runtime attestation, graph freeze,
+trainer/replay, schedule, and six-arm ≤5% parity remain open. No model,
+profile, inference, or training ran; no gate advanced.

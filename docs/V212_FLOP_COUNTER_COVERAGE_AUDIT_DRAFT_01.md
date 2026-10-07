@@ -963,3 +963,34 @@ training ran. The combined 17-test conversion/crosswalk/partial-ledger suite
 also passes; the partial-ledger regression now checks that preflight fields
 match the current delegated preflight owner instead of a stale abbreviated
 snapshot.
+
+## Fixed-batch array-conversion request cardinality (2026-10-07)
+
+Extended the conversion inventory with fixed-shape element slots requested at
+the 13 explicit `np.asarray` AST sites for one 64-window model/optimizer
+invocation. The preflight path requests 98,496 output elements: one initial
+`x` conversion plus the 12 `_finite_array` conversions. The common loss path
+requests 16,960 elements; its direct-leaf branch requests 50,944 more, while
+the other five arms' recurrent branch requests 67,840 more.
+The common loss branch includes the `x`, `legal`, `policy`, and root `value`
+arrays.
+
+Including the scratch optimizer's four parameter/gradient/moment groups and
+the optional EMA target group, total requested elements by arm are 237,288
+(multi-step JEPA, single-pair JEPA, single-horizon JEPA), 257,056 (recursive
+raw-state), 230,920 (value-only latent rollout), and 200,584 (direct-leaf
+value). The optimizer explicitly copies 53,992 / 73,760 / 47,624 / 34,184
+elements respectively for predictive EMA, raw-state, value-only, and
+direct-leaf arms. These are shape cardinalities under frozen v06 parameter
+shapes, not casts, bytes, FLOPs, memory traffic, or latency. Model-side
+`np.asarray` calls may alias or allocate depending on input dtype/type/layout;
+hidden temporaries and runtime behavior remain unverified.
+
+The extended inventory digest is
+`14f0f38f976048e8c19e53cf32a3ef49a82740057feb53177561767b32b8ffb0`; the
+crosswalk digest is
+`c15b3270b212f2763c09244ae11545470c08e4df98b7a607308ac67d04b6dccf`.
+The combined conversion/crosswalk/partial-ledger suite passes 18/18, with
+compile and whitespace checks. Full counter, runtime identity, graph freeze,
+and six-arm parity remain open/unpassed; no model, profile, inference, or
+training ran.

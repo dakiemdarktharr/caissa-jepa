@@ -1,6 +1,7 @@
 import unittest
 
 from tools.v212_conversion_site_inventory import (
+    array_request_cardinality,
     collect_conversion_inventory,
     inventory_sources,
 )
@@ -47,7 +48,7 @@ class ConversionSiteInventoryTests(unittest.TestCase):
                 self.assertEqual(row["owner"], "tools/v212_conversion_site_inventory.py")
                 if conversion["target"] == "np.asarray":
                     self.assertEqual(row["status"], "candidate_owner_partial")
-                    self.assertIn("actual cast, copy", row["scope"])
+                    self.assertIn("actual cast, hidden copy", row["scope"])
                 else:
                     self.assertEqual(row["status"], "reported_separately")
         self.assertGreater(conversion_sites, 0)
@@ -62,6 +63,32 @@ class ConversionSiteInventoryTests(unittest.TestCase):
             for module in inventory["modules"].values()), 13)
         self.assertFalse(crosswalk["coverage"]["full_counter"])
         self.assertFalse(crosswalk["coverage"]["parity_eligible"])
+
+    def test_array_request_cardinality_is_shape_based_and_keeps_cost_unverified(self):
+        report = array_request_cardinality()
+        self.assertEqual(report["preflight"]["finite_array_helper_calls"], 12)
+        self.assertEqual(report["preflight"]["requested_elements_total"], 98_496)
+        self.assertEqual(report["loss_grad"]["common_requested_elements"], 16_960)
+        self.assertEqual(report["loss_grad"]["direct_leaf_branch_requested_elements"], 50_944)
+        self.assertEqual(report["loss_grad"]["other_arm_branch_requested_elements"], 67_840)
+        totals = {
+            arm: row["total_requested_asarray_elements"]
+            for arm, row in report["per_arm"].items()
+        }
+        self.assertEqual(totals, {
+            "multi-step-jepa": 237_288,
+            "single-pair-jepa": 237_288,
+            "recursive-raw-state": 257_056,
+            "value-only-latent-rollout": 230_920,
+            "direct-leaf-value": 200_584,
+            "single-horizon-jepa": 237_288,
+        })
+        self.assertEqual(
+            report["per_arm"]["recursive-raw-state"]["explicit_optimizer_copy_output_elements"],
+            73_760,
+        )
+        self.assertFalse(report["eligibility"]["runtime_casts_verified"])
+        self.assertFalse(report["eligibility"]["parity_eligible"])
 
 
 if __name__ == "__main__":
