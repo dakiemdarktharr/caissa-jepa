@@ -825,6 +825,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
     def test_exit_snapshot_identity_and_required_fields_fail_before_response_read(self):
         cases = (
             ({"InvocationID": "c" * 32}, "identity did not match active worker"),
+            ({"LoadState": "not-found"}, "unit was not loaded at the exit snapshot"),
             ({"ControlGroup": "/user.slice/foreign.service"},
              "identity did not match active worker"),
             ({"InvocationID": ""}, "systemd property InvocationID is missing"),
@@ -853,6 +854,7 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
     def test_exit_snapshot_rejects_omitted_required_fields_before_response_read(self):
         cases = {
             "InvocationID": "systemd property InvocationID is missing",
+            "LoadState": "unit was not loaded at the exit snapshot",
             "Result": "systemd property Result is missing",
             "ExecMainStatus": "systemd property ExecMainStatus is missing",
         }

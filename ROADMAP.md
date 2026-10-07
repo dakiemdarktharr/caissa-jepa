@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 retained manager-unit identity
+
+Both no-inference v01 controller paths now require the transient unit to remain
+`LoadState=loaded` at the post-exit snapshot, consistent with
+`RemainAfterExit=yes`. A missing or `not-found` load state is rejected before
+response acceptance; tests verify the receipt is absent and reconciliation
+workspace remains. The armed-service, collector, and live-supervision suites
+pass 82/82, with compile and whitespace checks passing. This is mocked/parser
+evidence only; full manager-field coverage, v02 integration, live manager
+failures, and all research gates remain open.
+
 ### 2026-10-07 pre-publication deadline seams
 
 Added a named CLK-02 regression around the post-durability caller-deadline

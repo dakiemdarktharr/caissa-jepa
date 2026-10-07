@@ -1,5 +1,19 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; retained manager-unit identity)
+
+- The post-exit controller previously accepted an exit-state snapshot without
+  requiring the transient unit to remain loaded, despite using
+  `RemainAfterExit=yes`. Both no-inference v01 controller paths now reject a
+  missing or non-`loaded` `LoadState` before response acceptance. Regressions
+  confirm `not-found` and omitted state fail closed, with no receipt/stop and
+  the dispatched workspace retained.
+- The armed-service, supervision-collector, and live-supervision suites pass
+  82/82; `compileall` and `git diff --check` pass. This is mocked/parser
+  evidence only. The complete manager-field matrix, v02 integration, and live
+  manager failures remain open; no service, request adapter, inference, OOM,
+  training, scoring, or match ran. No gate advanced.
+
 ## Latest continuation delta (2026-10-07; pre-publication deadline seam)
 
 - Added a named CLK-02 regression using the real temporary atomic receipt

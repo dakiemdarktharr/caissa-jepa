@@ -381,6 +381,8 @@ def run_no_inference_smoke(*, receipt_path: Path, timeout_seconds: float = 10.0
             time.sleep(0.02)
         if exited_props is None:
             raise CollectorError("transient worker did not exit before caller deadline")
+        if exited_props.get("LoadState") != "loaded":
+            raise CollectorError("transient worker unit was not loaded at exit snapshot")
         manager_snapshot = live.snapshot_from_properties(
             unit=unit, properties=exited_props, boot_id=boot,
             captured_monotonic_us=_monotonic_us(), active=False)

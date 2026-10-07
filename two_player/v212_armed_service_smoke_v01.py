@@ -363,6 +363,9 @@ def run_no_inference_armed_smoke(*, receipt_path: Path,
             time.sleep(0.02)
         if exited_props is None:
             raise ArmedServiceSmokeError("armed worker did not exit before caller deadline")
+        if exited_props.get("LoadState") != "loaded":
+            raise ArmedServiceSmokeError(
+                "armed worker unit was not loaded at the exit snapshot")
         manager_snapshot = live.snapshot_from_properties(
             unit=unit, properties=exited_props, boot_id=boot,
             captured_monotonic_us=collector._monotonic_us(), active=False)

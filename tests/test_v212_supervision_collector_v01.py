@@ -216,7 +216,8 @@ class CollectorOrchestrationTests(unittest.TestCase):
     def _mock_host(self, *, response_status="ok", manager_result="success",
                    fail_start=False, fail_stop=False, fail_persist=False,
                    fail_after_publish=False, fail_cleanup=False,
-                   fail_counter_at=None, fail_journal=False):
+                   fail_counter_at=None, fail_journal=False,
+                   exit_load_state="loaded"):
         unit_data = {"unit": None, "cgroup": None, "show_count": 0,
                      "counter_count": 0, "sequence": []}
         original_create = ipc.create_workspace
@@ -275,9 +276,14 @@ class CollectorOrchestrationTests(unittest.TestCase):
                 if "pending_response" in unit_data:
                     response_path, response_bytes = unit_data.pop("pending_response")
                     response_path.write_text(response_bytes, encoding="utf-8")
-                return dict(common, ControlGroup="", ActiveState="inactive",
-                            SubState="exited", Result=manager_result,
-                            ExecMainStatus="0" if manager_result == "success" else "9")
+                exited = dict(common, ControlGroup="", ActiveState="inactive",
+                              SubState="exited", Result=manager_result,
+                              ExecMainStatus="0" if manager_result == "success" else "9")
+                if exit_load_state is None:
+                    exited.pop("LoadState")
+                else:
+                    exited["LoadState"] = exit_load_state
+                return exited
             return {"LoadState": "not-found"}
 
         def proc_cgroup(pid=None):
@@ -398,6 +404,21 @@ class CollectorOrchestrationTests(unittest.TestCase):
         self.assertFalse(self.receipt_path.exists())
         self.assertTrue(self.workspaces[0].directory.exists())
         self.assertNotIn("systemctl", host["sequence"])
+
+    def test_exit_snapshot_requires_retained_loaded_unit(self):
+        for load_state in ("not-found", None):
+            with self.subTest(load_state=load_state), self._mock_host(
+                    exit_load_state=load_state) as host:
+                with self.assertRaisesRegex(
+                        collector.CollectorError,
+                        "unit was not loaded at exit snapshot.*receipt_not_attempted"):
+                    collector.run_no_inference_smoke(receipt_path=self.receipt_path)
+            exit_position = host["sequence"].index("snapshot_exited")
+            self.assertNotIn("response_read", host["sequence"])
+            self.assertNotIn("persist_attempt", host["sequence"])
+            self.assertNotIn("systemctl", host["sequence"][exit_position + 1:])
+            self.assertFalse(self.receipt_path.exists())
+            self.assertTrue(self.workspaces[-1].directory.exists())
 
     def test_persistence_failure_is_uncertain_and_prevents_cleanup(self):
         with self._mock_host(fail_persist=True) as host:
