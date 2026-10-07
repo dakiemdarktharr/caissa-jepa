@@ -1,5 +1,32 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; reduction owner fields)
+
+- `tools/v212_model_reduction_shape_accounting.py` now tags each candidate
+  addition row with its owner and emits split totals for ordinary reduction
+  versus effective-rank entropy additions. It also breaks the root `std`
+  candidate report into its unique reduction, square, deviation-subtraction,
+  variance-division, and square-root fields. Its source regression now links
+  the fixed `(64, 32)` diagnostic shape to the 64-window adapter guard, fixed
+  latent-width config, root encoder, and `z0.std(axis=0)` call. The existing
+  all-operation totals are unchanged; the output schema is v04.
+- The native reduction suite could not import because available Python
+  3.11.17/3.12.15/3.14.7 environments have no NumPy; the research lock calls
+  for NumPy 2.4.6 under Python 3.11.9. Its six tests then passed under a
+  temporary in-process Boolean-mask shim that implements only the mask methods
+  used by these shape formulas. Five effective-rank tests passed on the native
+  interpreter; targeted compileall and `git diff --check` passed. This does
+  not verify NumPy behavior or the locked runtime.
+- The independent ledger remains a draft. No combined FLOP total, runtime
+  fingerprint, linked-LAPACK bound, replay-derived 20×87 masks, or integrated
+  trainer evidence exists. No data/model/profile/outcome work ran; graph freeze
+  remains **NO** and the ≤5% gate remains **untested and unpassed**.
+- The approved read-only `gpt-6-luna/high` follow-up found no current owner or
+  arithmetic double-counting defect. It notes the AST regression still does
+  not prove an integrated caller routes the guarded adapter batch into
+  `loss_grad`; the latter remains an open trainer-boundary requirement. The
+  source test was extended to bind initialized encoder width to `LATENT_SIZE`.
+
 ## Latest continuation delta (2026-10-07; candidate counter ownership reconciliation)
 
 - Added a draft additive-owner partition to

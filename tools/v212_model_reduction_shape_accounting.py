@@ -67,6 +67,11 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
         records.append({
             "site": site,
             "kind": kind,
+            "candidate_addition_owner": (
+                "effective_rank_branch"
+                if site == "regularizer.effective_rank_entropy_sum"
+                else "reduction_inventory"
+            ),
             "input_shape": list(shape),
             "axis": axis,
             "calls": calls,
@@ -115,6 +120,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
     records.append({
         "site": "diagnostic.gradient_norm_python_scalar_sum",
         "kind": "python_scalar_sum",
+        "candidate_addition_owner": "reduction_inventory",
         "input_shape": [tensor_count],
         "axis": None,
         "calls": 1,
@@ -175,12 +181,22 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
         (BATCH, LATENT), axis=0)
     candidate_additions = sum(r["candidate_additions"] for r in records)
     candidate_divisions = sum(r["candidate_mean_divisions"] for r in records)
+    rank_entropy_additions = sum(
+        r["candidate_additions"]
+        for r in records
+        if r["candidate_addition_owner"] == "effective_rank_branch"
+    )
+    non_entropy_additions = sum(
+        r["candidate_additions"]
+        for r in records
+        if r["candidate_addition_owner"] == "reduction_inventory"
+    )
     std_candidate_subtractions = std_elements
     std_candidate_square_multiplications = std_elements
     std_candidate_variance_divisions = LATENT
     std_sqrt_transcendentals = LATENT
     return {
-        "schema": "caissa.v212.model-reduction-shapes.v03",
+        "schema": "caissa.v212.model-reduction-shapes.v04",
         "scope": "shape inventory of source NumPy mean/sum calls in one 64-window objective invocation",
         "arm": arm,
         "horizon_valid_rows": rows,
@@ -188,6 +204,11 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
         "reduction_sites": records,
         "candidate_additions": candidate_additions,
         "candidate_mean_divisions": candidate_divisions,
+        "candidate_addition_owner_totals": {
+            "reduction_inventory": non_entropy_additions,
+            "effective_rank_branch": rank_entropy_additions,
+        },
+        "candidate_mean_divisions_owner_total": candidate_divisions,
         "latent_std_candidate_operations": {
             "input_shape": [BATCH, LATENT],
             "axis": 0,
@@ -202,6 +223,17 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
             "candidate_fp_add_subtract_multiply_divide": (
                 2 * (BATCH - 1) * LATENT + 2 * std_elements
                 + LATENT + std_candidate_variance_divisions),
+            "owner_components": {
+                "reduction_inventory_mean_additions": (BATCH - 1) * LATENT,
+                "reduction_inventory_squared_deviation_additions": (
+                    (BATCH - 1) * LATENT
+                ),
+                "reduction_inventory_internal_mean_divisions": LATENT,
+                "square_inventory_multiplications": std_candidate_square_multiplications,
+                "latent_std_elementwise_deviation_subtractions": std_candidate_subtractions,
+                "latent_std_population_variance_divisions": std_candidate_variance_divisions,
+                "transcendental_sqrt_calls": std_sqrt_transcendentals,
+            },
         },
         "data_dependent_branches": {
             "effective_rank_entropy_reduction_active": effective_rank_active,

@@ -2,6 +2,28 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 reduction counter owner fields
+
+The reduction-shape report now tags each addition row with its owner and
+provides ordinary-reduction versus effective-rank entropy totals, plus a
+non-overlapping root-`std` component breakdown. A source regression now links
+the assumed `(64, 32)` diagnostic shape to the fixed 64-window adapter,
+32-wide encoder config, `z0` construction, and `std` call. The legacy candidate
+totals are unchanged; schema is v04. The six focused reduction tests passed
+under a temporary in-process Boolean-mask shim because NumPy is absent from
+available local Python environments (the lock specifies NumPy 2.4.6/Python
+3.11.9); five effective-rank tests, targeted compileall, and `git diff --check`
+also pass.
+The shim does not validate NumPy or the locked runtime. No data or model
+operation ran. This does not assemble the complete counter:
+linked LAPACK, all non-FP branches, the replay-derived 20×87 masks, runtime
+identity, and trainer trace remain open. Freeze remains **NO** and ≤5% remains
+**untested and unpassed**.
+The approved read-only follow-up found no current owner/double-counting defect;
+the source regression now binds parameter initialization to latent width. An
+integrated route from the 64-window adapter to `loss_grad` is still not proven;
+no trainer exists to provide that evidence.
+
 ### 2026-10-07 candidate counter-owner reconciliation
 
 Added a draft field-level owner partition for the existing V2.12 arithmetic
