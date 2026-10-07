@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; loss-residual/square subcounter)
+
+- Added `tools/v212_model_loss_residual_accounting.py`, a mask-parameterized
+  source inventory of array residual subtractions and squared-error elements
+  for root, direct-leaf, outcome, latent-rollout, and raw-state losses. It
+  counts the second `delta ** 2` materialization where the source evaluates a
+  per-horizon mean and a separate pooled sum. Four tests cover six-arm
+  full-valid shapes, mask-dependent counts, malformed inputs, and square
+  expression source sites; the four-module model/activation/matmul/residual
+  suite passes 20/20 with compile and whitespace checks passing.
+- For illustrative fully valid masks, residual subtractions range from 128
+  (direct-leaf) to 38,272 (raw-state); square-operation elements range from
+  128 to 76,480. The combined arithmetic subtotal assumes each square is one
+  multiplication, a convention that D03 still requires independent acceptance.
+  Reductions, scalar weights, gradients, regularizer/effective-rank arithmetic,
+  LAPACK and remaining elementwise work are excluded. No data, roots, profile,
+  inference, score, outcome, or training ran; the ≤5% compute gate remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; raw-state and compute review follow-up)
 
 - An approved read-only `gpt-6-luna/high` reviewer found the adopted raw-state

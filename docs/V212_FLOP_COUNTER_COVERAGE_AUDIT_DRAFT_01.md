@@ -47,6 +47,7 @@ here.
 | Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
 | Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
 | Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, the square/subtract/upstream-gradient multiply at each explicit `1-z**2` derivative, and separately the value-loss delta scaling before the derivative multiply | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. The upstream array scales are separate to prevent double-counting; scalar coefficient construction and other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain outside this subcounter |
+| Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and the repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. It reports residual subtractions and square elements separately; treating each square as one multiply remains an unaccepted candidate convention. Reductions, scalar weighting, gradients, and other objective work are excluded |
 
 ## Required branch accounting
 
@@ -192,6 +193,27 @@ activation-gradient array subtotal; scalar coefficient construction remains
 outside it. Fully valid illustrative masks add 256 such multiplications for
 the recurrent arms and 128 for direct-leaf. This correction changes no method
 or objective, and does not cover other elementwise/reduction work or LAPACK.
+
+### Loss residual/square shape inventory (2026-10-07)
+
+`tools/v212_model_loss_residual_accounting.py` counts residual subtraction
+elements and squared-error elements for the root objective and the selected
+horizon losses. It explicitly counts two square evaluations where source
+materializes one for a per-horizon mean and another for the pooled sum; it
+does not assume compiler/common-subexpression elimination. The accompanying
+four tests check all six full-valid shape formulas, horizon-dependent masks,
+malformed masks, and the source sites.
+
+For fully valid illustrative masks, residual-subtraction counts range from
+128 (direct-leaf) to 38,272 (raw-state); square elements range from 128 to
+76,480. If each square is treated as one multiplication, the selected
+residual/square subtotal ranges from 256 to 114,752. That conversion has not
+been independently accepted under D03 and the subtotal is not full objective
+compute. NumPy reduction costs, scalar weighting, gradient-buffer additions,
+regularizer/effective-rank work, LAPACK, and remaining elementwise arithmetic
+are still excluded. The focused model/activation/matmul/residual suite passes
+20/20, with compile and whitespace checks passing. No graph, profile, or data
+was executed or read.
 
 ## Primary implementation references checked
 

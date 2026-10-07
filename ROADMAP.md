@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 loss-residual and square inventory
+
+Added a mask-parameterized source subcounter for residual subtractions and
+squared-error array elements across root, direct-leaf, outcome, latent-roll,
+and raw-state losses. It records repeated square expressions used separately
+by per-horizon means and pooled sums. Four synthetic/source tests pass; the
+four-module model/activation/matmul/residual suite passes 20/20, and compile
+and whitespace checks pass. Under fully valid illustrative masks, residual
+subtractions range 128–38,272 and square elements 128–76,480. Counting each
+square as a multiply gives only a candidate partial subtotal: D03's square
+convention remains unaccepted, and reductions, gradients, scalar weighting,
+regularizer/LAPACK, and other graph operations remain outside. No gate opens.
+
 ### 2026-10-07 V2.12 value-gradient scaling inventory correction
 
 Source reinspection found that the value-head gradient expressions multiply
