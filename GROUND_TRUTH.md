@@ -11,17 +11,21 @@
 - Added a detached immutable schedule snapshot: validate the complete
   structural 20×87 manifest once, then reuse its frozen seed/update rows and
   digest for scheduled calls instead of rewalking the manifest for every
-  update. A synthetic full-schedule test verifies detachment and immutability.
+  update. Its public constructor accepts only a raw manifest and performs
+  that validation itself, preventing caller-supplied digests/mutable rows from
+  masquerading as validated state. Synthetic tests verify detachment,
+  immutability, and rejection of a forged constructor call.
 - The seam is not an exclusive trainer: `loss_grad` and the existing helper
   remain directly callable. A pre-model callback checks actual masks against
   the one read-only materialized batch, and a callback exception prevents all
   arm calls. This removes duplicate adapter materialization; the callback adds
   one structural preflight and each arm repeats its own, all of which must be
   counted before profile. Five new synthetic tests cover its components; the
-  high-level coordination test uses a synthetic frozen row and mocks the
-  materialized batch and paired helper, so it is not an end-to-end schedule
-  call. The direct snapshot test itself validates all 20×87 synthetic rows.
-- Receipt/trajectory/schedule/adapter/model regression passes 43/43 under
+  high-level coordination test uses a structurally validated synthetic 20×87
+  schedule but mocks row-to-receipt binding, mask extraction, and the paired
+  helper, so it is not an end-to-end data call. The snapshot test itself
+  validates all 20×87 synthetic rows.
+- Receipt/trajectory/schedule/adapter/model regression passes 44/44 under
   Python 3.14.7 with temporary NumPy 2.5.3; compile and whitespace checks
   pass. This is not the locked runtime. No research corpus, selected schedule,
   roots, scores/outcomes, profile, inference, or training was used.

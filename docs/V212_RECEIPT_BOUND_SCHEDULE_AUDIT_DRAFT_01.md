@@ -21,7 +21,10 @@ development/locked splits.
 
 `validate_and_freeze_schedule_manifest` deep-copies and validates the complete
 structural 20×87 declaration once, then returns immutable nested seed/update
-records with its canonical digest. `compute_receipt_bound_panel_batch` accepts
+records with its canonical digest. The snapshot type's only public constructor
+also accepts a raw manifest and performs this complete validation; it cannot
+be instantiated from a caller-supplied digest and mutable rows.
+`compute_receipt_bound_panel_batch` accepts
 that frozen value, selects one seed/update row without rewalking the whole
 schedule, and checks that the 64 supplied windows match its exact ordered IDs
 and payload hashes and appear in the replay receipt index. It checks the six
@@ -50,10 +53,12 @@ binding, mask-roster rejection, train-only input, and high-level call
 coordination. The paired-call suite also tests that the callback receives the
 shared read-only batch and blocks all arm calls when it rejects. The manifest
 suite checks that a full synthetic 20×87 schedule becomes a detached immutable
-snapshot. The high-level coordination fixture uses a synthetic frozen row and
-mocks its materialized batch and paired-call helper; it does not constitute an
-end-to-end actual manifest/data batch. With the episode/trajectory, manifest,
-scheduled-call, adapter and model suites, focused validation passes 43/43
+snapshot and rejects direct construction with a forged digest/row tuple. The
+high-level coordination fixture uses a structurally valid synthetic 20×87
+schedule and mocks replay-to-row binding, mask extraction, and the paired-call
+helper; it does not constitute an end-to-end actual data batch. With the
+episode/trajectory, manifest, scheduled-call, adapter and model suites, focused
+validation passes 44/44
 under Python 3.14.7 with temporary NumPy
 2.5.3, not the locked Python 3.11.9 / NumPy 2.4.6 runtime. `compileall` and
 `git diff --check` pass.
