@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 partial DSYTD2 rank-update bound
+
+Added `tools/v212_dsytd2_rank_update_bound.py` for only the reference-source
+unblocked DSYTD2 rank-update work. The active reflector sizes 2–31 sum to
+47,165 candidate add/subtract/multiply/divide operations, excluding DLARFG and
+all helpers. An approved read-only `gpt-6-luna/high` reviewer confirmed the
+formulas and highlighted that DNRM2 is architecture/kernel dispatched and the
+eventual DSYTRD block-size selection must be established before claiming an
+executed path. The subtotal is a reference-source proxy, not a complete
+DSYTD2/eigensolver bound or actual linked-runtime trace. The focused
+DSYTD2/DSTERF suite passes 7/7; targeted compile and whitespace checks pass.
+No eigensolver, model, profile, service, data, simulation, inference, or
+training ran. No gate changed.
+
 ### 2026-10-07 DSTERF source-bound correction
 
 Added a reviewed, deliberately partial source-operation bound for the

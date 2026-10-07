@@ -241,6 +241,30 @@ no gate changed.
    and control flow, not successful scheduled updates. Record unsupported or
    incomplete paths and never selectively replace a failed seed/update.
 
+## Partial DSYTD2 source bound (2026-10-07)
+
+`tools/v212_dsytd2_rank_update_bound.py` counts only the reference-source
+rank-update operations in the unblocked DSYTD2 lower-triangle path. For each
+active reflector order `m=2..31`, the source-proxy formulas are DSYMV
+`2m²+3m`, DDOT `2m`, DSYTD2's scalar alpha expression `2`, DAXPY `2m`, and
+DSYR2 at most `2m²+4m`; the total is **47,165** operations at N=32. The
+size-one reflector returns with zero TAU and skips the update. Source anchors:
+[OpenBLAS v0.3.31 DSYTD2](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsytd2.f),
+[reference DSYMV](https://www.netlib.org/blas/dsymv.f),
+[DDOT](https://www.netlib.org/blas/ddot.f),
+[DAXPY](https://www.netlib.org/blas/daxpy.f), and
+[DSYR2](https://www.netlib.org/blas/dsyr2.f).
+
+This is a semantic/source proxy for the named reference expressions, not an
+attestation of linked BLAS kernels or compiler instructions. It excludes
+DLARFG and DNRM2/DLAMCH/DLAPY2/DSCAL helper arithmetic; DNRM2 in particular can
+use architecture-dispatched implementations. It also does not establish that
+the eventual DSYTRD call selects this unblocked path: the tagged reference
+`ILAENV` choice and the actual linked ILAENV/runtime must be checked at freeze.
+If DSYTRD takes a blocked path, DLATRD/DSYR2K work is omitted. This subtotal
+does not close the eigensolver coverage item, establish full-counter coverage,
+or open profile/training/parity gates.
+
 ## Coverage gaps and next admissible work
 
 - There is no full counter, trainer/update integration, selected-window

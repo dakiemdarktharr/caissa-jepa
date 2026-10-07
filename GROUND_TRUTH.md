@@ -1,5 +1,26 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; partial DSYTD2 rank-update bound)
+
+- Added `tools/v212_dsytd2_rank_update_bound.py` for the reference-source
+  unblocked DSYTD2 rank-update operations only. Across active reflector orders
+  2–31, its DSYMV, DDOT, scalar-alpha, DAXPY, and DSYR2 subtotal is 47,165
+  candidate add/subtract/multiply/divide operations per 32×32 reduction.
+  The subtotal excludes DLARFG and every helper; DNRM2 remains unresolved
+  because the OpenBLAS implementation can vary by dispatched kernel.
+- An approved read-only `gpt-6-luna/high` review confirmed the formulas and
+  subtotal and cautioned that the DSYTD2-only DSYTRD path is conditional on the
+  eventual linked ILAENV selecting an unblocked branch. Reference BLAS
+  expressions are a source proxy, not evidence of the actual linked binary or
+  kernel trace. DSYTRD block selection, DLARFG/helpers, DSYEVD wrapper/scaling,
+  and actual runtime identity remain open.
+- The focused DSYTD2/DSTERF suite passes 7/7 under the pinned Python 3.11.9
+  temporary environment; targeted `compileall` and `git diff --check` pass.
+  No eigensolver, model, profile, service, inference, simulation, data, or
+  training ran. This partial subtotal does not clear the eigensolver/full
+  counter or six-arm parity gates; graph freeze remains **NO** and ≤5% remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; DSTERF source-bound correction)
 
 - Added `tools/v212_dsterf_iteration_bound.py` for the reference OpenBLAS
