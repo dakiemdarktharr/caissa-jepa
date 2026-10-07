@@ -35,19 +35,43 @@ class ReceiptBoundBatchResult:
     ordered_episode_receipt_sha256: tuple[str, ...]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class TrainReplayReceiptIndex:
+    """Immutable replay index that can only be built by auditing episodes.
+
+    The public constructor accepts source episodes and adapters, never caller-
+    supplied receipt maps. It provides in-memory replay integrity, not file
+    provenance or authenticity of the caller's episode collection.
+    """
+
     episode_receipt_sha256: Mapping[tuple[str, str], str]
     window_records: Mapping[tuple[str, str, int], Mapping[str, str]]
     audited_episode_count: int
     audited_window_count: int
+
+    def __init__(self, episodes: Sequence[Mapping[str, Any]],
+                 games: Mapping[str, BoardGame]) -> None:
+        (episode_receipt_sha256, window_records, episode_count,
+         window_count) = _build_train_replay_receipt_index_fields(episodes, games)
+        object.__setattr__(self, "episode_receipt_sha256", episode_receipt_sha256)
+        object.__setattr__(self, "window_records", window_records)
+        object.__setattr__(self, "audited_episode_count", episode_count)
+        object.__setattr__(self, "audited_window_count", window_count)
 
 
 def build_train_replay_receipt_index(
     episodes: Sequence[Mapping[str, Any]],
     games: Mapping[str, BoardGame],
 ) -> TrainReplayReceiptIndex:
-    """Audit the supplied train episodes and index receipts by episode/window.
+    """Construct an immutable index by auditing supplied train episodes."""
+    return TrainReplayReceiptIndex(episodes, games)
+
+
+def _build_train_replay_receipt_index_fields(
+    episodes: Sequence[Mapping[str, Any]],
+    games: Mapping[str, BoardGame],
+) -> tuple[Mapping, Mapping, int, int]:
+    """Audit train episodes and return immutable receipt-index fields.
 
     Passing the entire in-memory train episode collection through the existing
     auditor also exercises its duplicate-ID, canonical-window, and overlap
@@ -90,11 +114,11 @@ def build_train_replay_receipt_index(
     frozen_windows = MappingProxyType({
         identity: MappingProxyType(record) for identity, record in windows.items()
     })
-    return TrainReplayReceiptIndex(
-        episode_receipt_sha256=MappingProxyType(receipt_digests),
-        window_records=frozen_windows,
-        audited_episode_count=len(episodes),
-        audited_window_count=len(audited.windows),
+    return (
+        MappingProxyType(receipt_digests),
+        frozen_windows,
+        len(episodes),
+        len(audited.windows),
     )
 
 

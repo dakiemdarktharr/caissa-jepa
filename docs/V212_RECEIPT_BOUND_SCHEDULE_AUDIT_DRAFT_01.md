@@ -17,7 +17,11 @@ an immutable episode/window digest index. This avoids replaying the entire
 collection again for every scheduled update. The index represents only the
 records supplied to this call: it does not prove source-file bytes, generator
 lineage, completeness of the declared train corpus, or separation from
-development/locked splits.
+development/locked splits. `TrainReplayReceiptIndex` has no caller-map
+constructor: its public constructor accepts episodes/adapters and runs this
+audit before publishing immutable nested receipt maps. This closes the directly
+forgeable in-memory index path, but does not establish source-file provenance
+or authenticate who supplied the episodes.
 
 `validate_and_freeze_schedule_manifest` deep-copies and validates the complete
 structural 20×87 declaration once, then returns immutable nested seed/update
@@ -48,8 +52,9 @@ future counter/profile.
 
 ## Validation and limits
 
-Five new synthetic tests cover full-train receipt indexing, ordered payload
-binding, mask-roster rejection, train-only input, and high-level call
+Six synthetic tests cover full-train receipt indexing, rejection of direct
+caller-map construction, ordered payload binding, mask-roster rejection,
+train-only input, and high-level call
 coordination. The paired-call suite also tests that the callback receives the
 shared read-only batch and blocks all arm calls when it rejects. The manifest
 suite checks that a full synthetic 20×87 schedule becomes a detached immutable

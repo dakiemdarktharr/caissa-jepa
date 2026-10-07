@@ -11,6 +11,7 @@ from two_player.v212_model import ARMS, preflight_batch
 from two_player.v212_schedule_manifest import validate_and_freeze_schedule_manifest
 from two_player.v212_receipt_bound_schedule import (
     ReceiptBoundBatchResult,
+    TrainReplayReceiptIndex,
     build_train_replay_receipt_index,
     compute_receipt_bound_panel_batch,
     validate_actual_mask_roster,
@@ -158,6 +159,17 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             self.assertEqual(
                 index.window_records[identity]["episode_receipt_sha256"], receipt_sha256,
             )
+
+    def test_receipt_index_cannot_be_constructed_from_caller_supplied_maps(self):
+        with self.assertRaises(TypeError):
+            TrainReplayReceiptIndex(
+                episode_receipt_sha256={},
+                window_records={},
+                audited_episode_count=1,
+                audited_window_count=64,
+            )
+        with self.assertRaisesRegex(ValueError, "at least one train episode"):
+            TrainReplayReceiptIndex([], {self.game.name: self.game})
 
     def test_ordered_schedule_records_must_match_receipted_payloads(self):
         receipt_index = build_train_replay_receipt_index(

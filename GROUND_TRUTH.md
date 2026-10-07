@@ -1,5 +1,37 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; approved raw-state/parity review)
+
+- An approved read-only `gpt-6-luna/high` review found the adopted raw-state
+  `F→D→E` objective and current no-update graph consistent in the inspected
+  paths. It confirmed graph freeze is still **NO**: there is no exclusive
+  production trainer, replay-derived 20×87 mask schedule, or direct-leaf H4
+  schedule proof; the current receipt-bound seam validates one call but does
+  not prevent bypass through direct `loss_grad` calls.
+- The six-arm ≤5% decision remains **untested and unpassed**. D03 requires
+  complete compute across all 20×87 updates, while the partial ledger still
+  marks the full counter and parity eligibility false; eigensolver coverage
+  and loaded runtime/dispatch identity remain unresolved. The raw-state arm's
+  larger dense-forward MAC count and parameter count are a risk signal, not a
+  total-training-FLOP verdict. Review was documents/code only; no tests,
+  computations, roots, inference, or training ran. No gate advanced.
+
+## Latest continuation delta (2026-10-07; receipt-index constructor audit)
+
+- Closed the directly forgeable receipt-index constructor path: the public
+  `TrainReplayReceiptIndex` constructor now accepts episodes/adapters and runs
+  the exact-rule in-memory audit before publishing immutable receipt maps.
+  This prevents callers from passing fabricated receipt dictionaries through
+  the typed boundary, but does not authenticate the supplied episodes or
+  establish source-file provenance, corpus completeness, or split separation.
+- Focused receipt-bound tests pass 6/6; the combined episode/trajectory,
+  manifest, scheduled-call, adapter, model, and receipt-bound suites pass
+  47/47 under Python 3.11.9 / NumPy 2.4.6. `compileall` and
+  `git diff --check` pass. Test-only exact-rule fixtures only; no research
+  corpus, roots, scores, service, inference, or training. No gate advanced:
+  source/data provenance, exclusive trainer, complete counter/runtime binding,
+  graph freeze, and six-arm ≤5% parity remain open or untested and unpassed.
+
 ## Latest continuation delta (2026-10-07; model execution telemetry units)
 
 - An approved read-only `gpt-6-luna/high` review found no discrepancy between
@@ -25,8 +57,9 @@
   read-only inputs. The 20×87 schedule remains synthetic and only one update is
   called; models do not evaluate the objective. This is not source-file
   provenance, a production schedule, corpus audit, or training evidence.
-- Focused receipt-bound tests pass 5/5; the episode/trajectory, manifest,
-  scheduled-call, adapter, model, and receipt-bound suites pass 46/46 under
+- Focused receipt-bound tests pass 5/5 at that checkpoint; the
+  episode/trajectory, manifest, scheduled-call, adapter, model, and
+  receipt-bound suites pass 46/46 under
   Python 3.11.9 / NumPy 2.4.6, with compile and diff checks passing. Only
   test-only exact-rule trajectories were constructed; no research corpus,
   roots, model scores, service, inference, or training were used. This closes a

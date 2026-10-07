@@ -2,6 +2,31 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 approved raw-state/parity review
+
+An approved read-only `gpt-6-luna/high` review found no mismatch between the
+adopted raw-state `F→D→E` objective and the no-update graph in the inspected
+paths. Graph freeze remains **NO**: the exclusive trainer, replay-derived
+20×87 mask schedule, direct-leaf H4 schedule proof, complete compute counter,
+and loaded runtime/dispatch identity are absent. The current receipt-bound
+seam does not prevent direct `loss_grad` bypass. Six-arm ≤5% parity remains
+**untested and unpassed**; the raw-state arm's larger dense-forward MAC and
+parameter counts are risk indicators, not total-training-compute evidence.
+No tests or model computations ran for this review.
+
+### 2026-10-07 receipt-index constructor audit
+
+The public `TrainReplayReceiptIndex` constructor now accepts episodes and game
+adapters and runs the exact-rule in-memory audit before creating immutable
+receipt maps, closing direct caller-map fabrication at this boundary. Six
+focused receipt-bound tests and the combined seven-module suite pass 6/6 and
+47/47 under Python 3.11.9 / NumPy 2.4.6; compile and whitespace checks pass.
+This does not authenticate caller-supplied episodes, prove source-file
+provenance, corpus completeness, split separation, or provide an exclusive
+trainer. No research corpus or model execution occurred. Source/data
+provenance, trainer, complete counter/runtime binding, graph freeze, and
+six-arm ≤5% parity remain open or untested and unpassed.
+
 ### 2026-10-07 model execution telemetry units
 
 An approved read-only v06 raw-state/parity review found the objective and
