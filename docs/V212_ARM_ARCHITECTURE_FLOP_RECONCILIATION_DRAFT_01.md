@@ -139,3 +139,14 @@ single-target JEPA arm.
 The deterministic JSON is at `/tmp/caissa-v212-arm-dense-forward-macs-audit.json`;
 the output is not a dataset or performance result. No model was instantiated
 and no roots, outcomes, inference, training, or matches were run/accessed.
+
+## Method disposition (2026-10-07)
+
+The latent-then-decode raw-state graph and its target/loss, terminal, gradient,
+and preflight contract were later adopted narrowly in
+`METHOD_SPEC_V212.md` v05 after read-only method disposition. This resolves
+the architecture ambiguity identified above; it does not change or validate
+the old random-weight pilot path. The actual six-arm trainer implementation
+and same-batch forward/backward FLOP profile still do not exist. The ≤5%
+training-FLOP gate remains untested and unpassed; the MAC inventory above is
+still a risk signal only.

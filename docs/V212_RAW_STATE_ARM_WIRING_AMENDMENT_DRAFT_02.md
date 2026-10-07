@@ -1,12 +1,10 @@
 # V2.12 raw-state control wiring amendment — draft 02
 
-**Status: frozen candidate amendment after static method review; not adopted
-into METHOD_SPEC_V212-04.** Draft 02 supersedes draft 01 as the current
-raw-state candidate; draft 01 remains unchanged history. The reviewer found
-the contract coherent enough to freeze as a candidate, but this does not
-authorize a trainer, data generation, fitting, model scoring, or open any
-gate. The six-arm panel and negative results remain unchanged unless a
-versioned method decision explicitly adopts a clarification.
+**Status: adopted as the narrow raw-state amendment in METHOD_SPEC_V212-05;
+the archived v04 text remains unchanged.** Draft 02 supersedes draft 01 as the
+raw-state contract record; draft 01 remains unchanged history. The adoption
+does not authorize a trainer, data generation, fitting, model scoring, or
+open any gate. The six-arm panel and negative results remain unchanged.
 
 ## Proposed resolution
 
@@ -214,7 +212,8 @@ compute pilot applies `tanh` to that direct decoder, so it also differs in
 output activation from this proposed training arm. No implementation, training
 profile, or performance result follows from this proposal.
 
-**Independent read-only follow-up (2026-10-07):** the approved reviewer
+**Independent read-only follow-up (2026-10-07):** at this stage, before the
+method-level disposition below, the approved reviewer
 confirmed the transition-validity mask, fail-run behavior for a
 zero-valid-target minibatch, complete raw-arm loss and regularizer terms, and
 the proposal-only/gated status. They found no remaining inconsistency that
@@ -242,9 +241,10 @@ including end-to-end `F -> D -> E` gradients, the stated nonterminal target
 mask/terminal interpretation, separate mask/failure accounting, and the
 preflight needed to preserve fixed minibatches and 87 updates. Uniform
 coordinate weighting and pooled valid-target normalization were accepted as
-explicit candidate choices where v04 is underspecified. This freezes draft 02
-only as an amendment candidate; it does not amend/adopt v04 or authorize
-implementation or fitting. Compute-gate readiness is **NO**: the ≤5% total
-training-FLOP requirement remains unmeasured and mandatory. If it fails, any
+explicit candidate choices where v04 was underspecified. This disposition
+supported adoption of the narrow raw-state amendment in v05, without changing
+archived v04 or authorizing implementation, pilot, or fitting. Compute-gate
+readiness is **NO**: the ≤5% total training-FLOP requirement remains
+unmeasured and mandatory. If it fails, any
 method/config change requires a new version and review before fitting. No
 profile, model operation, or gate advancement occurred.

@@ -2,15 +2,26 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12-05 raw-state method adoption
+
+The D02 raw-state contract is adopted as the narrow v05 method change after
+approved read-only method disposition. `METHOD_SPEC_V212.md` is current v05;
+the exact v04 text is archived at `docs/METHOD_SPEC_V212_V04.md`. This changes
+only the raw-state arm; the six-arm/update controls and every other open v04
+gate remain. The six-arm training-FLOP gate is **untested and unpassed**: the
+77.53% dense-forward MAC difference is a risk signal, not a measured gate
+result. No trainer implementation or profile exists. No compute/data/training
+gate advanced. See
+`docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md`.
+
 ### 2026-10-07 raw-state graph and compute-parity review
 
 The approved static review found the proposed latent-then-decode raw-state
-graph defensible but not uniquely implied by v04. Draft 02 records explicit
-candidate choices for recurrent gradient flow, terminal versus missing-target
-handling, invalid-transition failures, and feature/reduction weights. The
-approved read-only method review found this contract coherent enough to freeze
-as an amendment candidate, including its fixed-batch preflight safeguards. It
-has not been adopted into v04. Its
+graph defensible but not uniquely implied by v04. Draft 02 recorded explicit
+choices for recurrent gradient flow, terminal versus missing-target handling,
+invalid-transition failures, and feature/reduction weights. The approved
+read-only method review found this contract coherent and it was later adopted
+as the narrow v05 amendment. Its
 static dense-forward cost is 72,544 MAC/window versus 40,864 for multi-step
 JEPA (+77.53%); this warns of a parity problem but is not a full training-FLOP
 result or proof that the 5% gate fails. Compute-gate readiness remains NO: the
@@ -67,7 +78,7 @@ simulations ran and no gate advanced. See the root-schedule design and review.
 Independent static review found the first inventory counted only three
 recursive transitions for horizons 1/2/4. Constructing horizon 4 requires
 four predictor calls, including an unsupervised transition-3 intermediate;
-the unadopted raw-state graph also needs four decoder and online re-encoder
+the raw-state graph adopted later in v05 also needs four decoder and online re-encoder
 calls. Corrected counts per fully valid nonterminal four-ply window are
 40,864 for multi-step JEPA, 72,544 for raw-state (+77.53%), 21,856 for
 value-only, 28,192 for single-pair and single-horizon, and 14,816 for
@@ -394,11 +405,11 @@ reuse the shared 104-to-32 action-conditioned latent predictor in the
 raw-state control, decode its latent output to 198 exact-state features, and
 re-encode for recurrence. The decoder output is linear because exact feature
 targets include 0/1 channels under MSE; the random-weight pilot's `tanh`
-decoder is not an equivalent training path. This fixes the proposed wiring at 18,440 online
-parameters while retaining the required 5% training-FLOP gate. It does not
-resolve whether that gate is feasible, and independent review has not adopted
-the proposal; v04 remains current. No trainer or model operation was run. See
-the new wiring amendment and architecture reconciliation drafts.
+decoder is not an equivalent training path. The proposal fixes wiring at
+18,440 online parameters while retaining the required 5% training-FLOP gate.
+It was later adopted narrowly in v05; it does not resolve compute feasibility.
+V04 is preserved unchanged, and no trainer or model operation was run. See
+the amendment and architecture reconciliation.
 
 ### 2026-10-07 v04 arm architecture and compute reconciliation
 

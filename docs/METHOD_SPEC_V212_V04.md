@@ -1,14 +1,11 @@
-# METHOD SPEC V2.12-05: Alternating-Player Multi-step JEPA
+# METHOD SPEC V2.12-04: Alternating-Player Multi-step JEPA
 
-Status: v05 adopts the narrowly scoped raw-state arm contract after
-independent method review on 2026-10-07. The unchanged v04 text is archived at
-`docs/METHOD_SPEC_V212_V04.md`. This adoption changes the specification only;
-it is not a training grant, novelty claim, or superiority result. The fixed
-2.0-second search gate has failed the rule-only Reversi8 p90 audit, and the
-six-arm ≤5% training-FLOP gate remains untested and unpassed. No fitting or
-locked-data evaluation is permitted until a revised no-outcome compute
-protocol is independently reviewed and all remaining pre-fit gates pass.
-Changes require a new version.
+Status: draft v04 reviewed on 2026-10-02 and accepted only for the narrowly
+scoped no-training instrumentation pilot in Section 8; this is not a training
+grant, novelty claim, or superiority result. The fixed 2.0-second search gate has
+failed the rule-only Reversi8 p90 audit. No fitting or locked-data evaluation
+is permitted until the compute protocol is revised from no-outcome evidence
+and independently reviewed. Changes require a new version.
 
 ## 1. Falsifiable hypothesis and scope
 
@@ -91,10 +88,7 @@ action sequence; no counterfactual branches are enumerated or averaged in the
 training loss. Counterfactual coverage is measured in evaluation. The source
 policy id is provenance only; no component predicts it as an opponent model.
 Episodes are assigned to train/development splits before windows form.
-For learned rollout losses, terminal states and all later horizons are masked
-and are not terminal training targets. Exact terminal utility is used by the
-exact-rule planner/bypass path, never by an approximate learned terminal
-prediction.
+Terminal states mask every later horizon and receive exact terminal utility.
 
 For `k in {1,2,4}`, recursively predict
 `zhat_(t+k)=F_phi(zhat_(t+k-1),a_(t+k-1),p_(t+k-1),g)`. Let `m_k=1` only if
@@ -116,10 +110,9 @@ legal-action-masked mean cross-entropy for the recorded root action and mean
 squared error of root value against `y_t`. All predictive arms also use
 `L_outcome_roll`, the weighted masked MSE between `v(zhat_(t+k))` and
 `y_(t+k)` at nonterminal horizons `k=1,2,4`, using the same `alpha_k` and
-valid-example normalization as `L_roll`. A terminal target is masked from
-learned rollout losses and handled by exact utility in the rule-based
-planner/bypass path; terminal states retain the adapter's explicit
-player-to-move field.
+valid-example normalization as `L_roll`. If a target is terminal, bypass its
+predicted latent/value and use `p_(t+k)*w_g(s_(t+k))` from the adapter; terminal
+states retain the adapter's explicit player-to-move field.
 Thus target trajectories, outcome labels, masks and policy-action labels are
 shared across arms. The JEPA term is computed only along each recorded
 sequence; it is not averaged over the legal reply closure. Total candidate
@@ -166,27 +159,10 @@ rules, and development schedule. Freeze these six arms before implementation:
    action sequence; shared rollout-value targets remain at 1/2/4. This matched
    single-horizon arm is not a reproduction of V2.9's counterfactual reply-set
    objective. V2.11 lambda=8 is historical only and will not be refit.
-3. **Recursive raw-state dynamics:** initialize `zhat_0=E_theta(x_0)` and use
-   the shared action-conditioned `F` (`104 -> 32`, tanh), followed by a linear
-   `D` (`32 -> 198`) and the online re-encoder `E` (`198 -> 32`, tanh) at each
-   predicted transition. Recur only on `zhat_k=E(D(F(...)))`; never substitute
-   an exact intermediate state. Construct four transitions for horizon 4,
-   including the unsupervised transition 3. Its exact-feature loss is
-   `L_raw=sum_(b,k) alpha_k*m_(b,k)*e_(b,k)/sum_(b,k) alpha_k*m_(b,k)` for
-   `k∈{1,2,4}`, `alpha=(1,0.5,0.25)`, and
-   `e_(b,k)=(1/198)*sum_(j=0..197)(x_pred[b,k,j]-x_exact[b,k,j])^2`. Weight all 198
-   coordinates uniformly and pool the valid weighted targets across horizons.
-   A target is valid only if all transitions through it are valid, the exact
-   target exists, and it is nonterminal. The arm uses the common policy,
-   root-value, rollout-value, and root-regularizer losses, replacing latent
-   `L_roll` with `L_raw`; specifically,
-   `L_raw_arm=L_policy+L_root_value+1.0*L_outcome_roll+1.0*L_raw+
-   0.1*L_variance+0.01*L_covariance`. It has no EMA target encoder or
-   EMA-latent loss.
-   Backpropagate through the online `F -> D -> E` recurrent path without
-   detaching predicted features. Do not clip decoder outputs before
-   re-encoding. Initialize `D` independently by the common fan-in rule and
-   pair `F` by seed with other predictive arms.
+3. **Recursive raw-state dynamics:** shared encoder/predictor trunk and a
+   decoder predicting 198-dimensional exact next-state features at one, two,
+   and four plies. Re-encode each predicted feature vector before its next
+   step. Use masked feature MSE plus the same policy/root/rollout-value losses.
 4. **Value-only latent rollout:** same recursive trunk/horizons, trained with
    the same recorded-trajectory outcome labels at predicted horizons plus
    shared task losses. It has no latent or raw-state prediction target and
@@ -201,26 +177,12 @@ rules, and development schedule. Freeze these six arms before implementation:
    to isolate the multi-step component.
 
 All heads, target masks, horizons, windows, seeds, optimizer, and updates are
-fixed across arms. Before any optimizer update, replay every selected training
-window and required transition and precompute the per-horizon valid-target
-counts for every fixed minibatch. Record valid nonterminal, terminal-masked,
-missing/truncated, and invalid-transition counts separately. Any invalid
-selected transition or any raw-state minibatch with zero valid targets rejects
-the run before updates; do not skip, replace, resample, or rebalance fixed
-batches. This preserves the common window order, minibatch boundaries, and 87
-updates.
-
-Before a fit grant, record parameter counts and forward/backward FLOPs per
-update, then profile training compute on the same dry-run batches and masks.
-The adopted raw-state arm has 18,440 online parameters, versus 11,906 for
-multi-step JEPA. A static dense-forward inventory is 72,544 MAC/window for
-raw-state versus 40,864 for multi-step JEPA (+77.53%); this is a risk signal,
-not a total-training-FLOP measurement or gate result. The panel may proceed
-only if measured total training FLOPs are within 5% across arms. That gate is
-currently **untested and unpassed**. Otherwise revise the controls/config in a
-new version and re-review before fitting; do not add filler computation or
-alter updates to manufacture parity. Evaluation arms share one node-visit and
-wall-time cap; also report exact transitions and model calls because equal node visits
+fixed across arms. Before a fit grant, record parameter counts and forward /
+backward FLOPs per update, then profile training compute on the same dry-run
+batches. The panel may proceed only if measured total training FLOPs are within
+5% across arms; otherwise revise the controls/config in a new version and
+re-review before fitting. Evaluation arms share one node-visit and wall-time
+cap; also report exact transitions and model calls because equal node visits
 do not imply equal model FLOPs. Do not add or substitute baselines after
 outcomes are seen.
 
@@ -371,12 +333,6 @@ trajectory generator must pass transition replay, action/role, mask,
 deduplication and split-leak tests. An independent reviewer must accept this
 method and the revised no-outcome compute protocol before any fitting.
 
-`docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md` is an earlier proposed
-§7 replacement written against v04. It remains unreviewed and unadopted; its
-filename's v05 does not denote the current main spec version. Any further
-consideration must rebase that proposal on this v05 and retain the adopted
-raw-state arm in a later main method version.
-
 Narrow feasibility exception: after independent acceptance of v04, implement
 only the minimal inference/instrumentation code needed for a random-initialized
 no-training compute pilot. It may load synthetic legal root states and measure
@@ -386,12 +342,6 @@ record game scores or select a model. Review this harness and its no-outcome
 report before proceeding. This exception does not waive the novelty, data
 audit, split/leakage or separate pre-fit review gates for objective/training
 code or any fitted experiment.
-
-The pre-existing v04 no-training pilot and its direct 104-to-198 raw-state
-proxy remain historical evidence only; they do not implement or validate the
-v05 latent-then-decode training arm. V05 adoption does not authorize a new
-pilot run or make the training-FLOP gate pass. Any future v05-specific
-no-training pilot requires a separately reviewed harness/protocol update.
 
 Only a small adapter feasibility audit has passed: 8x8 Connect Four and
 Reversi feature/action shapes, sampled legal transitions, role alternation,

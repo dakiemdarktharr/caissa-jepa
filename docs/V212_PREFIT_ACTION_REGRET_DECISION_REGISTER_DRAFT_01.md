@@ -1,8 +1,10 @@
 # V2.12 pre-fit action-sensitivity and regret decision register — draft 01
 
-**Status: review aid only; no method choice or gate is accepted here.** This
-register consolidates decisions that the action-sensitivity and regret drafts
-share or leave open. It does not amend METHOD_SPEC v04, authorize root/branch
+**Status: review aid only; no root/regret/diagnostic choice or gate is
+accepted here.** The narrow raw-state contract is now adopted in METHOD_SPEC
+v05; this register consolidates decisions that the action-sensitivity and
+regret drafts share or leave open. It does not change the v05 raw-state arm or
+authorize root/branch
 generation, scoring, inference, fitting, matches, or outcome access. Keep the
 negative feasibility findings and all novelty limits in force.
 
@@ -28,10 +30,10 @@ negative feasibility findings and all novelty limits in force.
 | Decision | Current state | Evidence required before freeze | Responsible workstream |
 | --- | --- | --- | --- |
 | Development-root population, statistical unit, occupancy strata, repeated-state treatment, seat/band/variant weights, and yield/failure rule | Design 02 is a proposal: 48 slot draws per variant across three conditional bands; repeated states count as draws; the equal-band mixture and global six-band stop amend an ambiguous v04 minimum | Independent method disposition must say whether a slot event satisfies the ≥40 requirement, accept or replace the conditional populations and weights, and freeze yield/failure handling before schedule generation | Root-schedule method review |
-| Six-arm transition eligibility and support | No V2.12 trainer exists; the pilot is random-weight proxy evidence. Raw-state draft 02 is coherent enough to freeze as an amendment candidate after static review, but remains unadopted; no actual trainer graph or target-support ledger exists | Make an explicit versioned method decision before adoption; then implement the trainer graph without fitting and inspect all six forward/loss graphs, value-only support path, raw-state masks/gradient/terminal contract, and train-only support ledger semantics | Trainer and raw-state wiring review |
+| Six-arm transition eligibility and support | No V2.12 trainer exists; the pilot is random-weight proxy evidence. The narrow raw-state contract is adopted in v05 after read-only method disposition; no trainer implementation graph or target-support ledger exists | Implement the trainer graph without fitting and inspect all six forward/loss graphs, value-only support path, raw-state masks/gradient/terminal contract, and train-only support ledger semantics; then measure the full six-arm FLOP gate before any fit | Trainer and raw-state wiring review |
 | Action-sensitivity strata and summaries | Draft defines marginal action-index and exact state-action support classes and one-step collision/terminal accounting; no inferential threshold is proposed | Confirm support-key/count semantics against the frozen training objective masks; retain the fixed latent metric and descriptive-only scope; preserve the receipt-policy-pair conditioning in multi-step interpretation | Action-diagnostic protocol review |
 | All-legal-action and branch work allocation | Feasibility is unmeasured; no common charged-work allocation or incomplete-cell limits are selected | Freeze complete-work accounting and per-root/per-cell transition, model-call, node, wall-time, and memory limits; assess feasibility under a separately approved no-outcome procedure before any model scoring | Compute/pilot protocol review |
-| Six-arm training-FLOP parity | Static dense-forward inventory shows raw-state 72,544 versus multi-step JEPA 40,864 MAC/window (+77.53%); it is not a total-FLOP measurement or a gate verdict | After all six graphs and masks are implemented and independently reviewed, profile forward/backward work per update on identical dry-run batches and masks; require the v04 ≤5% total-training-FLOP parity or version/re-review a method change before fitting | Trainer implementation and compute review |
+| Six-arm training-FLOP parity | Static dense-forward inventory shows raw-state 72,544 versus multi-step JEPA 40,864 MAC/window (+77.53%); it is not a total-FLOP measurement or a gate verdict | After all six graphs and masks are implemented and independently reviewed, profile forward/backward work per update on identical dry-run batches and masks; require the inherited v05 ≤5% total-training-FLOP parity or version/re-review a method change before fitting | Trainer implementation and compute review |
 | Regret reference and estimand | Scalar fixed-horizon, sound interval, exact-solved strata, and bounded strata remain alternatives; they are not interchangeable | Select the estimand/strata; pin evaluator and rules/adapter identity to executed bytes/config; specify terminal roots, ordering/ties, query plan, charged transition/node/time/memory limits, incomplete-cell/failure policy, and aggregation | Regret implementation and protocol review |
 | Diagnostic priority and artifact contract | Action sensitivity is descriptive; regret is secondary under v04. Ranking/tie tolerance and result fingerprint/content contract remain open | State whether each quantity is descriptive or inferential, freeze any ranking/tie rule and result schema/fingerprints, and keep outcome/selection fields out unless separately reviewed | Evaluation protocol review |
 
@@ -54,8 +56,8 @@ scores, outcomes, simulations, inference, or training were accessed or run.
 
 ## Current decision
 
-Keep METHOD_SPEC v04 current and both diagnostic protocols gated. The next
-reviewable milestone is implementation-level trainer/raw-state graph review
-and a separately authorized, no-outcome feasibility assessment after the
-root-schedule method decision. This register itself opens no gate and supports
-no superiority, generalization, novelty, or Q1-readiness claim.
+Keep METHOD_SPEC v05 current for the adopted raw-state contract and keep both
+diagnostic protocols gated. The next reviewable milestone is
+implementation-level trainer/six-arm graph review, after any required method
+dispositions for root scheduling. This register itself opens no gate and
+supports no superiority, generalization, novelty, or Q1-readiness claim.

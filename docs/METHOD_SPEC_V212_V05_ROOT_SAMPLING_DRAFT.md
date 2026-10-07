@@ -1,11 +1,15 @@
 # METHOD SPEC V2.12-05 — root-sampling replacement draft
 
-**Status: unreviewed proposal.** This document proposes a replacement for
-§7 of `METHOD_SPEC_V212.md` v04. Read §§1–6 and §8 of v04 unchanged, together
-with this replacement §7. This file does not supersede the reviewed v04, does
-not freeze a schedule, and does not authorize synthetic calibration, root
-generation, scoring, fitting, matches, or outcome access. Independent method
-and statistical review is required before any such gate can advance.
+**Status: unreviewed v04-based proposal.** This draft was originally written
+as a replacement for §7 of METHOD_SPEC v04. The current specification is
+v05, which adopts only the raw-state amendment. This draft does not supersede
+current §7 or any v05 section. If considered further, rebase it on current
+v05, retain the adopted raw-state contract, and issue it as a later main
+method version. The `V05` in this filename records its draft lineage; it is
+not the current main method version. It does not freeze a schedule or
+authorize calibration, root generation, scoring, fitting, matches, or outcome
+access. Independent method and statistical review is required before any such
+gate can advance.
 
 ## 7. Development estimand, metrics, and nomination gate
 

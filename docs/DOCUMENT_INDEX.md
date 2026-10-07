@@ -22,6 +22,10 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/validation/V28_DATA_SPLIT_DEV09.json` | Passed strict data-audit receipt for synthetic Connect4 6x7 + Reversi6; raw records are ignored and training is unapproved |
 | `ROADMAP.md` | Current milestones and evidence/kill gates |
 | `METHOD_SPEC.md` | Frozen original v1; read amendments before implementation |
+| `METHOD_SPEC_V212.md` | Current V2.12-05 specification; only the raw-state contract changed from v04; all unrelated gates remain closed |
+| `docs/METHOD_SPEC_V212_V04.md` | Immutable v04 specification archive; includes the Reversi8 2-second p90 negative and pre-v05 raw-state wording |
+| `docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md` | Adopted narrow v05 raw-state amendment; method-level review only, no trainer/fit authorization, ≤5% FLOP gate untested and unpassed |
+| `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md` | Unreviewed §7 replacement originally based on v04; not current v05, must be rebased and versioned before any future adoption |
 | `docs/METHOD_V28_PLANNER_V04_AMENDMENT.md` | Historical exact-root-regret candidate; DEV10 showed current 6x7 oracle budget unresolved |
 | `docs/METHOD_V28_PLANNER_V05_AMENDMENT.md` | Current paired-match candidate; pre-fit redesign, independent method review signed off; evaluator/power gate pending |
 | `docs/METHOD_V28_SUPERVISED_V02_AMENDMENT.md` | Separate implementation-aligned supervised reply-set JEPA candidate; prefit draft, not frozen/reviewed/trained |

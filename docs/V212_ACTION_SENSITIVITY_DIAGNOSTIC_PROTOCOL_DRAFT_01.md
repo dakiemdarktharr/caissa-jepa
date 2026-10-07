@@ -1,7 +1,7 @@
 # V2.12 action-sensitivity diagnostic protocol — draft 01
 
 **Status: proposal for independent review only.** This draft does not amend
-METHOD_SPEC v04, change any arm, select checkpoints, authorize root or branch
+METHOD_SPEC v05, change any arm, select checkpoints, authorize root or branch
 generation, model scoring, training, inference, matches, or outcomes. The
 root-sampling schedule and decision-regret reference remain separate,
 unapproved designs. No threshold or gate changes here.
@@ -21,14 +21,15 @@ the frozen inference encoder's latent for the exact successor. This is a
 within-arm evaluation target, not a claim that all arms train against the same
 target; JEPA's EMA target remains its training target. The value-only arm
 qualifies only if final graph inspection confirms it has the explicit
-action-conditioned recursive transition output described by METHOD_SPEC v04.
+action-conditioned recursive transition output described by METHOD_SPEC v05.
 For the recursive raw-state arm, compare its decoded exact-state feature
 prediction with the rule-generated successor features using that arm's
-independently reviewed target and validity mask. Do not introduce a new mask
+v05-defined target and validity mask. Do not introduce a new mask
 or compare raw-feature MSE numerically with latent MSE. Mark arms without the
-relevant transition output as not applicable, not as zero error. The six-arm
-graph and raw-state target/mask contract must be independently verified before
-freeze; this draft does not infer that contract.
+relevant transition output as not applicable, not as zero error. The raw-state
+target/mask contract is fixed by v05, but the six-arm implementation graph
+and its support ledger must still be verified before this diagnostic is
+frozen; this draft does not infer implementation behavior.
 
 ## Sampling and support records
 
