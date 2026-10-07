@@ -1,5 +1,19 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; missing post-exit state polling)
+
+- Added a mocked v01 controller regression for post-exit manager responses that
+  omit both `ActiveState` and `SubState`. The controller keeps polling until
+  its caller deadline, then rejects before response read, journal capture,
+  receipt publication, unit stop, or workspace cleanup; the IPC workspace is
+  retained for reconciliation. Added the named test to the MGR-01 traceability
+  row in the supervision failure test plan.
+- The full armed-service-smoke module passes 46/46 in the locked Python 3.11.9
+  / NumPy 2.4.6 environment; `compileall` and `git diff --check` pass. This is
+  mocked v01 coverage only. v02 controller integration, live manager failures,
+  and the complete manager-field/failure cross-product remain open. No service,
+  adapter, inference, OOM, training, scoring, or match ran; no gate advanced.
+
 ## Latest continuation delta (2026-10-07; raw-state H4 gradient path)
 
 - Added a synthetic model-level regression that disables raw-state target

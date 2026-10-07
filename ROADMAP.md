@@ -2,6 +2,16 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 missing post-exit manager state
+
+Added a mocked controller test for a manager snapshot that continues to omit
+`ActiveState` and `SubState` after worker exit. The request is rejected at the
+caller deadline before response acceptance or receipt, and dispatched handles
+remain available. The 46-test armed-service-smoke suite, targeted compile, and
+whitespace check pass. MGR-01 remains partial: v02 controller integration,
+live failures, and the complete field/failure cross-product remain open. This
+does not authorize service or adapter use and opens no research gate.
+
 ### 2026-10-07 raw-state H4 gradient path
 
 Added a synthetic finite-difference regression showing that H4 raw-state loss

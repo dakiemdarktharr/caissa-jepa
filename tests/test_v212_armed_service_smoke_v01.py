@@ -870,6 +870,38 @@ class ArmedServiceOrchestrationTests(unittest.TestCase):
                 self.assertNotIn("stop", state["sequence"])
                 self.assertTrue(self.workspaces[-1].directory.exists())
 
+    def test_missing_exit_state_properties_wait_to_deadline_without_acceptance(self):
+        clock = [0.0]
+
+        def monotonic():
+            return clock[0]
+
+        def sleep(seconds):
+            clock[0] += seconds
+
+        with ExitStack() as stack:
+            state = self._mock_host(
+                stack, exited_omissions={"ActiveState", "SubState"})
+            stack.enter_context(patch.object(service.time, "monotonic",
+                                               side_effect=monotonic))
+            stack.enter_context(patch.object(service.time, "sleep",
+                                               side_effect=sleep))
+            with self.assertRaisesRegex(
+                    service.ArmedServiceSmokeError,
+                    "did not exit before caller deadline.*receipt_not_attempted"):
+                service.run_no_inference_armed_smoke(
+                    receipt_path=self.receipt, timeout_seconds=2.0)
+
+        self.assertIn("exited_snapshot", state["sequence"])
+        self.assertGreater(state["show"], 2)
+        self.assertNotIn("response_read", state["sequence"])
+        self.assertNotIn("journal", state["sequence"])
+        self.assertNotIn("persist_attempt", state["sequence"])
+        self.assertNotIn("stop", state["sequence"])
+        self.assertNotIn("cleanup", state["sequence"])
+        self.assertFalse(self.receipt.exists())
+        self.assertTrue(self.workspaces[-1].directory.exists())
+
     def test_post_exit_boot_identity_revalidation_failure_preserves_handles(self):
         cases = (
             (collector.CollectorError("mock boot ID source unavailable"),
