@@ -12,7 +12,7 @@ import json
 from .v212_model import ARMS
 
 
-SCHEDULE_SCHEMA = "caissa.v212.training-schedule.v01"
+SCHEDULE_SCHEMA = "caissa.v212.training-schedule.v02"
 TRAIN_GAMES = ("connect4-gravity-6x7", "reversi6")
 HORIZONS = (1, 2, 4)
 MASK_FIELDS = (
@@ -28,6 +28,7 @@ BATCHES_PER_EPOCH = 29
 BATCH_SIZE = 64
 WINDOWS_PER_GAME_PER_BATCH = 32
 WINDOWS_PER_GAME = 928
+BATCH_PAYLOAD_SCHEMA = "caissa.v212.scheduled-batch-payload.v01"
 
 
 def _require(condition: bool, message: str) -> None:
@@ -39,16 +40,44 @@ def _strict_int(value: object) -> bool:
     return type(value) is int
 
 
-def _validate_window_id(value: object) -> tuple[str, str, int]:
-    _require(isinstance(value, (list, tuple)) and len(value) == 3,
+def scheduled_batch_payload_sha256(
+    seed_ordinal: int,
+    update_index: int,
+    ordered_window_records: list[tuple[tuple[str, str, int], str]],
+) -> str:
+    """Digest one batch identity and ordered ID/payload-hash roster."""
+    payload = {
+        "schema": BATCH_PAYLOAD_SCHEMA,
+        "seed_ordinal": seed_ordinal,
+        "update_index": update_index,
+        "windows": [
+            {"id": list(identity), "payload_sha256": payload_sha256}
+            for identity, payload_sha256 in ordered_window_records
+        ],
+    }
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"),
+                           ensure_ascii=False, allow_nan=False)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _validate_window_record(value: object) -> tuple[tuple[str, str, int], str]:
+    _require(isinstance(value, Mapping)
+             and set(value) == {"id", "payload_sha256"},
+             "window record needs exactly id and payload_sha256")
+    identity_value = value["id"]
+    _require(isinstance(identity_value, (list, tuple)) and len(identity_value) == 3,
              "window id must be [game, episode_id, start_ply]")
-    game, episode_id, start_ply = value
+    game, episode_id, start_ply = identity_value
     _require(game in TRAIN_GAMES, "window id names a non-training game")
     _require(type(episode_id) is str and bool(episode_id),
              "window id needs a nonempty episode id")
     _require(_strict_int(start_ply) and start_ply >= 0,
              "window id needs a nonnegative integer start ply")
-    return game, episode_id, start_ply
+    payload_sha256 = value["payload_sha256"]
+    _require(type(payload_sha256) is str and len(payload_sha256) == 64
+             and all(char in "0123456789abcdef" for char in payload_sha256),
+             "window payload digest must be a lowercase SHA-256 hex string")
+    return (game, episode_id, start_ply), payload_sha256
 
 
 def _validate_mask_counts(value: object, arm: str) -> dict[str, dict[str, int]]:
@@ -77,12 +106,13 @@ def _validate_mask_counts(value: object, arm: str) -> dict[str, dict[str, int]]:
 def validate_schedule_manifest(manifest: Mapping) -> dict[str, object]:
     """Validate the frozen 20×87 shared-window schedule shape and mask roster.
 
-    The manifest schema stores one ordered 64-window identity list and mask
-    counts by arm for each update. Each seed must use a stable bank of 928
-    distinct windows per game in every epoch, with each bank member appearing
-    exactly once per epoch. Batch order may differ between epochs. This checks
-    structure and declared counts only; it does not verify window payloads,
-    source episodes, exact-rule replay, split provenance, or fingerprints.
+    The manifest schema stores one ordered 64-window ID/payload-digest list
+    and mask counts by arm for each update. Each seed must use a stable bank of
+    928 distinct windows per game in every epoch, with each bank member
+    appearing exactly once per epoch. Batch order may differ between epochs.
+    This checks structure and digest declarations only; it does not verify the
+    payload bytes, source episodes, exact-rule replay, split provenance, or
+    fingerprints.
     """
     _require(isinstance(manifest, Mapping), "schedule manifest must be a mapping")
     _require(set(manifest) == {"schema", "seeds"},
@@ -95,7 +125,7 @@ def validate_schedule_manifest(manifest: Mapping) -> dict[str, object]:
 
     ordinals = []
     model_seeds = []
-    seed_banks: dict[int, dict[int, dict[str, set[tuple[str, str, int]]]]] = {}
+    seed_banks: dict[int, dict[int, dict[str, dict[tuple[str, str, int], str]]]] = {}
     for seed_position, seed_record in enumerate(seeds):
         _require(isinstance(seed_record, Mapping)
                  and set(seed_record) == {"seed_ordinal", "model_seed", "updates"},
@@ -113,14 +143,14 @@ def validate_schedule_manifest(manifest: Mapping) -> dict[str, object]:
         updates = seed_record["updates"]
         _require(isinstance(updates, list) and len(updates) == UPDATES_PER_SEED,
                  "each seed must contain exactly 87 updates")
-        seed_banks[ordinal] = {epoch: {game: set() for game in TRAIN_GAMES}
+        seed_banks[ordinal] = {epoch: {game: {} for game in TRAIN_GAMES}
                                for epoch in range(EPOCHS)}
         seen_update_indexes = set()
 
         for update_position, update in enumerate(updates, start=1):
             _require(isinstance(update, Mapping) and set(update) == {
                 "update_index", "epoch_index", "batch_index", "window_ids",
-                "mask_counts_by_arm",
+                "batch_payload_sha256", "mask_counts_by_arm",
             }, "update record has unknown or missing fields")
             index = update["update_index"]
             epoch = update["epoch_index"]
@@ -141,13 +171,27 @@ def validate_schedule_manifest(manifest: Mapping) -> dict[str, object]:
             raw_ids = update["window_ids"]
             _require(isinstance(raw_ids, list) and len(raw_ids) == BATCH_SIZE,
                      "each scheduled update must contain exactly 64 ordered window ids")
-            ids = [_validate_window_id(value) for value in raw_ids]
+            records = [_validate_window_record(value) for value in raw_ids]
+            declared_batch_digest = update["batch_payload_sha256"]
+            _require(type(declared_batch_digest) is str
+                     and len(declared_batch_digest) == 64
+                     and all(char in "0123456789abcdef"
+                             for char in declared_batch_digest),
+                     "batch payload digest must be a lowercase SHA-256 hex string")
+            expected_batch_digest = scheduled_batch_payload_sha256(
+                ordinal, index, records)
+            _require(declared_batch_digest == expected_batch_digest,
+                     "batch payload digest does not match its ordered records")
+            ids = [identity for identity, _ in records]
             _require(len(set(ids)) == BATCH_SIZE,
                      "scheduled update contains duplicate window ids")
             game_counts = {game: 0 for game in TRAIN_GAMES}
-            for identity in ids:
+            for identity, payload_sha256 in records:
                 game_counts[identity[0]] += 1
-                seed_banks[ordinal][epoch][identity[0]].add(identity)
+                bank = seed_banks[ordinal][epoch][identity[0]]
+                previous_hash = bank.setdefault(identity, payload_sha256)
+                _require(previous_hash == payload_sha256,
+                         "one window id has conflicting payload hashes")
             _require(all(game_counts[game] == WINDOWS_PER_GAME_PER_BATCH
                          for game in TRAIN_GAMES),
                      "each scheduled update must contain 32 windows per game")

@@ -1,5 +1,26 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; V2.12 window-payload binding)
+
+- Added canonical `window_payload_sha256` over each materialized `Window` and
+  its adapter/rules identity. The paired scheduled-batch result now carries
+  ordered per-window payload hashes and a batch digest bound to seed ordinal,
+  update index, window IDs, and payload hashes. Schedule-manifest schema v02
+  records those hashes and rejects an ID whose payload digest changes within
+  a seed's 87 updates or across its three epochs. V01 audit history is retained.
+- Thirteen payload/schedule-boundary tests pass; with the adapter and model
+  suites, focused validation is 26/26. `compileall` and `git diff --check`
+  pass under Python 3.14.7 / NumPy 2.5.3, not the locked runtime. All inputs
+  were synthetic; no dataset, episode, score, outcome, inference, profile, or
+  training was used.
+- The digest binds only the four-ply Window object and adapter identity; it is
+  not source-episode provenance, full-episode terminal verification, a signed
+  replay receipt, or a loaded-code fingerprint. The manifest validator still
+  checks declared fields rather than actual selected data, and `loss_grad`
+  remains directly callable. Trainer/replay integration and compute gates
+  remain open; ≤5% parity is **untested and unpassed**. No negative finding or
+  novelty risk changed.
+
 ## Latest continuation delta (2026-10-07; V2.12 schedule-manifest validator)
 
 - Added `two_player/v212_schedule_manifest.py` and a versioned structural

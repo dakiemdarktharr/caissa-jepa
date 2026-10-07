@@ -46,6 +46,40 @@ def _game_identity(game: BoardGame) -> tuple[Any, ...]:
             game.gravity, game.reversi)
 
 
+def window_payload_sha256(window: Window, game: BoardGame) -> str:
+    """Hash the exact in-memory window fields together with adapter identity.
+
+    This is a content identity helper, not an audit: callers must still obtain
+    windows from ``audit_trajectories`` and use the model-batch adapter to
+    replay transitions and verify the declared target masks.
+    """
+    if not isinstance(window, Window) or not isinstance(game, BoardGame):
+        raise TypeError("window and game must be audited V2.12 primitives")
+    if window.game != game.name:
+        raise ValueError("window/game identity mismatch")
+    payload = {
+        "schema": "caissa.v212.window-payload.v01",
+        "adapter": _game_identity(game),
+        "window": {
+            "game": window.game,
+            "episode_id": window.episode_id,
+            "split": window.split,
+            "episode_outcome": window.episode_outcome,
+            "start_ply": window.start_ply,
+            "states": [
+                {"board": list(state.board), "player": state.player}
+                for state in window.states
+            ],
+            "actions": list(window.actions),
+            "valid_targets": list(window.valid_targets),
+            "terminal_targets": [list(item) for item in window.terminal_targets],
+        },
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"),
+                          ensure_ascii=False, allow_nan=False).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def _state_keys(game: BoardGame, state: State) -> tuple[str, str]:
     """Return separate raw and canonical keys, independent of lineage."""
     raw = json.dumps([state.board, state.player], separators=(",", ":"))

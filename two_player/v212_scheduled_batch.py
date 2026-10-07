@@ -17,7 +17,8 @@ import numpy as np
 
 from .games import BoardGame
 from .v212_model import ARMS
-from .v212_trajectory_audit import Window
+from .v212_schedule_manifest import scheduled_batch_payload_sha256
+from .v212_trajectory_audit import Window, window_payload_sha256
 from .v212_window_batch import windows_to_model_batch
 
 
@@ -37,7 +38,9 @@ class ScheduledBatchResult:
     seed_ordinal: int
     update_index: int
     ordered_window_ids: tuple[tuple[str, str, int], ...]
+    ordered_window_payload_sha256: tuple[str, ...]
     window_order_sha256: str
+    batch_payload_sha256: str
     by_arm: dict[str, tuple[dict, dict[str, np.ndarray]]]
 
 
@@ -123,7 +126,13 @@ def compute_scheduled_panel_batch(
 
     ordered_ids = tuple(window_ids)
     canonical = json.dumps(ordered_ids, separators=(",", ":"), ensure_ascii=False)
-    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    order_digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    payload_hashes = tuple(
+        window_payload_sha256(window, games[window.game]) for window in windows
+    )
+    payload_digest = scheduled_batch_payload_sha256(
+        seed_ordinal, update_index,
+        list(zip(ordered_ids, payload_hashes)))
     results = {}
     for arm in ARMS:
         metrics, gradients = models[arm].loss_grad(batch)
@@ -137,6 +146,8 @@ def compute_scheduled_panel_batch(
         seed_ordinal=seed_ordinal,
         update_index=update_index,
         ordered_window_ids=ordered_ids,
-        window_order_sha256=digest,
+        ordered_window_payload_sha256=payload_hashes,
+        window_order_sha256=order_digest,
+        batch_payload_sha256=payload_digest,
         by_arm=results,
     )

@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 schedule window-payload digests
+
+Schedule schema v02 adds canonical per-window payload hashes and a batch
+payload digest bound to seed/update identity and ordered rows; the validator
+recomputes each batch digest and requires stable payload hashes whenever an ID
+repeats across epochs. Thirteen payload/schedule tests and the adapter/model
+regressions pass 26/26, with compile and whitespace checks. Digests cover only
+materialized windows and adapter identity; they do not prove episode provenance, exact full-episode
+replay, source/code fingerprints, or trainer use. No data or compute gate
+opened. Next: produce source-bound replay receipts and integrate the frozen
+manifest into an exclusive trainer boundary before any profile work.
+
 ### 2026-10-07 V2.12 schedule-manifest structural validator
 
 Added a pure validator for the frozen 20×87 schedule shape: ordered update

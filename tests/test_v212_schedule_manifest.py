@@ -1,9 +1,12 @@
 import unittest
+import hashlib
+import json
 
 from two_player.v212_model import ARMS
 from two_player.v212_schedule_manifest import (
     SCHEDULE_SCHEMA,
     TRAIN_GAMES,
+    scheduled_batch_payload_sha256,
     validate_schedule_manifest,
 )
 
@@ -41,11 +44,29 @@ def _synthetic_manifest():
                     orders[TRAIN_GAMES[0]][start:start + 32]
                     + orders[TRAIN_GAMES[1]][start:start + 32]
                 )
+                window_records = [
+                    (
+                        identity,
+                        hashlib.sha256(json.dumps(
+                            identity, separators=(",", ":"),
+                            ensure_ascii=False).encode("utf-8")).hexdigest(),
+                    )
+                    for identity in window_ids
+                ]
                 updates.append({
                     "update_index": epoch * 29 + batch_index + 1,
                     "epoch_index": epoch,
                     "batch_index": batch_index,
-                    "window_ids": [list(identity) for identity in window_ids],
+                    "window_ids": [
+                        {
+                            "id": list(identity),
+                            "payload_sha256": payload_sha256,
+                        }
+                        for identity, payload_sha256 in window_records
+                    ],
+                    "batch_payload_sha256": scheduled_batch_payload_sha256(
+                        seed_ordinal, epoch * 29 + batch_index + 1,
+                        window_records),
                     "mask_counts_by_arm": {
                         arm: _mask_counts() for arm in ARMS
                     },
@@ -56,6 +77,15 @@ def _synthetic_manifest():
             "updates": updates,
         })
     return {"schema": SCHEDULE_SCHEMA, "seeds": seeds}
+
+
+def _refresh_batch_digest(seed_record, update):
+    records = [
+        (tuple(record["id"]), record["payload_sha256"])
+        for record in update["window_ids"]
+    ]
+    update["batch_payload_sha256"] = scheduled_batch_payload_sha256(
+        seed_record["seed_ordinal"], update["update_index"], records)
 
 
 class V212ScheduleManifestTests(unittest.TestCase):
@@ -98,25 +128,31 @@ class V212ScheduleManifestTests(unittest.TestCase):
             update["epoch_index"] = old_epoch
 
     def test_per_batch_composition_duplicates_and_direct_leaf_h4_fail(self):
-        update = self.manifest["seeds"][0]["updates"][0]
+        seed_record = self.manifest["seeds"][0]
+        update = seed_record["updates"][0]
         original_ids = update["window_ids"]
-        wrong_mix = [row[:] for row in original_ids]
-        wrong_mix[0][0] = TRAIN_GAMES[1]
+        original_digest = update["batch_payload_sha256"]
+        wrong_mix = [dict(row, id=row["id"][:]) for row in original_ids]
+        wrong_mix[0]["id"][0] = TRAIN_GAMES[1]
         update["window_ids"] = wrong_mix
+        _refresh_batch_digest(seed_record, update)
         try:
             with self.assertRaisesRegex(ValueError, "32 windows per game"):
                 validate_schedule_manifest(self.manifest)
         finally:
             update["window_ids"] = original_ids
+            update["batch_payload_sha256"] = original_digest
 
-        duplicate_ids = [row[:] for row in original_ids]
-        duplicate_ids[1] = duplicate_ids[0][:]
+        duplicate_ids = [dict(row, id=row["id"][:]) for row in original_ids]
+        duplicate_ids[1] = dict(duplicate_ids[0], id=duplicate_ids[0]["id"][:])
         update["window_ids"] = duplicate_ids
+        _refresh_batch_digest(seed_record, update)
         try:
             with self.assertRaisesRegex(ValueError, "duplicate window ids"):
                 validate_schedule_manifest(self.manifest)
         finally:
             update["window_ids"] = original_ids
+            update["batch_payload_sha256"] = original_digest
 
         leaf_counts = update["mask_counts_by_arm"]["direct-leaf-value"]["4"]
         previous_valid = leaf_counts["valid_nonterminal"]
@@ -156,14 +192,38 @@ class V212ScheduleManifestTests(unittest.TestCase):
             second["model_seed"] = original
 
     def test_selected_window_bank_cannot_change_between_epochs(self):
-        update = self.manifest["seeds"][0]["updates"][29]
+        seed_record = self.manifest["seeds"][0]
+        update = seed_record["updates"][29]
         original = update["window_ids"][0]
-        update["window_ids"][0] = [original[0], "replacement-episode", 999]
+        original_digest = update["batch_payload_sha256"]
+        update["window_ids"][0] = dict(original, payload_sha256="0" * 64)
+        _refresh_batch_digest(seed_record, update)
         try:
             with self.assertRaisesRegex(ValueError, "bank changed across epochs"):
                 validate_schedule_manifest(self.manifest)
         finally:
             update["window_ids"][0] = original
+            update["batch_payload_sha256"] = original_digest
+
+    def test_payload_digest_must_be_sha256_and_stable_for_each_window_id(self):
+        update = self.manifest["seeds"][0]["updates"][0]
+        original = update["window_ids"][0]
+        update["window_ids"][0] = dict(original, payload_sha256="bad")
+        try:
+            with self.assertRaisesRegex(ValueError, "lowercase SHA-256"):
+                validate_schedule_manifest(self.manifest)
+        finally:
+            update["window_ids"][0] = original
+
+    def test_declared_batch_digest_must_bind_schedule_identity_and_payloads(self):
+        update = self.manifest["seeds"][0]["updates"][0]
+        original = update["batch_payload_sha256"]
+        update["batch_payload_sha256"] = "0" * 64
+        try:
+            with self.assertRaisesRegex(ValueError, "does not match its ordered records"):
+                validate_schedule_manifest(self.manifest)
+        finally:
+            update["batch_payload_sha256"] = original
 
 
 if __name__ == "__main__":

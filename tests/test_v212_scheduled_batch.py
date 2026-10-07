@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from two_player.games import BoardGame
 from two_player.v212_model import ARMS
 from two_player.v212_scheduled_batch import compute_scheduled_panel_batch
-from two_player.v212_trajectory_audit import Window
+from two_player.v212_trajectory_audit import Window, window_payload_sha256
 
 
 def _fixture_games():
@@ -84,7 +84,29 @@ class V212ScheduledBatchTests(unittest.TestCase):
         self.assertEqual(result.seed_ordinal, 0)
         self.assertEqual(result.update_index, 1)
         self.assertEqual(len(result.ordered_window_ids), 64)
+        self.assertEqual(len(result.ordered_window_payload_sha256), 64)
         self.assertEqual(len(result.window_order_sha256), 64)
+        self.assertEqual(len(result.batch_payload_sha256), 64)
+        self.assertEqual(
+            result.ordered_window_payload_sha256[0],
+            window_payload_sha256(self.windows[0], self.games[self.windows[0].game]))
+
+    def test_window_payload_digest_changes_when_payload_changes(self):
+        window = self.windows[0]
+        changed = Window(
+            game=window.game,
+            episode_id=window.episode_id,
+            split=window.split,
+            episode_outcome=1,
+            start_ply=window.start_ply,
+            states=window.states,
+            actions=window.actions,
+            valid_targets=window.valid_targets,
+            terminal_targets=window.terminal_targets,
+        )
+        game = self.games[window.game]
+        self.assertNotEqual(window_payload_sha256(window, game),
+                            window_payload_sha256(changed, game))
 
     def test_raw_batch_mapping_cannot_bypass_the_window_adapter(self):
         with self.assertRaisesRegex(ValueError, "64 audited windows"):
