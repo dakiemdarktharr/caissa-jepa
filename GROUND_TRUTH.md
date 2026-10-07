@@ -29,6 +29,11 @@
   dependency path, and the seven standard-library inventory/crosswalk tests
   pass under Python 3.11.17. Targeted `compileall` and `git diff --check`
   pass. Neither interpreter matches locked Python 3.11.9 / NumPy 2.4.6.
+- After fetching and integrating the current remote history, the strict v03
+  schedule-mask/replay-receipt/adapter/model regression group passes 46/46
+  under Python 3.14.7 with the existing NumPy 2.5.3 dependency path. These
+  are synthetic boundary tests and do not demonstrate production roster,
+  trainer exclusivity, profile readiness, or a gate transition.
 - This is static source reconciliation only. No profile, data, roots,
   inference, score/outcome, simulation, service, or training ran; no gate
   changed. The six-arm ≤5% compute gate remains **untested and unpassed**.

@@ -18,6 +18,9 @@ The 76-test accounting/source suite passes
 under Python 3.14.7 with NumPy 2.5.3; the seven standard-library tests also
 pass under Python 3.11.17. Targeted compile and whitespace checks pass. The
 crosswalk explicitly denies full-counter, graph-freeze, and parity eligibility.
+After fetching current `origin/main`, the strict v03 schedule/replay-receipt/
+adapter/model synthetic regression group passes 46/46 under Python 3.14.7 /
+NumPy 2.5.3; production data, trainer, and profile gates remain closed.
 
 Next research step remains static closure of semantic ownership and the
 eigensolver/runtime bounds, then independent review and integrated trainer /
