@@ -2,6 +2,28 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 source-operation ownership crosswalk
+
+Added a source-hash-bound candidate crosswalk covering all 964 AST sites in
+the current model and scratch optimizer. It records 107 candidate-owner, 32
+partial-owner, one runtime-unverified-owner, six separately reported, ten
+separately/partially bounded non-FP, one blocking unresolved eigensolver, 186
+unresolved, 452 unresolved non-FP, and 169 context-owned/unresolved sites.
+These are syntax-site dispositions, not operation counts. Candidate ownership
+does not validate expression context, branch work, component overlap, runtime
+behavior, or complete accounting. Read-only review caught and corrected the
+`_finite_array` finite-check mapping and the input-dependent `np.asarray`
+conversion classification; the report digest does not attest implementation.
+The 76-test accounting/source suite passes
+under Python 3.14.7 with NumPy 2.5.3; the seven standard-library tests also
+pass under Python 3.11.17. Targeted compile and whitespace checks pass. The
+crosswalk explicitly denies full-counter, graph-freeze, and parity eligibility.
+
+Next research step remains static closure of semantic ownership and the
+eigensolver/runtime bounds, then independent review and integrated trainer /
+schedule evidence. No profile or gate was opened; the ≤5% six-arm gate remains
+**untested and unpassed**.
+
 ### 2026-10-07 owner-reconciled partial FLOP ledger
 
 Added `tools/v212_partial_flop_ledger.py` to combine source-covered candidate

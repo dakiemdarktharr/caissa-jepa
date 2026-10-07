@@ -513,3 +513,42 @@ locked Python 3.11.9 / NumPy 2.4.6 runtime is not installed locally; the
 available Python 3.11.17 has no NumPy, and the shared dependency path contains
 NumPy 2.5.3. Therefore this did not verify the locked `np.std` implementation
 or change D03 readiness. No data, profile, or model execution occurred.
+
+## Source-operation candidate ownership crosswalk (2026-10-07)
+
+`tools/v212_source_counter_reconciliation.py` joins each inventory site to a
+candidate partial subcounter where a source-shaped relation is identifiable,
+or records an explicit unresolved / separately reported disposition. The
+report binds the inventory to these source hashes:
+
+| Module | Source SHA-256 | AST sites |
+| --- | --- | ---: |
+| `two_player/v212_model.py` | `964a6d1130f692de6307922980eb8cd4d5b0336bd312ed92ab92c01c5f5e2f66` | 829 |
+| `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
+
+Crosswalk digest: `fd34b4c7359b398edb157f259c730e93d55da561c4ac63cd3c58241c45622647`.
+The 964 site dispositions are 107 candidate-owner, 32 partial candidate-owner,
+one runtime-unverified candidate-owner, six reported separately, ten reported
+separately or partially bounded non-FP, one blocking-unresolved
+`np.linalg.eigvalsh`, 186 explicitly unresolved, 452 explicitly unresolved
+non-FP, and 169 unresolved or context-owned. These are syntax-site counts,
+not operation counts or FLOP totals. The report keeps unmatched sites visible
+and states that no site has a validated complete cost owner. The digest binds
+the serialized report and inventoried input-source hashes, not the correctness
+of the classifier or subcounter implementations.
+
+Candidate ownership only identifies a potentially relevant existing partial
+ledger. In particular, an owner label does not resolve enclosing expression
+context, branch frequency, duplicate component ownership, native/runtime
+implementation, or actual executed work. The linked LAPACK path remains a
+blocking open item; NumPy reduction/runtime identity is unverified; and
+allocation, indexing, control flow, and other non-FP work remain incomplete.
+The `_finite_array` `np.all` / `np.isfinite` calls point to the preflight
+subcounter only as partial finite-input cardinality evidence; the boolean
+reduction and runtime work are not separately costed. `np.asarray` remains
+unresolved because dtype conversion and copying depend on input dtype/layout.
+The report sets `full_counter`, `parity_eligible`, and
+`graph_freeze_eligible` to false. It is a review aid, not an accepted counter,
+execution trace, profile, or protocol amendment. No model/data operation or
+gate transition followed from it; the ≤5% six-arm gate remains **untested and
+unpassed**.

@@ -1,5 +1,38 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; source-operation ownership crosswalk)
+
+- Added `tools/v212_source_counter_reconciliation.py`, a deterministic,
+  source-hash-bound disposition of all 964 AST sites in the current model and
+  scratch optimizer (829 + 135). The crosswalk digest is
+  `fd34b4c7359b398edb157f259c730e93d55da561c4ac63cd3c58241c45622647` for
+  source hashes `964a6d1130f692de6307922980eb8cd4d5b0336bd312ed92ab92c01c5f5e2f66`
+  (`two_player/v212_model.py`) and
+  `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb`
+  (`two_player/v212_scratch_optimizer.py`). Site dispositions are: 107
+  candidate-owner, 32 partial candidate-owner, one runtime-unverified
+  candidate, six reported separately, ten reported separately/partially
+  bounded non-FP, one blocking-unresolved eigensolver, 186 explicitly
+  unresolved, 452 explicitly unresolved non-FP, and 169 unresolved or
+  context-owned. These are AST-site counts, not operation counts.
+- Candidate owner means only that a relevant partial subcounter exists.
+  Expression context, branch cardinality, component overlap, non-FP cost, and
+  runtime behavior are not thereby validated. A read-only reviewer caught
+  that `_finite_array`'s `np.all`/`np.isfinite` calls should reference the
+  preflight finite-cardinality subcounter as partial evidence; the boolean
+  reduction and runtime cost remain uncounted. `np.asarray` is unresolved
+  because dtype-conversion/copy behavior depends on its input. The report
+  digest binds its serialization and inventoried model/optimizer hashes; it
+  does not attest the classifier or subcounter implementation. It expressly
+  withholds full-counter, parity, and graph-freeze eligibility. The 76-test accounting /
+  source suite passes under Python 3.14.7 with the existing NumPy 2.5.3
+  dependency path, and the seven standard-library inventory/crosswalk tests
+  pass under Python 3.11.17. Targeted `compileall` and `git diff --check`
+  pass. Neither interpreter matches locked Python 3.11.9 / NumPy 2.4.6.
+- This is static source reconciliation only. No profile, data, roots,
+  inference, score/outcome, simulation, service, or training ran; no gate
+  changed. The six-arm ≤5% compute gate remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; V2.12 source-operation inventory)
 
 - Added `tools/v212_source_operation_inventory.py` to enumerate AST-level

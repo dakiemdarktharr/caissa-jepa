@@ -45,6 +45,8 @@ def _operator_name(node: ast.AST) -> str:
 
 def _syntax_sites(source: str, filename: str) -> list[dict]:
     tree = ast.parse(source, filename=filename)
+    functions = [node for node in ast.walk(tree)
+                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
     sites = []
     for node in ast.walk(tree):
         if not isinstance(node, SITE_NODE_TYPES):
@@ -65,14 +67,22 @@ def _syntax_sites(source: str, filename: str) -> list[dict]:
             detail = ast.unparse(node)
         else:
             detail = type(node).__name__
-        sites.append({
+        row = {
             "line": node.lineno,
             "end_line": getattr(node, "end_lineno", node.lineno),
+            "function": next((function.name for function in sorted(
+                (candidate for candidate in functions
+                 if candidate.lineno <= node.lineno <= getattr(candidate, "end_lineno", candidate.lineno)),
+                key=lambda candidate: getattr(candidate, "end_lineno", candidate.lineno) - candidate.lineno)),
+                None),
             "node": type(node).__name__,
             "detail": detail,
             "source": ast.unparse(node),
             "semantic_classification": "unresolved_by_syntax_inventory",
-        })
+        }
+        if isinstance(node, ast.AugAssign):
+            row["target"] = ast.unparse(node.target)
+        sites.append(row)
     return sorted(sites, key=lambda row: (
         row["line"], row["end_line"], row["node"], str(row["detail"]), row["source"]))
 
