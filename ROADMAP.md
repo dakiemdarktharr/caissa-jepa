@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 Adam/EMA semantics proposal
+
+Static comparison found that v05 fixes Adam/EMA hyperparameters but does not
+uniquely define moment initialization/persistence, bias correction, epsilon
+placement, clipping scope at the parameter-tensor level, or EMA timing. Added
+`docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` with explicit proposed
+equations and a disposable operation-trace profile interpretation. The
+approved read-only reviewer accepts it as a method-clarification proposal and
+confirms consistency with the existing helper, while noting epsilon placement
+and clipping scope are deliberate choices not uniquely implied by v05. It is
+not adopted; v05 remains current. No code, tests, profile, data, training, or
+outcomes were accessed. The six-arm ≤5% gate remains **untested and unpassed**.
+
 ### 2026-10-07 V2.12 training-FLOP profile protocol revision
 
 Draft 01 of `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` remains

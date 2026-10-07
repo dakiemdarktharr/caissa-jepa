@@ -27,6 +27,7 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `two_player/v212_scratch_optimizer.py` and `tests/test_v212_scratch_optimizer.py` | Pure scratch Adam/clipping/EMA arithmetic with synthetic tests; no persistent updates, trainer, or profile |
 | `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` | Rejected preregistration retained as history; ≤5% gate untested and unpassed |
 | `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_02.md` | Independently accepted as preregistration only; Adam scratch state/timestep semantics must be frozen before profile; no data/profile authorization, ≤5% gate untested and unpassed |
+| `docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` | Independently accepted optimizer-semantics clarification proposal, not adopted; v05 remains current and no profile/training gate opens |
 | `docs/METHOD_SPEC_V212_V04.md` | Immutable v04 specification archive; includes the Reversi8 2-second p90 negative and pre-v05 raw-state wording |
 | `docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md` | Adopted narrow v05 raw-state amendment; method-level review only, no trainer/fit authorization, ≤5% FLOP gate untested and unpassed |
 | `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md` | Unreviewed §7 replacement originally based on v04; not current v05, must be rebased and versioned before any future adoption |
