@@ -2,6 +2,22 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 reference DNRM2 source bound
+
+Added `tools/v212_dnrm2_reference_source_bound.py` for Netlib LAPACK 3.12.1
+three-accumulator DNRM2 source under DLARFG's N=32 vector-length and
+at-most-two-call assumptions. Its unreviewed conditional ceiling is 2,154
+add/subtract/multiply/divide operations, plus 1,046 scalar square-power sites
+and 176 square-root calls. Including the prior DLARFG/DLAPY2 source subtotal
+gives 61,394 arithmetic operations, with 1,106 total power sites and 236
+square roots; treating each power as one multiply gives 62,500. This source
+account and the architecture-specific binary candidate are alternatives, not
+additive. Actual linked BLAS dispatch, remaining eigensolver routines, and
+runtime accounting remain unresolved. Focused tests, targeted `compileall`,
+and whitespace checks pass; no runtime/model work occurred and no gate
+changed. Continue bounded source accounting or independent review; keep graph
+freeze, profile, and training closed.
+
 ### 2026-10-07 reference DSYEVD driver-site bound
 
 `tools/v212_dsyevd_driver_source_bound.py` isolates the reference LAPACK 3.12.1

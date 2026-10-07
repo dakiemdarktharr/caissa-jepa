@@ -1,5 +1,27 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; reference DNRM2 source bound)
+
+- Added `tools/v212_dnrm2_reference_source_bound.py` for the Netlib LAPACK
+  3.12.1 three-accumulator DNRM2 reference source, using the DLARFG N=32
+  vector lengths 1..30 and at most two calls per reflector. The conditional
+  source ceiling is 2,154 add/subtract/multiply/divide operations, with 1,046
+  scalar square-power sites and 176 square-root calls reported separately.
+  The reference implementation does not fast-return for length one. The
+  source and architecture-specific disassembly candidates are alternative
+  implementation accounts and must not be added.
+- Combining this unreviewed source inventory with the previous 59,240
+  conditional partial subtotal gives 61,394 arithmetic operations, plus
+  1,106 separate scalar power sites (60 DLAPY2 + 1,046 DNRM2) and 236 square
+  roots (60 DLAPY2 + 176 DNRM2). Treating every power site as one multiply
+  gives the 62,500 sensitivity. This remains incomplete source accounting:
+  actual linked BLAS/dispatch, DSYTRD/DSTERF, NumPy wrapper, and runtime
+  operations remain unresolved.
+- Focused standard-library tests, targeted `compileall`, and whitespace checks
+  pass. No eigensolver, model, profile, service, inference, simulation,
+  score/outcome access, or training ran. Graph freeze remains **NO** and ≤5%
+  remains **untested and unpassed**; no gate changed.
+
 ## Latest continuation delta (2026-10-07; reference DSYEVD driver sites)
 
 - Added `tools/v212_dsyevd_driver_source_bound.py` for the N=32,
