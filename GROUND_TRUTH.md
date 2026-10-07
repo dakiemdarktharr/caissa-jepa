@@ -1,5 +1,31 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; static DNRM2 binary candidate)
+
+- Added `tools/v212_openblas_dnrm2_binary_bound.py` and focused formula tests.
+  Static disassembly of the five x86_64 `dnrm2_k` variants in the observed
+  `scipy-openblas` binary (SHA-256
+  `05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`)
+  shows the same 8-element loop shape: eight multiplies and eight additions
+  per full block, a multiply/add per tail element, three final additions, and
+  one square root for vector lengths at least two. Under the DLARFG N=32
+  vector-length and at-most-two-call assumptions, the candidate is 1,102
+  additions, 928 multiplications, and 58 square-root calls (2,030
+  add/multiply FLOPs), plus two length-one absolute-value fast paths.
+- This is specific to the inspected Linux wheel and static instruction
+  accounting. The wrapper dispatches indirectly, so the selected kernel and
+  execution bytes are not attested; target Windows runtime, helper internals,
+  full eigensolver accounting, and the D03 receipt remain unresolved. This
+  An approved read-only review confirmed the arithmetic and invocation
+  decomposition under these assumptions. The reviewer did not verify the
+  disassembly trace or binary hash; the instruction-shape and dispatch-set
+  premises remain unreviewed. The candidate is not folded into the
+  reference-source 58,910 subtotal and opens no counter, parity, profile, or
+  fit gate.
+  No library kernel, eigensolver, service, model, inference, simulation,
+  scoring, or training was run. Graph freeze remains **NO** and ≤5% remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; DSYTRD reference path and partial helper accounting)
 
 - Added `tools/v212_dsytd2_rank_update_bound.py` for the reference-source

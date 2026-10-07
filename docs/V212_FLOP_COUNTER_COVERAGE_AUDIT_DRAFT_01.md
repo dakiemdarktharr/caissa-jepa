@@ -267,9 +267,21 @@ and [tagged DSYTRD](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-
 This is conditional on those reference sources and does not attest the actual
 NumPy-linked ILAENV/runtime. Reference BLAS expressions are semantic proxies,
 not linked-kernel or compiler-instruction traces. DNRM2, DLAMCH, and DLAPY2
-internals remain excluded; DNRM2 can use architecture-dispatched kernels.
-The subtotal does not close eigensolver coverage, establish full-counter
-coverage, or open profile/training/parity gates.
+internals remain excluded from the source subtotal. Separately, static
+disassembly of five architecture-specific DNRM2 kernels in one observed Linux
+`scipy-openblas` wheel (SHA-256
+`05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`) produces
+a conditional N=32 candidate of 2,030 add/multiply FLOPs and 58 square-root
+calls for at most two DNRM2 calls per DLARFG reflector, plus two length-one
+wrapper fast paths. This candidate is recorded in
+`tools/v212_openblas_dnrm2_binary_bound.py`; the wrapper's indirect dispatch
+means the runtime-selected kernel and execution bytes are not attested. It is
+not a portable source/runtime bound and is not folded into the 58,910 source
+subtotal. An approved read-only review confirmed the arithmetic under the
+stated assumptions but did not inspect the disassembly or verify the binary
+hash; those premises and runtime dispatch remain unresolved. The subtotal plus
+candidate do not close eigensolver coverage, establish full-counter coverage,
+or open profile/training/parity gates.
 
 ## Coverage gaps and next admissible work
 

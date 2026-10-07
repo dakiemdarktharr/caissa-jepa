@@ -2,6 +2,21 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 static DNRM2 binary candidate
+
+Static inspection of five architecture-specific DNRM2 kernels in the observed
+Linux `scipy-openblas` binary yields a conditional N=32 upper candidate of
+2,030 add/multiply FLOPs and 58 square-root calls for at most two DNRM2 calls
+per DLARFG reflector, plus two length-one wrapper fast paths. The report is
+SHA-256 bound to that wheel and does not attest the runtime-selected function
+pointer, Windows target, execution bytes, or helper internals. It is separate
+from the reference-source subtotal. An approved read-only review accepted the
+arithmetic under the assumptions, but did not inspect the binary trace or
+verify its hash; those premises and runtime dispatch remain unresolved. This
+does not close eigensolver coverage or clear any gate. Next admissible work is
+static source/runtime attestation design; do not run service, eigensolver,
+profile, inference, simulation, or training until the relevant gates pass.
+
 ### 2026-10-07 DSYTRD reference path and partial helper accounting
 
 `tools/v212_dsytd2_rank_update_bound.py` now reports 47,165 reference-BLAS
