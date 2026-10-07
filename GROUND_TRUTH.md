@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; gradient-accumulation source audit)
+
+- Added `tools/v212_gradient_accumulation_accounting.py` for candidate array
+  additions at explicit loss-gradient buffer/state accumulation sites, by
+  horizon masks. It excludes the regularizer-owned `dz0 += 0.1*dreg` site to
+  avoid overlap with the regularizer inventory.
+- The approved read-only `gpt-6-luna/high` reviewer found the first raw-state
+  formula omitted `fw/fb` predictor-gradient buffer additions at each active
+  recurrent step. Corrected by 3,360 additions per active step; under
+  illustrative full-valid masks, six-arm subtotals are now 48,709 / 44,613 /
+  182,877 / 42,565 / 19,043 / 44,613. The other arm formulas were accepted
+  within this narrow source-shape scope.
+- Gradient accumulation, objective scalar, regularizer, and policy accounting
+  tests pass 16/16; targeted compile and `git diff --check` pass. These are
+  still analytical subcounters, not a loaded-runtime trace or total FLOP
+  comparison. No model/data/profile, roots, inference, outcomes, or training
+  ran. Graph freeze remains **NO** and ≤5% parity remains **untested and
+  unpassed**; no gate advances.
+
 ## Latest continuation delta (2026-10-07; pooled objective scalar inventory)
 
 - Added `tools/v212_objective_scalar_accounting.py` for scalar denominator

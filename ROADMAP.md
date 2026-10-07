@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 gradient-accumulation inventory and independent correction
+
+Added a mask-parameterized inventory of candidate array additions at
+loss-gradient state and parameter-buffer accumulation sites. An approved
+read-only reviewer caught an omitted predictor `fw/fb` gradient-buffer update
+in the first raw-state formula; corrected the raw-state full-valid subtotal by
+13,440 additions (3,360 per active step). The corrected illustrative six-arm
+subtotals are 48,709 / 44,613 / 182,877 / 42,565 / 19,043 / 44,613. This is a
+narrow source-shape addition inventory, not total FLOPs or a parity verdict.
+The new subcounter and related objective/elementwise suites pass 16/16, with
+compile and whitespace checks passing. No model/data/profile or outcome work
+ran. Graph freeze remains **NO**, and the ≤5% gate remains **untested and
+unpassed**.
+
 ### 2026-10-07 pooled objective scalar subcounter
 
 Added a mask-parameterized candidate inventory of horizon-denominator
