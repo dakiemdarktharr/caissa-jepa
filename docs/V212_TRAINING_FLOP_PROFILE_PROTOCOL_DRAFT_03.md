@@ -139,8 +139,11 @@ and square-element shapes. `tools/v212_model_reduction_shape_accounting.py`
 reports candidate addition/division cardinalities for ordinary means and sums
 and makes mask/active-set branches explicit. It now expands the source-level
 NumPy 2.4.6 `std` path for the root latent diagnostic. Neither subcounter is
-independently accepted for D03 counting; the `x ** 2` convention, actually
-loaded NumPy reduction implementation, and linked-LAPACK path remain open.
+independently accepted as a complete D03 counter. An approved review accepts
+one candidate multiplication per element for each fixed-shape `x ** 2` site
+under the semantic source-level convention; this does not establish the loaded
+NumPy power-kernel trace. The actual NumPy reduction implementation and
+linked-LAPACK path remain open.
 
 ## 3. Non-fitting execution and branch-bound contract
 

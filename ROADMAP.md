@@ -2,6 +2,25 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 raw-state and six-arm freeze review
+
+An approved read-only `gpt-6-luna/high` review found the adopted v05/v06
+raw-state `F→D→E` method and current objective source internally consistent.
+The full six-arm graph is not ready to freeze: an integrated trainer/trace,
+selected-window roster and exact-rule replay receipt, and the frozen 20-seed ×
+87-update batch/mask schedule are absent; data/preflight authorization is also
+still closed. The model entry points permit arbitrary batch sizes, and the
+64-window adapter does not establish 32 windows per game.
+
+The full counter still lacks a reviewed owner-reconciled aggregate, the actual
+NumPy reduction/runtime and linked-LAPACK paths, complete per-update non-FP and
+unsupported-operation inventories, and conservative full-schedule bounds for
+value-dependent branches. Corrected D03 wording now separates the accepted
+candidate source-level square convention from unresolved loaded-kernel and
+counter coverage. Graph freeze remains **NO** and ≤5% remains **untested and
+unpassed**. Review was read-only; no tests, data, roots, profile, simulations,
+inference, scoring, or training ran.
+
 ### 2026-10-07 reduction counter owner fields
 
 The reduction-shape report now tags each addition row with its owner and

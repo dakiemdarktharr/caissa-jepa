@@ -1,5 +1,28 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; raw-state and six-arm freeze review)
+
+- An approved read-only `gpt-6-luna/high` review found the adopted v05/v06
+  raw-state `F→D→E` method and current objective source internally consistent.
+  Method-level raw-state ambiguity is resolved; this does not freeze the full
+  six-arm graph or establish a compute result.
+- Freeze blockers remain: no integrated trainer/trace binds all six graphs to
+  the exact v06 optimizer helper or proves every invocation uses the 64-window
+  adapter; no selected-window roster, replay receipt, or frozen 20-seed ×
+  87-update batch/mask schedule exists; and data/preflight authorization is
+  absent. The model entry points still accept arbitrary batch sizes, and the
+  adapter does not prove the 32-per-game composition.
+- There is no complete owner-reconciled counter. Actual NumPy reduction/runtime
+  identity, linked-LAPACK eigensolver coverage, full per-update non-FP work,
+  unsupported operators, and conservative bounds over value-dependent branches
+  remain unresolved. D03 also had stale wording that treated the narrowly
+  accepted source-level `x ** 2` semantic convention as open; it now
+  distinguishes that convention from loaded-kernel and total-counter gaps.
+- Graph freeze remains **NO** and the ≤5% six-arm training-FLOP gate remains
+  **untested and unpassed**. The reviewer inspected documents/source only; no
+  tests, data, roots, profiles, simulations, inference, scoring, or training
+  were run. Prior negative results and novelty risks remain unchanged.
+
 ## Latest continuation delta (2026-10-07; reduction owner fields)
 
 - `tools/v212_model_reduction_shape_accounting.py` now tags each candidate
