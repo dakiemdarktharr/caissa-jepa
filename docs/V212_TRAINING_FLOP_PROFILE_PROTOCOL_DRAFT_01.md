@@ -1,6 +1,7 @@
 # V2.12 six-arm training-FLOP profile protocol — draft 01
 
-**Status: non-operative protocol draft; not independently reviewed or run.**
+**Status: non-operative draft; independently internal-consistency reviewed;
+not accepted or run.**
 This document defines prerequisites for measuring the frozen v05 six-arm
 training-compute gate. It does not authorize reading or generating trajectories,
 roots, labels, scores, or outcomes; it does not authorize inference, fitting,
