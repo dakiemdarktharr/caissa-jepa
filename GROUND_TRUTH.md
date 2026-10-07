@@ -1,5 +1,37 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; approved read-only protocol reviews)
+
+- Four approved `gpt-6-luna/high` reviews inspected documents/code only; no
+  runtime, roots, scores, outcomes, simulations, inference, or training was
+  used. The pre-fit register records their detailed disposition.
+- V03 remains a static candidate, not runtime-ready: RSS is cooperative,
+  supervision/memory containment and durable operational attribution remain
+  open, and its source/runtime fingerprint describes metadata rather than
+  proving the exact executed interpreter/native bytes. The candidate
+  generation protocol is still unfrozen and lacks accepted split/quota,
+  RNG/policy, window-eligibility, overlap, and atomic receipt rules.
+- V05 root sampling/calibration remain non-authorizing proposals. The 48-slot
+  interpretation of the v04 ≥40 rule, six-stratum under-yield disposition,
+  schedule-completion target, estimand/weights, and bootstrap finite-sample
+  calibration remain unaccepted. Calibration draft 03 is an ordinal abstract
+  generator with an explicit scope limitation around state/prefix/score-linked
+  yield; simulation remains gated.
+- The action-sensitivity and executed-action regret estimands are coherent as
+  separate diagnostics, but the drafts are not preregistration-complete and
+  cite stale v04/v05 anchors while current METHOD_SPEC is v06. Rebase before
+  adoption; bind evaluator fingerprints to actual implementation, resolve
+  reference/depth, limits/failure/aggregation and inference status, audit
+  episode/state/augmentation/symmetry overlap, and keep raw latent MSE
+  descriptive within each arm unless a train-only calibration and
+  cross-arm estimand are preregistered. No metric or reference was adopted.
+- Raw-state accounting has no identified omission within the current partial
+  source ledger, but the ledger is not total FLOP parity evidence. The
+  trainer, selected-window/replay artifacts, fixed 20×87 masks, complete
+  counter/runtime identity, and raw-target/direct-leaf schedule proof remain
+  absent. Graph freeze remains **NO** and the six-arm ≤5% gate remains
+  **untested and unpassed**. No gate advanced.
+
 ## Latest continuation delta (2026-10-07; eigensolver component bridge)
 
 - Added `tools/v212_eigensolver_component_inventory.py` to sum the separately

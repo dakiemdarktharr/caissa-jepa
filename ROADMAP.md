@@ -2,6 +2,29 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 approved read-only protocol reviews
+
+Four approved `gpt-6-luna/high` reviews used documents/code only and cleared no
+gate. V03 remains a static candidate: sampled RSS is cooperative, the exact
+executed interpreter/native runtime is not proven by current fingerprints,
+and external supervision/receipt evidence is missing. Generation remains
+unfrozen. The v05 root/calibration proposal still needs an accepted estimand,
+48-slot/≥40 interpretation, six-stratum yield and completion rule, and
+design-matched bootstrap calibration; its abstract calibration generator
+omits state/prefix/score-linked yield dependence. Do not simulate or generate
+roots yet.
+
+The action-sensitivity and executed-action regret concepts are coherent as
+separate estimands but not ready to freeze. Rebase stale v04/v05 anchors on
+current METHOD_SPEC v06; resolve evaluator implementation fingerprints,
+reference/depth, inference status, limits/failure rules, and overlap audit.
+Raw latent MSE is within-arm descriptive unless train-only calibration and a
+cross-arm estimand are preregistered. Current raw-state partial FLOP ownership
+looks internally aligned, but the trainer, replay/window receipts, actual
+20×87 masks, complete counter/runtime binding, and schedule-level target
+validity are absent. Graph freeze, profile, and fit remain closed; ≤5% remains
+untested and unpassed. See the updated pre-fit decision register for details.
+
 ### 2026-10-07 eigensolver source-component bridge
 
 Added `tools/v212_eigensolver_component_inventory.py` to report the currently
