@@ -2,6 +2,21 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 audited-window batch adapter fixture
+
+Added `two_player/v212_window_batch.py` to convert explicit in-memory windows
+from the exact-rule episode auditor into the v06 model batch schema. Windows
+now carry the audited absolute terminal outcome; the adapter rechecks local
+edges, derives adapter features/legal masks/one-hot actions/absolute actors and
+side-to-move value labels, pads unavailable suffixes behind explicit masks,
+accepts only the train split, and runs structural model preflight. The adapter
+does no file I/O, selection, data loading, optimizer work, or fitting. Synthetic
+tests cover Connect Four labels/features, Reversi forced pass, exact draw labels,
+short terminal padding, split rejection, and corrupt-edge rejection. The
+selected-window manifest/materializer, data provenance and split gates, full
+trainer, and FLOP counter remain absent; no operational gate opens. The ≤5%
+compute gate remains **untested and unpassed**.
+
 ### 2026-10-07 V2.12 raw-state endpoint-mask correction
 
 The approved read-only raw-state/six-arm review found a structural mismatch:

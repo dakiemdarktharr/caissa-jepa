@@ -23,6 +23,7 @@ class Window:
     game: str
     episode_id: str
     split: str
+    episode_outcome: int
     start_ply: int
     states: tuple[State, ...]
     actions: tuple[int, ...]
@@ -177,7 +178,8 @@ def audit_trajectories(episodes: list[dict[str, Any]],
             keys = tuple(key for state in window_states
                          for key in _state_keys(game, state))
             identity_records.append({"split": split, "state_keys": keys})
-            pending.append(Window(game.name, episode["episode_id"], split, start,
+            pending.append(Window(game.name, episode["episode_id"], split,
+                                  episode["outcome"], start,
                                   window_states, window_actions,
                                   tuple(valid_targets), tuple(terminal_targets)))
 
