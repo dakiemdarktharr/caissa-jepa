@@ -19,15 +19,19 @@ records supplied to this call: it does not prove source-file bytes, generator
 lineage, completeness of the declared train corpus, or separation from
 development/locked splits.
 
-`compute_receipt_bound_panel_batch` validates the complete structural
-20×87 manifest, selects one seed/update row, and checks that the 64 supplied
-windows match the row's exact ordered IDs and payload hashes and appear in the
-replay receipt index. It checks the six model identities and their paired
-initialization seed, materializes the fixed-size model batch, compares actual
-adapter-derived horizon masks with all six declarations, then calls the
-existing paired six-arm no-update helper and compares its batch digest with
-the declared row. The returned result carries the schedule digest and unique
-episode-receipt digests used by that update.
+`validate_and_freeze_schedule_manifest` deep-copies and validates the complete
+structural 20×87 declaration once, then returns immutable nested seed/update
+records with its canonical digest. `compute_receipt_bound_panel_batch` accepts
+that frozen value, selects one seed/update row without rewalking the whole
+schedule, and checks that the 64 supplied windows match its exact ordered IDs
+and payload hashes and appear in the replay receipt index. It checks the six
+model identities and paired initialization seed, materializes the fixed-size
+model batch once, compares actual adapter-derived horizon masks with all six
+declarations in the pre-model callback, then invokes the paired six-arm
+no-update helper and compares its batch digest with the row. The result
+carries the schedule digest and unique episode-receipt digests used by that
+update. The one-time structural validation/snapshot cost must be reported
+separately under D03; no production schedule is currently loaded.
 
 This is a callable preflight seam, not an exclusive trainer. `loss_grad` and
 the existing no-update helper remain directly callable; a future trainer must
@@ -44,12 +48,13 @@ future counter/profile.
 Five new synthetic tests cover full-train receipt indexing, ordered payload
 binding, mask-roster rejection, train-only input, and high-level call
 coordination. The paired-call suite also tests that the callback receives the
-shared read-only batch and blocks all arm calls when it rejects. The high-level
-coordination fixture mocks the whole-schedule validator, materialized batch
-and paired-call helper; it deliberately does not constitute a valid 20×87
-replayed schedule or an end-to-end model batch. With the episode/trajectory,
-manifest, scheduled-call, adapter and model suites, focused validation passes
-42/42 under Python 3.14.7 with temporary NumPy
+shared read-only batch and blocks all arm calls when it rejects. The manifest
+suite checks that a full synthetic 20×87 schedule becomes a detached immutable
+snapshot. The high-level coordination fixture uses a synthetic frozen row and
+mocks its materialized batch and paired-call helper; it does not constitute an
+end-to-end actual manifest/data batch. With the episode/trajectory, manifest,
+scheduled-call, adapter and model suites, focused validation passes 43/43
+under Python 3.14.7 with temporary NumPy
 2.5.3, not the locked Python 3.11.9 / NumPy 2.4.6 runtime. `compileall` and
 `git diff --check` pass.
 

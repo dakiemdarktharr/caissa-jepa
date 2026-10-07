@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from two_player.games import BoardGame
 from two_player.v212_model import ARMS
+from two_player.v212_schedule_manifest import ValidatedScheduleManifest
 from two_player.v212_receipt_bound_schedule import (
     ReceiptBoundBatchResult,
     build_train_replay_receipt_index,
@@ -64,7 +65,7 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
         window = self.audit.windows[0]
         identity = (window.game, window.episode_id, window.start_ply)
         record = {
-            "id": list(identity),
+            "id": identity,
             "payload_sha256": receipt_index.window_records[identity]["payload_sha256"],
         }
         records = [record] * 64
@@ -122,7 +123,7 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
         window = self.audit.windows[0]
         identity = (window.game, window.episode_id, window.start_ply)
         record = {
-            "id": list(identity),
+            "id": identity,
             "payload_sha256": receipt_index.window_records[identity]["payload_sha256"],
         }
         update = {
@@ -131,7 +132,7 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             "batch_payload_sha256": "d" * 64,
         }
         seed = {"model_seed": 17, "updates": [update] * 87}
-        manifest = {"seeds": [seed] * 20}
+        manifest = ValidatedScheduleManifest("a" * 64, tuple([seed] * 20))
         models = {
             arm: SimpleNamespace(config=SimpleNamespace(arm=arm, seed=17))
             for arm in ARMS
@@ -144,8 +145,6 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             return scheduled
 
         with (
-            patch("two_player.v212_receipt_bound_schedule.validate_schedule_manifest",
-                  return_value={"schedule_sha256": "a" * 64}),
             patch("two_player.v212_receipt_bound_schedule._observed_mask_counts",
                   return_value=_mask_counts()),
             patch("two_player.v212_receipt_bound_schedule.compute_scheduled_panel_batch",

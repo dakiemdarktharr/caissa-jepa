@@ -6,8 +6,12 @@ select windows, replay episodes, create schedules, or authorize a profile/fit.
 from __future__ import annotations
 
 from collections.abc import Mapping
+from copy import deepcopy
+from dataclasses import dataclass
 import hashlib
 import json
+from types import MappingProxyType
+from typing import Any
 
 from .v212_model import ARMS
 
@@ -29,6 +33,23 @@ BATCH_SIZE = 64
 WINDOWS_PER_GAME_PER_BATCH = 32
 WINDOWS_PER_GAME = 928
 BATCH_PAYLOAD_SCHEMA = "caissa.v212.scheduled-batch-payload.v01"
+
+
+@dataclass(frozen=True)
+class ValidatedScheduleManifest:
+    """Immutable schedule snapshot plus its one-time structural receipt."""
+
+    schedule_sha256: str
+    seeds: tuple[Mapping[str, Any], ...]
+
+
+def _freeze_json(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return MappingProxyType({key: _freeze_json(item)
+                                 for key, item in value.items()})
+    if isinstance(value, list):
+        return tuple(_freeze_json(item) for item in value)
+    return value
 
 
 def _require(condition: bool, message: str) -> None:
@@ -234,3 +255,20 @@ def validate_schedule_manifest(manifest: Mapping) -> dict[str, object]:
         "mask_rows": SEED_COUNT * UPDATES_PER_SEED * len(ARMS) * len(HORIZONS),
         "schedule_sha256": hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
     }
+
+
+def validate_and_freeze_schedule_manifest(
+    manifest: Mapping,
+) -> ValidatedScheduleManifest:
+    """Validate one detached snapshot and freeze its rows for repeated lookup.
+
+    The structural validator is intentionally a one-time panel preflight. A
+    trainer should pass this immutable value to every scheduled update rather
+    than revalidating the entire 20×87 declaration on each call.
+    """
+    snapshot = deepcopy(manifest)
+    receipt = validate_schedule_manifest(snapshot)
+    return ValidatedScheduleManifest(
+        schedule_sha256=str(receipt["schedule_sha256"]),
+        seeds=tuple(_freeze_json(seed) for seed in snapshot["seeds"]),
+    )

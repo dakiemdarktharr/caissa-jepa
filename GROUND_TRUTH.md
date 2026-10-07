@@ -8,15 +8,20 @@
   receipt membership, paired model seed, and actual adapter-derived masks
   before the paired six-arm no-update helper. The index is built once so the
   full train replay is not repeated per update.
+- Added a detached immutable schedule snapshot: validate the complete
+  structural 20×87 manifest once, then reuse its frozen seed/update rows and
+  digest for scheduled calls instead of rewalking the manifest for every
+  update. A synthetic full-schedule test verifies detachment and immutability.
 - The seam is not an exclusive trainer: `loss_grad` and the existing helper
   remain directly callable. A pre-model callback checks actual masks against
   the one read-only materialized batch, and a callback exception prevents all
   arm calls. This removes duplicate adapter materialization; the callback adds
   one structural preflight and each arm repeats its own, all of which must be
   counted before profile. Five new synthetic tests cover its components; the
-  high-level coordination test mocks the manifest validator, materialized
-  batch and paired helper, so it is not an end-to-end 20×87 run.
-- Receipt/trajectory/schedule/adapter/model regression passes 42/42 under
+  high-level coordination test uses a synthetic frozen row and mocks the
+  materialized batch and paired helper, so it is not an end-to-end schedule
+  call. The direct snapshot test itself validates all 20×87 synthetic rows.
+- Receipt/trajectory/schedule/adapter/model regression passes 43/43 under
   Python 3.14.7 with temporary NumPy 2.5.3; compile and whitespace checks
   pass. This is not the locked runtime. No research corpus, selected schedule,
   roots, scores/outcomes, profile, inference, or training was used.
