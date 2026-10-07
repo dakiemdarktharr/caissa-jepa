@@ -89,6 +89,13 @@ here.
 - There is no full counter, trainer/update integration, selected-window
   manifest/materializer, exact-rule selected-window replay, frozen 20-seed ×
   87-update mask schedule, or counter/runtime fingerprint.
+- `two_player/v212_window_batch.py::windows_to_model_batch` accepts any
+  nonempty number of windows even though its docstring and D03 describe a fixed
+  64-window batch. The matmul/reduction inventories reject non-64 masks, but
+  that does not constrain the adapter or a future caller. Before graph freeze,
+  the integrated trainer or revised reviewed adapter must fail closed unless
+  every scheduled batch has exactly 64 windows; the manifest/replay receipt
+  must attest the same batch boundaries across all six arms and all updates.
 - `np.linalg.eigvalsh` is the blocking coverage item: the graph executes a
   32×32 symmetric eigensolver in every arm/update. The pinned NumPy 2.4 public
   docs identify `_syevd`; Netlib's reference `DSYEVD` shows the eigenvalues-

@@ -20,6 +20,27 @@
   outcome, or training ran; the ≤5% compute gate remains **untested and
   unpassed**.
 
+## Latest continuation delta (2026-10-07; independent raw-state/six-arm freeze review)
+
+- An approved read-only `gpt-6-luna/high` review found the adopted v06 raw-state
+  `F→D→E` recurrence, pooled feature loss, masks, and recurrent backward pass
+  internally consistent with the no-update graph. Adapter feature fixtures
+  still do not establish selected-window exact-rule replay, label provenance,
+  decoder behavior on audited batches, or trainer integration.
+- Six-arm graph-freeze readiness remains **NO**. The reviewer found that
+  `two_player/v212_window_batch.py::windows_to_model_batch` accepts arbitrary
+  nonempty batch lengths although D03 and the analytical counters assume 64.
+  The future trainer or a reviewed adapter revision must enforce exactly 64
+  windows and the manifest/replay evidence must attest identical batch
+  boundaries across arms/updates. The full counter, branch bounds, selected
+  window replay and mask roster, trainer integration, and pinned runtime/
+  LAPACK fingerprint remain absent. The ≤5% compute gate remains **untested
+  and unpassed**.
+- The raw-state MAC, matmul, reduction, and optimizer inventories remain
+  partial risk indicators, not total-compute parity results. The reviewer ran
+  no tests, roots, simulations, profiles, inference, training, or scoring. No
+  method or gate changed; prior negative results and novelty risks remain.
+
 ## Latest continuation delta (2026-10-07; loss-residual/square subcounter)
 
 - Added `tools/v212_model_loss_residual_accounting.py`, a mask-parameterized

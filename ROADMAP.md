@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 raw-state and compute-freeze review
+
+An approved read-only review found the adopted `F→D→E` raw-state method and
+current no-update graph internally consistent, but did not establish data
+replay, trainer behavior, or six-arm compute parity. It found one additional
+freeze prerequisite: `windows_to_model_batch` accepts nonempty batches of any
+size although D03 and the shape counters assume 64. Require exactly 64 windows
+at the trainer/adapter boundary and attest matching batch boundaries in the
+frozen manifest and replay evidence. Six-arm graph-freeze readiness remains
+**NO** because the trainer, selected-window replay/masks, full counter and
+branch bounds, and pinned runtime/LAPACK fingerprint are still absent. The
+≤5% gate remains **untested and unpassed**; no tests or model operations were
+run by the reviewer.
+
 ### 2026-10-07 V2.12 reduction-shape inventory
 
 Added a mask-parameterized inventory of objective `mean`/`sum` call shapes,

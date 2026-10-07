@@ -78,6 +78,15 @@ mask or batch. This does not prohibit v05 per-example masking retained by v06 or
 active-prefix execution. Counters must distinguish per-example executed calls
 and work from per-invocation work.
 
+The current `two_player/v212_window_batch.py::windows_to_model_batch` checks
+that its input is nonempty but does not enforce `len(windows) == 64`. Its
+docstring describes the fixed-batch schema, while its implementation can emit
+other batch sizes. Before graph freeze/profile, the integrated trainer or a
+revised, reviewed adapter must reject every batch whose size is not exactly 64;
+the selected-window manifest and replay receipt must prove those same batch
+boundaries for all arms and updates. Accounting tools' fixed-64 assumptions do
+not make the current adapter enforce that contract.
+
 The direct-leaf H4 condition is an implementation-level rejection rule already
 enforced by `two_player/v212_model.py`; it does not change v06 target semantics
 or authorize materializing a schedule. Record violations and stop before any
