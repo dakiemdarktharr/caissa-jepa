@@ -2,6 +2,25 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 episode replay receipt candidate and six-arm review
+
+Added a strict-schema in-memory receipt builder that exact-rule replays a full
+episode, hashes its canonical state/action/outcome content with adapter/rules
+identity, and binds all derived window payload hashes. Three synthetic receipt
+tests plus the existing trajectory audit pass 10/10 under Python 3.14.7 with
+temporary NumPy 2.5.3, not the locked research runtime. It does not bind source
+file bytes, provenance, loaded implementation identity, or schedule/trainer
+use. No real or research corpus, root, profile, inference, score, outcome, or
+training was used.
+
+An approved read-only `gpt-6-luna/high` review finds the adopted raw-state
+`F→D→E` graph source-consistent but not ready to freeze. It identifies missing
+trainer exclusivity, replay-derived selected-window masks, schedule-to-receipt
+binding, full FLOP counter/branch bounds, and pinned runtime/backend/source
+identity. The ≤5% compute gate remains **untested and unpassed**. Next: design
+and review a receipt-bound scheduled-call boundary with actual mask checks and
+bypass prevention; keep profiling and fitting closed.
+
 ### 2026-10-07 V2.12 schedule window-payload digests
 
 Schedule schema v02 adds canonical per-window payload hashes and a batch

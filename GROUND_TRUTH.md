@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; episode replay receipt candidate)
+
+- Added a strict-schema in-memory episode receipt helper that invokes the
+  existing whole-episode exact-rule replay audit, hashes canonical complete
+  episode content plus adapter/rules identity, and lists the digest of each
+  derived window. It does not hash source-file bytes, authenticate lineage,
+  fingerprint loaded rules code, or integrate with the schedule/trainer.
+- Three synthetic receipt fixtures and the existing trajectory-audit suite
+  pass 10/10 using temporary NumPy 2.5.3 on Python 3.14.7, not the locked
+  runtime. No corpus, roots, scores/outcomes, profile, inference, or training
+  was used. This is not production replay/provenance evidence.
+- An approved read-only `gpt-6-luna/high` review finds the adopted raw-state
+  `F→D→E` method consistent with the current no-update graph at source level.
+  Six-arm graph freeze remains **NO**; compute parity remains **untested and
+  unpassed**. Trainer exclusivity, actual selected-window replay/masks,
+  schedule-to-receipt binding, full FLOP counter/branch bounds, and pinned
+  runtime/backend/source identity remain open. No gate advanced; retain prior
+  negative results and novelty risks.
+
 ## Latest continuation delta (2026-10-07; V2.12 window-payload binding)
 
 - Added canonical `window_payload_sha256` over each materialized `Window` and
