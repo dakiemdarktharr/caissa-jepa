@@ -2987,3 +2987,15 @@ snapshot. Three focused tests pass. An in-memory run on Python 3.14.7 / NumPy
 hashes matched at read time with matching normalized segment inventories
 before/after hashing; its digest recomputed, while its locked-version check was
 false. No receipt was persisted. No D03 runtime gate or profile was advanced.
+
+### 2026-10-07 V2.12 static source-operation inventory
+
+Added a deterministic AST inventory for the current model and scratch
+optimizer source. It enumerates arithmetic/unary syntax, calls, indexing,
+comparisons, and control flow, and binds each report to the source hashes.
+There are 762 listed syntax sites in the model and 123 in the optimizer. The
+inventory labels every site semantically unresolved; it is a review map, not a
+counter or execution trace. Its three standard-library tests pass under Python
+3.11.17 and 3.14.7. The locked 3.11.9 / NumPy 2.4.6 runtime is unavailable in
+the local interpreters, so the locked NumPy reduction path was not verified.
+No compute, data, or fit gate advanced.

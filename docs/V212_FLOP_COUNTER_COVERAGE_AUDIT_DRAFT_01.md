@@ -492,3 +492,23 @@ inventories before and after hashing, and recomputed the digest. The lock-match
 flag was false; both NumPy native modules resolved under
 `/tmp/caissa-jepa-pv-deps`. No receipt was persisted. This does not clear the
 D03 runtime/backend or counter-coverage gate.
+
+## Static source-operation inventory (2026-10-07)
+
+`tools/v212_source_operation_inventory.py` creates a deterministic AST-site
+inventory for `two_player/v212_model.py` and
+`two_player/v212_scratch_optimizer.py`. It records arithmetic/unary operator
+syntax, calls, subscripts, comparisons, and control-flow sites, sorted by
+source location, and includes source SHA-256 values. The current report has
+762 syntax sites in the model and 123 in the optimizer, including 307 call
+sites combined. It can help reviewers find source expressions absent from a
+counter ownership map, but every entry is explicitly
+`unresolved_by_syntax_inventory`. It does not infer array dtypes, branch
+execution, NumPy/LAPACK internals, or operation counts, and it is not a
+complete counter or trace.
+
+The three standard-library tests pass on Python 3.11.17 and 3.14.7. The
+locked Python 3.11.9 / NumPy 2.4.6 runtime is not installed locally; the
+available Python 3.11.17 has no NumPy, and the shared dependency path contains
+NumPy 2.5.3. Therefore this did not verify the locked `np.std` implementation
+or change D03 readiness. No data, profile, or model execution occurred.

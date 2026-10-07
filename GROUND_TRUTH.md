@@ -1,5 +1,21 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; V2.12 source-operation inventory)
+
+- Added `tools/v212_source_operation_inventory.py` to enumerate AST-level
+  arithmetic/unary operators, comparisons, calls, indexing, and control-flow
+  sites in `two_player/v212_model.py` and
+  `two_player/v212_scratch_optimizer.py`, with source SHA-256 values and
+  deterministic site ordering. It reports 762 model sites and 123 optimizer
+  sites on the current source. All sites remain semantically unresolved by
+  this inventory; this is not a FLOP count or runtime trace.
+- Three standard-library tests pass under Python 3.11.17 and 3.14.7. The
+  locked Python 3.11.9 / NumPy 2.4.6 runtime is unavailable locally: Python
+  3.11.17 has no NumPy installed, and the available shared NumPy is 2.5.3.
+  No runtime/profile, data, roots, inference, scoring, simulation, or training
+  ran. This inventory does not clear counter coverage, runtime identity,
+  graph-freeze, or ≤5% parity gates.
+
 ## Latest continuation delta (2026-10-07; V2.12 runtime observation utility)
 
 - Added `tools/v212_runtime_observation.py`, a read-only collector for the
