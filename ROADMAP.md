@@ -2,18 +2,33 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
-### 2026-10-07 V2.12 Adam/EMA semantics proposal
+### 2026-10-07 V2.12-06 Adam/EMA semantics adoption
 
-Static comparison found that v05 fixes Adam/EMA hyperparameters but does not
+Static comparison found that v05 fixed Adam/EMA hyperparameters but did not
 uniquely define moment initialization/persistence, bias correction, epsilon
-placement, clipping scope at the parameter-tensor level, or EMA timing. Added
-`docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` with explicit proposed
-equations and a disposable operation-trace profile interpretation. The
-approved read-only reviewer accepts it as a method-clarification proposal and
-confirms consistency with the existing helper, while noting epsilon placement
-and clipping scope are deliberate choices not uniquely implied by v05. It is
-not adopted; v05 remains current. No code, tests, profile, data, training, or
-outcomes were accessed. The six-arm ≤5% gate remains **untested and unpassed**.
+placement, clipping scope at the parameter-tensor level, or EMA timing. The
+approved read-only reviewer recommended adopting the explicit equations as a
+narrow versioned method amendment, preserving the six arms, objectives,
+trainable parameter sets, and 87-update schedule. V06 adopts those equations
+and transparently records epsilon placement and global clipping scope as
+deliberate choices. The v05 text is archived at
+`docs/METHOD_SPEC_V212_V05.md`; v05's raw-state review and earlier method
+content remain in force. No code, tests, profile, data, training, or outcomes
+were accessed. The six-arm ≤5% gate remains **untested and unpassed**; v06 opens
+no operational gate.
+
+### 2026-10-07 V2.12-06 compute preregistration revision
+
+V06 makes the prior v05 compute draft stale because it did not bind the newly
+adopted optimizer equations. `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md`
+now supersedes the v05-specific draft 02 and fixes stateful training versus
+reset scratch semantics, `t=u`, the v06 amendment reference, and the 20-seed ×
+87-update estimand. The approved read-only reviewer accepts D03 as a
+preregistration for v06 only and confirms the interval/branch-bound design.
+Before any execution, freeze the explicit counter checklist and source/runtime
+identity. No data or profile gate opens. The trainer, selected-window
+materialization/replay, full counter and preflight authorization remain absent;
+the ≤5% gate is **untested and unpassed**.
 
 ### 2026-10-07 V2.12 training-FLOP profile protocol revision
 

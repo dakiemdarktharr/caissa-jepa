@@ -22,12 +22,15 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/validation/V28_DATA_SPLIT_DEV09.json` | Passed strict data-audit receipt for synthetic Connect4 6x7 + Reversi6; raw records are ignored and training is unapproved |
 | `ROADMAP.md` | Current milestones and evidence/kill gates |
 | `METHOD_SPEC.md` | Frozen original v1; read amendments before implementation |
-| `METHOD_SPEC_V212.md` | Current V2.12-05 specification; only the raw-state contract changed from v04; all unrelated gates remain closed |
+| `METHOD_SPEC_V212.md` | Current V2.12-06 specification; retains the reviewed v05 raw-state amendment and adds the adopted Adam/EMA update contract; all operational gates remain closed |
+| `docs/METHOD_SPEC_V212_V05.md` | Immutable v05 method-spec archive, including the adopted raw-state contract before optimizer semantics were versioned |
+| `docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md` | Adopted narrow v06 optimizer amendment; it opens no data, profile, inference, or training gate |
 | `two_player/v212_model.py` and `tests/test_v212_model.py` | No-update six-arm objective/gradient graph and synthetic checks; not a trainer, compute profile, or fit authorization |
 | `two_player/v212_scratch_optimizer.py` and `tests/test_v212_scratch_optimizer.py` | Pure scratch Adam/clipping/EMA arithmetic with synthetic tests; no persistent updates, trainer, or profile |
 | `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` | Rejected preregistration retained as history; ≤5% gate untested and unpassed |
-| `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_02.md` | Independently accepted as preregistration only; Adam scratch state/timestep semantics must be frozen before profile; no data/profile authorization, ≤5% gate untested and unpassed |
-| `docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` | Independently accepted optimizer-semantics clarification proposal, not adopted; v05 remains current and no profile/training gate opens |
+| `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_02.md` | Accepted preregistration for v05, superseded as current protocol by draft 03 after v06 adoption |
+| `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md` | Independently accepted preregistration for v06 only; supersedes D02 for v06, but opens no data/profile gate and ≤5% remains untested and unpassed |
+| `docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` | Review record for the Adam/EMA semantics adopted by v06; no profile/training authorization |
 | `docs/METHOD_SPEC_V212_V04.md` | Immutable v04 specification archive; includes the Reversi8 2-second p90 negative and pre-v05 raw-state wording |
 | `docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md` | Adopted narrow v05 raw-state amendment; method-level review only, no trainer/fit authorization, ≤5% FLOP gate untested and unpassed |
 | `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md` | Unreviewed §7 replacement originally based on v04; not current v05, must be rebased and versioned before any future adoption |

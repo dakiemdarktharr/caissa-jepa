@@ -1,19 +1,14 @@
-# METHOD SPEC V2.12-06: Alternating-Player Multi-step JEPA
+# METHOD SPEC V2.12-05: Alternating-Player Multi-step JEPA
 
-Status: v06 retains v05's independently reviewed raw-state arm contract and
-adds the narrowly scoped Adam/EMA update semantics in
-`docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md`, after an approved
-independent review recommended adoption. The exact v05 spec is archived at
-`docs/METHOD_SPEC_V212_V05.md`; the unchanged v04 text is archived at
-`docs/METHOD_SPEC_V212_V04.md`. V06 fixes optimizer choices that v05 left
-underspecified, including the deliberate epsilon-outside-square-root
-convention. It changes the specification only; it is not a training grant,
-novelty claim, or superiority result. The fixed 2.0-second search gate has
-failed the rule-only Reversi8 p90 audit, and the six-arm ≤5% training-FLOP gate
-remains untested and unpassed. No fitting or locked-data evaluation is
-permitted until the compute protocol, exact counter and operation semantics,
-data/preflight scope, and all remaining pre-fit gates pass. Changes require a
-new version.
+Status: v05 adopts the narrowly scoped raw-state arm contract after
+independent method review on 2026-10-07. The unchanged v04 text is archived at
+`docs/METHOD_SPEC_V212_V04.md`. This adoption changes the specification only;
+it is not a training grant, novelty claim, or superiority result. The fixed
+2.0-second search gate has failed the rule-only Reversi8 p90 audit, and the
+six-arm ≤5% training-FLOP gate remains untested and unpassed. No fitting or
+locked-data evaluation is permitted until a revised no-outcome compute
+protocol is independently reviewed and all remaining pre-fit gates pass.
+Changes require a new version.
 
 ## 1. Falsifiable hypothesis and scope
 
@@ -157,14 +152,6 @@ arms for that seed. Freeze learning rate 0.001, batch size 64, EMA 0.99, Adam
 `beta1=0.9`, `beta2=0.999`, epsilon `1e-8`, and global gradient-norm clip 5.
 Resume only when method, code, config, data, runtime, split, schedule and seed
 fingerprints all match. Save checkpoints atomically.
-
-V06 fixes the per-seed optimizer state and update equations in
-`docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md`. Adam first and second moments
-start at zero and persist across the 87 scheduled updates; gradient clipping is
-global over all online trainable parameters; bias correction uses one-based
-update index `t`; epsilon is outside the square root; and EMA runs after each
-online update for the three JEPA arms only. These choices are part of v06 and
-must be included in code/config fingerprints.
 
 ## 4. Controls and ablations
 
@@ -387,7 +374,7 @@ method and the revised no-outcome compute protocol before any fitting.
 `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md` is an earlier proposed
 §7 replacement written against v04. It remains unreviewed and unadopted; its
 filename's v05 does not denote the current main spec version. Any further
-consideration must rebase that proposal on this v06 and retain the adopted
+consideration must rebase that proposal on this v05 and retain the adopted
 raw-state arm in a later main method version.
 
 Narrow feasibility exception: after independent acceptance of v04, implement
@@ -402,10 +389,9 @@ code or any fitted experiment.
 
 The pre-existing v04 no-training pilot and its direct 104-to-198 raw-state
 proxy remain historical evidence only; they do not implement or validate the
-current latent-then-decode training arm. V05 or v06 method adoption does not
-authorize a new pilot run or make the training-FLOP gate pass. Any future
-V2.12-specific no-training pilot requires a separately reviewed
-harness/protocol update.
+v05 latent-then-decode training arm. V05 adoption does not authorize a new
+pilot run or make the training-FLOP gate pass. Any future v05-specific
+no-training pilot requires a separately reviewed harness/protocol update.
 
 Only a small adapter feasibility audit has passed: 8x8 Connect Four and
 Reversi feature/action shapes, sampled legal transitions, role alternation,

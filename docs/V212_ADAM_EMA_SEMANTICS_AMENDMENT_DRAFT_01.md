@@ -1,12 +1,13 @@
 # V2.12 Adam and EMA update semantics amendment — draft 01
 
-**Status: independently accepted as a method-clarification proposal only; not
-adopted; no trainer, profile, or fitting is authorized.** The independent review
-found the equations coherent and aligned with the existing scratch helper, but
-not uniquely implied by v05 where clipping scope and epsilon placement were
-unspecified. This candidate only makes optimizer/update semantics explicit for
-the already frozen six arms. It does not alter losses, parameters, data, seeds,
-update count, evaluation, or the ≤5% compute gate.
+**Status: review record; its proposed semantics were adopted in v06 after
+independent method review. No trainer, profile, or fitting is authorized.** The
+review found the equations coherent and aligned with the existing scratch
+helper, but not uniquely implied by v05 where clipping scope and epsilon
+placement were unspecified. This candidate makes optimizer/update semantics
+explicit for the already frozen six arms. It did not alter losses, parameters,
+data, seeds, update count, evaluation, or the ≤5% compute gate. The effective
+adopted contract is `docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md`.
 
 ## 1. Ambiguity in the accepted specification
 
@@ -80,11 +81,11 @@ conditional on retaining D02's branch bounds. Epsilon placement and clipping
 scope were explicitly under-specified by v05, so these are deliberate proposed
 choices rather than facts uniquely implied by the current method.
 
-This review is not method adoption. A future adoption must be recorded in a
-new versioned method-spec amendment; until then, v05 remains current and its
-underspecified implementation choices must not be treated as resolved for a
-trainer or profile. Counter treatment of scalar powers and comparisons follows
-D02's separate-operation reporting rule. This proposal grants no data access,
-profile, inference, training, root generation, scoring, or outcome evaluation.
-The ≤5% gate remains **untested and unpassed**; existing negative results and
-novelty risks remain in force.
+This review itself was not method adoption. After the independent
+recommendation to adopt, the researcher recorded the choice in the versioned
+v06 amendment `docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md`; v05 is archived
+at `docs/METHOD_SPEC_V212_V05.md`. Counter treatment of scalar powers and
+comparisons follows D02's separate-operation reporting rule. Neither the review
+nor v06 adoption grants data access, profile, inference, training, root
+generation, scoring, or outcome evaluation. The ≤5% gate remains **untested
+and unpassed**; existing negative results and novelty risks remain in force.
