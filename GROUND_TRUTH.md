@@ -24,6 +24,12 @@
   outcomes, simulation, or training ran. Graph freeze remains **NO** and the
   ≤5% compute gate remains **untested and unpassed**; prior negative findings
   and novelty risks remain in force.
+- Local milestone commit: `c2d20667824a33b1615662be56ce2a28aa5211f4`.
+  `origin` remains `git@github.com:dakiemdarktharr/caissa-jepa.git`; current
+  `main` SHA could not be reverified. Normal SSH remote access fails the system
+  SSH-config ownership check, and a read-only retry with `/dev/null` SSH config
+  failed DNS resolution for `github.com`; the ordinary non-force push was
+  blocked before connecting. The commit is local only, not confirmed on GitHub.
 
 ## Latest continuation delta (2026-10-07; owner-reconciled partial FLOP ledger)
 

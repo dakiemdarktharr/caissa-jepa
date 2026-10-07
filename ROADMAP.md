@@ -2964,3 +2964,10 @@ whitespace checks pass. An approved read-only review confirmed the counts and
 requested explicit qualification that malformed inputs can short-circuit the
 predicate path. No data or model run occurred; graph freeze remains **NO** and
 ≤5% compute parity remains **untested and unpassed**.
+
+Local commit `c2d20667824a33b1615662be56ce2a28aa5211f4` records this milestone.
+The normal push did not connect: system SSH configuration ownership blocked
+the default client, and a read-only `/dev/null` config retry could not resolve
+`github.com`. Remote `main` therefore remains unverified and publication is
+pending restored network/SSH access; no force push or alternate write path was
+used.
