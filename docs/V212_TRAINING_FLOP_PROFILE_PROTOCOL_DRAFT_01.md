@@ -31,9 +31,11 @@ comparison, indexing, and integer operations separately unless the selected
 counter has a documented and consistently applied conversion. MAC-only counts,
 parameter counts, wall time, and hardware utilization cannot substitute for
 total training FLOPs. The counter implementation, version, coverage, and
-unsupported operators must be disclosed before measurement; any uncounted
-floating-point operation that could change cross-arm ordering blocks a gate
-decision.
+unsupported operators must be disclosed before measurement. Count all
+floating-point work with a frozen conversion or bound it tightly enough to
+prove that the ≤5% pass/fail decision is invariant to the uncertainty;
+otherwise the profile cannot decide the gate, even when arm ordering is
+unchanged.
 
 ## 2. Required freeze before profile execution
 
@@ -52,8 +54,15 @@ Before creating a profile batch, freeze and hash:
 All selected windows must first pass the v05 exact-rule replay and preflight
 requirements. A malformed or invalid selected transition, zero-target batch
 where prohibited, mismatched mask, nonfinite value, or changed batch boundary
-rejects the entire panel before profile comparison. No arm may skip work or
-receive a different mask or batch.
+rejects the entire panel before profile comparison. No arm may skip scheduled
+batches or updates, bypass method-required operations, or receive a different
+mask or batch. This does not prohibit v05-mandated per-example masking or
+active-prefix execution. Every arm must follow its frozen graph's mask
+semantics, and the counter must distinguish per-example executed calls/work
+from per-invocation work. Report per-horizon valid, terminal-masked,
+missing/truncated, and invalid-transition counts for every arm, including
+horizons without an arm-specific loss, so shared exposure and arm-specific
+operation counts remain auditable.
 
 The current repository has only `two_player/v212_model.py`, a no-update NumPy
 objective and manual-gradient graph. It has no optimizer, clipping, EMA update
@@ -65,15 +74,19 @@ selected-window mask schedule.
 
 ## 3. Non-fitting execution contract for a future profile
 
-After the method, compute protocol, counter, and remaining pre-fit gates receive
-the required independent reviews, the profile must run in an isolated process
-with no checkpoint writer or persistent parameter update. Each arm starts from
-the same frozen paired seed initialization used by the method. Forward and
-backward execute against the same fixed dry-run batches. For optimizer and EMA
-cost, compute the exact v05 update arithmetic into disposable scratch arrays,
-then discard them; do not feed updated arrays into the next batch. This
-measures one-update work without fitting. Record hashes before and after to
-prove model and target parameters did not change.
+Protocol approval alone does not authorize data or label access. A future
+profile requires separate data/preflight authorization and may use only the
+already-reviewed training-target batch scope needed to exercise the loss graph;
+it must not read development scores or locked-confirmatory outcomes. After the
+method, compute protocol, counter, data/preflight scope, and remaining pre-fit
+gates receive the required independent reviews, the profile must run in an
+isolated process with no checkpoint writer or persistent parameter update.
+Each arm starts from the same frozen paired seed initialization used by the
+method. Forward and backward execute against the same fixed dry-run batches.
+For optimizer and EMA cost, compute the exact v05 update arithmetic into
+disposable scratch arrays, then discard them; do not feed updated arrays into
+the next batch. This measures one-update work without fitting. Record hashes
+before and after to prove model and target parameters did not change.
 
 If faithful optimizer/EMA arithmetic cannot be exercised without changing
 parameters, instrument a separately reviewed scratch implementation and prove
@@ -109,7 +122,8 @@ would establish no JEPA superiority.
 
 No profile, optimizer dry-run, trajectory replay, fitting, inference, root
 generation, score access, or outcome evaluation was performed while drafting
-this protocol. No result or gate changed. The protocol itself needs independent
-review, and the missing implementation and data/preflight prerequisites remain
-open. Keep the existing Reversi8 2-second p90 negative and all novelty risks in
-force.
+this protocol. No result or gate changed. The protocol received an independent
+internal-consistency review and the requested wording fixes, but it remains
+unaccepted and needs explicit independent disposition. The missing
+implementation and data/preflight prerequisites remain open. Keep the existing
+Reversi8 2-second p90 negative and all novelty risks in force.
