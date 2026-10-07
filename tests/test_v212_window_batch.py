@@ -8,6 +8,12 @@ from two_player.v212_trajectory_audit import audit_trajectories
 from two_player.v212_window_batch import windows_to_model_batch
 
 
+def _fixed_batch(windows, size=64):
+    if not windows:
+        raise ValueError("fixture needs at least one audited window")
+    return tuple(windows[index % len(windows)] for index in range(size))
+
+
 class V212WindowBatchTests(unittest.TestCase):
     def test_replayed_windows_materialize_exact_features_masks_and_roles(self):
         game = BoardGame("fixture-c4", 4, 4, k=3, gravity=True)
@@ -21,10 +27,10 @@ class V212WindowBatchTests(unittest.TestCase):
                      "actions": actions, "outcome": outcome}]
         audit = audit_trajectories(episodes, {game.name: game})
 
-        batch = windows_to_model_batch(audit.windows, {game.name: game})
+        batch = windows_to_model_batch(_fixed_batch(audit.windows), {game.name: game})
         masks = preflight_batch(batch)
-        self.assertEqual(batch["x"].shape, (5, 198))
-        self.assertEqual(batch["actions"].shape, (5, 4, 65))
+        self.assertEqual(batch["x"].shape, (64, 198))
+        self.assertEqual(batch["actions"].shape, (64, 4, 65))
         self.assertEqual(batch["policy"][0], actions[0])
         np.testing.assert_array_equal(batch["x"][0], game.features(states[0]))
         self.assertTrue(masks["valid"][4][0])
@@ -46,7 +52,7 @@ class V212WindowBatchTests(unittest.TestCase):
                    "split": "train", "states": (state, passed, ended),
                    "actions": (64, 1 * 8 + 1), "outcome": outcome}
         audit = audit_trajectories([episode], {game.name: game})
-        batch = windows_to_model_batch(audit.windows, {game.name: game})
+        batch = windows_to_model_batch(_fixed_batch(audit.windows), {game.name: game})
         self.assertTrue(batch["legal"][0, 64])
         self.assertEqual(batch["actions"][0, 0, 64], 1.0)
         self.assertEqual(batch["actors"][0, 0], -1.0)
@@ -79,14 +85,19 @@ class V212WindowBatchTests(unittest.TestCase):
 
         games = {reversi.name: reversi, c4.name: c4}
         audit = audit_trajectories([draw_episode, c4_episode], games)
-        batch = windows_to_model_batch(audit.windows, games)
+        fixed_windows = _fixed_batch(audit.windows)
+        batch = windows_to_model_batch(fixed_windows, games)
         masks = preflight_batch(batch)
         self.assertEqual(batch["value"][0], 0.0)
         self.assertEqual(batch["future_value"][0, 0], 0.0)
         self.assertTrue(batch["terminal"][0, 0])
         self.assertFalse(batch["transition_exists"][0, 1:].any())
         self.assertFalse(batch["target_exists"][0, 1:].any())
-        self.assertEqual(masks["counts"][1]["terminal_masked"], 2)
+        expected_h1_terminal = sum(
+            any(horizon == 1 for horizon, _ in window.terminal_targets)
+            for window in fixed_windows)
+        self.assertEqual(masks["counts"][1]["terminal_masked"],
+                         expected_h1_terminal)
         audited_draw = audit.windows[0]
         missing_terminal_record = audited_draw.__class__(
             audited_draw.game, audited_draw.episode_id, audited_draw.split,
@@ -94,7 +105,8 @@ class V212WindowBatchTests(unittest.TestCase):
             audited_draw.states, audited_draw.actions, audited_draw.valid_targets,
             ())
         with self.assertRaisesRegex(ValueError, "terminal-target mask mismatch"):
-            windows_to_model_batch((missing_terminal_record, *audit.windows[1:]),
+            windows_to_model_batch(_fixed_batch(
+                (missing_terminal_record, *audit.windows[1:])),
                                    games)
 
     def test_nontrain_window_and_invalid_local_replay_fail_closed(self):
@@ -113,20 +125,23 @@ class V212WindowBatchTests(unittest.TestCase):
             window.start_ply, window.states, window.actions, window.valid_targets,
             window.terminal_targets)
         with self.assertRaisesRegex(ValueError, "required split"):
-            windows_to_model_batch((development,), {game.name: game})
+            windows_to_model_batch((development, *([window] * 63)),
+                                   {game.name: game})
 
         empty_path = window.__class__(
             window.game, window.episode_id, window.split, window.episode_outcome,
             window.start_ply, (window.states[0],), (), (), ())
         with self.assertRaisesRegex(ValueError, "state/action path length"):
-            windows_to_model_batch((empty_path,), {game.name: game})
+            windows_to_model_batch((empty_path, *([window] * 63)),
+                                   {game.name: game})
 
         altered_masks = window.__class__(
             window.game, window.episode_id, window.split, window.episode_outcome,
             window.start_ply, window.states, window.actions, (),
             window.terminal_targets)
         with self.assertRaisesRegex(ValueError, "valid-target mask mismatch"):
-            windows_to_model_batch((altered_masks,), {game.name: game})
+            windows_to_model_batch((altered_masks, *([window] * 63)),
+                                   {game.name: game})
 
         altered = list(window.states)
         altered[1] = game.transition(game.initial(), 25)
@@ -135,7 +150,17 @@ class V212WindowBatchTests(unittest.TestCase):
             window.start_ply, tuple(altered), window.actions, window.valid_targets,
             window.terminal_targets)
         with self.assertRaisesRegex(ValueError, "illegal or altered"):
-            windows_to_model_batch((corrupted,), {game.name: game})
+            windows_to_model_batch((corrupted, *([window] * 63)),
+                                   {game.name: game})
+
+    def test_rejects_batches_that_do_not_contain_exactly_64_windows(self):
+        game = BoardGame("fixture-c4", 4, 4, k=3, gravity=True)
+        with self.assertRaisesRegex(ValueError, "exactly 64"):
+            windows_to_model_batch((), {game.name: game})
+        with self.assertRaisesRegex(ValueError, "exactly 64"):
+            windows_to_model_batch(tuple([None] * 63), {game.name: game})
+        with self.assertRaisesRegex(ValueError, "exactly 64"):
+            windows_to_model_batch(tuple([None] * 65), {game.name: game})
 
 
 if __name__ == "__main__":

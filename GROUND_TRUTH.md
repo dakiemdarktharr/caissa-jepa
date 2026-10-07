@@ -27,19 +27,33 @@
   internally consistent with the no-update graph. Adapter feature fixtures
   still do not establish selected-window exact-rule replay, label provenance,
   decoder behavior on audited batches, or trainer integration.
-- Six-arm graph-freeze readiness remains **NO**. The reviewer found that
-  `two_player/v212_window_batch.py::windows_to_model_batch` accepts arbitrary
-  nonempty batch lengths although D03 and the analytical counters assume 64.
-  The future trainer or a reviewed adapter revision must enforce exactly 64
-  windows and the manifest/replay evidence must attest identical batch
-  boundaries across arms/updates. The full counter, branch bounds, selected
-  window replay and mask roster, trainer integration, and pinned runtime/
-  LAPACK fingerprint remain absent. The ≤5% compute gate remains **untested
-  and unpassed**.
+- At the time of review, `two_player/v212_window_batch.py::windows_to_model_batch`
+  accepted arbitrary nonempty batch lengths although D03 and the analytical
+  counters assume 64; the subsequent adapter guard is recorded below. Six-arm
+  graph-freeze readiness remains **NO**.
+  The adapter guard now enforces exactly 64 windows; the trainer must preserve
+  it, and manifest/replay evidence must attest identical batch boundaries
+  across arms/updates. The full counter, branch bounds, selected window replay
+  and mask roster, trainer integration, and pinned runtime/LAPACK fingerprint
+  remain absent. The ≤5% compute gate remains **untested and unpassed**.
 - The raw-state MAC, matmul, reduction, and optimizer inventories remain
   partial risk indicators, not total-compute parity results. The reviewer ran
   no tests, roots, simulations, profiles, inference, training, or scoring. No
   method or gate changed; prior negative results and novelty risks remain.
+
+## Latest continuation delta (2026-10-07; fixed V2.12 adapter batch size)
+
+- `windows_to_model_batch` now rejects any batch other than exactly 64 windows,
+  matching the v06 fixed-batch contract. The focused synthetic adapter fixtures
+  now exercise that batch shape and cover empty, 63-window, and 65-window
+  rejection. This enforces only the adapter boundary; it does not prove the
+  schedule's 32-windows-per-game composition or matching boundaries across all
+  arms and updates. The guard has not had independent code review.
+- The adapter/model batch path remains an in-memory conversion fixture, not a
+  selected-window manifest, trainer, or exact-rule dataset pipeline. No real
+  windows, profile, inference, scores, outcomes, or training ran. Graph freeze
+  readiness remains **NO** and the ≤5% compute gate remains **untested and
+  unpassed**.
 
 ## Latest continuation delta (2026-10-07; loss-residual/square subcounter)
 

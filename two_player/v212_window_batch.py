@@ -14,18 +14,23 @@ from .v212_model import preflight_batch
 from .v212_trajectory_audit import TARGET_HORIZONS, Window
 
 
+TRAINING_BATCH_SIZE = 64
+
+
 def windows_to_model_batch(windows: tuple[Window, ...] | list[Window],
                            games: dict[str, BoardGame], *,
                            required_split: str = "train") -> dict[str, np.ndarray]:
-    """Convert audited windows to the exact fixed-batch schema expected by v06.
+    """Convert exactly 64 audited windows to the fixed v06 batch schema.
 
     Only training-split windows are accepted by default. States/outcomes come
     from the audited windows; unavailable post-terminal or truncated entries
     are zero-padded and distinguished by explicit existence masks. The result
     is passed through `preflight_batch` before it is returned.
     """
-    if not isinstance(windows, (tuple, list)) or not windows:
-        raise ValueError("windows must be a nonempty sequence")
+    if not isinstance(windows, (tuple, list)):
+        raise ValueError("windows must be a sequence")
+    if len(windows) != TRAINING_BATCH_SIZE:
+        raise ValueError("training batch must contain exactly 64 windows")
     if required_split != "train":
         raise ValueError("model training batches require the train split")
 

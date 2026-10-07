@@ -7,14 +7,25 @@ Updated: 2026-10-07. This is an adaptive research plan, not a promise of a posit
 An approved read-only review found the adopted `F→D→E` raw-state method and
 current no-update graph internally consistent, but did not establish data
 replay, trainer behavior, or six-arm compute parity. It found one additional
-freeze prerequisite: `windows_to_model_batch` accepts nonempty batches of any
-size although D03 and the shape counters assume 64. Require exactly 64 windows
-at the trainer/adapter boundary and attest matching batch boundaries in the
-frozen manifest and replay evidence. Six-arm graph-freeze readiness remains
+freeze prerequisite: at review time, `windows_to_model_batch` accepted
+nonempty batches of any size although D03 and the shape counters assume 64.
+The subsequent fixed-size adapter guard is recorded below; the trainer must
+preserve it and the manifest/replay evidence must attest matching batch
+boundaries. Six-arm graph-freeze readiness remains
 **NO** because the trainer, selected-window replay/masks, full counter and
 branch bounds, and pinned runtime/LAPACK fingerprint are still absent. The
 ≤5% gate remains **untested and unpassed**; no tests or model operations were
 run by the reviewer.
+
+### 2026-10-07 V2.12 fixed-batch adapter guard
+
+`windows_to_model_batch` now fails closed unless given exactly 64 windows, and
+the synthetic adapter fixtures cover valid fixed-size conversion plus empty,
+63-row, and 65-row rejection. This implements the v06 batch-size invariant at
+the adapter seam. It does not enforce 32 windows per game, freeze selected
+window order, or establish cross-arm schedule identity; the trainer, exact-rule
+replay manifest, full counter, branch bounds, pinned runtime, and independent
+review of the guard remain absent. No profile or fit is authorized.
 
 ### 2026-10-07 V2.12 reduction-shape inventory
 
