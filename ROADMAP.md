@@ -2,6 +2,22 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 raw-state endpoint-mask correction
+
+The approved read-only raw-state/six-arm review found a structural mismatch:
+preflight could count a valid later horizon while active execution stopped at
+an unsupervised intermediate target, leaving the endpoint prediction at its
+zero initializer. The no-update objective graph now activates each transition
+when any valid supervised horizon needs that prefix, and a synthetic regression
+fixture covers the case for all five recurrent arms. `compileall` and
+`git diff --check` pass. The focused unit test could not import because the
+research clone has no NumPy installation; no environment was installed. This
+fix was confirmed by an approved read-only follow-up as resolving the specific
+source-level mismatch; the fixture itself was not run. This does not validate
+selected-window exact-rule replay, freeze the raw-state graph, or measure
+six-arm training compute. D03's ≤5% gate remains **untested and unpassed**,
+and data/profile/training gates remain closed.
+
 ### 2026-10-07 V2.12-06 Adam/EMA semantics adoption
 
 Static comparison found that v05 fixed Adam/EMA hyperparameters but did not

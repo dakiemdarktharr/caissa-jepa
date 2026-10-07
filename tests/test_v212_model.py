@@ -178,6 +178,26 @@ class V212ModelTests(unittest.TestCase):
         self.assertEqual(metrics["executed_predictor_calls"], 7)
         self.assertEqual(metrics["executed_decoder_reencoder_calls"], 7)
 
+    def test_valid_endpoint_keeps_intermediate_prediction_active_without_target(self):
+        batch = synthetic_batch()
+        # A later exact target can be valid even when an intermediate target
+        # is not supervised. The model still needs every transition in its
+        # prefix to compute that endpoint prediction.
+        batch["target_exists"][0, 2] = False
+        masks = preflight_batch(batch)
+        self.assertTrue(masks["valid"][4][0])
+        self.assertTrue(all(masks["active"][step][0] for step in range(1, 5)))
+
+        for arm in ARMS:
+            if arm == "direct-leaf-value":
+                continue
+            with self.subTest(arm=arm):
+                metrics, _ = V212Model(V212Config(arm=arm, seed=31)).loss_grad(batch)
+                self.assertEqual(metrics["executed_predictor_calls"], 12)
+                if arm == "recursive-raw-state":
+                    self.assertEqual(metrics["executed_decoder_reencoder_calls"], 12)
+                    self.assertNotEqual(metrics["raw_state_loss_by_horizon"][4], 0.0)
+
     def test_sampled_gradients_match_finite_difference(self):
         batch = synthetic_batch()
         for arm, key, index in (

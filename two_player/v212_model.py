@@ -137,21 +137,17 @@ def preflight_batch(batch):
     if (not invalid.any() and not any(mask.any() for mask in valid.values())):
         raise ValueError("minibatch has zero valid nonterminal targets")
     return {"valid": valid,
-            "active": _active_prefix_masks(transition_exists, transition_valid,
-                                           target_exists, terminal),
+            "active": _active_prefix_masks(valid),
             "counts": counts}
 
 
-def _active_prefix_masks(transition_exists, transition_valid, target_exists, terminal):
-    """Rows on which predicting each next state is permitted by v05."""
-    n = transition_exists.shape[0]
+def _active_prefix_masks(valid):
+    """Rows needed to compute any valid supervised horizon's full prefix."""
+    n = len(next(iter(valid.values())))
     active = {}
-    prefix_ok = np.ones(n, dtype=bool)
-    terminal_seen = np.zeros(n, dtype=bool)
     for step in range(4):
-        prefix_ok &= transition_exists[:, step] & transition_valid[:, step]
-        terminal_seen |= terminal[:, step]
-        active[step + 1] = prefix_ok & target_exists[:, step] & ~terminal_seen
+        downstream = [mask for horizon, mask in valid.items() if horizon >= step + 1]
+        active[step + 1] = np.logical_or.reduce(downstream)
     return active
 
 
