@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; raw-state H4 gradient path)
+
+- Added a synthetic model-level regression that disables raw-state target
+  supervision at H1/H2/H3 while keeping the four transitions available and the
+  H4 target valid. The predictor weight attached to action 64, which occurs
+  only at transition three in this path, has a nonzero H4-loss gradient that
+  agrees with a central finite difference. This checks gradient flow through
+  the otherwise-unsupervised intermediate transition.
+- The locked Python 3.11.9 / NumPy 2.4.6 `tests.test_v212_model` suite passes
+  9/9. A system-Python attempt could not import NumPy; it was not used for the
+  successful validation. This is synthetic objective evidence only: no
+  optimizer/update, corpus, root, score, inference, training, or match ran.
+  The approved read-only `gpt-6-luna/high` reviewer independently confirmed
+  the source reverse pass traverses active transitions H4→H1. The six-arm
+  preregistered parity criterion is specified, but still not executable: the
+  trainer, replay-derived 20×87 masks, and complete compute/runtime accounting
+  remain absent. Graph freeze remains **NO** and ≤5% parity remains
+  **untested and unpassed**; no gate advanced.
+
 ## Latest continuation delta (2026-10-07; retained manager-unit identity)
 
 - The post-exit controller previously accepted an exit-state snapshot without

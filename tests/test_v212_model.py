@@ -258,6 +258,36 @@ class V212ModelTests(unittest.TestCase):
                 analytic = gradients[key][index]
                 self.assertAlmostEqual(analytic, numeric, delta=2e-5)
 
+    def test_raw_h4_gradient_flows_through_unsupervised_third_transition(self):
+        batch = synthetic_batch()
+        for key, value in batch.items():
+            batch[key] = value[:1].copy()
+        batch["target_exists"][0, :3] = False
+        masks = preflight_batch(batch)
+        self.assertFalse(masks["valid"][1][0])
+        self.assertFalse(masks["valid"][2][0])
+        self.assertTrue(masks["valid"][4][0])
+
+        model = V212Model(V212Config(arm="recursive-raw-state", seed=19))
+        metrics, gradients = model.loss_grad(batch)
+        self.assertNotEqual(metrics["raw_state_loss_by_horizon"][4], 0.0)
+
+        # Action 64 appears only at the third transition of this H4 path. Its
+        # predictor gradient can only come from differentiating the H4 losses
+        # through that otherwise-unsupervised intermediate transition.
+        key, index = "fw", (32 + 64, 7)
+        analytic = gradients[key][index]
+        self.assertGreater(abs(analytic), 1e-8)
+        original = model.params[key][index]
+        epsilon = 1e-6
+        model.params[key][index] = original + epsilon
+        plus = model.loss_grad(batch)[0]["loss"]
+        model.params[key][index] = original - epsilon
+        minus = model.loss_grad(batch)[0]["loss"]
+        model.params[key][index] = original
+        numeric = (plus - minus) / (2.0 * epsilon)
+        self.assertAlmostEqual(analytic, numeric, delta=2e-5)
+
 
 if __name__ == "__main__":
     unittest.main()

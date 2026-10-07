@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 raw-state H4 gradient path
+
+Added a synthetic finite-difference regression showing that H4 raw-state loss
+backpropagates through transition three when H1/H2/H3 target supervision is
+disabled, with action 64 isolated to that transition. The model suite passes
+9/9 in the locked Python 3.11.9 / NumPy 2.4.6 runtime. This checks one path in
+the no-update objective graph only. No optimizer, data, roots, scores,
+inference, training, or match ran. Graph freeze remains **NO** and six-arm
+≤5% compute parity remains **untested and unpassed**; the next gating work
+still requires the exclusive trainer, replay-derived 20×87 mask schedule,
+complete compute/runtime accounting, and independent review. The approved
+read-only reviewer confirmed the source reverse pass follows active H4→H1
+transitions; the parity criterion is specified but not yet executable.
+
 ### 2026-10-07 retained manager-unit identity
 
 Both no-inference v01 controller paths now require the transient unit to remain
