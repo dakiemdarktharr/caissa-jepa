@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 FLOP-counter source coverage audit
+
+Added `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md` as a static map of
+the D03 accounting obligations to the current no-update objective and scratch
+optimizer. It enumerates six-arm/mask-dependent work, covariance diagnostics,
+per-call preflight, clipping branches, Adam/EMA, and scalar powers. The audit
+finds that `np.linalg.eigvalsh` has no frozen algorithm-specific FLOP count or
+reviewed full-schedule bound, and that repeated model preflight needs explicit
+table treatment. It is not a counter, instrumentation run, or compute result.
+The selected-window manifest/replay, trainer integration, 20×87 mask schedule,
+counter/runtime fingerprint, and separate data/preflight authorization remain
+absent; the ≤5% compute gate remains **untested and unpassed**.
+
 ### 2026-10-07 V2.12 audited-window batch adapter fixture
 
 Added `two_player/v212_window_batch.py` to convert explicit in-memory windows
