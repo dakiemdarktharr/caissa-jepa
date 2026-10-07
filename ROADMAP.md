@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 reduction-shape inventory
+
+Added a mask-parameterized inventory of objective `mean`/`sum` call shapes,
+including both separate softmax denominator sums, value/target reductions,
+bias-gradient sums, and per-tensor gradient-norm sums. Effective-rank entropy
+uses explicit branch/activity and selected-spectrum inputs; `np.std` remains
+opaque. Five synthetic/source tests pass, and the combined five-module model,
+activation, matmul, residual, and reduction suite passes 25/25. For a fully
+valid illustrative batch with 32 active spectrum entries, candidate ordinary
+reduction additions range from 32,343–182,712 and mean divisions from 100–105.
+These counts require independent acceptance and do not pin the summation tree
+or NumPy implementation; they omit `std`, LAPACK and other work, so they are
+not total FLOPs or a parity result. No gate opens.
+
 ### 2026-10-07 V2.12 loss-residual and square inventory
 
 Added a mask-parameterized source subcounter for residual subtractions and

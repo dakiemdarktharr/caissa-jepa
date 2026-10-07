@@ -1,5 +1,25 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; reduction-shape inventory)
+
+- Added `tools/v212_model_reduction_shape_accounting.py` to map NumPy
+  mean/sum calls in the objective and bias-gradient diagnostics to input and
+  output shapes, retaining the two separate softmax denominator reductions
+  and per-horizon mask skips. Candidate addition/division counts use ordinary
+  `input_elements - output_elements` reductions and one division per mean
+  output; the active-set size for effective-rank entropy is an explicit input.
+- Five synthetic/source tests pass. The combined model, activation, matmul,
+  residual, and reduction suite passes 25/25; `compileall` and
+  `git diff --check` pass. With fully valid illustrative masks and all 32
+  effective-rank entries selected, candidate reduction additions range from
+  32,343 (direct-leaf) to 182,712 (raw-state), with 100–105 mean divisions.
+- These are candidate operation counts, not accepted FLOPs or runtime results.
+  `np.std` internals, summation implementation/fingerprint, effective-rank
+  branch intervals, LAPACK, scalar/elementwise work, and the rest of the graph
+  remain unresolved or excluded. No data, roots, profile, inference, score,
+  outcome, or training ran; the ≤5% compute gate remains **untested and
+  unpassed**.
+
 ## Latest continuation delta (2026-10-07; loss-residual/square subcounter)
 
 - Added `tools/v212_model_loss_residual_accounting.py`, a mask-parameterized

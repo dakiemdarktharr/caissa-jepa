@@ -48,6 +48,7 @@ here.
 | Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
 | Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, the square/subtract/upstream-gradient multiply at each explicit `1-z**2` derivative, and separately the value-loss delta scaling before the derivative multiply | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. The upstream array scales are separate to prevent double-counting; scalar coefficient construction and other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain outside this subcounter |
 | Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and the repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. It reports residual subtractions and square elements separately; treating each square as one multiply remains an unaccepted candidate convention. Reductions, scalar weighting, gradients, and other objective work are excluded |
+| Objective and diagnostic reductions | `mean`/`sum` input/output shapes, repeated softmax denominator sums, per-horizon skips, bias-gradient reductions, and per-parameter gradient-norm reductions | `tools/v212_model_reduction_shape_accounting.py` emits candidate ordinary reduction additions (`inputs - outputs`) and mean divisions (`outputs`) from masks; effective-rank activity and selected count are explicit. It leaves `np.std` internals opaque and does not freeze the NumPy summation implementation. These counts need independent review before D03 use |
 
 ## Required branch accounting
 
@@ -106,13 +107,14 @@ here.
   not the locked research runtime. No runtime fingerprint, BLAS configuration,
   host identity, counter version, or profile result is inferred from it.
 
-Next, resolve eigensolver coverage and per-call versus one-time preflight
-accounting in a reviewed counter specification. Then implement and validate a
-counter against the frozen objective and optimizer operation traces. A
-synthetic instrumentation check can establish coverage only; data/preflight
-authorization, all six reviewed graphs, complete branch bounds, and the
-separate pre-fit gates remain required before a D03 profile. No gate opens from
-this audit.
+Next, obtain independent disposition of the square-as-multiply convention and
+candidate ordinary-reduction counts; pin or bound `np.std` and per-call versus
+one-time preflight accounting; and resolve the linked eigensolver path. Then
+implement and validate a counter against the frozen objective and optimizer
+operation traces. A synthetic instrumentation check can establish coverage
+only; data/preflight authorization, all six reviewed graphs, complete branch
+bounds, and the separate pre-fit gates remain required before a D03 profile.
+No gate opens from this audit.
 
 ## Optimizer-only analytical accounting follow-up (2026-10-07)
 
@@ -214,6 +216,25 @@ regularizer/effective-rank work, LAPACK, and remaining elementwise arithmetic
 are still excluded. The focused model/activation/matmul/residual suite passes
 20/20, with compile and whitespace checks passing. No graph, profile, or data
 was executed or read.
+
+### Objective reduction-shape inventory (2026-10-07)
+
+`tools/v212_model_reduction_shape_accounting.py` inventories NumPy `mean` and
+`sum` calls in the objective and its diagnostics. It includes the two separate
+softmax row-denominator reductions, mask-dependent outcome/latent/raw loss
+reductions, bias-gradient sums, and one gradient-norm reduction per parameter
+tensor. The effective-rank entropy reduction receives explicit activity and
+selected-spectrum-size inputs so its data-dependent range remains visible.
+
+The tool provisionally counts an ordinary reduction of `I` input elements to
+`O` output elements as `I-O` additions and a mean as `O` divisions. For fully
+valid illustrative masks with 32 selected spectrum entries, these candidate
+addition counts range from 32,343 (direct-leaf) to 182,712 (raw-state), and
+mean divisions from 100 to 105. These are not accepted FLOPs: summation tree,
+runtime implementation, and `np.std` internal operations are not frozen, and
+eigensolver/LAPACK plus non-reduction arithmetic remain outside. Five
+synthetic/source tests pass; the combined five-module regression group passes
+25/25, with compile and whitespace checks passing. No model batch or data ran.
 
 ## Primary implementation references checked
 

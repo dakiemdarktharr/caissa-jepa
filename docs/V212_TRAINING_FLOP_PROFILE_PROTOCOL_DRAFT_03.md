@@ -123,6 +123,13 @@ bias additions, `tanh` element counts, and explicit `tanh`-derivative
 arithmetic by horizon mask. It is another analytical subcounter only; other
 elementwise/reduction work, `tanh` cost, and eigensolver coverage remain open.
 
+`tools/v212_model_loss_residual_accounting.py` reports residual subtraction
+and square-element shapes. `tools/v212_model_reduction_shape_accounting.py`
+reports candidate addition/division cardinalities for ordinary means and sums
+and makes mask/active-set branches explicit. Neither is independently accepted
+for D03 counting; the `x ** 2` conversion, `np.std` internals, reduction
+implementation/summation behavior, and linked-LAPACK path remain open.
+
 ## 3. Non-fitting execution and branch-bound contract
 
 Protocol approval alone does not authorize data or label access. A future
