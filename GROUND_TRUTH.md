@@ -3962,3 +3962,9 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
 
 - Added `tools/v212_dsyevd_helper_source_bound.py` for the reference DSYEVD `DLAMCH('S')`, `DLAMCH('P')`, and `DLANSY('M')` setup calls. Under IEEE binary64 assumptions, DLAMCH contributes three multiplications and one division; DLANSY scans 528 triangle entries and contributes zero add/subtract/multiply/divide operations under the declared FLOP convention. The helper subcounter includes explicit assumptions and does not claim runtime identity.
 - This source-site sub-bound is not independently reviewed and does not cover DSYTRD/DSTERF or compiler/runtime dispatch. Focused standard-library tests, `compileall`, and whitespace checks pass. No eigensolver, model, profile, inference, or training ran; no gate advanced.
+
+### Latest continuation delta (2026-10-07; DLARFG/DLAPY2 helper sub-bound)
+
+- Added `tools/v212_dlarfg_dlapy2_helper_bound.py` to account for source-visible DLAPY2 body arithmetic and the DLAMCH calls made by reference DLARFG/DLAPY2 under explicit IEEE binary64 assumptions. For the 30 possible N=32 nontrivial reflectors, the maximum two DLAPY2 calls each yield 330 additional add/subtract/multiply/divide operations, 60 scalar square-power sites, and 60 square-root calls.
+- The helper subtotal adds to the prior 58,910 DSYTD2/DLARFG-direct/DSCAL subtotal only as an explicitly conditional candidate, yielding 59,240 arithmetic operations before DNRM2. Counting each scalar square as a multiplication gives sensitivity 59,300. DNRM2, blocked-path/runtime dispatch, and independent review remain open; this does not close the eigensolver counter or authorize a profile.
+- Focused deterministic validation and source checks pass. No eigensolver, model, data, profile, inference, or training ran; no gate advanced.

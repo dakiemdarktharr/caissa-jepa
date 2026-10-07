@@ -3165,3 +3165,14 @@ with absolute-value/comparison work and no add/subtract/multiply/divide FLOPs.
 This is an unreviewed partial subcounter and does not attest the loaded
 runtime. It does not cover DSYTRD/DSTERF or clear the eigensolver/full-counter
 gate.
+
+### 2026-10-07 DLARFG/DLAPY2 conditional helper accounting
+
+Added a source-only conditional bound for the reference DLARFG/DLAPY2 helper
+path. Across at most 30 N=32 nontrivial reflectors and two DLAPY2 calls per
+reflector, the candidate adds 330 add/subtract/multiply/divide operations,
+with 60 scalar square-power sites and 60 square-root calls reported
+separately. This raises the previous 58,910 partial DSYTD2 subtotal to 59,240
+before DNRM2; the scalar-square-as-multiply sensitivity is 59,300. The bound
+assumes IEEE binary64/reference sources, remains unreviewed, and does not
+attest runtime dispatch or complete DSYTRD/eigensolver work. No gate changed.

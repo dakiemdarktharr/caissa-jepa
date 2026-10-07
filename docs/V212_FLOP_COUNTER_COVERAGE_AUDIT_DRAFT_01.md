@@ -250,8 +250,14 @@ DSYTD2's scalar alpha expression `2`, DAXPY `2m`, and DSYR2 at most
 `2m²+4m`; this subtotal is **47,165** operations at N=32. The size-one
 reflector returns with zero TAU and skips the update. The tool also counts
 DLARFG's direct scalar expressions plus reference DSCAL vector multiplications
-under KNT≤20: 11,745 operations, bringing the subtotal to 58,910. This
-DLARFG/DSCAL extension has not received independent review. Source anchors:
+under KNT≤20: 11,745 operations, bringing the subtotal to 58,910 before helper
+internals. A separate conditional helper inventory adds at most 330
+add/subtract/multiply/divide operations from DLARFG's DLAMCH('S'/'E') calls
+and up to two DLAPY2/DLAMCH('O') paths per reflector; it reports 60 scalar
+square-power sites and 60 square-root calls separately. This yields 59,240
+arithmetic operations before the still-unresolved DNRM2 path (59,300 if every
+DLAPY2 scalar square is treated as a multiply). The DLARFG/DSCAL/helper
+extension has not received independent review. Source anchors:
 [OpenBLAS v0.3.31 DSYTD2](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsytd2.f),
 [DLARFG](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dlarfg.f),
 [reference DSYMV](https://www.netlib.org/blas/dsymv.f),
@@ -267,7 +273,8 @@ and [tagged DSYTRD](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-
 This is conditional on those reference sources and does not attest the actual
 NumPy-linked ILAENV/runtime. Reference BLAS expressions are semantic proxies,
 not linked-kernel or compiler-instruction traces. DNRM2, DLAMCH, and DLAPY2
-internals remain excluded from the source subtotal. Separately, static
+internals are now partially counted only for the declared DLARFG path; DNRM2
+remains excluded from the source subtotal. Separately, static
 disassembly of five architecture-specific DNRM2 kernels in one observed Linux
 `scipy-openblas` wheel (SHA-256
 `05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`) produces
@@ -278,7 +285,7 @@ hash, discovers all five `dnrm2_k_*` symbols, and checks 18 `fmul`, 21
 `faddp`, and one `fsqrt` in each symbol's static disassembly with GNU Binutils
 2.47. It does not prove runtime dispatch or dynamic loop execution. The
 candidate is not a portable source/runtime bound and is not folded into the
-58,910 source subtotal. An approved read-only review confirmed the arithmetic
+59,240 conditional source subtotal. An approved read-only review confirmed the arithmetic
 under the stated assumptions. A second read-only code review caught that the
 first audit implementation accepted unexpected kernel symbols; the inventory
 check now fails on missing and unexpected symbols, with regression coverage.
