@@ -2,6 +2,23 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 square-site counter inventory
+
+An approved read-only `gpt-6-luna/high` review accepts the semantic convention
+of one candidate multiplication per element for every fixed-shape array
+`x ** 2`; this is not a claim about NumPy's loaded power kernel. The same review
+accepts ordinary-reduction `I-O` additions and mean `O` divisions only as
+analytical shape-level candidates. Added
+`tools/v212_model_square_flop_accounting.py` to map all 20 current square AST
+sites, including regularization, loss residuals, tanh derivatives and returned
+gradient-norm coordinates. Its fully valid illustrative six-arm counts are
+38,242 / 30,050 / 116,712 / 25,954 / 16,002 / 30,050. Existing activation,
+residual and root-`std` square counts overlap and must not be summed twice.
+The square/reduction/residual/activation focused suite passes 17/17. This is a
+subcounter only; the actual locked NumPy runtime/reduction kernel, linked
+LAPACK path, frozen per-update masks and full branch bounds remain unresolved.
+No profile, data, or model was run and no gate advanced.
+
 ### 2026-10-07 V2.12 replay-receipt-bound schedule preflight
 
 Added a no-update seam that indexes receipts from a whole supplied train

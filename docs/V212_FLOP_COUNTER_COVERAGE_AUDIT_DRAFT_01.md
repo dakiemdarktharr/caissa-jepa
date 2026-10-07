@@ -17,10 +17,12 @@ reviewed, fixed conversion is adopted. Dense matrix multiplication of shapes
 `[m,k] @ [k,n]` contributes `2*m*k*n` FLOPs under this convention. Reduction
 counts must state their summation tree/implementation; do not silently count
 MACs, parameter totals, or per-example averages as the panel estimand. The
-array expressions written as `x ** 2` also need a frozen treatment: either
-count each square as one multiplication under a reviewed semantic rule or
-report the power operation separately. Do not assume all exponentiation is
-equivalent to scalar bias-correction work.
+array expressions written as `x ** 2` need a declared treatment. An approved
+independent review accepts counting each fixed-shape array square as one
+candidate multiplication per element under a consistent semantic source-level
+convention. This does not claim the loaded NumPy power loop executes one
+hardware multiply. Scalar bias-correction powers remain separately reported
+and are not converted.
 
 ## Source-operation inventory
 
@@ -47,8 +49,9 @@ here.
 | Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
 | Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
 | Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, the square/subtract/upstream-gradient multiply at each explicit `1-z**2` derivative, and separately the value-loss delta scaling before the derivative multiply | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. The upstream array scales are separate to prevent double-counting; scalar coefficient construction and other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain outside this subcounter |
-| Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and the repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. It reports residual subtractions and square elements separately; treating each square as one multiply remains an unaccepted candidate convention. Reductions, scalar weighting, gradients, and other objective work are excluded |
+| Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. Its square report is a subset of the independently reviewed unified square-site inventory, not an additive subtotal. Reductions, scalar weighting, gradients, and other objective work are excluded |
 | Objective and diagnostic reductions | `mean`/`sum` input/output shapes, repeated softmax denominator sums, per-horizon skips, bias-gradient reductions, per-parameter gradient-norm reductions, and the root `np.std` path | `tools/v212_model_reduction_shape_accounting.py` emits candidate ordinary reduction additions (`inputs - outputs`) and mean divisions (`outputs`) from masks; effective-rank activity and selected count are explicit. It expands the NumPy 2.4.6 `_std → _var` source path for `z0[64,32]`, axis 0, ddof 0: 2,016 internal-mean additions, 32 mean divisions, 2,048 deviations and squares, 2,016 variance-reduction additions, 32 variance divisions, and 32 square roots. Actual loaded NumPy/kernel identity and summation execution remain unfrozen. These counts need independent review before D03 use |
+| Fixed array-square sites | All source `** 2` array expressions in regularization, supervised losses, activation derivatives, recurrent reverse passes, and gradient norm | `tools/v212_model_square_flop_accounting.py` inventories the 20 AST sites and mask-dependent element counts. Under the reviewed semantic convention each element is one candidate multiply; no loaded NumPy power-kernel claim is made. Scalar bias-correction powers are excluded. Existing activation, residual, and latent-`std` reports overlap this inventory and must not be summed with it |
 
 ## Independent source review follow-up (2026-10-07)
 
@@ -62,6 +65,26 @@ were corrected by one addition per invocation: 58,507 (multi-step JEPA),
 (direct-leaf), and 50,319 (single-horizon). Mean-division totals are unchanged.
 The source regression now guards the built-in `sum` call's implicit default
 start.
+
+The same independent review conditionally accepts one candidate multiplication
+per element for every fixed-shape array `x ** 2` expression as a semantic
+source-level conversion. It does not claim that the loaded NumPy power ufunc
+executes one hardware multiply; scalar optimizer bias-correction powers stay
+separate. A new mask-parameterized subcounter maps all 20 `** 2` AST sites to
+arm- and horizon-dependent element counts, including regularizer and
+gradient-norm squares omitted by the residual/activation subcounters. For
+fully valid illustrative masks, its candidate square-multiply counts are
+38,242 (multi-step JEPA), 30,050 (single-pair), 116,712 (raw-state), 25,954
+(value-only), 16,002 (direct-leaf), and 30,050 (single-horizon). The residual,
+activation, and latent-`std` subcounters overlap these sites; their subtotals
+must not be added to this unified square count.
+
+The reviewer accepts `I-O` additions for ordinary reductions and `O` divisions
+for mean as analytical candidates under the declared binary-reduction and
+divide-by-count conventions. They are not exact counts for an unfrozen loaded
+NumPy reduction kernel. The v03 gradient-norm correction is source-consistent.
+These narrow dispositions establish neither full-counter coverage nor graph
+readiness.
 
 The reviewer found the `np.std(z0, axis=0)` expansion source-consistent for
 the current `z0` shape `(64, 32)`, `float64`, and `ddof=0`: two 64-to-1 sums,
@@ -148,15 +171,15 @@ no gate changed.
   not the locked research runtime. No runtime fingerprint, BLAS configuration,
   host identity, counter version, or profile result is inferred from it.
 
-Next, obtain independent disposition of the square-as-multiply convention and
-candidate ordinary-reduction counts; verify the source-expanded `np.std`
-operation counts against the actual locked NumPy runtime and resolve per-call
-versus one-time preflight accounting and the linked eigensolver path. Then
-implement and validate a counter against the frozen objective and optimizer
-operation traces. A synthetic instrumentation check can establish coverage
+The square-as-multiply semantic convention and candidate ordinary-reduction
+shape convention now have narrow independent dispositions; neither establishes
+exact loaded-kernel counts. Next, verify the source-expanded `np.std` path
+against the locked NumPy runtime, resolve the linked eigensolver and complete
+branch bounds, and implement/validate a counter against the frozen objective
+and optimizer traces. A synthetic instrumentation check can establish coverage
 only; data/preflight authorization, all six reviewed graphs, complete branch
-bounds, and the separate pre-fit gates remain required before a D03 profile.
-No gate opens from this audit.
+bounds, and separate pre-fit gates remain required before a D03 profile. No
+gate opens from this audit.
 
 ## Optimizer-only analytical accounting follow-up (2026-10-07)
 
@@ -250,14 +273,12 @@ malformed masks, and the source sites.
 
 For fully valid illustrative masks, residual-subtraction counts range from
 128 (direct-leaf) to 38,272 (raw-state); square elements range from 128 to
-76,480. If each square is treated as one multiplication, the selected
-residual/square subtotal ranges from 256 to 114,752. That conversion has not
-been independently accepted under D03 and the subtotal is not full objective
-compute. NumPy reduction costs, scalar weighting, gradient-buffer additions,
+76,480. Under the reviewed semantic convention the corresponding residual
+square elements are candidate multiplications, but this subcounter is
+overlapped by the unified square-site inventory and must not be added to it.
+NumPy reduction costs, scalar weighting, gradient-buffer additions,
 regularizer/effective-rank work, LAPACK, and remaining elementwise arithmetic
-are still excluded. The focused model/activation/matmul/residual suite passes
-20/20, with compile and whitespace checks passing. No graph, profile, or data
-was executed or read.
+are still excluded. No graph, profile, or data was executed or read.
 
 ### Objective reduction-shape inventory (2026-10-07)
 
