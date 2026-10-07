@@ -56,13 +56,21 @@ suite checks that a full synthetic 20×87 schedule becomes a detached immutable
 snapshot and rejects direct construction with a forged digest/row tuple. The
 high-level coordination fixture uses a structurally valid synthetic 20×87
 schedule and exercises the real paired-call boundary with six test-double
-models, asserting ordered dispatch and a shared read-only batch. Replay-to-row
-binding, materialization, and mask extraction remain mocked; this is not an
-end-to-end adapter or actual research-data batch. The prior focused subset
-passed 44/44 under Python 3.14.7 with temporary NumPy 2.5.3. After the
-integration fixture change, the episode/trajectory, manifest, scheduled-call,
-adapter, model, and receipt-bound suites pass 46/46 under the locked Python
-3.11.9 / NumPy 2.4.6 environment; `compileall` and `git diff --check` pass.
+models, asserting ordered dispatch and a shared read-only batch. The fixture
+builds one deterministic exact-rule train episode per game, obtains the
+in-memory replay receipt index, replaces 32 synthetic schedule-bank IDs per
+game with 32 audited fixture windows, and calls the real receipt-bound and
+paired-batch boundaries. It exercises actual ordered receipt binding, the
+64-window adapter, mask extraction/validation, schedule digest checking, and
+shared read-only dispatch to six model test doubles. The 20×87 manifest remains
+synthetic; only one update is called, and the models do not evaluate the
+objective. These test-only trajectories are not a research corpus or scored
+outcomes. This is not source-file provenance, a production schedule, a trainer,
+or a training-data audit. The prior focused subset passed 44/44 under Python
+3.14.7 with temporary NumPy 2.5.3. After the integration fixture change, the
+episode/trajectory, manifest, scheduled-call, adapter, model, and receipt-bound
+suites pass 46/46 under the locked Python 3.11.9 / NumPy 2.4.6 environment;
+`compileall` and `git diff --check` pass.
 
 No research corpus, selected schedule, roots, scores/outcomes, profile,
 inference, or training was loaded or run. Before any profile this seam needs

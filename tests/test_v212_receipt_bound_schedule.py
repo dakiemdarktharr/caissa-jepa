@@ -1,23 +1,118 @@
+import random
 import unittest
 from types import SimpleNamespace
-from unittest.mock import patch
 
-import numpy as np
-
-from tests.test_v212_schedule_manifest import _synthetic_manifest
+from tests.test_v212_schedule_manifest import (
+    _refresh_batch_digest,
+    _synthetic_manifest,
+)
 from two_player.games import BoardGame
-from two_player.v212_model import ARMS
+from two_player.v212_model import ARMS, preflight_batch
 from two_player.v212_schedule_manifest import validate_and_freeze_schedule_manifest
 from two_player.v212_receipt_bound_schedule import (
     ReceiptBoundBatchResult,
-    TrainReplayReceiptIndex,
     build_train_replay_receipt_index,
     compute_receipt_bound_panel_batch,
     validate_actual_mask_roster,
     validate_window_receipt_binding,
 )
-from two_player.v212_trajectory_audit import Window
-from two_player.v212_trajectory_audit import audit_trajectories
+from two_player.v212_trajectory_audit import (
+    Window,
+    audit_trajectories,
+    window_payload_sha256,
+)
+from two_player.v212_window_batch import windows_to_model_batch
+
+
+def _terminal_train_episode(game, episode_id, seed, min_plies=32):
+    """Create a seeded legal fixture episode long enough for 32 windows."""
+    for offset in range(512):
+        rng = random.Random(seed + offset)
+        states = [game.initial()]
+        actions = []
+        while game.terminal(states[-1]) is None:
+            legal = game.legal_actions(states[-1])
+            if len(actions) < min_plies:
+                safe = [action for action in legal
+                        if game.terminal(game.transition(states[-1], action)) is None]
+                if not safe:
+                    break
+                action = rng.choice(safe)
+            else:
+                action = rng.choice(legal)
+            actions.append(action)
+            states.append(game.transition(states[-1], action))
+        outcome = game.terminal(states[-1])
+        if len(actions) >= min_plies and outcome is not None:
+            return {
+                "game": game.name,
+                "episode_id": episode_id,
+                "split": "train",
+                "states": tuple(states),
+                "actions": tuple(actions),
+                "outcome": outcome,
+            }
+    raise AssertionError(f"could not construct a {min_plies}-ply {game.name} fixture")
+
+
+def _manifest_with_receipted_fixture_batch(games):
+    episodes = [
+        _terminal_train_episode(games["connect4-gravity-6x7"], "fixture-c4-long", 401),
+        _terminal_train_episode(games["reversi6"], "fixture-reversi-long", 701),
+    ]
+    audited = audit_trajectories(episodes, games)
+    selected = {
+        game_name: [window for window in audited.windows if window.game == game_name][:32]
+        for game_name in games
+    }
+    if any(len(rows) != 32 for rows in selected.values()):
+        raise AssertionError("fixture episodes must yield 32 windows per game")
+    windows = selected["connect4-gravity-6x7"] + selected["reversi6"]
+    receipt_index = build_train_replay_receipt_index(episodes, games)
+    replacement_records = {}
+    for game_name, rows in selected.items():
+        for window in rows:
+            identity = (window.game, window.episode_id, window.start_ply)
+            replacement_records[identity] = {
+                "id": list(identity),
+                "payload_sha256": window_payload_sha256(window, games[game_name]),
+            }
+
+    raw_manifest = _synthetic_manifest()
+    seed = raw_manifest["seeds"][0]
+    first_update = seed["updates"][0]
+    old_records = first_update["window_ids"]
+    replacement_by_old_id = {
+        tuple(old["id"]): replacement_records[tuple(window_id)]
+        for old, window_id in zip(
+            old_records,
+            [(window.game, window.episode_id, window.start_ply) for window in windows],
+        )
+    }
+
+    # Replace the same 64 bank members in each epoch to preserve the frozen
+    # per-game 928-window roster and cross-epoch identity constraints.
+    for update in seed["updates"]:
+        changed = False
+        for index, record in enumerate(update["window_ids"]):
+            replacement = replacement_by_old_id.get(tuple(record["id"]))
+            if replacement is not None:
+                update["window_ids"][index] = dict(replacement)
+                changed = True
+        if changed:
+            _refresh_batch_digest(seed, update)
+
+    first_update = seed["updates"][0]
+    batch = windows_to_model_batch(windows, games)
+    actual_masks = {
+        str(horizon): {field: int(value) for field, value in batch_masks.items()}
+        for horizon, batch_masks in preflight_batch(batch)["counts"].items()
+    }
+    first_update["mask_counts_by_arm"] = {
+        arm: actual_masks for arm in ARMS
+    }
+    _refresh_batch_digest(seed, first_update)
+    return raw_manifest, receipt_index, windows, games, actual_masks
 
 
 def _mask_counts(h4=32):
@@ -130,28 +225,17 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             "reversi6": BoardGame(
                 "reversi6", 6, 6, k=0, reversi=True),
         }
-        receipt_index = TrainReplayReceiptIndex({}, {}, 0, 0)
-        manifest = validate_and_freeze_schedule_manifest(_synthetic_manifest())
+        raw_manifest, receipt_index, windows, games, actual_masks = (
+            _manifest_with_receipted_fixture_batch(games)
+        )
+        manifest = validate_and_freeze_schedule_manifest(raw_manifest)
         update = manifest.seeds[0]["updates"][0]
         model_seed = manifest.seeds[0]["model_seed"]
-        records = update["window_ids"]
-        windows = [
-            Window(
-                game=record["id"][0], episode_id=record["id"][1],
-                split="train", episode_outcome=0, start_ply=record["id"][2],
-                states=(), actions=(), valid_targets=(), terminal_targets=(),
-            )
-            for record in records
-        ]
-        digest_by_id = {
-            tuple(record["id"]): record["payload_sha256"] for record in records
-        }
-        batch = {"fixture": np.zeros(1, dtype=np.float64)}
         seen_batches = []
 
         def fake_loss_grad(arm):
             def run(model_batch):
-                self.assertFalse(model_batch["fixture"].flags.writeable)
+                self.assertFalse(model_batch["x"].flags.writeable)
                 seen_batches.append((arm, model_batch))
                 return {"arm": arm}, {}
             return run
@@ -164,32 +248,26 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             for arm in ARMS
         }
 
-        with (
-            patch("two_player.v212_receipt_bound_schedule.validate_window_receipt_binding",
-                  return_value=["b" * 64] * 64),
-            patch("two_player.v212_receipt_bound_schedule._observed_mask_counts",
-                  return_value=_mask_counts()),
-            patch("two_player.v212_scheduled_batch.windows_to_model_batch",
-                  return_value=batch),
-            patch("two_player.v212_scheduled_batch.window_payload_sha256",
-                  side_effect=lambda window, game: digest_by_id[
-                      (window.game, window.episode_id, window.start_ply)]),
-        ):
-            result = compute_receipt_bound_panel_batch(
-                manifest, receipt_index, windows, games, models,
-                seed_ordinal=0, update_index=1,
-            )
+        result = compute_receipt_bound_panel_batch(
+            manifest, receipt_index, windows, games, models,
+            seed_ordinal=0, update_index=1,
+        )
         self.assertIsInstance(result, ReceiptBoundBatchResult)
         self.assertEqual(result.schedule_sha256, manifest.schedule_sha256)
         self.assertEqual(result.scheduled.batch_payload_sha256,
                          update["batch_payload_sha256"])
+        self.assertEqual(update["mask_counts_by_arm"][ARMS[0]], actual_masks)
         self.assertEqual(set(result.scheduled.by_arm), set(ARMS))
         self.assertEqual([arm for arm, _ in seen_batches], list(ARMS))
         self.assertTrue(all(model_batch is seen_batches[0][1]
                             for _, model_batch in seen_batches))
         self.assertEqual(
             result.ordered_episode_receipt_sha256,
-            ("b" * 64,),
+            tuple(dict.fromkeys(
+                receipt_index.window_records[(window.game, window.episode_id,
+                                              window.start_ply)]
+                ["episode_receipt_sha256"] for window in windows
+            )),
         )
 
 

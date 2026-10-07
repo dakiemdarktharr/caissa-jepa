@@ -17,16 +17,18 @@ graph-freeze, and ≤5% parity gates remain closed / untested and unpassed.
 
 ### 2026-10-07 receipt-bound paired-call integration fixture
 
-The high-level synthetic receipt-bound schedule test now exercises the real
-paired-call boundary with six model test doubles, verifying ordered dispatch
-and one shared read-only batch. Replay-to-row binding, materialization, and
-mask extraction remain mocked; this does not validate actual adapter/replay
-content or research data. The receipt-bound suite passes 5/5, and the combined
-episode/trajectory, manifest, scheduled-call, adapter, model, and
-receipt-bound suites pass 46/46 under Python 3.11.9 / NumPy 2.4.6. It narrows
-a harness wiring gap without opening any gate: there is still no exclusive
-trainer or production corpus/schedule, actual mask/replay proof, full
-counter/runtime binding, graph freeze, or ≤5% parity result.
+The high-level synthetic test now constructs one exact-rule train fixture
+episode per game, binds the actual in-memory replay receipts, substitutes 32
+audited windows per game into a synthetic schedule bank, materializes the real
+64-window batch, validates its masks, and dispatches through the real paired
+boundary to six model test doubles. It verifies ordered binding, digest and
+shared read-only input; it does not run the objective. Only one update of the
+synthetic 20×87 manifest is called. The receipt-bound suite passes 5/5; the
+combined episode/trajectory, manifest, scheduled-call, adapter, model, and
+receipt-bound suites pass 46/46 under Python 3.11.9 / NumPy 2.4.6. No
+production corpus/schedule, source-file provenance, exclusive trainer, or
+training exists; full counter/runtime binding, graph freeze, and ≤5% parity
+remain closed.
 
 ### 2026-10-07 approved read-only protocol reviews
 
