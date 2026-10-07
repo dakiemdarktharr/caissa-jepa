@@ -70,7 +70,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
             "calls": calls,
             "input_elements_per_call": inputs,
             "output_elements_per_call": outputs,
-            "candidate_pairwise_additions": max(inputs - outputs, 0) * calls,
+            "candidate_additions": max(inputs - outputs, 0) * calls,
             "candidate_mean_divisions": outputs * calls if kind == "mean" else 0,
         })
 
@@ -118,7 +118,9 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
         "calls": 1,
         "input_elements_per_call": tensor_count,
         "output_elements_per_call": 1,
-        "candidate_pairwise_additions": max(tensor_count - 1, 0),
+        # Python's sum(iterable) initializes its accumulator at integer zero,
+        # then adds every yielded scalar, including the first norm term.
+        "candidate_additions": tensor_count,
         "candidate_mean_divisions": 0,
     })
 
@@ -169,19 +171,20 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
 
     add("backward.root_encoder_bias_gradient_sum", "sum",
         (BATCH, LATENT), axis=0)
-    candidate_additions = sum(r["candidate_pairwise_additions"] for r in records)
+    candidate_additions = sum(r["candidate_additions"] for r in records)
     candidate_divisions = sum(r["candidate_mean_divisions"] for r in records)
     std_candidate_subtractions = std_elements
     std_candidate_square_multiplications = std_elements
     std_candidate_variance_divisions = LATENT
     std_sqrt_transcendentals = LATENT
     return {
-        "schema": "caissa.v212.model-reduction-shapes.v02",
+        "schema": "caissa.v212.model-reduction-shapes.v03",
         "scope": "shape inventory of source NumPy mean/sum calls in one 64-window objective invocation",
         "arm": arm,
         "horizon_valid_rows": rows,
+        "gradient_tensor_count": tensor_count,
         "reduction_sites": records,
-        "candidate_pairwise_additions": candidate_additions,
+        "candidate_additions": candidate_additions,
         "candidate_mean_divisions": candidate_divisions,
         "latent_std_candidate_operations": {
             "input_shape": [BATCH, LATENT],
@@ -205,6 +208,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
         },
         "counting_assumptions": [
             "For an ordinary reduction, candidate additions are input_elements minus output_elements; the summation tree is not fixed here.",
+            "The Python scalar gradient-norm sum counts one addition per parameter tensor because built-in sum starts at integer zero.",
             "A mean is provisionally modeled as one division per output element after its reduction.",
             "The two softmax denominator sums are separate source calls and are counted separately.",
             "The latent std expansion follows NumPy 2.4.6 _std/_var for float64 shape (64,32), axis 0, ddof 0; each square is provisionally one multiplication and each sqrt is reported separately.",

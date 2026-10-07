@@ -50,6 +50,38 @@ here.
 | Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and the repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. It reports residual subtractions and square elements separately; treating each square as one multiply remains an unaccepted candidate convention. Reductions, scalar weighting, gradients, and other objective work are excluded |
 | Objective and diagnostic reductions | `mean`/`sum` input/output shapes, repeated softmax denominator sums, per-horizon skips, bias-gradient reductions, per-parameter gradient-norm reductions, and the root `np.std` path | `tools/v212_model_reduction_shape_accounting.py` emits candidate ordinary reduction additions (`inputs - outputs`) and mean divisions (`outputs`) from masks; effective-rank activity and selected count are explicit. It expands the NumPy 2.4.6 `_std → _var` source path for `z0[64,32]`, axis 0, ddof 0: 2,016 internal-mean additions, 32 mean divisions, 2,048 deviations and squares, 2,016 variance-reduction additions, 32 variance divisions, and 32 square roots. Actual loaded NumPy/kernel identity and summation execution remain unfrozen. These counts need independent review before D03 use |
 
+## Independent source review follow-up (2026-10-07)
+
+An approved read-only `gpt-6-luna/high` review found an undercount in the
+Python scalar gradient-norm reduction. `V212Model.loss_grad` computes
+`sum(np.sum(g ** 2) for g in grad.values())`; built-in `sum` starts from zero
+and adds each yielded tensor norm, so `k` gradient tensors require `k` scalar
+additions, not `k-1`. The inventory and six-arm full-valid illustrative totals
+were corrected by one addition per invocation: 58,507 (multi-step JEPA),
+50,319 (single-pair JEPA), 186,745 (raw-state), 46,225 (value-only), 36,376
+(direct-leaf), and 50,319 (single-horizon). Mean-division totals are unchanged.
+The source regression now guards the built-in `sum` call's implicit default
+start.
+
+The reviewer found the `np.std(z0, axis=0)` expansion source-consistent for
+the current `z0` shape `(64, 32)`, `float64`, and `ddof=0`: two 64-to-1 sums,
+elementwise deviation/square, variance division and square root. NumPy's
+tagged v2.4.6 Python source calls `_std` → `_var`, with two `umr_sum` calls,
+`subtract`, `square`, `true_divide`, then `sqrt`. The tagged C sources contain
+the floating-add reduction implementation and pairwise-sum helper. This
+supports the operation-site interpretation, not the loaded runtime's exact
+dispatch/build or counter acceptance. A local NumPy 2.4.6 wheel/runtime was
+unavailable: the attempted PyPI download failed because `pypi.org` DNS could
+not resolve. The locked Python 3.11.9 / NumPy 2.4.6 runtime, reduction kernel,
+and linked LAPACK therefore remain unverified.
+
+The per-update model `preflight_batch` call remains separate from D03's
+one-time dataset-level exact-rule preflight. Count its repeated integer/action
+validation scan per model call; report the dataset-level preflight separately.
+This interpretation clarifies the audit but does not amend the accepted
+profile protocol. No model or research data was run, no profile was made, and
+no gate changed.
+
 ## Required branch accounting
 
 1. **Mask-dependent graph work.** The frozen per-seed/update mask schedule must
@@ -241,7 +273,7 @@ The tool provisionally counts an ordinary reduction of `I` input elements to
 `O` output elements as `I-O` additions and a mean as `O` divisions. For fully
 valid illustrative masks with 32 selected spectrum entries, these candidate
 addition counts now include 4,032 candidate additions from the internal-mean
-and variance reductions, ranging from 36,375 (direct-leaf) to 186,744
+and variance reductions, ranging from 36,376 (direct-leaf) to 186,745
 (raw-state); candidate mean divisions range from 132 to 137. The `std` path
 also records 4,096 candidate deviation/square operations, 32 population-
 variance divisions, and 32 square roots per invocation. These are not accepted
