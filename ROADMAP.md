@@ -151,7 +151,7 @@ tests passed in the earlier inventory; the current focused suite also passes
 activation, matmul, residual, and reduction suite passes 25/25. For a fully
 valid illustrative batch with 32 active spectrum entries, the earlier inventory
 reported additions 32,343–182,712 and mean divisions 100–105 before latent-std
-expansion; current totals are 36,375–186,744 and 132–137.
+expansion; current totals are 36,376–186,745 and 132–137.
 These candidate counts require independent acceptance and do not pin the actual
 loaded reduction kernel. The `std` estimate is source-expanded only, while
 LAPACK and other work remain omitted, so the figures are not total FLOPs or a

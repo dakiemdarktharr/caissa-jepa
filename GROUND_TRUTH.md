@@ -1,5 +1,25 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; reduction-counter source review)
+
+- An approved read-only `gpt-6-luna/high` review found that Python's built-in
+  `sum` in `metrics["gradient_norm"]` starts with scalar zero and performs one
+  scalar addition per gradient tensor. The provisional source counter had
+  counted one fewer. Corrected the diagnostic counter and its AST regression;
+  fully valid illustrative six-arm candidate totals are now 36,376–186,745
+  additions and 132–137 mean divisions.
+- Official NumPy 2.4.6 source supports the `std` call expansion used in the
+  inventory, conditional on the assumed float64 `(64, 32)` input, but the
+  pinned runtime, actual reduction kernel/build dispatch, linked LAPACK, and
+  full branch bounds remain unverified. Local retrieval of the locked NumPy
+  wheel failed because package-index DNS was unavailable.
+- The focused reduction-accounting suite passes 5/5; relevant `compileall`
+  and `git diff --check` pass. This remains a candidate source inventory, not
+  an accepted full FLOP counter or measured parity result.
+  Six-arm graph freeze remains **NO**; ≤5% compute parity remains **untested
+  and unpassed**. No profile, roots, scores/outcomes, simulation, inference,
+  or training was run; no gate advances.
+
 ## Latest continuation delta (2026-10-07; receipt-bound schedule seam)
 
 - Added `two_player/v212_receipt_bound_schedule.py`: build an immutable

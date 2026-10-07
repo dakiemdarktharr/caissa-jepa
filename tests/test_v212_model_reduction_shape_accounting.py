@@ -12,23 +12,30 @@ from tools.v212_model_reduction_shape_accounting import (
 class ModelReductionShapeAccountingTests(unittest.TestCase):
     def test_full_valid_recurrent_arms_keep_duplicate_softmax_sums(self):
         expected = {
-            "multi-step-jepa": (58_506, 137),
-            "single-pair-jepa": (50_318, 135),
-            "recursive-raw-state": (186_744, 137),
-            "value-only-latent-rollout": (46_224, 134),
-            "direct-leaf-value": (36_375, 132),
-            "single-horizon-jepa": (50_318, 135),
+            "multi-step-jepa": (58_507, 137),
+            "single-pair-jepa": (50_319, 135),
+            "recursive-raw-state": (186_745, 137),
+            "value-only-latent-rollout": (46_225, 134),
+            "direct-leaf-value": (36_376, 132),
+            "single-horizon-jepa": (50_319, 135),
         }
         for arm in ARMS:
             with self.subTest(arm=arm):
                 report = full_valid_batch(arm)
-                self.assertEqual((report["candidate_pairwise_additions"],
+                self.assertEqual((report["candidate_additions"],
                                   report["candidate_mean_divisions"]), expected[arm])
+                norm_sum = next(row for row in report["reduction_sites"]
+                                if row["site"] ==
+                                "diagnostic.gradient_norm_python_scalar_sum")
+                self.assertEqual(norm_sum["candidate_additions"],
+                                 norm_sum["input_elements_per_call"])
+                self.assertEqual(norm_sum["candidate_additions"],
+                                 report["gradient_tensor_count"])
                 sites = report["reduction_sites"]
                 softmax = [row for row in sites if row["site"].startswith(
                     "policy.softmax_denominator_")]
                 self.assertEqual(len(softmax), 2)
-                self.assertEqual([row["candidate_pairwise_additions"]
+                self.assertEqual([row["candidate_additions"]
                                   for row in softmax], [4096, 4096])
                 std = report["latent_std_candidate_operations"]
                 self.assertEqual(std["input_shape"], [64, 32])
@@ -62,10 +69,10 @@ class ModelReductionShapeAccountingTests(unittest.TestCase):
                            effective_rank_nonzero_eigenvalues=3)
         sites = {row["site"]: row for row in report["reduction_sites"]}
         self.assertEqual(sites["outcome.h1.batch_mean"]["calls"], 1)
-        self.assertEqual(sites["outcome.h1.batch_mean"]["candidate_pairwise_additions"], 3)
+        self.assertEqual(sites["outcome.h1.batch_mean"]["candidate_additions"], 3)
         self.assertEqual(sites["latent.h2.batch_mean"]["input_elements_per_call"], 64)
         self.assertEqual(sites["regularizer.effective_rank_entropy_sum"][
-            "candidate_pairwise_additions"], 2)
+            "candidate_additions"], 2)
         self.assertEqual(report["horizon_valid_rows"], {1: 4, 2: 2, 4: 1})
 
     def test_rejects_invalid_masks_and_active_set_sizes(self):
@@ -98,6 +105,22 @@ class ModelReductionShapeAccountingTests(unittest.TestCase):
         self.assertEqual(len(std_calls), 1)
         self.assertEqual([(kw.arg, ast.literal_eval(kw.value))
                           for kw in std_calls[0].keywords], [("axis", 0)])
+
+        gradient_norm = next(node for node in ast.walk(tree)
+                             if isinstance(node, ast.Assign)
+                             and any(isinstance(target, ast.Subscript)
+                                     and isinstance(target.value, ast.Name)
+                                     and target.value.id == "metrics"
+                                     and isinstance(target.slice, ast.Constant)
+                                     and target.slice.value == "gradient_norm"
+                                     for target in node.targets))
+        sums = [node for node in ast.walk(gradient_norm.value)
+                if isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Name)
+                and node.func.id == "sum"]
+        self.assertEqual(len(sums), 1)
+        self.assertEqual(len(sums[0].args), 1)
+        self.assertEqual(sums[0].keywords, [])
 
 
 if __name__ == "__main__":
