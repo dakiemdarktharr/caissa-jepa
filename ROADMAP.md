@@ -10,11 +10,15 @@ aggregate maxima of 32 diagonal and 31 off-diagonal absolute evaluations, and
 up to 62 relational-comparison and 62 DISNAN call sites; its arithmetic FLOP
 sites are zero. The independent call maximum and scan maxima do not occur on
 the same block partition. DLASRT is called once on successful completion with
-32 entries; detailed value-dependent quicksort/insertion comparison counts
-remain unresolved. Focused formula tests and static checks pass. This narrows
-the source-activity inventory but leaves linked-runtime identity, sorting
-work, complete eigensolver coverage, graph freeze, and the ≤5% gate unresolved.
-No eigensolver, profile, inference, or training ran.
+32 entries; detailed value-dependent quicksort/insertion work now has a
+conservative 1,123 D-array comparison ceiling from at most 11 quicksort
+partitions (sizes 32 through 22) plus insertion-sort leaves. Up to 297
+partition `i<j` integer checks are reported separately. Other integer/control
+comparisons and index, swap, and memory work remain open.
+Focused formula tests and static checks pass. This narrows the source-activity
+inventory but leaves linked-runtime identity, complete eigensolver coverage,
+graph freeze, and the ≤5% gate unresolved. No eigensolver, profile, inference,
+or training ran.
 
 The approved read-only raw-state/six-arm review found the adopted recurrence,
 loss, gradients, and separated MAC/matmul scopes consistent; replay, masks,

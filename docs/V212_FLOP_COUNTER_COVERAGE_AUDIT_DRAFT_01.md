@@ -749,9 +749,15 @@ For this norm mode, add/subtract/multiply/divide sites are zero.
 
 On successful DSTERF completion, `DLASRT('I',N,D,INFO)` is called once with
 32 values. Its source uses quicksort and insertion sort for partitions up to
-length 21. This sub-bound records the call/input size but leaves comparison,
-partition, indexing, swap, and memory-operation cardinalities unresolved
-rather than infer them from an unproven worst-case formula. Sources are
+length 21. A source-derived N=32 upper bound is 1,123 D-array value
+comparisons: quicksort partition sizes can follow at most `32,31,...,22`
+because two children of length at least 22 cannot fit in 32 entries; each
+partition charges at most `2*m` array-scan comparisons and three
+median-of-three comparisons. The insertion-sort leaves are disjoint and
+together use no more than `32*31/2 = 496` comparisons. The partition `i<j`
+integer check contributes at most 297 additional checks on that path; other
+integer/control comparisons, indexing, branches, swaps, and memory operations
+remain uncounted. Sources are
 [DSTERF](https://netlib.org/lapack/explore-html/d9/df2/dsterf_8f_source.html),
 [DLANST](https://netlib.org/lapack/explore-html/d0/d90/dlanst_8f_source.html),
 and [DLASRT](https://netlib.org/lapack/explore-html/df/ddf/dlasrt_8f_source.html).

@@ -20,7 +20,18 @@ class DsterfScanSortSourceBoundTests(unittest.TestCase):
         self.assertEqual(counts["successful_path_calls"], 1)
         self.assertEqual(counts["input_elements_per_call"], 32)
         self.assertEqual(counts["insertion_sort_partition_max_length"], 21)
-        self.assertIn("not derived", counts["comparison_and_partition_work"])
+        self.assertEqual(
+            counts["quicksort_partition_sizes_upper_path"],
+            list(range(32, 21, -1)),
+        )
+        self.assertEqual(counts["quicksort_scan_data_comparisons"], 594)
+        self.assertEqual(counts["median_of_three_data_comparisons"], 33)
+        self.assertEqual(
+            counts["quicksort_i_lt_j_integer_comparisons_upper"], 297
+        )
+        self.assertEqual(counts["insertion_sort_data_comparisons_upper"], 496)
+        self.assertEqual(counts["data_comparisons_upper"], 1_123)
+        self.assertIn("N=32 only", counts["comparison_bound_scope"])
 
     def test_parameter_validation_and_gate_remain_closed(self):
         for invalid in (True, 1, 0, -2):

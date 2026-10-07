@@ -9,8 +9,13 @@
   different block partitions and are reported separately. The norm-mode
   source has zero add/subtract/multiply/divide operations.
 - On successful completion, DLASRT is called once with 32 values. Its
-  quicksort/insertion-sort source path is recorded, but value-dependent
-  comparison/partition counts remain unresolved. This sub-bound is unreviewed,
+  quicksort/insertion-sort path has a conservative upper bound of 1,123
+  D-array comparisons: at most 11 quicksort partitions of sizes 32 down to
+  22, with at most `2*m` scan comparisons and three median-of-three
+  comparisons each, plus at most 496 insertion-sort comparisons. The quicksort
+  `i<j` integer check adds at most 297 checks; other integer/control
+  comparisons, indexing, swaps, and memory work remain unresolved.
+  This sub-bound is unreviewed,
   reference-source-only evidence; it does not attest the loaded runtime or
   complete the DSTERF/eigensolver counter. Three focused tests, compile, and
   diff checks pass. No numerical solver or model ran; graph freeze remains

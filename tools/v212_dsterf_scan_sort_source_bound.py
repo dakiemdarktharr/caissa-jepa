@@ -37,10 +37,39 @@ def source_bound(n: int = MATRIX_ORDER) -> dict:
     dlanst_relational_comparison_sites = 2 * (n - 1)
     dlanst_disnan_call_sites = 2 * (n - 1)
 
+    if n == MATRIX_ORDER:
+        # For N=32, DLASRT's 20-gap threshold partitions only subarrays of
+        # length >=22. Since two such children would require at least 44
+        # entries, only one child can remain on the quicksort path at a time.
+        # The two monotone scans use <=2*m D-array comparisons; the i<j test
+        # is an integer comparison and is reported separately. The
+        # median-of-three uses <=3 D-array comparisons. Insertion-sort leaves
+        # are disjoint, so their comparisons are <= choose(32,2).
+        quicksort_partition_sizes = list(range(n, 21, -1))
+        quicksort_partition_scan_comparisons = 2 * sum(
+            quicksort_partition_sizes
+        )
+        median_of_three_comparisons = 3 * len(quicksort_partition_sizes)
+        quicksort_i_lt_j_comparisons = sum(quicksort_partition_sizes)
+        insertion_sort_comparisons = n * (n - 1) // 2
+        dlasrt_data_comparisons = (
+            quicksort_partition_scan_comparisons
+            + median_of_three_comparisons
+            + insertion_sort_comparisons
+        )
+    else:
+        quicksort_partition_sizes = None
+        quicksort_partition_scan_comparisons = None
+        median_of_three_comparisons = None
+        quicksort_i_lt_j_comparisons = None
+        insertion_sort_comparisons = None
+        dlasrt_data_comparisons = None
+
     # On successful DSTERF completion, the source calls DLASRT once on all N
     # diagonal/eigenvalue entries. DLASRT is quicksort with insertion sort for
-    # partitions of length <= 21. We bound the call and input size only; the
-    # value-dependent comparison/partition workload is not assigned a bound.
+    # partitions of length <= 21. A conservative comparison bound is derived
+    # for the fixed N=32 path only; this does not bound integer/control or
+    # memory-operation totals.
     return {
         "schema": "caissa.v212.dsterf-scan-sort-source-bound.v01",
         "source_references": {
@@ -74,12 +103,22 @@ def source_bound(n: int = MATRIX_ORDER) -> dict:
             "input_elements_per_call": n,
             "quicksort_partition_threshold_parameter": 20,
             "insertion_sort_partition_max_length": 21,
-            "comparison_and_partition_work": "not derived; value-dependent path",
+            "quicksort_partition_sizes_upper_path": quicksort_partition_sizes,
+            "quicksort_scan_data_comparisons": quicksort_partition_scan_comparisons,
+            "median_of_three_data_comparisons": median_of_three_comparisons,
+            "quicksort_i_lt_j_integer_comparisons_upper": quicksort_i_lt_j_comparisons,
+            "insertion_sort_data_comparisons_upper": insertion_sort_comparisons,
+            "data_comparisons_upper": dlasrt_data_comparisons,
+            "comparison_bound_scope": (
+                "N=32 only; D-array value comparisons; other integer/control comparisons excluded"
+                if n == MATRIX_ORDER
+                else "not derived for N other than 32"
+            ),
             "add_subtract_multiply_divide_operations": 0,
         },
         "exclusions": [
             "compiler-specific .OR. evaluation and DISNAN implementation cost",
-            "DLASRT comparison, index, branch, swap, and memory-operation totals",
+            "DLASRT integer/control comparisons, indexing, branches, swaps, and memory-operation totals",
             "other DSTERF arithmetic and helpers",
             "actual linked LAPACK identity, dispatch, and runtime behavior",
             "complete eigensolver or six-arm counter coverage",
