@@ -2,6 +2,23 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 replay-receipt-bound schedule preflight
+
+Added a no-update seam that indexes receipts from a whole supplied train
+episode collection and binds a manifest update to ordered replayed window
+payloads, the paired model seed, and actual adapter-derived masks before the
+six-arm call. The receipt index is built once, not by replaying the whole
+collection per update. Five synthetic tests cover the components; the
+high-level coordination fixture mocks the schedule validator, batch
+materializer and paired-call helper, so it does not prove a valid 20×87
+end-to-end run. The seam still allows direct `loss_grad` bypass and currently
+materializes each batch twice. The focused episode/trajectory/schedule/adapter/
+model suite passes 41/41 under Python 3.14.7/temporary NumPy 2.5.3, not the
+locked runtime; compile and whitespace checks pass. No research data or compute
+was used. Next: independent review of the seam, remove or account for duplicate
+materialization, then build a true exclusive trainer boundary only after the
+manifest/replay and compute prerequisites are resolved. No gate advances.
+
 ### 2026-10-07 V2.12 episode replay receipt candidate and six-arm review
 
 Added a strict-schema in-memory receipt builder that exact-rule replays a full

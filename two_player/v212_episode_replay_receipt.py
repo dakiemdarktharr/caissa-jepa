@@ -14,7 +14,6 @@ from typing import Any
 
 from .games import BoardGame
 from .v212_trajectory_audit import (
-    Window,
     _game_identity,
     audit_trajectories,
     window_payload_sha256,
@@ -47,6 +46,13 @@ def build_episode_replay_receipt(
         raise ValueError("episode/game identity mismatch")
 
     audited = audit_trajectories([dict(episode)], {game.name: game})
+    return _build_receipt_from_audited_windows(episode, game, audited.windows)
+
+
+def _build_receipt_from_audited_windows(
+    episode: Mapping[str, Any], game: BoardGame, windows: tuple,
+) -> dict[str, Any]:
+    """Assemble a receipt from windows returned by the exact-rule auditor."""
     states = tuple(episode["states"])
     actions = tuple(episode["actions"])
     episode_payload = {
@@ -67,7 +73,7 @@ def build_episode_replay_receipt(
             "id": [window.game, window.episode_id, window.start_ply],
             "payload_sha256": window_payload_sha256(window, game),
         }
-        for window in audited.windows
+        for window in windows
     ]
     body = {
         "schema": RECEIPT_SCHEMA,
