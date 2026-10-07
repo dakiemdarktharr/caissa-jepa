@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 partial-ledger parity sensitivity
+
+`tools/v212_parity_shared_work_sensitivity.py` applies D03's 5% range rule to
+the all-valid source-covered intervals under the explicit assumption that all
+omitted FP work is identical across arms and the same per-update fixture
+repeats. The raw-state upper and direct-leaf lower endpoints imply a
+hypothetical common omitted term of 446,264,889 FLOPs/invocation, or
+776,500,906,860 over 1,740 updates, to dilute the partial subtotal endpoints
+to 5%. This is a sensitivity calculation; omitted work need not be common,
+and actual masks/runtime/LAPACK remain unmeasured. Three tests pass; full
+counter, parity, profile and fit eligibility remain false. No gate changed.
+
 ### 2026-10-07 source-operation ownership crosswalk
 
 Added a source-hash-bound candidate crosswalk covering all 964 AST sites in
@@ -17,7 +29,7 @@ does not validate expression context, branch work, component overlap, runtime
 behavior, or complete accounting. Read-only review caught and corrected the
 `_finite_array` finite-check mapping and the input-dependent `np.asarray`
 conversion classification; the report digest does not attest implementation.
-The 77-test accounting/source suite passes under Python 3.14.7 with NumPy
+The 80-test accounting/source suite passes under Python 3.14.7 with NumPy
 2.5.3; the eight standard-library inventory/crosswalk tests also pass under
 Python 3.11.17. Targeted compile and whitespace checks pass. The
 crosswalk explicitly denies full-counter, graph-freeze, and parity eligibility.

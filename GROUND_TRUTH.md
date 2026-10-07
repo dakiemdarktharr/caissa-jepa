@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; partial-ledger parity sensitivity)
+
+- Added `tools/v212_parity_shared_work_sensitivity.py` to apply the D03
+  `(max F - min F) / min F ≤ 0.05` rule to the current all-valid source-covered
+  intervals under a specific dilution scenario: omitted floating-point work is
+  exactly equal across all six arms and the same per-update fixture repeats
+  across the 20×87 schedule. The widest existing partial endpoints are the
+  recursive raw-state upper value 27,130,740 and direct-leaf lower value
+  4,588,091 FLOPs/invocation. That hypothetical equal omitted term would need
+  to be at least 446,264,889 FLOPs per invocation (776,500,906,860 summed
+  across 1,740 updates) to dilute those endpoints to 5%.
+- This is a sensitivity result only. It does not show omitted work is equal,
+  estimate actual LAPACK/runtime cost, use replay-derived masks, or decide
+  parity. The tool explicitly withholds full-counter, parity, profile, and fit
+  eligibility. Three focused tests pass; combined validation is recorded
+  below. No data, model, profile, root, inference, score/outcome, simulation,
+  service, or training ran. The ≤5% six-arm gate remains **untested and
+  unpassed**.
+
 ## Latest continuation delta (2026-10-07; source-operation ownership crosswalk)
 
 - Added `tools/v212_source_counter_reconciliation.py`, a deterministic,
@@ -29,7 +48,7 @@
   because dtype-conversion/copy behavior depends on its input. The report
   digest binds its serialization and recorded source hashes; it does not
   attest semantic correctness of the classifier or subcounters. It expressly
-  withholds full-counter, parity, and graph-freeze eligibility. The 77-test
+  withholds full-counter, parity, and graph-freeze eligibility. The 80-test
   accounting/source suite passes under Python 3.14.7 with NumPy 2.5.3, and
   eight standard-library inventory/crosswalk tests pass under Python 3.11.17.
   Targeted `compileall` and `git diff --check`

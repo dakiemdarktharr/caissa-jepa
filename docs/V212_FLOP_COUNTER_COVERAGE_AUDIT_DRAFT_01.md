@@ -563,3 +563,22 @@ The report sets `full_counter`, `parity_eligible`, and
 execution trace, profile, or protocol amendment. No model/data operation or
 gate transition followed from it; the ≤5% six-arm gate remains **untested and
 unpassed**.
+
+## Six-arm common-work dilution sensitivity (2026-10-07)
+
+`tools/v212_parity_shared_work_sensitivity.py` applies the preregistered D03
+range statistic to the owner-ledger intervals for the illustrative
+all-64-valid mask fixture. Under the specific assumption that omitted FP work
+adds the same amount `C` to every arm and every scheduled update, the most
+conservative existing endpoints are `27,130,740 + C` for recursive raw-state
+and `4,588,091 + C` for direct-leaf. Requiring their ratio to be at most
+`1.05` gives `C ≥ 20×27,130,740 - 21×4,588,091 = 446,264,889` FLOPs per
+invocation. If that identical term repeated across all 1,740 scheduled
+updates, its sum would be 776,500,906,860 FLOPs.
+
+This calculation only quantifies a dilution scenario. It does not establish
+that omitted work exists or is equal across arms; arm-specific missing work,
+actual schedule masks, native reduction behavior, and LAPACK can change the
+result. It does not establish pass/fail or authorize profile/fit. Three
+synthetic algebra/contract tests pass; no model/data/profile/runtime operation
+was performed, and no gate changed.
