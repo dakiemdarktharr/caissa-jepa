@@ -137,15 +137,19 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             for arm in ARMS
         }
         scheduled = SimpleNamespace(batch_payload_sha256="d" * 64)
+
+        def run_scheduled(*args, pre_model_call=None, **kwargs):
+            self.assertTrue(callable(pre_model_call))
+            pre_model_call({})
+            return scheduled
+
         with (
             patch("two_player.v212_receipt_bound_schedule.validate_schedule_manifest",
                   return_value={"schedule_sha256": "a" * 64}),
-            patch("two_player.v212_receipt_bound_schedule.windows_to_model_batch",
-                  return_value={}),
             patch("two_player.v212_receipt_bound_schedule._observed_mask_counts",
                   return_value=_mask_counts()),
             patch("two_player.v212_receipt_bound_schedule.compute_scheduled_panel_batch",
-                  return_value=scheduled),
+                  side_effect=run_scheduled),
         ):
             result = compute_receipt_bound_panel_batch(
                 manifest, receipt_index, [window] * 64, games, models,

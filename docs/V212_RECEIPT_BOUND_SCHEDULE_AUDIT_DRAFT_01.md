@@ -32,20 +32,24 @@ episode-receipt digests used by that update.
 This is a callable preflight seam, not an exclusive trainer. `loss_grad` and
 the existing no-update helper remain directly callable; a future trainer must
 route every scheduled update through this boundary and prevent bypass. The
-helper currently materializes the batch once to inspect actual masks and the
-existing call helper materializes it again before arm calls. That repeated
-adapter work is visible implementation overhead, not measured runtime; any
-profile must count it or a separately reviewed refactor must remove it.
+paired-call helper exposes a pre-model callback so this seam checks masks on
+the same read-only batch that reaches all six arms. A callback error stops
+before any model call. This removes duplicate adapter materialization, while
+the callback runs one extra structural `preflight_batch`; each arm's own
+`loss_grad` also repeats preflight. Those paths must be represented in any
+future counter/profile.
 
 ## Validation and limits
 
 Five new synthetic tests cover full-train receipt indexing, ordered payload
 binding, mask-roster rejection, train-only input, and high-level call
-coordination. The high-level coordination fixture mocks the whole-schedule
-validator, materializer and paired-call helper; it deliberately does not
-constitute a valid 20×87 replayed schedule or an end-to-end model batch. With
-the episode/trajectory, manifest, scheduled-call, adapter and model suites,
-focused validation passes 41/41 under Python 3.14.7 with temporary NumPy
+coordination. The paired-call suite also tests that the callback receives the
+shared read-only batch and blocks all arm calls when it rejects. The high-level
+coordination fixture mocks the whole-schedule validator, materialized batch
+and paired-call helper; it deliberately does not constitute a valid 20×87
+replayed schedule or an end-to-end model batch. With the episode/trajectory,
+manifest, scheduled-call, adapter and model suites, focused validation passes
+42/42 under Python 3.14.7 with temporary NumPy
 2.5.3, not the locked Python 3.11.9 / NumPy 2.4.6 runtime. `compileall` and
 `git diff --check` pass.
 

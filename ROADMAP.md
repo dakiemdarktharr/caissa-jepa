@@ -11,13 +11,16 @@ six-arm call. The receipt index is built once, not by replaying the whole
 collection per update. Five synthetic tests cover the components; the
 high-level coordination fixture mocks the schedule validator, batch
 materializer and paired-call helper, so it does not prove a valid 20×87
-end-to-end run. The seam still allows direct `loss_grad` bypass and currently
-materializes each batch twice. The focused episode/trajectory/schedule/adapter/
-model suite passes 41/41 under Python 3.14.7/temporary NumPy 2.5.3, not the
-locked runtime; compile and whitespace checks pass. No research data or compute
-was used. Next: independent review of the seam, remove or account for duplicate
-materialization, then build a true exclusive trainer boundary only after the
-manifest/replay and compute prerequisites are resolved. No gate advances.
+end-to-end run. A pre-model callback now checks masks on the one read-only
+materialized batch and rejects before any arm call; a new scheduled-call test
+checks that failure behavior. This removes duplicate adapter materialization,
+while the callback adds one preflight and each arm still repeats its own.
+The seam still allows direct `loss_grad` bypass. The focused episode/trajectory/
+schedule/adapter/model suite passes 42/42 under Python 3.14.7/temporary NumPy
+2.5.3, not the locked runtime; compile and whitespace checks pass. No research
+data or compute was used. Next: independent review of the seam, then build a
+true exclusive trainer boundary only after manifest/replay and compute
+prerequisites are resolved. No gate advances.
 
 ### 2026-10-07 V2.12 episode replay receipt candidate and six-arm review
 

@@ -7,7 +7,7 @@ through this boundary and bind its returned identity to the frozen manifest.
 """
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 import hashlib
 import json
@@ -63,6 +63,7 @@ def compute_scheduled_panel_batch(
     *,
     seed_ordinal: int,
     update_index: int,
+    pre_model_call: Callable[[Mapping[str, np.ndarray]], None] | None = None,
 ) -> ScheduledBatchResult:
     """Run one same-window, six-arm loss/gradient call without updating state.
 
@@ -73,6 +74,11 @@ def compute_scheduled_panel_batch(
     establish that the windows came from an accepted manifest or episode
     replay; a future caller must bind the returned ordered IDs/digest to those
     receipts and must not call ``loss_grad`` directly for scheduled work.
+
+    An optional ``pre_model_call`` observer receives the one materialized
+    read-only batch after adapter validation and before any arm executes. A
+    receipt/mask gate can use it without rematerializing the batch; an
+    exception prevents every model call.
     """
     if type(seed_ordinal) is not int or not 0 <= seed_ordinal < PAIRED_SEEDS:
         raise ValueError("seed ordinal must be in the frozen 0..19 range")
@@ -123,6 +129,8 @@ def compute_scheduled_panel_batch(
     for value in batch_arrays.values():
         value.setflags(write=False)
     batch = MappingProxyType(batch_arrays)
+    if pre_model_call is not None:
+        pre_model_call(batch)
 
     ordered_ids = tuple(window_ids)
     canonical = json.dumps(ordered_ids, separators=(",", ":"), ensure_ascii=False)
