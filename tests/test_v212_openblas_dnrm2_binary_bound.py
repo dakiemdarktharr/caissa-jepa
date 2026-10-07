@@ -2,10 +2,49 @@ from __future__ import annotations
 
 import unittest
 
-from tools.v212_openblas_dnrm2_binary_bound import kernel_operations, source_bound
+from tools.v212_openblas_dnrm2_binary_bound import (
+    _instruction_mnemonics,
+    _discover_kernel_symbols,
+    _require_exact_kernel_inventory,
+    _x87_math_counts,
+    kernel_operations,
+    source_bound,
+)
 
 
 class OpenBlasDnrm2BinaryBoundTests(unittest.TestCase):
+    def test_objdump_parser_counts_instruction_lines_only(self):
+        disassembly = """\
+  1000: d8 c8                      fmul   %st(0),%st
+  1002: de c1                      faddp  %st,%st(1)
+  1004: d9 fa                      fsqrt
+  1006: <dnrm2_k_HASWELL+0x6>:
+"""
+        mnemonics = _instruction_mnemonics(disassembly)
+        self.assertEqual(mnemonics, ["fmul", "faddp", "fsqrt"])
+        self.assertEqual(
+            _x87_math_counts(mnemonics), {"faddp": 1, "fmul": 1, "fsqrt": 1}
+        )
+
+    def test_nm_inventory_requires_exact_defined_kernel_set(self):
+        nm_output = """\
+0000000000acbc00 T dnrm2_k_HASWELL
+0000000000822e00 T dnrm2_k_NEHALEM
+000000000068a600 T dnrm2_k_PRESCOTT
+0000000000973400 T dnrm2_k_SANDYBRIDGE
+0000000000c70a00 T dnrm2_k_SKYLAKEX
+0000000000ffffff T unrelated_symbol
+"""
+        discovered = _discover_kernel_symbols(nm_output)
+        self.assertEqual(len(discovered), 5)
+        self.assertEqual(_require_exact_kernel_inventory(discovered), discovered)
+        with self.assertRaisesRegex(ValueError, "unexpected=.*dnrm2_k_EXTRA"):
+            _require_exact_kernel_inventory([*discovered, "dnrm2_k_EXTRA"])
+        with self.assertRaisesRegex(ValueError, "missing=.*dnrm2_k_HASWELL"):
+            _require_exact_kernel_inventory(
+                [symbol for symbol in discovered if symbol != "dnrm2_k_HASWELL"]
+            )
+
     def test_short_vector_fastpath_bypasses_kernel(self):
         self.assertEqual(
             kernel_operations(1),

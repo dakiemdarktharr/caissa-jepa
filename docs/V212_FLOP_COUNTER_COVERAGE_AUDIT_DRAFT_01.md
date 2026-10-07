@@ -273,15 +273,17 @@ disassembly of five architecture-specific DNRM2 kernels in one observed Linux
 `05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`) produces
 a conditional N=32 candidate of 2,030 add/multiply FLOPs and 58 square-root
 calls for at most two DNRM2 calls per DLARFG reflector, plus two length-one
-wrapper fast paths. This candidate is recorded in
-`tools/v212_openblas_dnrm2_binary_bound.py`; the wrapper's indirect dispatch
-means the runtime-selected kernel and execution bytes are not attested. It is
-not a portable source/runtime bound and is not folded into the 58,910 source
-subtotal. An approved read-only review confirmed the arithmetic under the
-stated assumptions but did not inspect the disassembly or verify the binary
-hash; those premises and runtime dispatch remain unresolved. The subtotal plus
-candidate do not close eigensolver coverage, establish full-counter coverage,
-or open profile/training/parity gates.
+wrapper fast paths. The tool's `--audit-binary` mode verifies the exact wheel
+hash, discovers all five `dnrm2_k_*` symbols, and checks 18 `fmul`, 21
+`faddp`, and one `fsqrt` in each symbol's static disassembly with GNU Binutils
+2.47. It does not prove runtime dispatch or dynamic loop execution. The
+candidate is not a portable source/runtime bound and is not folded into the
+58,910 source subtotal. An approved read-only review confirmed the arithmetic
+under the stated assumptions. A second read-only code review caught that the
+first audit implementation accepted unexpected kernel symbols; the inventory
+check now fails on missing and unexpected symbols, with regression coverage.
+The subtotal plus candidate do not close eigensolver coverage, establish
+full-counter coverage, or open profile/training/parity gates.
 
 ## Coverage gaps and next admissible work
 

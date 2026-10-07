@@ -12,9 +12,14 @@ SHA-256 bound to that wheel and does not attest the runtime-selected function
 pointer, Windows target, execution bytes, or helper internals. It is separate
 from the reference-source subtotal. An approved read-only review accepted the
 arithmetic under the assumptions, but did not inspect the binary trace or
-verify its hash; those premises and runtime dispatch remain unresolved. This
-does not close eigensolver coverage or clear any gate. Next admissible work is
-static source/runtime attestation design; do not run service, eigensolver,
+verify its hash. The reproducible `--audit-binary` mode now validates the exact
+wheel hash, all five discovered kernel symbols, and identical static opcode
+totals (18 `fmul`, 21 `faddp`, one `fsqrt`) with GNU Binutils 2.47. It does not
+attest runtime dispatch or dynamic loop execution. A read-only code review
+caught and a focused regression corrected the inventory check to reject both
+missing and unexpected symbols. This does not close eigensolver coverage or
+clear any gate. Next admissible work is the remaining static LAPACK/runtime
+accounting; do not run service, eigensolver,
 profile, inference, simulation, or training until the relevant gates pass.
 
 ### 2026-10-07 DSYTRD reference path and partial helper accounting

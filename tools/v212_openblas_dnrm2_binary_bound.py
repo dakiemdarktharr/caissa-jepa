@@ -8,7 +8,13 @@ OpenBLAS source bound or a D03 runtime receipt.
 """
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
+import re
+import shutil
+import subprocess
+from pathlib import Path
 
 
 MATRIX_ORDER = 32
@@ -22,6 +28,120 @@ KERNEL_VARIANTS = (
     "HASWELL",
     "SKYLAKEX",
 )
+EXPECTED_STATIC_OPCODE_COUNTS = {
+    "fmul": 18,
+    "faddp": 21,
+    "fsqrt": 1,
+}
+
+
+def _instruction_mnemonics(disassembly: str) -> list[str]:
+    """Extract instruction mnemonics from GNU objdump's disassembly lines."""
+    result = []
+    for line in disassembly.splitlines():
+        match = re.match(
+            r"^\s*[0-9a-fA-F]+:\s+(?:(?:[0-9a-fA-F]{2})\s+)+"
+            r"([a-zA-Z][a-zA-Z0-9.]*)\b",
+            line,
+        )
+        if match:
+            result.append(match.group(1).lower())
+    return result
+
+
+def _x87_math_counts(mnemonics: list[str]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for mnemonic in mnemonics:
+        if re.fullmatch(r"f(?:add|sub|mul|div|sqrt)[a-z]*", mnemonic):
+            counts[mnemonic] = counts.get(mnemonic, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _discover_kernel_symbols(nm_output: str) -> list[str]:
+    """Collect every defined nm symbol using the DNRM2 kernel prefix."""
+    found = set()
+    for line in nm_output.splitlines():
+        fields = line.split()
+        if fields and fields[-1].startswith("dnrm2_k_"):
+            found.add(fields[-1])
+    return sorted(found)
+
+
+def _require_exact_kernel_inventory(discovered: list[str]) -> list[str]:
+    expected = sorted(f"dnrm2_k_{variant}" for variant in KERNEL_VARIANTS)
+    if discovered != expected:
+        missing = sorted(set(expected) - set(discovered))
+        unexpected = sorted(set(discovered) - set(expected))
+        raise ValueError(
+            "DNRM2 kernel symbol inventory mismatch: "
+            f"missing={missing}, unexpected={unexpected}"
+        )
+    return expected
+
+
+def audit_static_binary(binary_path: str | Path) -> dict:
+    """Verify the observed wheel artifact and static kernel opcodes.
+
+    This reads the binary and asks nm/objdump to inspect symbols/disassembly;
+    it never loads or executes the shared library.
+    """
+    path = Path(binary_path)
+    if not path.is_file():
+        raise ValueError("binary_path must name an existing file")
+    binary_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+    if binary_hash != OBSERVED_BINARY_SHA256:
+        raise ValueError("binary SHA-256 does not match the observed artifact")
+    nm_path = shutil.which("nm")
+    objdump_path = shutil.which("objdump")
+    if nm_path is None or objdump_path is None:
+        raise RuntimeError("GNU nm and objdump are required for static audit")
+    tool_versions = {}
+    for name, executable in (("nm", nm_path), ("objdump", objdump_path)):
+        version_result = subprocess.run(
+            [executable, "--version"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        tool_versions[name] = version_result.stdout.splitlines()[0]
+    nm_output = subprocess.run(
+        [nm_path, "-a", "--defined-only", str(path)],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    discovered = _discover_kernel_symbols(nm_output)
+    expected_symbols = _require_exact_kernel_inventory(discovered)
+
+    per_symbol = {}
+    for symbol in expected_symbols:
+        disassembly = subprocess.run(
+            [objdump_path, "-d", f"--disassemble={symbol}", str(path)],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+        counts = _x87_math_counts(_instruction_mnemonics(disassembly))
+        if counts != EXPECTED_STATIC_OPCODE_COUNTS:
+            raise ValueError(
+                f"unexpected static x87 opcode counts for {symbol}: {counts}"
+            )
+        per_symbol[symbol] = {
+            "x87_math_instruction_counts": counts,
+            "objdump_stdout_sha256": hashlib.sha256(
+                disassembly.encode("utf-8")
+            ).hexdigest(),
+        }
+    return {
+        "binary_basename": path.name,
+        "binary_sha256": binary_hash,
+        "tool_versions": tool_versions,
+        "nm_discovered_dnrm2_kernel_symbols": discovered,
+        "inspected_expected_symbols": expected_symbols,
+        "per_symbol_static_trace": per_symbol,
+        "runtime_dispatch_selection_attested": False,
+        "library_loaded_or_executed": False,
+    }
 
 
 def kernel_operations(vector_length: int) -> dict:
@@ -146,4 +266,13 @@ def source_bound(n: int = MATRIX_ORDER, max_norm_calls_per_reflector: int = 2) -
 
 
 if __name__ == "__main__":
-    print(json.dumps(source_bound(), sort_keys=True, indent=2, allow_nan=False))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--audit-binary",
+        help="statically verify the exact observed shared-library binary",
+    )
+    args = parser.parse_args()
+    report = source_bound()
+    if args.audit_binary:
+        report["static_binary_audit"] = audit_static_binary(args.audit_binary)
+    print(json.dumps(report, sort_keys=True, indent=2, allow_nan=False))
