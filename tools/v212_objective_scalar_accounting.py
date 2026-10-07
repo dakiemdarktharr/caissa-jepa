@@ -27,10 +27,12 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
         raise ValueError("direct-leaf schedule requires at least one valid H4 row")
 
     counts = {
+        "root_value_gradient_coefficient_divisions": 1,
         "denominator_weight_multiplications": 0,
         "denominator_python_sum_additions": 0,
         "per_horizon_scale_divisions": 0,
         "pooled_loss_scalar_multiplications": 0,
+        "pooled_loss_scalar_divisions": 0,
         "pooled_loss_accumulation_additions": 0,
         "gradient_coefficient_scalar_multiplications": 0,
         "gradient_coefficient_scalar_divisions": 0,
@@ -54,6 +56,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
         target_calls = sum(rows[h] > 0 for h in target_horizons)
         counts["per_horizon_scale_divisions"] = outcome_calls + target_calls
         counts["pooled_loss_scalar_multiplications"] = outcome_calls + target_calls
+        counts["pooled_loss_scalar_divisions"] = target_calls
         counts["pooled_loss_accumulation_additions"] = outcome_calls + target_calls
 
         # Outcome gradients form (2 * scale); target gradients form
@@ -74,6 +77,8 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
             "Python built-in sum over k weighted terms contributes k scalar additions, including the addition to its initial zero.",
             "The outcome and target denominator comprehensions execute for every non-direct-leaf call, including empty-mask batches.",
             "A per-horizon scale and loss accumulation execute only when that horizon mask is nonempty.",
+            "Each enabled nonempty latent/raw target loss divides its pooled squared-error sum by target width before scalar weighting.",
+            "The shared root-value gradient always constructs the scalar coefficient 2.0 / batch_size once.",
             "The direct-leaf scheduled contract requires nonempty valid H4; its coefficient is one scalar division and total += leaf_loss is one scalar addition.",
             "Counts include only Python/NumPy scalar arithmetic explicitly identified in the pooled horizon objective; array elementwise work and reductions are delegated.",
         ],

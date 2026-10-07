@@ -1,5 +1,21 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; objective scalar counter correction)
+
+- AST review found two scalar operations missing from the horizon-objective
+  inventory: the shared `2.0 / batch_size` root-value gradient coefficient,
+  and the per-enabled-horizon `/ d` or `/ FEATURE_SIZE` loss normalization.
+  Added both exactly once at their source sites.
+- The approved read-only `gpt-6-luna/high` reviewer confirmed the corrected
+  all-valid totals of **46 / 30 / 46 / 22 / 3 / 30** operations per invocation
+  in six-arm order and found no overlap with the regularizer, activation,
+  reduction, accumulation, or target-gradient inventories. The combined
+  objective scalar, gradient accumulation, target-gradient, activation,
+  residual, and square tests pass 26/26; targeted compile and
+  `git diff --check` pass. This is still source-level partial accounting; no
+  model/data/profile or outcome work ran. Freeze remains **NO**, and the ≤5%
+  compute gate remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; pooled target-gradient multiplier inventory)
 
 - Added `tools/v212_objective_gradient_elementwise_accounting.py` to count the
@@ -41,9 +57,9 @@
 - Added `tools/v212_objective_scalar_accounting.py` for scalar denominator
   weighting, horizon scales, pooled loss accumulation, and gradient
   coefficients in the horizon objective. Under illustrative all-valid masks,
-  the candidate subtotal is 42 operations/invocation for multi-step JEPA and
-  recursive raw-state, 28 for single-pair and single-horizon JEPA, 21 for
-  value-only rollout, and 2 for direct-leaf value. These are narrowly scoped
+  the corrected candidate subtotal is 46 operations/invocation for multi-step
+  JEPA and recursive raw-state, 30 for single-pair and single-horizon JEPA, 22
+  for value-only rollout, and 3 for direct-leaf value. These are narrowly scoped
   source-level subtotals, not comparable total compute estimates. The direct
   leaf counter rejects schedules without a valid H4 row.
 - Objective scalar, regularizer, and policy softmax source-accounting tests

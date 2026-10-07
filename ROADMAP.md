@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 objective scalar counter correction
+
+The source AST audit found the scalar root-value gradient coefficient
+`2.0 / batch_size` and the pooled target-loss normalization `/ d` or
+`/ FEATURE_SIZE` absent from the first scalar inventory. Both are now counted
+once at their source sites. Independent read-only review confirmed corrected
+all-valid six-arm subtotals of **46 / 30 / 46 / 22 / 3 / 30** operations per
+invocation, with no overlap across the inspected counters. The combined
+objective/gradient/activation/residual/square suite passes 26/26; compile and
+whitespace checks pass. These remain partial analytical counts, not full
+compute or parity evidence. No model/data/profile or outcome work ran. Graph
+freeze remains **NO** and the ≤5% gate remains **untested and unpassed**.
+
 ### 2026-10-07 pooled target-gradient multiplier subcounter
 
 Added a mask-parameterized count for the per-coordinate scalar-coefficient
@@ -33,9 +46,9 @@ unpassed**.
 
 Added a mask-parameterized candidate inventory of horizon-denominator
 weighting, per-horizon scalar scales, pooled-loss accumulation, and scalar
-gradient coefficients. All-valid illustrative subtotals are 42 operations per
-invocation for multi-step JEPA and recursive raw-state, 28 for single-pair and
-single-horizon JEPA, 21 for value-only rollout, and 2 for direct-leaf value.
+gradient coefficients. The corrected all-valid subtotals are 46 operations per
+invocation for multi-step JEPA and recursive raw-state, 30 for single-pair and
+single-horizon JEPA, 22 for value-only rollout, and 3 for direct-leaf value.
 This is a deliberately narrow scalar-only subcounter; it does not count array
 operations or reductions and does not establish total arm compute. Direct-leaf
 accounting enforces the existing nonempty-H4 schedule condition. The new

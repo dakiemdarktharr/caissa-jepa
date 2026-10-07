@@ -12,12 +12,12 @@ class ObjectiveScalarAccountingTests(unittest.TestCase):
     def test_full_valid_panel_is_deterministic(self):
         result = accounting()
         self.assertEqual(result["panel_total_operations_per_arm"], {
-            "multi-step-jepa": 42,
-            "single-pair-jepa": 28,
-            "recursive-raw-state": 42,
-            "value-only-latent-rollout": 21,
-            "direct-leaf-value": 2,
-            "single-horizon-jepa": 28,
+            "multi-step-jepa": 46,
+            "single-pair-jepa": 30,
+            "recursive-raw-state": 46,
+            "value-only-latent-rollout": 22,
+            "direct-leaf-value": 3,
+            "single-horizon-jepa": 30,
         })
 
     def test_sparse_masks_select_only_nonempty_horizons(self):
@@ -29,10 +29,12 @@ class ObjectiveScalarAccountingTests(unittest.TestCase):
         result = inventory("single-pair-jepa", masks)
         self.assertEqual(result["valid_rows_by_horizon"], {1: 32, 2: 0, 4: 32})
         self.assertEqual(result["candidate_fp_scalar_operations_per_invocation"], {
+            "root_value_gradient_coefficient_divisions": 1,
             "denominator_weight_multiplications": 4,
             "denominator_python_sum_additions": 4,
             "per_horizon_scale_divisions": 2,
             "pooled_loss_scalar_multiplications": 2,
+            "pooled_loss_scalar_divisions": 0,
             "pooled_loss_accumulation_additions": 2,
             "gradient_coefficient_scalar_multiplications": 2,
             "gradient_coefficient_scalar_divisions": 0,
@@ -64,6 +66,7 @@ class ObjectiveScalarAccountingTests(unittest.TestCase):
             "target_den = sum(",
             "scale = weight / outcome_den",
             "scale = weight / target_den",
+            "2.0 / n",
             "outcome_loss += scale * float(np.sum(delta ** 2))",
             "rollout_loss += scale * float(np.sum(delta ** 2) / d)",
             "raw_loss += scale * float(np.sum(delta ** 2) / FEATURE_SIZE)",
