@@ -16,6 +16,9 @@
   values for all mask-dependent component categories on all six arms; the
   ledger now also explicitly qualifies intervals as bounds on the listed
   subset only, never on total training FLOPs.
+- A further read-only follow-up confirmed that log and square-root fields now
+  distinguish vectorized calls from output-element counts and that known
+  non-FP values remain explicitly incomplete, unconverted counts.
 - Under an illustrative all-valid mask fixture, source-covered candidate
   intervals are 9,540,294–9,540,390 (multi-step JEPA), 7,885,496–7,885,592
   (single-pair JEPA), 27,130,644–27,130,740 (recursive raw-state),
@@ -25,6 +28,11 @@
   the figures omit runtime/LAPACK, multiple non-FP and unsupported categories,
   and the replay-derived 20×87 schedule. They are not total FLOPs or a parity
   result.
+- The ledger additionally reports existing known non-FP counts by their native
+  units (call and output-element counts for tanh/exp/log/sqrt, comparisons,
+  optimizer predicates, and two integer shape multiplications). It does not
+  convert these to FLOPs and does not complete preflight/indexing/copy/control-
+  flow/runtime coverage.
 - Corrected the residual subcounter's stale square-convention caveat: review
   accepts one candidate multiply per fixed-shape square element semantically,
   without claiming the loaded NumPy kernel follows that operation trace.

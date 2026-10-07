@@ -11,7 +11,8 @@ optimizer branch intervals. Four focused accounting tests, targeted compile,
 and whitespace validation pass; the combined ledger/subcounter suite passes
 55/55 under Python 3.14.7 / NumPy 2.5.3 (not the locked runtime). Independent
 static review found no overlap defect and confirmed the masked-fixture
-coverage follow-up.
+coverage follow-up. A subsequent review confirmed the native call-versus-output
+element labels for log and square-root counts.
 
 For illustrative all-valid masks, the source-covered per-invocation intervals
 are 9,540,294–9,540,390 (multi-step JEPA), 7,885,496–7,885,592 (single-pair),
@@ -22,6 +23,12 @@ exclude linked LAPACK/runtime operations, several non-FP and unsupported
 categories, and replay-derived 20×87 masks; they are not total FLOPs, a parity
 result, or authorization to fit. Graph freeze remains **NO** and ≤5% remains
 **untested and unpassed**.
+
+The ledger also reports the non-FP/unconverted counts already supplied by the
+subcounters in their native units, distinguishing call counts from output
+elements, without converting them into FLOPs. Preflight, indexing, copies,
+control flow, loaded-runtime dispatch, and unsupported operators remain
+incomplete.
 
 ### 2026-10-07 raw-state and six-arm freeze review
 

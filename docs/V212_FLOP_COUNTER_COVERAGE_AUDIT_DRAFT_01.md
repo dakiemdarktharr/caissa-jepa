@@ -59,12 +59,14 @@ here.
 | Effective-rank selected-spectrum branch | Probability normalization, `log`, elementwise probability/log product, entropy reduction, final `exp`, and selected-set comparisons | `tools/v212_effective_rank_branch_accounting.py` bounds the active-set work after eigensolver/spectrum-sum: per call, zero entropy work when inactive, or K=1..32 divisions/logs/multiplies, K-1 candidate additions and one exp when active. Across 1,740 scheduled updates per arm, upper bounds are 55,680 divisions/logs/multiplies, 53,940 candidate additions and 1,740 exp calls. It excludes DSYEVD/LAPACK and does not establish which branches actually occur |
 | Fixed array-square sites | All source `** 2` array expressions in regularization, supervised losses, activation derivatives, recurrent reverse passes, and gradient norm | `tools/v212_model_square_flop_accounting.py` inventories the 20 AST sites and mask-dependent element counts. Under the reviewed semantic convention each element is one candidate multiply; no loaded NumPy power-kernel claim is made. Scalar bias-correction powers are excluded. Existing activation, residual, and latent-`std` reports overlap this inventory and must not be summed with it |
 
-## Candidate additive ownership reconciliation (draft; not independently reviewed)
+## Candidate additive ownership reconciliation (reviewed for partial ledger only)
 
 The subcounter JSON objects are **not** independent totals. A future aggregator
 must use the following owner partition, taking component fields rather than
-adding each tool's headline total. This is a source-level reconciliation
-proposal only: no combined per-invocation or 20×87 number is emitted here.
+adding each tool's headline total. `tools/v212_partial_flop_ledger.py`
+implements these owners for the currently inventoried source-level components
+of one invocation. The ownership is not a complete D03 counter, and no
+replay-derived 20×87 total or parity result is emitted.
 
 | Additive component | Sole candidate owner | Remove or do not add from these overlapping reports |
 | --- | --- | --- |
@@ -81,17 +83,16 @@ proposal only: no combined per-invocation or 20×87 number is emitted here.
 | Target-gradient coefficient × residual array multiplications | `v212_objective_gradient_elementwise_accounting.py::candidate_array_multiplications_total` | Do not add target residual subtraction, square, matmul, scalar-coefficient construction, or subsequent buffer addition from their other owners. |
 | Scratch Adam/clipping/EMA arithmetic, including optimizer `g*g` and both clipping branches' gradient scaling | `v212_optimizer_flop_accounting.py::floating_point_arithmetic` | Do not add its square-root, power, finite-predicate, comparison, copy, validation, or indexing fields to FLOPs. Preserve both clip intervals; zero norm follows `norm_le_5`. |
 
-This partition still does not provide a complete counter. Schema v04 exposes
-reduction ownership fields but the rest of the subcounter suite is not yet
-assembled or regression-checked as one aggregator. The linked LAPACK
-eigensolver has no accepted operation bound, and comparisons,
-integer/indexing, finite guards, allocations/copies, transcendentals, and
-source/runtime dispatch are not fully enumerated. Before an aggregator can be
-used for D03, its field-level exclusions need source-bound regression checks
-and independent review. A complete aggregation also requires the replay-derived
-20×87 masks, actual loaded runtime/backend identity, and a trainer trace proving
-the scheduled objective and optimizer calls. Graph freeze remains **NO** and
-the ≤5% gate remains **untested and unpassed**.
+This ownership partition and partial aggregator do not provide a complete
+counter. The independent follow-up found no overlap defect in the components
+currently composed, but did not accept them as a D03 counter. The linked LAPACK
+eigensolver has no accepted operation bound, and comparisons, integer/indexing,
+finite guards, allocations/copies, transcendentals, and source/runtime dispatch
+are not fully enumerated. A complete D03 aggregation still requires the
+replay-derived 20×87 masks, actual loaded runtime/backend identity, bounds for
+all value-dependent work, and a trainer trace proving the scheduled objective
+and optimizer calls. Graph freeze remains **NO** and the ≤5% gate remains
+**untested and unpassed**.
 
 ### Owner-reconciled partial ledger (2026-10-07)
 
@@ -119,6 +120,20 @@ replay-derived masks, and do not establish the ≤5% pass/fail outcome. The
 counter remains incomplete and unreviewed for D03; runtime/reduction/LAPACK,
 non-FP work, and trainer/schedule evidence remain open. No research data,
 profile, roots, inference, outcomes, or training were used.
+
+The ledger also carries forward the non-FP/unconverted counts already exposed
+by its owners: activation-call/element counts, policy comparisons/exp/log
+elements, regularizer comparisons/sqrt outputs/eigensolver call count,
+effective-rank comparisons/negations/log-output elements and exp-call branch
+counts, optimizer comparisons/finite predicates/powers/sqrt output elements
+and invocations, and the regularizer's two integer shape multiplications.
+These are reported in their native count units; they are not converted to
+FLOPs. They do not complete the inventory of
+preflight validation, indexing, allocation/copy, Python control flow, runtime
+dispatch, or unsupported operators.
+An approved read-only follow-up confirmed the log/sqrt fields distinguish
+vectorized call invocations from output-element counts and that these are
+known-only categories, not a complete non-FP ledger. The reviewer ran no tests.
 
 ## Independent source review follow-up (2026-10-07)
 

@@ -109,7 +109,8 @@ def _arm_inventory(arm: str, masks: dict[int, np.ndarray]) -> dict:
 
     rank_low = effective_rank.branch_work(active=False, selected_eigenvalues=0)
     rank_high = effective_rank.branch_work(active=True, selected_eigenvalues=32)
-    opt = optimizer._one_update(arm)["floating_point_arithmetic"]["total_flops"]
+    opt_details = optimizer._one_update(arm)
+    opt = opt_details["floating_point_arithmetic"]["total_flops"]
     branch_intervals = {
         "effective_rank_interval": {
             "lower": rank_low["candidate_fp_additions"]
@@ -135,20 +136,34 @@ def _arm_inventory(arm: str, masks: dict[int, np.ndarray]) -> dict:
         "components_candidate_flops": components,
         "branch_candidate_flop_intervals": branch_intervals,
         "partial_source_candidate_flops": {"lower": lower, "upper": upper},
-        "non_flop_or_unconverted_work": {
+        "known_nonflop_or_unconverted_work": {
+            "tanh_calls": sum(value > 0 for value in act["tanh_elements_by_call_site"].values()),
             "tanh_elements": act["tanh_calls_element_count"],
             "policy_max_comparisons": pol["candidate_row_max_comparisons"],
             "policy_exp_elements": pol["exp_elements"],
             "policy_log_elements": pol["nll_log_elements"],
             "regularizer_max_comparisons": reg["candidate_maximum_comparisons"],
             "regularizer_sqrt_elements": reg["sqrt_output_elements_not_converted_to_flops"],
-            "latent_std_sqrt_calls": std["transcendental_sqrt_calls"],
-            "effective_rank_log_calls": [rank_low["log_calls"], rank_high["log_calls"]],
+            "latent_std_sqrt_elements": std["transcendental_sqrt_calls"],
+            "regularizer_integer_shape_multiplications": reg["integer_scalar_shape_multiplications"],
+            "eigvalsh_calls": reg["linked_eigensolver_calls_not_counted"],
+            "effective_rank_comparisons": [rank_low["comparisons"], rank_high["comparisons"]],
+            "effective_rank_unary_negations": [rank_low["unary_negations"], rank_high["unary_negations"]],
+            "effective_rank_log_elements": [rank_low["log_calls"], rank_high["log_calls"]],
+            "effective_rank_log_invocations": [0, 1],
             "effective_rank_exp_calls": [rank_low["exp_calls"], rank_high["exp_calls"]],
-            "optimizer_scalar_powers": 2,
-            "optimizer_square_roots": optimizer._one_update(arm)[
-                "separately_reported_operations"]["square_roots"
-            ],
+            "optimizer_scalar_powers": opt_details["separately_reported_operations"]["scalar_powers"],
+            "optimizer_sqrt_output_elements": opt_details["separately_reported_operations"]["square_roots"],
+            "optimizer_sqrt_invocations": opt_details["trainable_parameter_tensors"] + 1,
+            "optimizer_second_moment_nonnegative_comparisons": (
+                opt_details["separately_reported_operations"]["second_moment_nonnegative_comparisons"]
+            ),
+            "optimizer_clip_threshold_comparisons": (
+                opt_details["separately_reported_operations"]["clip_threshold_comparisons"]
+            ),
+            "optimizer_finite_value_predicates": (
+                opt_details["separately_reported_operations"]["finite_value_predicates"]
+            ),
         },
     }
 
