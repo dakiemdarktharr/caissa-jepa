@@ -852,3 +852,29 @@ The ledger is a composition aid, not full-counter coverage, parity evidence,
 graph-freeze evidence, or profile/fit authorization. Twenty focused
 aggregation/subcounter tests pass; targeted compile and whitespace checks
 pass. No eigensolver or model ran.
+
+## DNRM2 reference-source formula cross-check (2026-10-07)
+
+Re-derived `tools/v212_dnrm2_reference_source_bound.py` against the Netlib
+LAPACK 3.12.1 reference sources for
+[DNRM2](https://www.netlib.org/lapack/explore-html/d6/de0/dnrm2_8f90_source.html)
+and [DLARFG](https://www.netlib.org/lapack/explore-html/d7/da9/dlarfg_8f_source.html).
+For length one, the largest single scaling-class path has at most four
+add/subtract/multiply/divide operations (scaled square multiply and
+accumulation, scale division, final multiply), one scalar power site and one
+square root. For lengths 2–30, per-element accumulation is bounded by two
+arithmetic operations and one power site; the selected accumulator-combine
+path adds at most five arithmetic operations, two power sites and three square
+roots. Thus the componentwise per-call bounds are `2*L+5`, `L+2`, and `3`.
+
+At matrix order 32, DLARFG has nontrivial reflector orders 2–31, so its DNRM2
+vector lengths are 1–30. The initial norm call and at most one recomputation
+after the bounded rescaling loop yield a conservative componentwise subtotal
+of 2,154 arithmetic operations, 1,046 power sites and 176 square roots. The
+maxima are separate upper bounds and need not co-occur. The focused
+standard-library suite passes 5/5. This verifies the source formula and call
+shape only; it does not attest the loaded BLAS symbol, runtime dispatch,
+compiler lowering, or executed bytes, and it is not additive to the
+architecture-specific binary candidate. Eigensolver coverage, graph freeze,
+and the six-arm parity gate remain open; no eigensolver, model, data, profile,
+inference, or training ran.

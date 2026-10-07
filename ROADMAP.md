@@ -3440,3 +3440,19 @@ mask schedule. Graph freeze remains **NO** and ≤5% six-arm compute parity
 remains **untested and unpassed**. Documentation only; no service, request,
 test, OOM, inference, data/root generation, scoring, simulation, or training
 ran. Preserve the existing negative findings and novelty risks.
+
+### 2026-10-07 DNRM2 reference-source cross-check
+
+Re-derived the N=32 DNRM2 componentwise bounds from Netlib LAPACK 3.12.1
+DNRM2 and DLARFG branches. For length 1, the bound is 4 arithmetic
+operations, one scalar power site, and one square root; for lengths 2–30 it
+is `2L+5`, `L+2`, and 3. DLARFG uses lengths 1–30 with at most two norm calls
+per nontrivial reflector, yielding 2,154 arithmetic operations, 1,046 power
+sites, and 176 square roots. The focused source-bound tests pass 5/5.
+
+This validates only reference-source call shapes and separate conservative
+component maxima. It does not establish linked BLAS dispatch, executed bytes,
+or a complete eigensolver/counter, and it is not additive to the observed
+architecture-specific DNRM2 binary candidate. Graph freeze remains **NO** and
+six-arm ≤5% parity remains **untested and unpassed**. No eigensolver, model,
+data, profile, inference, or training ran.
