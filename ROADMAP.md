@@ -2,6 +2,22 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 eigensolver source-component bridge
+
+Added `tools/v212_eigensolver_component_inventory.py` to report the currently
+owned source-level pieces together without treating them as one proven
+implementation. The conservative sum of component maxima is 494,677
+add/subtract/multiply/divide operations, plus 2,114 scalar power sites and
+2,254 square-root calls separately (496,791 if every power maps to a
+multiplication). Component maxima are conditional and may not be jointly
+attainable. Provenance mixes OpenBLAS v0.3.31 LAPACK-derived routines, Netlib
+LAPACK 3.12.1 helpers/driver, and Netlib reference BLAS formulas; the report
+does not bound uncovered non-FP work or attest loaded runtime identity. DSTERF
+metadata now states its mixed provenance accurately. Focused composition and
+component tests, targeted compile, and whitespace checks pass. No eigensolver
+or model ran; full counter, graph freeze, six-arm parity, profile, and fit
+gates remain closed.
+
 ### 2026-10-07 DSYEVD source composition correction
 
 The new DSYEVD composition report accounts for a previously omitted helper:

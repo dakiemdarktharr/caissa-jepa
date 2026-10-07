@@ -52,7 +52,11 @@ def source_inventory() -> dict:
 
     return {
         "schema": "caissa.v212.dsterf-source-inventory.v01",
-        "reference_source_version": "LAPACK 3.12.1",
+        "source_provenance": {
+            "dsterf_iteration_and_dlae2": "OpenBLAS v0.3.31 lapack-netlib/SRC sources",
+            "dlamch_dlapy2_dlascl_dlanst_dlasrt": "Netlib LAPACK 3.12.1 reference sources",
+            "runtime_identity": "not established; these source families are not a linked-runtime trace",
+        },
         "matrix_order": MATRIX_ORDER,
         "iteration_cap": MATRIX_ORDER * MAXIT_PER_EIGENVALUE,
         "non_overlapping_source_components": {

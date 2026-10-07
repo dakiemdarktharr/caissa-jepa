@@ -37,7 +37,7 @@ here.
 | `V212Model._encode`, `_value` | Dense projections, bias adds, `tanh` calls and backward derivatives; report each matmul by actual active rows and fixed dimensions | Root encoding is common; future online and target encodes depend on arm and valid-horizon counts |
 | Policy head in `V212Model.loss_grad` | Logit projection, bias, stable max/shift, `exp`, normalization, NLL/log, selected-action gradient, and both backward matmuls | Arithmetic operations count as FLOPs; max/comparison/indexing and `exp`/`log` are separate categories |
 | `V212Model._regularize` | Batch means, centering, squares, standard deviations, shortfall, covariance matmul, diagonal/off-diagonal work, covariance loss and its gradient | Include this diagnostic/loss path for every arm and update; disclose exact reduction treatment |
-| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. Netlib reference `DSTERF` bounds its total iteration loop by `30*N` (960 at N=32). `tools/v212_dsyevd_source_inventory.py` composes a DSYEVD-only conditional arithmetic interval of 6–574 operations, including 4 operations from its two direct DLAMCH calls and two more for DLASCL's conditional internal DLAMCH('S'). The separate DLASCL body contributes at most 532; DLANSY('M') scans 528 entries with zero add/subtract/multiply/divide operations. Runtime identity/dispatch, DSYTRD/DSTERF integration, and independent review remain open; exact coverage remains **unresolved** |
+| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. `tools/v212_eigensolver_component_inventory.py` sums the currently covered component maxima to 494,677 arithmetic operations, plus 2,114 scalar power sites and 2,254 square-root calls separately. This is a heterogeneous, conditional source-component sum; maxima may not co-occur, uncovered work remains, and it is not a full eigensolver/runtime bound. Runtime identity/dispatch and exact path reconciliation remain open; coverage remains **unresolved** |
 | Remaining `V212Model.loss_grad` diagnostics | Root latent mean/std, covariance spectrum output, effective rank, total-loss scalar combination, returned gradient L2 norm, parameter-size aggregation, and finite-value guards | The returned gradient norm is separate from the scratch optimizer's clipping norm and executes once per loss call. Count its coordinate squares/reduction and square root under the declared categories; count comparisons/conversion/serialization separately |
 | Recurrent predictor in `V212Model.loss_grad` | For each active step `s`, predictor projection from 104 to 32 coordinates, bias, `tanh`, and its reverse-pass derivative/parameter/input-gradient matmuls | Rows are `_active_prefix_masks(valid)`; count active rows for all four steps, including unsupervised intermediate prefixes needed by later valid horizons |
 | Recursive raw-state arm | Per active step, 32→198 decoder projection, decoder bias, 198→32 online re-encoding, corresponding tanh and complete reverse `F→D→E` gradient path | This arm has four possible recurrent steps; actual rows come from the common frozen mask schedule. Static forward MAC inventory is not total training FLOPs |
@@ -829,3 +829,26 @@ the prior component sum, which omitted DLASCL's internal DLAMCH call. DLANSY
 scans 528 triangle entries with zero arithmetic operations under the selected
 convention. The composition remains unreviewed conditional source accounting;
 it excludes DSYTRD, DSTERF, linked-runtime identity, and full-counter coverage.
+
+## Eigensolver source-component bridge (2026-10-07)
+
+`tools/v212_eigensolver_component_inventory.py` adds the separately owned
+DSYEVD, DSYTD2/DLARFG direct, DLARFG helper, reference DNRM2, and DSTERF
+candidate fields without adding the architecture-specific DNRM2 binary
+alternative. At N=32, the conservative sum of the listed component maxima is
+494,677 add/subtract/multiply/divide operations, plus 2,114 scalar power sites
+and 2,254 square-root calls separately (496,791 if each power maps to one
+multiplication). Component maxima are conditional and may not be jointly
+attainable. This number is only the sum of currently covered source candidate
+owners; it does not bound omitted work or represent a complete eigensolver
+total.
+
+Provenance is heterogeneous: OpenBLAS v0.3.31 LAPACK-derived source for
+DSYTD2/DLARFG and DSTERF/DLAE2, Netlib LAPACK 3.12.1 sources for the driver and
+separately counted helpers, and Netlib reference BLAS formulas for rank
+updates. Exact equivalence along an assembled path, runtime identity/dispatch,
+compiler lowering, wrapper operations, and non-FP activity remain unresolved.
+The ledger is a composition aid, not full-counter coverage, parity evidence,
+graph-freeze evidence, or profile/fit authorization. Twenty focused
+aggregation/subcounter tests pass; targeted compile and whitespace checks
+pass. No eigensolver or model ran.

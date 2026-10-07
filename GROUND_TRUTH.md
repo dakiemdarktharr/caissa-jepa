@@ -1,5 +1,29 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; eigensolver component bridge)
+
+- Added `tools/v212_eigensolver_component_inventory.py` to sum the separately
+  owned N=32 reference-source components for DSYEVD scaling/driver, unblocked
+  DSYTD2/DLARFG direct sites, DLARFG helpers, reference DNRM2, and DSTERF.
+  The sum of component maxima is 494,677 add/subtract/multiply/divide
+  operations, plus 2,114 scalar power sites and 2,254 square-root calls
+  separately (496,791 if every power site is treated as one multiplication).
+  The maxima are conditional and may not be jointly attainable; the result is
+  only the sum of currently covered source candidates, not a bound on total
+  eigensolver work.
+- Provenance is heterogeneous: OpenBLAS v0.3.31 LAPACK-derived source for
+  DSYTD2/DLARFG and DSTERF/DLAE2, Netlib LAPACK 3.12.1 for separately counted
+  helper/driver sources, and Netlib reference BLAS formulas for update
+  operations. Updated the DSTERF composition metadata to expose this source
+  split rather than labeling the entire inventory as LAPACK 3.12.1. Loaded
+  runtime identity, wrapper/compiler/dispatch behavior, non-FP activity, and
+  exact path reconciliation remain unresolved.
+- Twenty focused aggregation/subcounter tests pass;
+  targeted `compileall` and `git diff --check` pass. No numerical eigensolver,
+  profile, inference, simulation, or training ran. Complete eigensolver/full
+  counter, graph freeze, and six-arm ≤5% parity remain **NO / untested and
+  unpassed**; profile and fit remain unauthorized.
+
 ## Latest continuation delta (2026-10-07; DSYEVD source composition correction)
 
 - Added `tools/v212_dsyevd_source_inventory.py` to compose the N=32,
