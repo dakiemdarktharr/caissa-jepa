@@ -175,8 +175,8 @@ class V212ModelTests(unittest.TestCase):
         batch["actions"][1, 3] = 0.0
         batch["actors"][1, 3] = 0.0
         metrics, _ = V212Model(V212Config(arm="recursive-raw-state")).loss_grad(batch)
-        self.assertEqual(metrics["executed_predictor_calls"], 7)
-        self.assertEqual(metrics["executed_decoder_reencoder_calls"], 7)
+        self.assertEqual(metrics["executed_predictor_calls"], 6)
+        self.assertEqual(metrics["executed_decoder_reencoder_calls"], 6)
 
     def test_valid_endpoint_keeps_intermediate_prediction_active_without_target(self):
         batch = synthetic_batch()

@@ -9,14 +9,19 @@ preflight could count a valid later horizon while active execution stopped at
 an unsupervised intermediate target, leaving the endpoint prediction at its
 zero initializer. The no-update objective graph now activates each transition
 when any valid supervised horizon needs that prefix, and a synthetic regression
-fixture covers the case for all five recurrent arms. `compileall` and
-`git diff --check` pass. The focused unit test could not import because the
-research clone has no NumPy installation; no environment was installed. This
-fix was confirmed by an approved read-only follow-up as resolving the specific
-source-level mismatch; the fixture itself was not run. This does not validate
-selected-window exact-rule replay, freeze the raw-state graph, or measure
-six-arm training compute. D03's ≤5% gate remains **untested and unpassed**,
-and data/profile/training gates remain closed.
+fixture covers the case for all five recurrent arms. The v06 model suite passes
+7/7 under the available temporary NumPy 2.5.3 / Python 3.14 runtime. Its first
+run exposed an obsolete operation-count expectation (7 instead of 6) for a
+truncated row whose only remaining call was an unsupervised third transition;
+the fixture was corrected and the suite rerun successfully. The raw-state
+feature audit, static dense-forward inventory, and scratch-optimizer suites
+also pass (2/2, 3/3, and 4/4), for 16 focused tests total. `compileall` and
+`git diff --check` pass. This runtime differs from the locked NumPy 2.4.6, so
+it is synthetic regression evidence, not the D03 runtime fingerprint. The
+approved read-only follow-up confirms the specific source-level mismatch is
+resolved. This does not validate selected-window exact-rule replay, freeze the
+raw-state graph, or measure six-arm training compute. D03's ≤5% gate remains
+**untested and unpassed**, and data/profile/training gates remain closed.
 
 ### 2026-10-07 V2.12-06 Adam/EMA semantics adoption
 
