@@ -1,5 +1,27 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; V2.12 schedule-manifest validator)
+
+- Added `two_player/v212_schedule_manifest.py` and a versioned structural
+  contract for the accepted 20-seed × 87-update schedule: chronological
+  epoch/batch identity, 64 IDs with 32 per training game, 928 distinct selected
+  IDs per game per epoch with the same bank across all three epochs, per-arm
+  horizon-mask counts, and a valid H4 leaf for every direct-leaf update.
+  Validation computes a canonical digest over the manifest declaration.
+- Six synthetic-manifest tests pass; together with the scheduled-call,
+  adapter, and model suites, focused V2.12 validation is 23/23. The schedule
+  fixture contains generated IDs/counts only; companion model tests use
+  synthetic arrays. No real research windows, episodes, roots, profile,
+  inference, score, outcome, or training was used. Runtime remains Python
+  3.14.7 / NumPy 2.5.3, not the locked runtime. `compileall` and
+  `git diff --check` pass.
+- The validator does not establish payload/episode hashes, train provenance,
+  exact-rule replay, masks against actual windows, the frozen selection
+  procedure, or trainer use. It is a structural preflight only and does not
+  amend D03 or authorize data/profile/fit. All compute gates remain closed and
+  the ≤5% parity gate remains **untested and unpassed**; preserve prior
+  negative findings and novelty risks.
+
 ## Latest continuation delta (2026-10-07; paired scheduled-batch boundary helper)
 
 - Added `two_player/v212_scheduled_batch.py` as a no-update boundary for one

@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 schedule-manifest structural validator
+
+Added a pure validator for the frozen 20×87 schedule shape: ordered update
+indices and epoch/batch mapping, 64 IDs split 32/32 across the two training
+games, 928 distinct windows/game reused as the same bank across three epochs,
+per-arm horizon masks, and per-update direct-leaf H4 validity. Six synthetic
+manifest tests pass; combined focused V2.12 boundary/adapter/model tests pass
+23/23. This checks declarations only, not source payloads, selection,
+train-split provenance, exact-rule replay, actual masks, or trainer use; D03
+was left unchanged and no data/profile/fit gate opened. Next: bind schedule IDs
+to payload/replay receipts and integrate exclusive trainer routing before any
+profile work.
+
 ### 2026-10-07 V2.12 paired scheduled-batch boundary helper
 
 Added a no-update six-arm call boundary that takes audited windows, enforces
