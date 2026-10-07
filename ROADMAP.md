@@ -2,6 +2,20 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 optimizer-only FLOP accounting
+
+Added an analytical count for the scratch Adam/EMA helper, including
+per-coordinate moment/parameter arithmetic, per-tensor scalar coefficients,
+global norm reduction, EMA for the three JEPA arms, and the optional clipping
+division. Synthetic checks match parameter/EMA shapes across all six arms and
+validate the formulas and 20×87 branch interval. Optimizer-only FP arithmetic
+is 136,750–136,751 FLOPs/update for direct-leaf, 190,514–190,515 for
+value-only, 209,620–209,621 for each JEPA arm, and 295,062–295,063 for
+raw-state. These counts exclude the objective graph and do not decide total
+panel parity. The full counter, eigensolver coverage, runtime fingerprint,
+selected-window replay/masks, and required independent counter review remain
+open; no data, profile, inference, outcome, or training gate advanced.
+
 ### 2026-10-07 V2.12 action-validation accounting follow-up
 
 Replaced repeated `actions.sum(axis=2)` one-hot validation inside

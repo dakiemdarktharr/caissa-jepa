@@ -42,8 +42,8 @@ here.
 | Value-only latent rollout | Value head and backward work at each valid horizon | Count valid rows by H1/H2/H4; do not infer work solely from number of valid target cells because shared prefixes execute once |
 | JEPA target encodes | Frozen target-encoder projections and `tanh`; target gradients are absent | Multi-step uses valid H1/H2/H4 rows, single-pair H2, single-horizon H1; count actual invocations/rows and distinguish them from active online prefixes |
 | Direct-leaf value arm | H4-selected future online encoder, value head, loss and backward projections | Exact H4-valid row count; if zero, source skips the leaf path, while the arm's fixed-batch validity rule rejects a zero-H4 minibatch |
-| `preflight_batch` and metric serialization | Mask construction, `np.isin`/finite checks, reductions, indexing, Python control flow, and list/dict conversion | `actions.sum(axis=2)` is a floating reduction: for the frozen `n=64`, 4×65 action tensor it contributes 256×64 = 16,384 additions per `loss_grad` invocation. Count it each update because `loss_grad` reruns structural preflight; report comparison, integer/indexing, and data-movement work separately. Dataset-level exact-rule preflight remains a separate one-time cost under D03 |
-| `scratch_adam_ema_step` | Input validation/copies, global gradient-square/reduction, clipping multiplication, first/second moments, bias-corrected Adam, parameter update, and EMA for the three JEPA arms | Count every trainable coordinate each update. Bound both `norm <= 5` and `norm > 5`; zero norm uses the no-division branch. Keep scratch arrays disposable; report validation, copies and finite checks outside FLOPs |
+| `preflight_batch` and metric serialization | Mask construction, `np.isin`/finite checks, integer nonzero counting, indexing, Python control flow, and list/dict conversion | Action validation uses `np.count_nonzero(actions, axis=2)` over 256×65 entries per `loss_grad` invocation. It adds no floating-point row-sum reduction; account for the integer/comparison scan separately on every call because structural preflight reruns. Dataset-level exact-rule preflight remains a separate one-time cost under D03 |
+| `scratch_adam_ema_step` | Input validation/copies, global gradient-square/reduction, clipping multiplication, first/second moments, bias-corrected Adam, parameter update, and EMA for the three JEPA arms | `tools/v212_optimizer_flop_accounting.py` gives an analytical per-arm formula for this helper and bounds `norm <= 5`/`norm > 5`; zero norm uses the no-division branch. It is a subcomponent only, not an executed counter. Keep scratch arrays disposable; report validation, copies and finite checks outside FLOPs |
 | Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
 
 ## Required branch accounting
@@ -93,11 +93,12 @@ here.
   or its exact count. A frozen implementation trace or reviewed full-schedule
   bound remains required.
 - The current model calls `preflight_batch` inside every `loss_grad` call.
-  Unlike the one-time dataset-level preflight in D03, this repeated structural
-  check includes 16,384 floating additions per 64-window call from validating
-  one-hot actions. The audit now assigns this to each update; its other
-  comparison/indexing work remains separately reported. Independent review
-  must accept the treatment before profile execution.
+  Unlike the one-time dataset-level preflight in D03, the repeated structural
+  check scans the 256×65 action entries using integer nonzero counting. The
+  former floating-point row-sum was removed without changing the binary
+  one-hot acceptance rule; no total-work reduction is inferred. Account for
+  this scan and the other comparison/indexing work on every update. Independent
+  review must accept the treatment before profile execution.
 - The currently available synthetic runtime (NumPy 2.5.3 / Python 3.14.7) is
   not the locked research runtime. No runtime fingerprint, BLAS configuration,
   host identity, counter version, or profile result is inferred from it.
@@ -109,6 +110,25 @@ synthetic instrumentation check can establish coverage only; data/preflight
 authorization, all six reviewed graphs, complete branch bounds, and the
 separate pre-fit gates remain required before a D03 profile. No gate opens from
 this audit.
+
+## Optimizer-only analytical accounting follow-up (2026-10-07)
+
+`tools/v212_optimizer_flop_accounting.py` translates the current scratch
+Adam/EMA source expressions into per-arm FP add/subtract/multiply/divide
+counts. It includes the global-norm reduction, per-coordinate clip multiply,
+moment updates, bias correction, parameter update, and the three JEPA encoder
+EMA updates. The only value-dependent FLOP branch in this helper is the
+optional scalar clip-scale division; the report gives per-update and 20×87
+optimizer-only intervals. Scalar powers, square roots, finite predicates, and
+non-FLOP validation/copy work are disclosed separately.
+
+Three synthetic accounting tests compare parameter and target coordinate/tensor
+counts with the six model-arm definitions and assert the arithmetic formulas
+and branch interval widths. This is formula validation, not execution of the
+optimizer or a FLOP instrumentation/profile. It omits all objective-graph work,
+including the unresolved linked-LAPACK eigensolver. Therefore it cannot decide
+the ≤5% panel gate or satisfy D03's source/runtime, mask, data/replay, or
+independent-review prerequisites. No gate opens.
 
 ## Primary implementation references checked
 

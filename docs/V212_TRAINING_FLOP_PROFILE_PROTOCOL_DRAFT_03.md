@@ -97,6 +97,12 @@ run on synthetic arrays could test instrumentation coverage only; it cannot
 establish the v06 panel gate or represent the frozen selected-window mask
 schedule.
 
+An analytical optimizer-only subcomponent is now present at
+`tools/v212_optimizer_flop_accounting.py`. It computes source-derived Adam/EMA
+arithmetic intervals from the six arms' trainable/EMA shapes and the clipping
+branch, with synthetic formula checks. It is not a full counter, is not
+independently accepted, and does not change the no-profile disposition above.
+
 ## 3. Non-fitting execution and branch-bound contract
 
 Protocol approval alone does not authorize data or label access. A future

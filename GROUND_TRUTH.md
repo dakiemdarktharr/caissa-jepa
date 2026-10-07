@@ -1,5 +1,23 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; optimizer-only FLOP accounting)
+
+- Added `tools/v212_optimizer_flop_accounting.py`, an analytical translation of
+  the current scratch Adam/EMA source into FP arithmetic counts and clipping-
+  branch intervals. It cross-checks trainable/EMA coordinate and tensor counts
+  for all six arms. Per update, optimizer-only arithmetic ranges from 136,750
+  to 136,751 FLOPs for direct-leaf, 190,514–190,515 for value-only,
+  209,620–209,621 for each JEPA arm, and 295,062–295,063 for raw-state. Across
+  20×87 scratch updates, branch intervals are recorded in the tool output.
+- Three synthetic formula tests pass; `compileall` and `git diff --check`
+  pass. Powers, square roots, finite predicates and validation/copy work are
+  reported outside FLOPs. This is not optimizer execution, an instrumented
+  counter, or a total-training comparison. The arm differences are a compute
+  risk signal only; objective-graph/LAPACK work, full counter coverage, source
+  runtime identity and independent acceptance remain open. No profile, data,
+  roots, inference, scores, outcomes or training ran; the ≤5% gate remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; action-validation accounting follow-up)
 
 - Changed `preflight_batch` action validation from a floating-point row sum to
@@ -39,7 +57,7 @@
 ## Latest continuation delta (2026-10-07; LAPACK eigensolver path audit)
 
 - Followed the counter-coverage gap through the pinned NumPy 2.4 reference and Netlib LAPACK source. NumPy documents `_syevd` for the real symmetric covariance; reference `DSYEVD` in eigenvalues-only mode calls `DSYTRD` and `DSTERF`, with conditional matrix scaling. This narrows the required counter path but does not identify the LAPACK binary/build linked by the future runtime or bound its exact operation trace and convergence work. Added these primary-source references to the counter audit; eigensolver coverage remains open pending a pinned implementation trace or reviewed bound.
-- Netlib's reference `DSTERF` source sets a total loop cap of `30*N` (960 iterations for this 32×32 spectrum), giving a finite algorithmic reference bound but not yet an operation-count bound for the linked runtime. The per-update structural `preflight_batch` call also sums 256 one-hot action rows of length 65, adding a fixed 16,384 FP additions per `loss_grad` call. The counter audit now includes this repeated work separately from D03's dataset-level one-time preflight; independent acceptance is still required.
+- Netlib's reference `DSTERF` source sets a total loop cap of `30*N` (960 iterations for this 32×32 spectrum), giving a finite algorithmic reference bound but not yet an operation-count bound for the linked runtime. At this audit's initial checkpoint, per-update `preflight_batch` also summed 256 one-hot action rows of length 65. A later source change replaced that floating reduction with integer nonzero counting; the counter audit now records the 256×65 scan separately from D03's one-time dataset preflight. Independent acceptance is still required.
 - No numerical input, profile, experiment, runtime configuration, data, label, score, outcome, or training operation was read or run. The ≤5% compute gate and all data/pre-fit gates remain unchanged and closed.
 
 ## Latest continuation delta (2026-10-07; static FLOP-counter coverage audit)

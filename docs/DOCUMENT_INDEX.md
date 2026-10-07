@@ -26,7 +26,8 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `docs/METHOD_SPEC_V212_V05.md` | Immutable v05 method-spec archive, including the adopted raw-state contract before optimizer semantics were versioned |
 | `docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md` | Adopted narrow v06 optimizer amendment; it opens no data, profile, inference, or training gate |
 | `two_player/v212_model.py` and `tests/test_v212_model.py` | No-update six-arm objective/gradient graph and synthetic checks; not a trainer, compute profile, or fit authorization |
-| `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md` | Static source inventory of D03 accounting obligations and unresolved eigensolver/preflight coverage; not a counter or profile authorization |
+| `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md` | Static source inventory plus optimizer-only analytical accounting subcomponent; unresolved eigensolver and full-counter coverage, not a profile authorization |
+| `tools/v212_optimizer_flop_accounting.py` and `tests/test_v212_optimizer_flop_accounting.py` | Analytical scratch Adam/EMA arithmetic intervals and synthetic formula checks; not a full counter/profile or fit authorization |
 | `two_player/v212_trajectory_audit.py`, `two_player/v212_window_batch.py`, and `tests/test_v212_window_batch.py` | Exact-rule in-memory episode/window audit and train-only model-batch adapter for synthetic fixtures; no file/data I/O, window selection, trainer, or gate authorization |
 | `two_player/v212_scratch_optimizer.py` and `tests/test_v212_scratch_optimizer.py` | Pure scratch Adam/clipping/EMA arithmetic with synthetic tests; no persistent updates, trainer, or profile |
 | `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` | Rejected preregistration retained as history; ≤5% gate untested and unpassed |
