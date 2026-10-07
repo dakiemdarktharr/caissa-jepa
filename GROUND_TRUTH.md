@@ -1,5 +1,23 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; schedule mask-integrity v03)
+
+- Versioned the schedule validator contract as v03, preserving draft 02 as
+  history. The structural 20×87 validator now requires every horizon's declared
+  `valid_nonterminal`, `terminal_masked`, and `missing_or_truncated` counts must
+  classify exactly 64 windows, and `invalid_transition` must be zero. D03
+  requires rejecting a panel with any invalid selected transition; the adapter
+  also rechecks each local edge before materializing a batch. Added regression
+  cases for unclassified rows and invalid-transition declarations, and updated
+  synthetic fixtures to form a complete partition. See
+  `docs/V212_SCHEDULE_MANIFEST_AUDIT_DRAFT_03.md`.
+- Schedule v03/rejection, receipt-bound, adapter, and replay-focused tests pass
+  29/29. This validates
+  declaration consistency only; it does not prove actual manifest counts,
+  source provenance, or selected-window replay. No research data, profile,
+  roots, scores/outcomes, inference, or training ran. Graph freeze remains
+  **NO**; the ≤5% gate remains **untested and unpassed**. No gate advances.
+
 ## Latest continuation delta (2026-10-07; clipping branch source correction)
 
 - Corrected the six-arm optimizer subcounter's branch disclosure: source

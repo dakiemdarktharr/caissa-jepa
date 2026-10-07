@@ -21,7 +21,7 @@ def _mask_counts(h4=32):
         str(horizon): {
             "valid_nonterminal": h4 if horizon == 4 else 32,
             "terminal_masked": 0,
-            "missing_or_truncated": 0,
+            "missing_or_truncated": 64 - (h4 if horizon == 4 else 32),
             "invalid_transition": 0,
         }
         for horizon in (1, 2, 4)
@@ -105,6 +105,7 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
 
         altered = {arm: _mask_counts() for arm in ARMS}
         altered["recursive-raw-state"]["2"]["valid_nonterminal"] -= 1
+        altered["recursive-raw-state"]["2"]["missing_or_truncated"] += 1
         with self.assertRaisesRegex(ValueError, "differ from replayed batch"):
             validate_actual_mask_roster(altered, _mask_counts())
 

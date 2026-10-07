@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 schedule mask-integrity schema v03
+
+Schema v03 (with draft 02 preserved) requires the three mutually exclusive
+clean-window categories to cover all 64 rows at every horizon and rejects any
+declared invalid-transition count. This matches D03's stop-on-invalid rule and
+the adapter's exact local-transition check. Schedule, replay-receipt, adapter,
+and trajectory tests pass 29/29. This catches inconsistent declarations; the
+actual replay-derived 20×87 schedule and source provenance remain absent.
+Graph freeze is **NO** and ≤5% parity is **untested and unpassed**. No gate
+advanced.
+
 ### 2026-10-07 clipping branch source correction
 
 The scratch optimizer always materializes `grads[key] * clip_scale` for all

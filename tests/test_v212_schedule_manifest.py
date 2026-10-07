@@ -18,7 +18,7 @@ def _mask_counts():
         str(horizon): {
             "valid_nonterminal": 32,
             "terminal_masked": 0,
-            "missing_or_truncated": 0,
+            "missing_or_truncated": 32,
             "invalid_transition": 0,
         }
         for horizon in (1, 2, 4)
@@ -103,6 +103,11 @@ class V212ScheduleManifestTests(unittest.TestCase):
         self.assertEqual(receipt["mask_rows"], 20 * 87 * 6 * 3)
         self.assertEqual(len(receipt["schedule_sha256"]), 64)
 
+    def test_previous_schema_version_is_rejected(self):
+        manifest = dict(self.manifest, schema="caissa.v212.training-schedule.v02")
+        with self.assertRaisesRegex(ValueError, "unsupported schedule manifest schema"):
+            validate_schedule_manifest(manifest)
+
     def test_validated_schedule_snapshot_is_detached_and_immutable(self):
         frozen = validate_and_freeze_schedule_manifest(self.manifest)
         original_seed = self.manifest["seeds"][0]["model_seed"]
@@ -176,23 +181,47 @@ class V212ScheduleManifestTests(unittest.TestCase):
 
         leaf_counts = update["mask_counts_by_arm"]["direct-leaf-value"]["4"]
         previous_valid = leaf_counts["valid_nonterminal"]
+        previous_missing = leaf_counts["missing_or_truncated"]
         leaf_counts["valid_nonterminal"] = 0
+        leaf_counts["missing_or_truncated"] = 64
         try:
             with self.assertRaisesRegex(ValueError, "no valid nonterminal H4"):
                 validate_schedule_manifest(self.manifest)
         finally:
             leaf_counts["valid_nonterminal"] = previous_valid
+            leaf_counts["missing_or_truncated"] = previous_missing
 
     def test_mask_rows_must_match_for_all_arms(self):
         update = self.manifest["seeds"][0]["updates"][0]
         counts = update["mask_counts_by_arm"]["single-pair-jepa"]["1"]
         previous = counts["valid_nonterminal"]
+        previous_missing = counts["missing_or_truncated"]
         counts["valid_nonterminal"] = previous - 1
+        counts["missing_or_truncated"] = previous_missing + 1
         try:
             with self.assertRaisesRegex(ValueError, "identical per-horizon mask"):
                 validate_schedule_manifest(self.manifest)
         finally:
             counts["valid_nonterminal"] = previous
+            counts["missing_or_truncated"] = previous_missing
+
+    def test_mask_counts_reject_unclassified_rows_and_invalid_transitions(self):
+        counts = self.manifest["seeds"][0]["updates"][0]["mask_counts_by_arm"]
+        horizon = counts["multi-step-jepa"]["1"]
+        original = dict(horizon)
+        horizon["missing_or_truncated"] = 0
+        try:
+            with self.assertRaisesRegex(ValueError, "classify all 64"):
+                validate_schedule_manifest(self.manifest)
+        finally:
+            horizon.update(original)
+
+        horizon["invalid_transition"] = 1
+        try:
+            with self.assertRaisesRegex(ValueError, "invalid selected transitions"):
+                validate_schedule_manifest(self.manifest)
+        finally:
+            horizon.update(original)
 
     def test_model_seed_roster_must_be_distinct_and_nonnegative(self):
         first, second = self.manifest["seeds"][0], self.manifest["seeds"][1]

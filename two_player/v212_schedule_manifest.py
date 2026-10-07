@@ -16,7 +16,7 @@ from typing import Any
 from .v212_model import ARMS
 
 
-SCHEDULE_SCHEMA = "caissa.v212.training-schedule.v02"
+SCHEDULE_SCHEMA = "caissa.v212.training-schedule.v03"
 TRAIN_GAMES = ("connect4-gravity-6x7", "reversi6")
 HORIZONS = (1, 2, 4)
 MASK_FIELDS = (
@@ -130,6 +130,12 @@ def _validate_mask_counts(value: object, arm: str) -> dict[str, dict[str, int]]:
             upper = BATCH_SIZE * horizon if field == "invalid_transition" else BATCH_SIZE
             _require(count <= upper, "mask count exceeds its horizon/batch bound")
             normalized[field] = count
+        _require(normalized["invalid_transition"] == 0,
+                 "a frozen panel cannot contain invalid selected transitions")
+        classified_rows = sum(normalized[field] for field in (
+            "valid_nonterminal", "terminal_masked", "missing_or_truncated"))
+        _require(classified_rows == BATCH_SIZE,
+                 "mask categories must classify all 64 scheduled windows")
         if arm == "direct-leaf-value" and horizon == 4:
             _require(normalized["valid_nonterminal"] >= 1,
                      "direct-leaf update has no valid nonterminal H4 leaf")
