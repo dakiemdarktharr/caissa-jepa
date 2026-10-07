@@ -37,6 +37,10 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
         "root_encoder": batch_size * 32,
         "root_value_head": batch_size,
     }
+    # The value-loss heads scale their incoming delta before multiplying by
+    # the tanh derivative. Keep these operations separate from the derivative
+    # site itself so the count cannot be mistaken for (1-z**2) arithmetic.
+    gradient_scale_elements = {"root_value_head": batch_size}
 
     if arm == "direct-leaf-value":
         leaf_rows = valid_rows[4]
@@ -46,6 +50,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
         tanh_elements["direct_leaf_value_head"] = leaf_rows
         derivative_elements["direct_leaf_encoder"] = leaf_rows * 32
         derivative_elements["direct_leaf_value_head"] = leaf_rows
+        gradient_scale_elements["direct_leaf_value_head"] = leaf_rows
     else:
         for step in range(1, 5):
             rows = active_rows[step]
@@ -63,6 +68,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
             bias_adds[f"rollout_value_h{horizon}"] = rows
             tanh_elements[f"rollout_value_h{horizon}"] = rows
             derivative_elements[f"rollout_value_h{horizon}"] = rows
+            gradient_scale_elements[f"rollout_value_h{horizon}"] = rows
 
         for horizon in JEPA_HORIZONS.get(arm, ()):
             rows = valid_rows[horizon]
@@ -70,9 +76,10 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
             tanh_elements[f"ema_target_encoder_h{horizon}"] = rows * 32
 
     tanh_derivative_flops = 3 * sum(derivative_elements.values())
+    gradient_scale_multiplications = sum(gradient_scale_elements.values())
     return {
         "schema": "caissa.v212.model-activation-bias-flops.v01",
-        "scope": "affine bias additions, tanh element counts, and explicit tanh-derivative arithmetic in one 64-window invocation",
+        "scope": "affine bias additions, tanh element counts, explicit tanh-derivative arithmetic, and pre-derivative value-gradient scaling in one 64-window invocation",
         "arm": arm,
         "horizon_valid_rows": valid_rows,
         "active_prefix_rows": active_rows,
@@ -87,9 +94,14 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
             "one_minus_square_subtractions": sum(derivative_elements.values()),
             "gradient_multiplications": sum(derivative_elements.values()),
         },
+        "pre_derivative_gradient_scale_elements_by_call_site": gradient_scale_elements,
+        "pre_derivative_gradient_scale_multiplications": gradient_scale_multiplications,
+        "counted_activation_gradient_array_flops": (
+            tanh_derivative_flops + gradient_scale_multiplications),
         "limitations": [
             "Analytical shape count only; the objective graph was not executed.",
             "Tanh calls are reported as nonlinear operations, not FLOPs.",
+            "The separately reported upstream gradient scales cover the array multiply of delta by a loss coefficient; scalar coefficient construction is outside this subcounter.",
             "Other elementwise loss/gradient arithmetic, reductions, eigvalsh/LAPACK, matmuls, preflight, optimizer, and runtime work are excluded.",
             "Masks must come from an exact-rule-audited schedule before any D03 profile.",
             "This subcounter cannot establish total training-FLOP parity or authorize profile/fit.",

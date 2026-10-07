@@ -2,6 +2,21 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 value-gradient scaling inventory correction
+
+Source reinspection found that the value-head gradient expressions multiply
+the loss-scaled delta by `(1-z²)`. The activation subcounter already counted
+the derivative's square, subtraction, and derivative multiplication, but did
+not separately count the preceding array-scale multiply. It now reports those
+operations by value-head call site and provides a combined activation-gradient
+array subtotal. Under fully valid illustrative masks, the added count is 256
+operations per recurrent arm and 128 for direct-leaf. Scalar coefficient
+construction and other elementwise/reduction/LAPACK operations remain outside
+the subcounter. This correction affects no model objective and is not a total
+compute or parity result; all profile/training gates remain closed.
+The focused model/optimizer/matmul/activation regression set passes 20/20,
+with `compileall` and `git diff --check` passing.
+
 ### 2026-10-07 V2.12 raw-state and six-arm compute review follow-up
 
 An approved read-only `gpt-6-luna/high` reviewer found the adopted raw-state

@@ -46,7 +46,7 @@ here.
 | `scratch_adam_ema_step` | Input validation/copies, global gradient-square/reduction, clipping multiplication, first/second moments, bias-corrected Adam, parameter update, and EMA for the three JEPA arms | `tools/v212_optimizer_flop_accounting.py` gives an analytical per-arm formula for this helper and bounds `norm <= 5`/`norm > 5`; zero norm uses the no-division branch. It is a subcomponent only, not an executed counter. Keep scratch arrays disposable; report validation, copies and finite checks outside FLOPs |
 | Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
 | Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
-| Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, and the square/subtract/multiply sequence used by each explicit `1-z**2` backward derivative | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. Other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain separate |
+| Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, the square/subtract/upstream-gradient multiply at each explicit `1-z**2` derivative, and separately the value-loss delta scaling before the derivative multiply | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. The upstream array scales are separate to prevent double-counting; scalar coefficient construction and other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain outside this subcounter |
 
 ## Required branch accounting
 
@@ -160,8 +160,14 @@ No data, game positions, model graph execution, profile, or training was used.
 bias-add output, each `tanh` element, and the explicit elementwise derivative
 `1-z**2` (square, subtraction, and gradient multiplication), using the same
 64-row horizon and shared-prefix masks. An AST check in the tests asserts the
-four current `np.tanh` source sites. Three synthetic tests verify all six
-full-valid arm totals and mask-dependent rows.
+four current `np.tanh` source sites. Four synthetic/source tests verify all six
+full-valid arm totals, mask-dependent rows, and the value-loss scaling sites.
+
+The follow-up AST guard covers the three value-head gradient scale assignments
+and confirms their explicit multiplication structure. The focused
+model/optimizer/matmul/activation regression set passes 20/20; `compileall` and
+`git diff --check` pass. These synthetic/source checks still do not execute
+the graph or establish a full counter.
 
 For an illustrative fully valid batch, bias additions range from 8,384
 (direct-leaf) to 73,536 (raw-state), `tanh` element counts range from 4,224 to
@@ -173,6 +179,19 @@ total compute or parity. The accounting tests use only synthetic masks and do
 not execute the graph. The combined validation separately includes existing
 no-update model tests on synthetic fixture arrays. No real data or profile was
 used, and no gate opens.
+
+### Value-loss gradient scaling correction (2026-10-07)
+
+Source reinspection found a multiply immediately before the tanh-derivative
+multiply in each value-head gradient expression: the upstream value delta is
+scaled by its loss coefficient. The earlier derivative-only count correctly
+covered `z**2`, `1-z**2`, and multiplication by that derivative, but did not
+include this separate array scaling operation. The activation subcounter now
+reports the upstream scaling multiplications by call site and a combined
+activation-gradient array subtotal; scalar coefficient construction remains
+outside it. Fully valid illustrative masks add 256 such multiplications for
+the recurrent arms and 128 for direct-leaf. This correction changes no method
+or objective, and does not cover other elementwise/reduction work or LAPACK.
 
 ## Primary implementation references checked
 

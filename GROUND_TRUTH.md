@@ -22,6 +22,25 @@
   ran during the review. Preserve all existing negative results and novelty
   risks; no superiority or Q1-readiness claim is supported.
 
+## Latest continuation delta (2026-10-07; value-gradient scale subcounter correction)
+
+- Source reinspection of the activation accounting found that value-head
+  gradients multiply the loss-scaled delta by the tanh derivative. The prior
+  derivative-only inventory counted the derivative square, subtraction, and
+  derivative multiplication, but omitted that distinct upstream array-scale
+  multiplication. `tools/v212_model_activation_flop_accounting.py` now reports
+  the scales separately and includes them in a combined activation-gradient
+  array subtotal, without double-counting the derivative multiplication.
+- Fully valid illustrative masks add 256 upstream array multiplications per
+  recurrent arm and 128 for direct-leaf. Scalar coefficient construction,
+  other loss/reduction work, and eigensolver remain excluded; this is still a
+  partial analytical subcounter, not total FLOPs or a parity result.
+- The focused four-module regression run passes 20/20, including synthetic
+  accounting checks and the source-site guard; `compileall` and
+  `git diff --check` pass. No game states, roots, profiles, inference, scores,
+  outcomes, or training were used. The six-arm ≤5% compute gate remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; activation/bias subcounter)
 
 - Added `tools/v212_model_activation_flop_accounting.py` for affine bias
