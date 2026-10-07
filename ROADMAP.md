@@ -2999,3 +2999,9 @@ counter or execution trace. Its three standard-library tests pass under Python
 3.11.17 and 3.14.7. The locked 3.11.9 / NumPy 2.4.6 runtime is unavailable in
 the local interpreters, so the locked NumPy reduction path was not verified.
 No compute, data, or fit gate advanced.
+
+Publication: code milestone `c1b503a` is local only. `origin/main` was last
+read at `86eb81b` before the ordinary push attempt. The push and a later
+read-only verification both stopped because SSH rejected ownership of
+`/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`. No force push or alternate
+write path was used; retry normal publication after SSH access is restored.

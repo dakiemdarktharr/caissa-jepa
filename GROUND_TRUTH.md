@@ -15,6 +15,10 @@
   No runtime/profile, data, roots, inference, scoring, simulation, or training
   ran. This inventory does not clear counter coverage, runtime identity,
   graph-freeze, or ≤5% parity gates.
+- Local code milestone `c1b503a` is not confirmed on GitHub. `origin/main` was
+  last read as `86eb81b` before the ordinary push attempt; the push and a later
+  read both stopped at the system SSH-config ownership error. No force push or
+  alternate write path was used.
 
 ## Latest continuation delta (2026-10-07; V2.12 runtime observation utility)
 
