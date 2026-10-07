@@ -61,6 +61,19 @@ here.
 
 ## Independent source review follow-up (2026-10-07)
 
+An approved read-only source-wide sweep across `_encode`, `_value`,
+`_regularize`, `loss_grad`, and `scratch_adam_ema_step` found plausible
+source-level owners for the explicit FP arithmetic sites and confirmed the
+corrected pooled-objective scalar inventory. This is **not** acceptance of a
+complete counter: `np.linalg.eigvalsh` and the linked LAPACK work remain
+unbounded for the actual runtime; candidate reduction shapes do not establish
+the loaded kernel/tree; per-update comparisons, integer/indexing, preflight,
+finite checks, and branch bookkeeping are incomplete; and the objective plus
+optimizer are not joined by an integrated trainer trace. Square, residual,
+activation, and reduction inventories intentionally overlap and must be
+reconciled before any aggregate is reported. Graph freeze remains **NO** and
+the ≤5% gate is **untested and unpassed**.
+
 An approved read-only `gpt-6-luna/high` review found an undercount in the
 Python scalar gradient-norm reduction. `V212Model.loss_grad` computes
 `sum(np.sum(g ** 2) for g in grad.values())`; built-in `sum` starts from zero

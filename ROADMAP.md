@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 source-wide arithmetic ownership review
+
+An approved read-only `gpt-6-luna/high` sweep found plausible source-level
+owners for explicit FP arithmetic in the encoder/value heads, regularizer,
+`loss_grad`, and scratch Adam/EMA code; it confirmed the corrected scalar
+subtotal **46 / 30 / 46 / 22 / 3 / 30**. It did not accept a complete counter.
+The linked-LAPACK eigensolver, exact loaded reduction/runtime behavior,
+complete per-update non-FP bookkeeping, and integrated trainer/update trace
+remain open. Several shape reports overlap intentionally and need a single
+reconciled ledger before summation. No code/model/data/profile/outcome work ran;
+graph freeze stays **NO** and the ≤5% gate remains **untested and unpassed**.
+
 ### 2026-10-07 objective scalar counter correction
 
 The source AST audit found the scalar root-value gradient coefficient

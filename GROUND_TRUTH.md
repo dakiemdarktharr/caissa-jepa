@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; six-arm arithmetic ownership review)
+
+- The approved read-only `gpt-6-luna/high` source sweep found plausible
+  source-level owners for the explicit arithmetic in `_encode`, `_value`,
+  `_regularize`, `loss_grad`, and the scratch Adam/EMA helper. It independently
+  confirmed the latest scalar correction and all-valid scalar subtotals
+  **46 / 30 / 46 / 22 / 3 / 30**. No files or tests were changed by the
+  reviewer.
+- The sweep explicitly did **not** find full counter coverage. Open items
+  include the linked-LAPACK eigensolver path, exact loaded reduction/runtime
+  behavior, complete per-update non-FP work (preflight, comparisons, indexing,
+  finite guards and branches), and an integrated trainer trace proving one
+  objective/optimizer call per scheduled update. Square/residual/activation/
+  reduction reports also have intentional overlaps that need one reconciled
+  ledger before summation.
+- No data, model, profile, roots, inference, scores/outcomes, or training ran.
+  Graph freeze remains **NO**; the ≤5% parity gate remains **untested and
+  unpassed**. No gate advanced.
+
 ## Latest continuation delta (2026-10-07; objective scalar counter correction)
 
 - AST review found two scalar operations missing from the horizon-objective
