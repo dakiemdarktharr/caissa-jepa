@@ -270,19 +270,22 @@ no gate changed.
   one-hot acceptance rule; no total-work reduction is inferred. Account for
   this scan and the other comparison/indexing work on every update. Independent
   review must accept the treatment before profile execution.
-- The currently available synthetic runtime (NumPy 2.5.3 / Python 3.14.7) is
-  not the locked research runtime. No runtime fingerprint, BLAS configuration,
-  host identity, counter version, or profile result is inferred from it.
+- A temporary Linux runtime now has CPython 3.11.9 / NumPy 2.4.6 and observed
+  scipy-openblas 0.3.31.188.0 metadata. It is a package-version match but not
+  the declared Windows CPU environment or a D03 profile. The mapped-file
+  observation remains non-atomic and does not attest executed bytes or prove
+  the final training process's linked LAPACK implementation.
 
 The square-as-multiply semantic convention and candidate ordinary-reduction
 shape convention now have narrow independent dispositions; neither establishes
-exact loaded-kernel counts. Next, verify the source-expanded `np.std` path
-against the locked NumPy runtime, resolve the linked eigensolver and complete
-branch bounds, and implement/validate a counter against the frozen objective
-and optimizer traces. A synthetic instrumentation check can establish coverage
-only; data/preflight authorization, all six reviewed graphs, complete branch
-bounds, and separate pre-fit gates remain required before a D03 profile. No
-gate opens from this audit.
+exact loaded-kernel counts. NumPy 2.4.6 source is now available in the local
+version-matched Linux environment, but the target runtime remains unfrozen.
+Continue resolving the full linked eigensolver path, helper bounds, and
+remaining source ownership; then implement/validate a counter against the
+frozen objective and optimizer traces. A synthetic instrumentation check can
+establish coverage only; data/preflight authorization, all six reviewed
+graphs, complete branch bounds, and separate pre-fit gates remain required
+before a D03 profile. No gate opens from this audit.
 
 ## Optimizer-only analytical accounting follow-up (2026-10-07)
 
@@ -586,3 +589,32 @@ actual schedule masks, native reduction behavior, and LAPACK can change the
 result. It does not establish pass/fail or authorize profile/fit. Three
 synthetic algebra/contract tests pass; no model/data/profile/runtime operation
 was performed, and no gate changed.
+
+## DSTERF reference-path iteration bound (2026-10-07)
+
+`tools/v212_dsterf_iteration_bound.py` bounds the source-visible
+add/subtract/multiply/divide sites in the OpenBLAS v0.3.31 reference DSTERF
+path for N=32, with a separate source bound for at most 16 DLAE2 2×2 solves.
+The pinned source files are [DSTERF](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsterf.f)
+and [DLAE2](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dlae2.f).
+It uses the documented 30N maximum shifted iterations (960), 12 arithmetic
+operations per inner-loop element, 8 shift operations, 2 tail operations, and
+two multiplications per convergence check. It also includes the initial
+split scan (at most N−1 checks) and up to N(N−1) additional no-shift
+convergence checks for deflation, 2×2 completion, and the iteration-limit
+path. This gives 428,497 source-visible add/subtract/multiply/divide
+operations per invocation. The 48 exponentiation-by-two sites are reported
+separately; treating every one as a multiplication gives the sensitivity value
+428,545.
+
+An approved read-only `gpt-6-luna/high` review found the revised arithmetic
+bound conservative for this declared partial scope. The first 428,466 draft
+was low because it omitted no-shift convergence scans; that value is retained
+here as a rejected intermediate, not as a result. The reviewed bound counts
+DLAE2 explicitly but excludes DSYEVD wrapper/scaling, DSYTRD and its helper
+paths, DLASCL/DLANST/DLAMCH/DLAPY2/DLASRT internals, non-FLOP work, and any
+future linked-binary mismatch. It is not a complete eigensolver bound, total
+counter, parity result, or profile authorization. Four standard-library tests,
+targeted `compileall`, and `git diff --check` pass on the Python 3.11.9
+temporary environment. No covariance, eigenvalue, model, data, profile,
+service, or training operation was run; D03 remains unpassed.

@@ -2,6 +2,18 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 DSTERF source-bound correction
+
+Added a reviewed, deliberately partial source-operation bound for the
+OpenBLAS v0.3.31 reference DSTERF N=32 path: 428,497 add/subtract/multiply/
+divide operations per call, plus 48 separately reported power sites (or
+428,545 if each is treated as one multiply). Independent review caught that
+an earlier 428,466 draft omitted non-shift convergence scans; the corrected
+value includes them and tightens the disjoint initial split scan. DSYEVD,
+DSYTRD, scaling/helper internals, and the actual future linked binary remain
+unbounded, so this does not clear counter coverage or parity. Four focused
+tests and static checks pass; no model/runtime profile ran.
+
 ### 2026-10-07 exact-version runtime observation
 
 CPython 3.11.9 and NumPy 2.4.6 are now available together in a temporary

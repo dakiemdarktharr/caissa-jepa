@@ -1,5 +1,27 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; DSTERF source-bound correction)
+
+- Added `tools/v212_dsterf_iteration_bound.py` for the reference OpenBLAS
+  v0.3.31 DSTERF N=32 path, with DLAE2 separately bounded. It covers up to
+  960 shifted QL/QR iterations, both per-iteration convergence scans, the
+  initial N−1 block-split scan, up to N(N−1) no-shift completion/limit scans,
+  and at most 16 DLAE2 calls. The result is 428,497 source-visible
+  add/subtract/multiply/divide operations per invocation; 48 power sites are
+  separate, or 428,545 if all map to one multiplication.
+- Independent read-only review found the first 428,466 draft omitted
+  no-shift convergence scans and was low. The corrected bound adds those
+  scans; it also tightens the initial block-split scan after confirming split
+  indices are not revisited. This correction is preserved as negative
+  intermediate evidence. Four focused formula/contract tests pass, with
+  targeted `compileall` and `git diff --check` passing on Python 3.11.9.
+- Scope remains partial: DSYEVD wrapper/scaling, DSYTRD and helper paths,
+  DLASCL/DLANST/DLAMCH/DLAPY2/DLASRT internals, actual linked-binary identity,
+  and non-FLOP work are excluded. It is not a complete eigensolver bound or
+  six-arm counter. No model, covariance/eigenvalue operation, data, profile,
+  service, or training ran; graph freeze remains **NO**, and ≤5% remains
+  **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; exact-version runtime observation)
 
 - The host contains CPython 3.11.9. A temporary environment under `/tmp`
