@@ -3573,3 +3573,17 @@ by the request within this candidate contract only. Caller provenance is not
 independently authenticated, runtime identity and receipt binding remain open,
 and no systemd/request-adapter integration or service run occurred. No gate
 advanced.
+
+### 2026-10-07 explicit conversion source-site accounting
+
+Added a deterministic AST inventory for explicit scalar `float()`/`int()`
+casts and `np.asarray(..., dtype=...)` calls in the model and scratch optimizer.
+The 45 calls are now owned in the source crosswalk: scalar conversions are
+reported separately; array dtype requests have a partial owner because actual
+casts, copies, element counts, and runtime cost are not inferred. The
+crosswalk now has 129 explicitly unresolved sites, down from 174, while
+`full_counter`, graph-freeze, and parity flags remain false. The combined
+conversion/crosswalk/partial-ledger suite passes 17/17, with compile and
+whitespace checks. This is source traceability only; runtime identity, the eigensolver, trainer/replay,
+selected windows, frozen 20×87 masks, and six-arm ≤5% parity remain open.
+No profile, model, inference, or training ran; no gate advanced.

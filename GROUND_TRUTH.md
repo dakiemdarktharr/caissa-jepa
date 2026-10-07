@@ -4445,3 +4445,23 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   binding remain open. The candidate is not integrated with systemd or the
   request adapter. No service, request, inference, OOM, data, score, match,
   outcome, or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; explicit numeric-conversion inventory)
+
+- Added a syntax-only owner for explicit `float()`, `int()`, and
+  `np.asarray(..., dtype=...)` calls in the model and scratch optimizer. It
+  inventories 45 source calls: 18 scalar-float casts, 14 scalar-int casts,
+  and 13 array dtype requests. The inventory digest is
+  `901c6249d9216348699f2358630fe2b3e3017fb862ab978129acbe36d2ee3363`; the
+  updated 970-site crosswalk digest is
+  `e3a9bad538589841ea4f48c468a41ab9d7ff676d14392364cb1bd4b2fbf845dd`.
+- Explicitly unresolved syntax sites decrease from 174 to 129; array dtype
+  requests remain partial, and scalar casts are reported separately. This
+  does not prove casts/copies occur or bound their runtime. The focused
+  inventory/crosswalk suite passes 10/10; with source-operation and
+  partial-ledger checks, the combined suite passes 17/17. The partial-ledger
+  assertion now follows the current delegated preflight owner rather than a
+  stale abbreviated expected object. Compile and whitespace checks pass.
+  The eigensolver, runtime identity, full counter, graph freeze, trainer and
+  frozen schedule, and six-arm ≤5% parity remain open/unpassed. No model,
+  data, eigensolver, profile, inference, or training ran; no gate advanced.

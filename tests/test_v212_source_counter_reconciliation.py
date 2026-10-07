@@ -86,8 +86,9 @@ class SourceCounterReconciliationTests(unittest.TestCase):
         self.assertEqual(preflight_any["status"], "candidate_owner_partial")
         self.assertEqual(finite_array_all["status"], "candidate_owner_partial")
         self.assertEqual(finite_array_isfinite["owner"], "tools/v212_preflight_scan_accounting.py")
-        self.assertEqual(dtype_conversion["status"], "explicitly_unresolved")
-        self.assertIn("dtype conversion", dtype_conversion["scope"])
+        self.assertEqual(dtype_conversion["status"], "candidate_owner_partial")
+        self.assertEqual(dtype_conversion["owner"], "tools/v212_conversion_site_inventory.py")
+        self.assertIn("actual cast, copy", dtype_conversion["scope"])
         self.assertEqual(grad_any["status"], "explicitly_unresolved_non_fp")
         bool_mask_sum = next(site for site in calls
                              if site["detail"] == "mask.sum" and site["function"] == "loss_grad")

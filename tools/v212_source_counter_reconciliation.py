@@ -292,6 +292,18 @@ def _site_disposition(module: str, site: dict) -> dict:
         }
     if node == "Call":
         target = detail
+        if target in {"float", "int"}:
+            return {
+                "status": "reported_separately",
+                "owner": "tools/v212_conversion_site_inventory.py",
+                "scope": "explicit Python scalar conversion call; call count is inventoried, conversion cost is not a FLOP count",
+            }
+        if target == "np.asarray":
+            return {
+                "status": "candidate_owner_partial",
+                "owner": "tools/v212_conversion_site_inventory.py",
+                "scope": "requested array dtype is inventoried; actual cast, copy, element cardinality, and runtime cost remain unverified",
+            }
         if target == "np.linalg.eigvalsh":
             return {
                 "status": "blocking_unresolved",

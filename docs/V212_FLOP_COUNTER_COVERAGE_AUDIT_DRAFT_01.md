@@ -939,3 +939,27 @@ compiler lowering, or executed bytes, and it is not additive to the
 architecture-specific binary candidate. Eigensolver coverage, graph freeze,
 and the six-arm parity gate remain open; no eigensolver, model, data, profile,
 inference, or training ran.
+
+## Explicit numeric-conversion source-site inventory (2026-10-07)
+
+Added `tools/v212_conversion_site_inventory.py` and connected it to the source
+counter crosswalk. It inventories 45 explicit conversion requests across the
+model and scratch optimizer: 18 `float()` calls, 14 `int()` calls, and 13
+`np.asarray(..., dtype=...)` calls. The AST inventory SHA-256 is
+`901c6249d9216348699f2358630fe2b3e3017fb862ab978129acbe36d2ee3363`; the
+updated crosswalk digest is
+`e3a9bad538589841ea4f48c468a41ab9d7ff676d14392364cb1bd4b2fbf845dd`.
+
+The crosswalk now reports scalar casts separately and assigns array dtype
+requests to a partial owner. It does not assert that any array is actually
+cast or copied, infer element cardinalities, or price conversion/allocation
+runtime. Across the 970 AST sites, explicitly unresolved arithmetic/calls
+fall from 174 to 129; 13 array-conversion requests remain partial and 32
+scalar casts are reported separately. The focused inventory/crosswalk suite
+passes 10/10. This is traceability only: runtime conversions, the blocking
+eigensolver, full counter, graph freeze, trainer/schedule, and six-arm parity
+remain open or unpassed. No model, data, eigensolver, profile, inference, or
+training ran. The combined 17-test conversion/crosswalk/partial-ledger suite
+also passes; the partial-ledger regression now checks that preflight fields
+match the current delegated preflight owner instead of a stale abbreviated
+snapshot.
