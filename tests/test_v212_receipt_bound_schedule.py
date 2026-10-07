@@ -2,9 +2,10 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from tests.test_v212_schedule_manifest import _synthetic_manifest
 from two_player.games import BoardGame
 from two_player.v212_model import ARMS
-from two_player.v212_schedule_manifest import ValidatedScheduleManifest
+from two_player.v212_schedule_manifest import validate_and_freeze_schedule_manifest
 from two_player.v212_receipt_bound_schedule import (
     ReceiptBoundBatchResult,
     build_train_replay_receipt_index,
@@ -121,23 +122,16 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
         games = {self.game.name: self.game}
         receipt_index = build_train_replay_receipt_index([self.episode], games)
         window = self.audit.windows[0]
-        identity = (window.game, window.episode_id, window.start_ply)
-        record = {
-            "id": identity,
-            "payload_sha256": receipt_index.window_records[identity]["payload_sha256"],
-        }
-        update = {
-            "window_ids": [record] * 64,
-            "mask_counts_by_arm": {arm: _mask_counts() for arm in ARMS},
-            "batch_payload_sha256": "d" * 64,
-        }
-        seed = {"model_seed": 17, "updates": [update] * 87}
-        manifest = ValidatedScheduleManifest("a" * 64, tuple([seed] * 20))
+        manifest = validate_and_freeze_schedule_manifest(_synthetic_manifest())
+        update = manifest.seeds[0]["updates"][0]
+        model_seed = manifest.seeds[0]["model_seed"]
         models = {
-            arm: SimpleNamespace(config=SimpleNamespace(arm=arm, seed=17))
+            arm: SimpleNamespace(config=SimpleNamespace(arm=arm, seed=model_seed))
             for arm in ARMS
         }
-        scheduled = SimpleNamespace(batch_payload_sha256="d" * 64)
+        scheduled = SimpleNamespace(
+            batch_payload_sha256=update["batch_payload_sha256"]
+        )
 
         def run_scheduled(*args, pre_model_call=None, **kwargs):
             self.assertTrue(callable(pre_model_call))
@@ -145,6 +139,8 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
             return scheduled
 
         with (
+            patch("two_player.v212_receipt_bound_schedule.validate_window_receipt_binding",
+                  return_value=["b" * 64] * 64),
             patch("two_player.v212_receipt_bound_schedule._observed_mask_counts",
                   return_value=_mask_counts()),
             patch("two_player.v212_receipt_bound_schedule.compute_scheduled_panel_batch",
@@ -155,11 +151,11 @@ class V212ReceiptBoundScheduleTests(unittest.TestCase):
                 seed_ordinal=0, update_index=1,
             )
         self.assertIsInstance(result, ReceiptBoundBatchResult)
-        self.assertEqual(result.schedule_sha256, "a" * 64)
+        self.assertEqual(result.schedule_sha256, manifest.schedule_sha256)
         self.assertEqual(result.scheduled, scheduled)
         self.assertEqual(
             result.ordered_episode_receipt_sha256,
-            (receipt_index.episode_receipt_sha256[(self.game.name, "bound-fixture")],),
+            ("b" * 64,),
         )
 
 

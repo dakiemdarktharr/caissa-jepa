@@ -35,12 +35,25 @@ WINDOWS_PER_GAME = 928
 BATCH_PAYLOAD_SCHEMA = "caissa.v212.scheduled-batch-payload.v01"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class ValidatedScheduleManifest:
-    """Immutable schedule snapshot plus its one-time structural receipt."""
+    """Detached, immutable schedule snapshot validated exactly once.
+
+    Instances can only be built from a raw manifest. The constructor performs
+    the complete structural validation before publishing the frozen rows, so
+    callers cannot supply a forged digest or mutable rows under this type.
+    """
 
     schedule_sha256: str
     seeds: tuple[Mapping[str, Any], ...]
+
+    def __init__(self, manifest: Mapping) -> None:
+        snapshot = deepcopy(manifest)
+        receipt = validate_schedule_manifest(snapshot)
+        object.__setattr__(self, "schedule_sha256", str(receipt["schedule_sha256"]))
+        object.__setattr__(
+            self, "seeds", tuple(_freeze_json(seed) for seed in snapshot["seeds"])
+        )
 
 
 def _freeze_json(value: Any) -> Any:
@@ -266,9 +279,4 @@ def validate_and_freeze_schedule_manifest(
     trainer should pass this immutable value to every scheduled update rather
     than revalidating the entire 20×87 declaration on each call.
     """
-    snapshot = deepcopy(manifest)
-    receipt = validate_schedule_manifest(snapshot)
-    return ValidatedScheduleManifest(
-        schedule_sha256=str(receipt["schedule_sha256"]),
-        seeds=tuple(_freeze_json(seed) for seed in snapshot["seeds"]),
-    )
+    return ValidatedScheduleManifest(manifest)

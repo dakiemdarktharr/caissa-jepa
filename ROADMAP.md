@@ -11,15 +11,19 @@ six-arm call. The receipt index is built once, not by replaying the whole
 collection per update. A separate builder validates a detached 20×87 manifest
 snapshot once and freezes its nested rows; scheduled calls reuse that object
 without rescanning the full manifest. The synthetic schedule test verifies
-detachment and immutability. Five receipt-bound tests cover the other
-components; the high-level coordination fixture uses a synthetic frozen row
-and mocks the materialized batch and paired-call helper, so it does not prove
-an end-to-end data batch. A pre-model callback checks masks on the one read-only
-materialized batch and rejects before any arm call; a new scheduled-call test
-checks that failure behavior. This removes duplicate adapter materialization,
+detachment and immutability. The snapshot type's public constructor now accepts
+only a raw manifest and performs complete validation itself, preventing
+caller-supplied digests/mutable rows from masquerading as validated. Five
+receipt-bound tests cover the other components; the high-level coordination
+fixture uses a structurally valid synthetic 20×87 schedule but mocks
+row-to-receipt binding, mask extraction, and the paired-call helper, so it does
+not prove an end-to-end data batch. A pre-model callback checks masks on the
+one read-only materialized batch and rejects before any arm call; a new
+scheduled-call test checks that failure behavior. This removes duplicate
+adapter materialization,
 while the callback adds one preflight and each arm still repeats its own.
 The seam still allows direct `loss_grad` bypass. The focused episode/trajectory/
-schedule/adapter/model suite passes 43/43 under Python 3.14.7/temporary NumPy
+schedule/adapter/model suite passes 44/44 under Python 3.14.7/temporary NumPy
 2.5.3, not the locked runtime; compile and whitespace checks pass. No research
 data or compute was used. Next: independent review of the seam, then build a
 true exclusive trainer boundary only after manifest/replay and compute

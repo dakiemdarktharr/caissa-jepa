@@ -6,6 +6,7 @@ from two_player.v212_model import ARMS
 from two_player.v212_schedule_manifest import (
     SCHEDULE_SCHEMA,
     TRAIN_GAMES,
+    ValidatedScheduleManifest,
     scheduled_batch_payload_sha256,
     validate_and_freeze_schedule_manifest,
     validate_schedule_manifest,
@@ -113,6 +114,12 @@ class V212ScheduleManifestTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             frozen.seeds[0]["updates"][0]["update_index"] = 99
         self.assertEqual(len(frozen.schedule_sha256), 64)
+
+    def test_validated_snapshot_cannot_be_forged_with_caller_rows_or_digest(self):
+        with self.assertRaises(TypeError):
+            ValidatedScheduleManifest("a" * 64, ())
+        with self.assertRaisesRegex(ValueError, "exactly 20 paired seed records"):
+            ValidatedScheduleManifest({"schema": SCHEDULE_SCHEMA, "seeds": []})
 
     def test_missing_update_and_misplaced_update_are_rejected(self):
         updates = self.manifest["seeds"][0]["updates"]
