@@ -2,6 +2,27 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 owner-reconciled partial FLOP ledger
+
+Added `tools/v212_partial_flop_ledger.py` to combine source-covered candidate
+FP arithmetic using the unique owner fields from the counter audit. It excludes
+known square/activation/reduction overlaps and reports effective-rank and
+optimizer branch intervals. Four focused accounting tests, targeted compile,
+and whitespace validation pass; the combined ledger/subcounter suite passes
+55/55 under Python 3.14.7 / NumPy 2.5.3 (not the locked runtime). Independent
+static review found no overlap defect and confirmed the masked-fixture
+coverage follow-up.
+
+For illustrative all-valid masks, the source-covered per-invocation intervals
+are 9,540,294–9,540,390 (multi-step JEPA), 7,885,496–7,885,592 (single-pair),
+27,130,644–27,130,740 (raw-state), 7,038,991–7,039,087 (value-only),
+4,588,091–4,588,187 (direct-leaf), and 7,885,496–7,885,592 (single-horizon).
+Raw-state therefore carries a substantial known-work parity risk. These counts
+exclude linked LAPACK/runtime operations, several non-FP and unsupported
+categories, and replay-derived 20×87 masks; they are not total FLOPs, a parity
+result, or authorization to fit. Graph freeze remains **NO** and ≤5% remains
+**untested and unpassed**.
+
 ### 2026-10-07 raw-state and six-arm freeze review
 
 An approved read-only `gpt-6-luna/high` review found the adopted v05/v06

@@ -67,7 +67,7 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray]) -> dict:
             residual_subtractions + square_ops),
         "limitations": [
             "Shape inventory only; no masks were inferred from game data and the model graph was not executed.",
-            "The square-to-multiply treatment is an explicit candidate convention, not yet frozen by an independent counter review.",
+            "An approved review accepts one candidate multiplication per fixed-shape square element under a semantic source-level convention; this does not characterize the loaded NumPy power kernel.",
             "NumPy means/sums, scalar coefficients and weighted accumulation are excluded from this subcounter.",
             "Gradient, softmax, regularizer, derivative, bias, matmul, eigensolver/LAPACK, optimizer, preflight, runtime and non-FLOP work are excluded.",
             "This cannot establish total six-arm compute parity or authorize a profile/fit.",

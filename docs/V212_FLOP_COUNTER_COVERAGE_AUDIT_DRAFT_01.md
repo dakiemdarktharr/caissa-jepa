@@ -93,6 +93,33 @@ and independent review. A complete aggregation also requires the replay-derived
 the scheduled objective and optimizer calls. Graph freeze remains **NO** and
 the ≤5% gate remains **untested and unpassed**.
 
+### Owner-reconciled partial ledger (2026-10-07)
+
+`tools/v212_partial_flop_ledger.py` composes the currently assigned source-level
+FP components for one 64-window invocation. It selects only the owner fields
+from the partition above, removes the activation/square and residual/square
+overlaps, takes ordinary reductions from schema-v04 owner rows, and keeps
+effective-rank and optimizer branches as separate lower/upper intervals. Its
+regression suite checks component summation, all six arm totals, a masked
+fixture, the direct-leaf H4 rejection, and explicit withholding of both parity
+and graph freeze. An approved read-only follow-up found no owner/overlap defect
+and confirmed the interval is explicitly limited to this source-covered
+subset. It requested exact mask-dependent fixture expectations; those were
+added for all six arms, and the ledger-level checks now also assert the
+mask-invariant policy and regularizer components. The reviewer ran no tests.
+
+For the illustrative all-valid mask fixture, the source-covered candidate
+intervals per invocation are 9,540,294–9,540,390 (multi-step JEPA),
+7,885,496–7,885,592 (single-pair JEPA), 27,130,644–27,130,740 (recursive
+raw-state), 7,038,991–7,039,087 (value-only latent rollout), 4,588,091–
+4,588,187 (direct-leaf value), and 7,885,496–7,885,592 (single-horizon
+JEPA). Raw-state is a material compute-risk signal within the counted subset.
+These are not total FLOPs, are not aggregated over the 20×87 schedule, use no
+replay-derived masks, and do not establish the ≤5% pass/fail outcome. The
+counter remains incomplete and unreviewed for D03; runtime/reduction/LAPACK,
+non-FP work, and trainer/schedule evidence remain open. No research data,
+profile, roots, inference, outcomes, or training were used.
+
 ## Independent source review follow-up (2026-10-07)
 
 An approved read-only source-wide sweep across `_encode`, `_value`,

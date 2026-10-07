@@ -1,5 +1,37 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; owner-reconciled partial FLOP ledger)
+
+- Added `tools/v212_partial_flop_ledger.py`, which composes the current
+  source-level candidate FP subcounters through sole-owner fields for one
+  64-window model/optimizer invocation. It removes known overlaps, separates
+  effective-rank and clipping branches into intervals, and hard-codes no
+  selected-window schedule. The four partial-ledger tests and the composed
+  source-counter suite pass 55/55; targeted compileall and `git diff --check`
+  pass. Tests ran with Python 3.14.7 and NumPy 2.5.3 from
+  `/tmp/caissa-jepa-pv-deps`, not the locked Python 3.11.9 / NumPy 2.4.6
+  runtime.
+- The approved read-only reviewer found no owner/overlap arithmetic defect.
+  Its initial masked-test coverage caveat was resolved with exact expected
+  values for all mask-dependent component categories on all six arms; the
+  ledger now also explicitly qualifies intervals as bounds on the listed
+  subset only, never on total training FLOPs.
+- Under an illustrative all-valid mask fixture, source-covered candidate
+  intervals are 9,540,294–9,540,390 (multi-step JEPA), 7,885,496–7,885,592
+  (single-pair JEPA), 27,130,644–27,130,740 (recursive raw-state),
+  7,038,991–7,039,087 (value-only latent rollout), 4,588,091–4,588,187
+  (direct-leaf value), and 7,885,496–7,885,592 (single-horizon JEPA) per
+  invocation. The raw-state subtotal is a material compute-risk signal only;
+  the figures omit runtime/LAPACK, multiple non-FP and unsupported categories,
+  and the replay-derived 20×87 schedule. They are not total FLOPs or a parity
+  result.
+- Corrected the residual subcounter's stale square-convention caveat: review
+  accepts one candidate multiply per fixed-shape square element semantically,
+  without claiming the loaded NumPy kernel follows that operation trace.
+- No research data, profile, roots, inference, outcomes, or training ran.
+  The partial ledger is not accepted as the D03 counter; graph freeze remains
+  **NO** and the ≤5% gate remains **untested and unpassed**.
+
 ## Latest continuation delta (2026-10-07; raw-state and six-arm freeze review)
 
 - An approved read-only `gpt-6-luna/high` review found the adopted v05/v06
