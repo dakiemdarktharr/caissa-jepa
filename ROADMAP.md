@@ -24,8 +24,11 @@ the synthetic adapter fixtures cover valid fixed-size conversion plus empty,
 63-row, and 65-row rejection. This implements the v06 batch-size invariant at
 the adapter seam. It does not enforce 32 windows per game, freeze selected
 window order, or establish cross-arm schedule identity; the trainer, exact-rule
-replay manifest, full counter, branch bounds, pinned runtime, and independent
-review of the guard remain absent. No profile or fit is authorized.
+replay manifest, full counter, branch bounds, and pinned runtime remain absent.
+An approved read-only reviewer accepts the adapter's narrow 64-window guard,
+but notes the model graph can still be called directly with other sizes. The
+trainer must prevent that bypass for scheduled updates. No profile or fit is
+authorized.
 
 ### 2026-10-07 V2.12 reduction-shape inventory
 

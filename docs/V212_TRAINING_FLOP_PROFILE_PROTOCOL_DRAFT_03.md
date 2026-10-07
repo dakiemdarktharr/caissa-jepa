@@ -83,8 +83,11 @@ whose length is not exactly 64. The integrated trainer must preserve this
 guard, and the selected-window manifest and replay receipt must prove the same
 batch boundaries for all arms and updates. This adapter check does not establish
 the required 32-windows-per-game composition, selected-window provenance, or
-the frozen 20×87 schedule. The guard itself still requires independent review
-as part of graph freeze.
+the frozen 20×87 schedule. An approved read-only review accepts this guard for
+the adapter's 64-window contract. `preflight_batch` and `loss_grad` still accept
+other sizes for synthetic/model-level use, so the trainer must prove that every
+scheduled model invocation passes through this adapter or enforce the same
+size at its own boundary.
 
 The direct-leaf H4 condition is an implementation-level rejection rule already
 enforced by `two_player/v212_model.py`; it does not change v06 target semantics

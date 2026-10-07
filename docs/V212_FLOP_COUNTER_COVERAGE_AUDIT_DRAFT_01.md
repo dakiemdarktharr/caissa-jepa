@@ -93,8 +93,11 @@ here.
   64 windows per invocation. This closes the adapter's batch-size mismatch, but
   does not enforce the schedule's 32-per-game composition, identical batch
   boundaries across arms, or selected-window provenance. The integrated
-  trainer and manifest/replay receipt must still establish those conditions;
-  independently review the guard before graph freeze.
+  trainer and manifest/replay receipt must still establish those conditions.
+  An approved read-only review accepts the guard for this narrow adapter
+  contract; `preflight_batch` and `loss_grad` remain callable with other batch
+  sizes, so trainer integration must prove the guard cannot be bypassed for
+  scheduled updates.
 - `np.linalg.eigvalsh` is the blocking coverage item: the graph executes a
   32×32 symmetric eigensolver in every arm/update. The pinned NumPy 2.4 public
   docs identify `_syevd`; Netlib's reference `DSYEVD` shows the eigenvalues-

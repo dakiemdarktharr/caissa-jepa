@@ -48,7 +48,10 @@
   now exercise that batch shape and cover empty, 63-window, and 65-window
   rejection. This enforces only the adapter boundary; it does not prove the
   schedule's 32-windows-per-game composition or matching boundaries across all
-  arms and updates. The guard has not had independent code review.
+  arms and updates. An approved read-only reviewer accepts the guard's narrow
+  64-window contract, while noting `preflight_batch`/`loss_grad` can still be
+  called directly with other sizes; the future trainer must prevent bypass for
+  every scheduled update.
 - The adapter/model batch path remains an in-memory conversion fixture, not a
   selected-window manifest, trainer, or exact-rule dataset pipeline. No real
   windows, profile, inference, scores, outcomes, or training ran. Graph freeze
