@@ -27,6 +27,17 @@ class PreflightScanAccountingTests(unittest.TestCase):
         self.assertEqual(report["action_count_nonzero_output_rows"], 256)
         self.assertEqual(report["action_domain_predicate_element_evaluations"], 66_560)
         self.assertEqual(report["action_row_count_predicate_evaluations"], 256)
+        self.assertEqual(report["comparison_elements_by_site_family"], {
+            "action_range_and_binary_checks": 66_560,
+            "policy_index_range": 128,
+            "actor_alternation": 192,
+            "one_hot_count_domains": 256,
+        })
+        self.assertEqual(report["array_comparison_element_evaluations"], 67_136)
+        self.assertEqual(report["scalar_shape_comparison_site_calls"], 15)
+        self.assertEqual(report["finite_array_shape_comparison_calls"], 12)
+        self.assertEqual(report["comparison_ast_site_count"], 13)
+        self.assertEqual(report["comparison_ast_site_occurrences_per_successful_call"], 24)
         self.assertIn("invalid batches may short-circuit",
                       report["predicate_count_assumption"])
         self.assertFalse(report["coverage"]["complete_preflight_inventory"])
@@ -62,6 +73,10 @@ class PreflightScanAccountingTests(unittest.TestCase):
                         if isinstance(node, ast.Call)
                         and isinstance(node.func, ast.Attribute)]
         self.assertIn("isfinite", finite_calls)
+        self.assertEqual(sum(1 for node in ast.walk(preflight)
+                             if isinstance(node, ast.Call)
+                             and isinstance(node.func, ast.Name)
+                             and node.func.id == "_finite_array"), 12)
 
 
 if __name__ == "__main__":

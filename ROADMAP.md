@@ -3529,3 +3529,18 @@ separately reported, ten separately/partially bounded non-FP, one blocking
 eigensolver, 174 unresolved, 458 unresolved non-FP, and 39 unresolved/context-
 owned. The focused crosswalk/preflight/owner suites pass 47/47. Full counter,
 graph freeze and ≤5% parity remain open/unpassed.
+
+### 2026-10-07 preflight comparison cardinality ownership
+
+Extended the preflight scan accounting with comparison output-element
+cardinalities and mapped its 13 Compare AST sites to the partial owner. For
+batch size 64, the counted array families total 67,136 output elements. The
+successful path also reaches 12 shape-helper comparison calls plus three
+scalar/shape guards (15 calls total); these are source site calls, not
+primitive operation or runtime cost. Invalid paths can short-circuit, while
+reductions/membership internals, inversion, indexing/control, and runtime costs
+remain open. The crosswalk digest is
+`edaeee45dd956f8e3c93a283abbbd1349e72dfc7712c2834023ef0846bc57710`, with 59
+partial-owner and 445 explicitly unresolved non-FP sites among 970 AST sites.
+Focused crosswalk/preflight/owner suites pass 65/65. Full counter, runtime
+identity, graph freeze, and ≤5% parity remain open/unpassed.

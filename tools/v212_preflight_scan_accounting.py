@@ -11,6 +11,7 @@ from two_player.games import ACTION_SIZE, FEATURE_SIZE
 
 SCHEMA = "caissa.v212.preflight-scan-accounting.v01"
 HORIZON_STEPS = 4
+FINITE_ARRAY_CALLS_PER_PREFLIGHT = 12
 
 
 def accounting(batch_size: int = 64) -> dict:
@@ -29,6 +30,13 @@ def accounting(batch_size: int = 64) -> dict:
     }
     action_elements = n * HORIZON_STEPS * ACTION_SIZE
     action_rows = n * HORIZON_STEPS
+    array_comparisons = {
+        "action_range_and_binary_checks": 4 * action_elements,
+        "policy_index_range": 2 * n,
+        "actor_alternation": n * (HORIZON_STEPS - 1),
+        "one_hot_count_domains": action_rows,
+    }
+    scalar_shape_comparison_site_calls = 3 + FINITE_ARRAY_CALLS_PER_PREFLIGHT
     return {
         "schema": SCHEMA,
         "scope": "one successful valid-batch preflight_batch path inside one loss_grad invocation",
@@ -41,14 +49,20 @@ def accounting(batch_size: int = 64) -> dict:
         "action_count_nonzero_output_rows": action_rows,
         "action_domain_predicate_element_evaluations": 4 * action_elements,
         "action_row_count_predicate_evaluations": action_rows,
+        "comparison_elements_by_site_family": array_comparisons,
+        "array_comparison_element_evaluations": sum(array_comparisons.values()),
+        "scalar_shape_comparison_site_calls": scalar_shape_comparison_site_calls,
+        "finite_array_shape_comparison_calls": FINITE_ARRAY_CALLS_PER_PREFLIGHT,
+        "comparison_ast_site_count": 13,
+        "comparison_ast_site_occurrences_per_successful_call": 12 + FINITE_ARRAY_CALLS_PER_PREFLIGHT,
         "predicate_count_assumption": (
-            "counts assume a valid batch reaches every conditional operand; invalid batches may short-circuit earlier"
+            "array counts assume a successful batch reaches all predicate operands; invalid batches may short-circuit earlier; one-hot count comparisons operate on disjoint present/absent transitions"
         ),
         "coverage": {
             "complete_preflight_inventory": False,
             "units": "array input elements, output rows, and predicate-element evaluations; not FLOPs",
             "omitted": [
-                "legal-action, value-domain, actor-role, transition, and mask predicates",
+                "legal-action and value-domain reductions/membership internals, actor-role validity checks, transition/terminal predicates, and mask reductions",
                 "row-wise terminal scans, indexing, allocation, copies, and control flow",
                 "NumPy implementation/runtime cost and one-time dataset-level preflight",
             ],

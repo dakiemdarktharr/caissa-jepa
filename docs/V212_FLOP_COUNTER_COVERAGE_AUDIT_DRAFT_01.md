@@ -600,7 +600,7 @@ source into the report, in addition to the inventory input hashes:
 | Analysis source | SHA-256 |
 | --- | --- |
 | `tools/v212_source_operation_inventory.py` | `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9` |
-| `tools/v212_source_counter_reconciliation.py` | `401482b01d69161bc551e197e4a50ed55cfffad0d16e73d644df77d4e863cb81` |
+| `tools/v212_source_counter_reconciliation.py` | `2bc6efa830ce32a39af154845d6b446f11b03bfaec0aee822e8ca9fc47b42405` |
 
 All 14 distinct candidate-owner source files existed when the report was
 generated; their paths and hashes are included in the JSON output. The report
@@ -611,11 +611,11 @@ binds the inventory to these model input hashes:
 | `two_player/v212_model.py` | `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014` | 835 |
 | `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
 
-Crosswalk digest: `3de52f87ea1bfed99336d306e66a649523933b71d951e611589e825757f45fd2`.
-The 970 site dispositions are 205 candidate-owner, 46 partial candidate-owner,
+Crosswalk digest: `edaeee45dd956f8e3c93a283abbbd1349e72dfc7712c2834023ef0846bc57710`.
+The 970 site dispositions are 205 candidate-owner, 59 partial candidate-owner,
 one runtime-unverified candidate-owner, 36 reported separately, ten reported
 separately or partially bounded non-FP, one blocking-unresolved
-`np.linalg.eigvalsh`, 174 explicitly unresolved, 458 explicitly unresolved
+`np.linalg.eigvalsh`, 174 explicitly unresolved, 445 explicitly unresolved
 non-FP, and 39 unresolved or context-owned. These are syntax-site counts,
 not operation counts or FLOP totals. The report keeps unmatched sites visible
 and states that no site has a validated complete cost owner. The digest binds
@@ -647,11 +647,12 @@ now joins the recognized `loss_grad` arithmetic sites to policy, residual,
 activation, objective-scalar, target-gradient, regularizer, and gradient-
 accumulation owners. Python shape/index arithmetic and list construction are
 reported separately. The 12 preflight `BitAnd`/`BitOr` sites now link to a
-partial output-element cardinality inventory, while comparison, Boolean
-inversion, reduction, indexing, and runtime work remain open. The crosswalk
+partial output-element cardinality inventory, and the 13 `Compare` sites link
+to partial comparison cardinalities; Boolean inversion, reduction, indexing,
+and runtime work remain open. The crosswalk
 leaves the blocking eigensolver and every other unmatched site visible. The
-source-crosswalk, preflight cardinality/scan, and eight owner suites pass
-47/47. This is site-to-owner traceability, not validation that the
+source-crosswalk, preflight cardinality/scan, and owner suites pass 65/65.
+This is site-to-owner traceability, not validation that the
 aggregates capture every execution or that input validation/copy/runtime work
 is covered; `full_counter`, parity, and graph-freeze flags remain false.
 
@@ -668,6 +669,25 @@ invalid inputs may short-circuit later checks. Comparison evaluations,
 Boolean inversion, reductions, indexing/control, finite-check cost, and
 one-time dataset preflight remain outside this subcounter. The focused
 crosswalk/preflight/owner suite passes 47/47. Full-counter, runtime,
+graph-freeze, and ≤5% parity eligibility remain false.
+
+## Preflight comparison cardinalities (2026-10-07)
+
+The preflight scan owner now reports source-shaped element counts for the 13
+`Compare` AST sites in `preflight_batch` and `_finite_array`. For batch size 64,
+the four array-comparison families total 67,136 output elements: action range
+and binary checks 66,560, policy index range 128, actor alternation 192, and
+one-hot count domains 256. One successful call reaches 12 shape-helper
+comparisons plus three scalar/shape guards, for 15 site calls; this is a call
+count, not a primitive-operation estimate. The 13 source sites occur 24 times
+on that valid path. Invalid paths can short-circuit, and membership/reduction
+internals, inversion, indexing/control, and runtime costs remain uncounted.
+
+All 13 Compare AST sites now map to the preflight scan tool as a partial owner.
+The 970-site crosswalk has 59 partial-owner sites and 445 explicitly unresolved
+non-FP sites at digest
+`edaeee45dd956f8e3c93a283abbbd1349e72dfc7712c2834023ef0846bc57710`. The
+65 focused crosswalk/preflight/owner tests pass. Full-counter, runtime,
 graph-freeze, and ≤5% parity eligibility remain false.
 
 ## Six-arm common-work dilution sensitivity (2026-10-07)

@@ -4378,3 +4378,30 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   under Python 3.14.7 / NumPy 2.5.3 via `/tmp/caissa-jepa-pv-deps`; `git diff
   --check` passes. No model, data, eigensolver, profile, inference, roots,
   scores, simulation, service, or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; preflight comparison cardinality ownership)
+
+- Extended `tools/v212_preflight_scan_accounting.py` with source-shaped array
+  comparison cardinalities. At batch size 64, the four counted comparison
+  families sum to 67,136 output elements: action range/binary checks 66,560,
+  policy range 128, actor alternation 192, and one-hot count domains 256.
+  A successful preflight path has 12 `_finite_array` shape-check calls plus
+  three scalar/shape guards; these 15 calls are not primitive-operation or
+  runtime counts. The 13 `Compare` AST sites occur 24 times on this path.
+  Invalid paths can short-circuit, and reduction/membership internals,
+  inversion, indexing/control, and NumPy runtime cost remain uncounted.
+- All 13 comparison AST sites now map to this partial owner. The refreshed
+  crosswalk source hash is
+  `2bc6efa830ce32a39af154845d6b446f11b03bfaec0aee822e8ca9fc47b42405` and its
+  digest is
+  `edaeee45dd956f8e3c93a283abbbd1349e72dfc7712c2834023ef0846bc57710`.
+  Across 970 sites, dispositions are 205 candidate-owner, 59 partial,
+  one runtime-unverified, 36 separately reported, ten separately/partially
+  bounded non-FP, one blocking eigensolver, 174 unresolved, 445 unresolved
+  non-FP, and 39 unresolved/context-owned. Full-counter, parity, and
+  graph-freeze flags remain false.
+- The focused crosswalk/preflight/owner suites pass 65/65 under the existing
+  Python 3.11.9 / NumPy 2.4.6 environment at
+  `/tmp/caissa-jepa-py3119-np246`; `git diff --check` passes. No model,
+  eigensolver, profile, data, inference, roots, scores, simulation, service,
+  or training ran. No gate advanced.

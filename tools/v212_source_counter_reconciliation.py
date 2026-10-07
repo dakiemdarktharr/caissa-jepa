@@ -33,6 +33,13 @@ def _source_record(root: Path, relative_path: str) -> dict:
 def _site_disposition(module: str, site: dict) -> dict:
     node = site["node"]
     detail = site["detail"]
+    if (module == "two_player/v212_model.py" and node == "Compare"
+            and site.get("function") in {"preflight_batch", "_finite_array"}):
+        return {
+            "status": "candidate_owner_partial",
+            "owner": "tools/v212_preflight_scan_accounting.py",
+            "scope": "source-shaped comparison cardinalities and helper call count only; reductions, membership internals, invalid-path short-circuiting, and runtime cost remain open",
+        }
     if node == "BinOp" and detail == "MatMult":
         return {
             "status": "candidate_owner",
