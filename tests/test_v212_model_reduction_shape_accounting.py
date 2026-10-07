@@ -84,6 +84,10 @@ class ModelReductionShapeAccountingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             inventory("multi-step-jepa", {1: full, 2: full, 4: full},
                       effective_rank_nonzero_eigenvalues=33)
+        with self.assertRaisesRegex(ValueError, "requires a selected eigenvalue"):
+            inventory("multi-step-jepa", {1: full, 2: full, 4: full},
+                      effective_rank_active=True,
+                      effective_rank_nonzero_eigenvalues=0)
 
     def test_source_retains_two_softmax_denominator_reductions(self):
         model_path = Path(__file__).resolve().parents[1] / "two_player" / "v212_model.py"

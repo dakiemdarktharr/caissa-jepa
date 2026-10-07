@@ -53,6 +53,8 @@ def inventory(arm: str, valid_by_horizon: dict[int, np.ndarray], *,
     if (type(effective_rank_nonzero_eigenvalues) is not int
             or not 0 <= effective_rank_nonzero_eigenvalues <= LATENT):
         raise ValueError("effective-rank active count must be between 0 and 32")
+    if effective_rank_active and effective_rank_nonzero_eigenvalues == 0:
+        raise ValueError("active effective-rank branch requires a selected eigenvalue")
     _, masks = _validated_masks(valid_by_horizon)
     rows = {h: int(masks[h].sum()) for h in HORIZONS}
     records = []

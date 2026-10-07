@@ -51,6 +51,7 @@ here.
 | Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, the square/subtract/upstream-gradient multiply at each explicit `1-z**2` derivative, and separately the value-loss delta scaling before the derivative multiply | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. The upstream array scales are separate to prevent double-counting; scalar coefficient construction and other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain outside this subcounter |
 | Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. Its square report is a subset of the independently reviewed unified square-site inventory, not an additive subtotal. Reductions, scalar weighting, gradients, and other objective work are excluded |
 | Objective and diagnostic reductions | `mean`/`sum` input/output shapes, repeated softmax denominator sums, per-horizon skips, bias-gradient reductions, per-parameter gradient-norm reductions, and the root `np.std` path | `tools/v212_model_reduction_shape_accounting.py` emits candidate ordinary reduction additions (`inputs - outputs`) and mean divisions (`outputs`) from masks; effective-rank activity and selected count are explicit. It expands the NumPy 2.4.6 `_std → _var` source path for `z0[64,32]`, axis 0, ddof 0: 2,016 internal-mean additions, 32 mean divisions, 2,048 deviations and squares, 2,016 variance-reduction additions, 32 variance divisions, and 32 square roots. Actual loaded NumPy/kernel identity and summation execution remain unfrozen. These counts need independent review before D03 use |
+| Effective-rank selected-spectrum branch | Probability normalization, `log`, elementwise probability/log product, entropy reduction, final `exp`, and selected-set comparisons | `tools/v212_effective_rank_branch_accounting.py` bounds the active-set work after eigensolver/spectrum-sum: per call, zero entropy work when inactive, or K=1..32 divisions/logs/multiplies, K-1 candidate additions and one exp when active. Across 1,740 scheduled updates per arm, upper bounds are 55,680 divisions/logs/multiplies, 53,940 candidate additions and 1,740 exp calls. It excludes DSYEVD/LAPACK and does not establish which branches actually occur |
 | Fixed array-square sites | All source `** 2` array expressions in regularization, supervised losses, activation derivatives, recurrent reverse passes, and gradient norm | `tools/v212_model_square_flop_accounting.py` inventories the 20 AST sites and mask-dependent element counts. Under the reviewed semantic convention each element is one candidate multiply; no loaded NumPy power-kernel claim is made. Scalar bias-correction powers are excluded. Existing activation, residual, and latent-`std` reports overlap this inventory and must not be summed with it |
 
 ## Independent source review follow-up (2026-10-07)
@@ -128,9 +129,12 @@ no gate changed.
    from its exact source. The
    `spectrum_sum <= 1e-12` branch can skip effective-rank work; otherwise the
    number of eigenvalues selected by `spectrum > 1e-12` can vary from 1 to 32.
-   Provide lower/upper work bounds for all possibilities over all 20 × 87
-   scheduled updates. The actual wheel/backend path is not established by this
-   source audit.
+   `tools/v212_effective_rank_branch_accounting.py` now bounds the later
+   probability/log/entropy branch across all 20 × 87 update slots per arm,
+   including its inactive case and all selected counts K=1..32. This remains a
+   source-level sub-bound: it does not bound the eigensolver and does not
+   attest the active branch sequence in an actual mask/data schedule. The
+   actual wheel/backend path is not established by this source audit.
 4. **Global clipping.** Bound both sides of the norm threshold for every arm,
    including the scalar division and elementwise clipping only on the greater-
    than-5 branch. Do not use an observed scratch trajectory to narrow the
@@ -158,8 +162,9 @@ no gate changed.
   docs identify `_syevd`; Netlib's reference `DSYEVD` shows the eigenvalues-
   only `DSYTRD` → `DSTERF` path, including conditional scaling. This is useful
   algorithmic evidence, not proof of the locked wheel's linked implementation
-  or its exact count. A frozen implementation trace or reviewed full-schedule
-  bound remains required.
+  or its exact count. The effective-rank branch sub-bound starts only after the
+  eigensolver and fixed spectrum sum. A frozen implementation trace or reviewed
+  full-schedule bound remains required.
 - The current model calls `preflight_batch` inside every `loss_grad` call.
   Unlike the one-time dataset-level preflight in D03, the repeated structural
   check scans the 256×65 action entries using integer nonzero counting. The

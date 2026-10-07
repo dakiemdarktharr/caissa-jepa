@@ -1,5 +1,24 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; effective-rank branch interval)
+
+- Added `tools/v212_effective_rank_branch_accounting.py` for the work after
+  `spectrum_sum`/selected-set construction: the inactive branch or active
+  selected count K=1..32. Per arm across 20×87 scheduled slots, the conservative
+  upper candidate interval is 53,940 reduction additions, 55,680 multiplies,
+  55,680 divisions, 55,680 `log` calls, and 1,740 `exp` calls. The inactive
+  lower work is zero for these branch-specific operations. Comparisons and
+  unary negations are reported separately. These are source-level bounds, not
+  observed schedule branches or linked-eigensolver costs.
+- Tightened the reduction inventory to reject an impossible input combination
+  (active entropy branch with zero selected eigenvalues). The branch and
+  reduction suites pass 10/10, including AST checks against the current source
+  expressions. No model, data, profile, roots, inference, scores/outcomes, or
+  training ran. This is a partial bound only: DSYEVD/LAPACK, exact loaded NumPy
+  reductions, the real 20×87 mask schedule, and other branches remain open.
+  Six-arm graph freeze remains **NO**; ≤5% parity remains **untested and
+  unpassed**. No gate advances.
+
 ## Latest continuation delta (2026-10-07; square-site counter inventory)
 
 - An approved read-only `gpt-6-luna/high` reviewer accepts one candidate

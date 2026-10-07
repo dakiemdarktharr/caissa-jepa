@@ -2,6 +2,19 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 effective-rank branch interval
+
+Added `tools/v212_effective_rank_branch_accounting.py` to bound the selected-
+spectrum normalization/log/entropy branch after eigensolver and spectrum sum.
+For each arm across the 20×87 update slots, inactive work has a zero lower
+bound; active K=1..32 has upper bounds of 53,940 candidate reduction additions,
+55,680 multiplications/divisions/log calls, and 1,740 exp calls. Comparison and
+unary-negation counts are separate. A zero-selected-count input is now rejected
+when the active branch is declared. Branch/reduction validation passes 10/10.
+The bound excludes the eigensolver and does not attest actual branches. Runtime,
+linked-LAPACK count, frozen masks, complete FLOP coverage, and branch bounds
+remain open; no gate advanced.
+
 ### 2026-10-07 V2.12 square-site counter inventory
 
 An approved read-only `gpt-6-luna/high` review accepts the semantic convention
