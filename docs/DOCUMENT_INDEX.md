@@ -34,7 +34,7 @@ Intake: 2026-09-29. This index classifies originals without deleting or rewritin
 | `two_player/v212_scratch_optimizer.py` and `tests/test_v212_scratch_optimizer.py` | Pure scratch Adam/clipping/EMA arithmetic with synthetic tests; no persistent updates, trainer, or profile |
 | `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` | Rejected preregistration retained as history; ≤5% gate untested and unpassed |
 | `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_02.md` | Accepted preregistration for v05, superseded as current protocol by draft 03 after v06 adoption |
-| `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md` | Independently accepted preregistration for v06 only; supersedes D02 for v06, but opens no data/profile gate and ≤5% remains untested and unpassed |
+| `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md` | Independently accepted preregistration for v06 only; now states the existing direct-leaf per-batch valid-H4 rejection condition; opens no data/profile gate and ≤5% remains untested and unpassed |
 | `docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` | Review record for the Adam/EMA semantics adopted by v06; no profile/training authorization |
 | `docs/METHOD_SPEC_V212_V04.md` | Immutable v04 specification archive; includes the Reversi8 2-second p90 negative and pre-v05 raw-state wording |
 | `docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md` | Adopted narrow v05 raw-state amendment; method-level review only, no trainer/fit authorization, ≤5% FLOP gate untested and unpassed |

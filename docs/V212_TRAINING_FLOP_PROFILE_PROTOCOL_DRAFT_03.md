@@ -64,7 +64,10 @@ Before profile execution, freeze and hash:
 4. a roster of exactly 20 paired seeds and, for each seed, the deterministic
    87-update batch order, update boundaries, and mask schedule;
 5. per-horizon valid, terminal-masked, missing/truncated, and
-   invalid-transition counts for every arm and scheduled update.
+   invalid-transition counts for every arm and scheduled update. For every
+   direct-leaf batch, the frozen schedule must additionally show at least one
+   valid nonterminal H4 leaf, matching the current graph's explicit guard;
+   generic nonzero-target validity is insufficient for that arm.
 
 All selected windows must first pass the v06 exact-rule replay and preflight
 requirements. A malformed or invalid selected transition, prohibited
@@ -74,6 +77,11 @@ batches or updates, bypass method-required operations, or receive a different
 mask or batch. This does not prohibit v05 per-example masking retained by v06 or
 active-prefix execution. Counters must distinguish per-example executed calls
 and work from per-invocation work.
+
+The direct-leaf H4 condition is an implementation-level rejection rule already
+enforced by `two_player/v212_model.py`; it does not change v06 target semantics
+or authorize materializing a schedule. Record violations and stop before any
+profile comparison rather than dropping or replacing affected batches.
 
 Every FLOP table must label units explicitly. The primary table reports
 **FLOPs per batched invocation** for one 64-window scheduled update and
