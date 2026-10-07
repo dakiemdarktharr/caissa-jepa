@@ -3500,8 +3500,10 @@ Extended the source crosswalk into identified `loss_grad` operations:
 policy softmax/NLL, residuals, affine and tanh-gradient arithmetic, pooled
 objective scalars, target-gradient products, regularizer scaling, and the raw
 decoder gradient merge now point to existing partial owners. Python
-shape/index/list operations are reported separately; preflight Boolean
-bitmasks remain unresolved. The current crosswalk digest is
+shape/index/list operations are reported separately. The preflight `&`/`|`
+sites now have a partial output-element cardinality owner; comparison,
+inversion, reduction, indexing and runtime costs remain unresolved. The
+current crosswalk digest is
 `073e87299cd75e11e13e03651516654622d8b32cc6d2dab5923a14579d3f12d1` at source
 hash `edc559d18196e85709b2efb76ef129a69fdf8c3686cdd766a6c41c24c49f04bb`.
 Its 970 syntax-site dispositions are 205 candidate-owner, 34 partial, one
@@ -3511,3 +3513,19 @@ non-FP, and 39 unresolved/context-owned. The crosswalk and eight owner suites
 pass 41/41. This improves traceability without establishing complete cost
 coverage: full counter, runtime identity, trainer/schedule, graph freeze, and
 six-arm ≤5% parity remain open or unpassed.
+
+### 2026-10-07 preflight bitwise cardinality ownership
+
+Added `tools/v212_preflight_bitwise_accounting.py` for the output-element
+cardinalities of the 12 explicit Boolean `&`/`|` sites in `preflight_batch`.
+The 64-window source-shape total is 35,584 Boolean output elements; counts by
+family are recorded in the FLOP coverage audit. These are native cardinality
+units, not FLOPs or runtime-cost evidence. The 12 sites now map to a partial
+owner, but comparisons, inversion, reductions, indexing/control and
+finite-check costs remain open. Crosswalk digest:
+`3de52f87ea1bfed99336d306e66a649523933b71d951e611589e825757f45fd2`; 970-site
+dispositions: 205 candidate-owner, 46 partial, one runtime-unverified, 36
+separately reported, ten separately/partially bounded non-FP, one blocking
+eigensolver, 174 unresolved, 458 unresolved non-FP, and 39 unresolved/context-
+owned. The focused crosswalk/preflight/owner suites pass 47/47. Full counter,
+graph freeze and ≤5% parity remain open/unpassed.

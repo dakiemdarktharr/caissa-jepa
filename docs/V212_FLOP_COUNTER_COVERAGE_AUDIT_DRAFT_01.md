@@ -600,9 +600,9 @@ source into the report, in addition to the inventory input hashes:
 | Analysis source | SHA-256 |
 | --- | --- |
 | `tools/v212_source_operation_inventory.py` | `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9` |
-| `tools/v212_source_counter_reconciliation.py` | `edc559d18196e85709b2efb76ef129a69fdf8c3686cdd766a6c41c24c49f04bb` |
+| `tools/v212_source_counter_reconciliation.py` | `401482b01d69161bc551e197e4a50ed55cfffad0d16e73d644df77d4e863cb81` |
 
-All 13 distinct candidate-owner source files existed when the report was
+All 14 distinct candidate-owner source files existed when the report was
 generated; their paths and hashes are included in the JSON output. The report
 binds the inventory to these model input hashes:
 
@@ -611,11 +611,11 @@ binds the inventory to these model input hashes:
 | `two_player/v212_model.py` | `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014` | 835 |
 | `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
 
-Crosswalk digest: `073e87299cd75e11e13e03651516654622d8b32cc6d2dab5923a14579d3f12d1`.
-The 970 site dispositions are 205 candidate-owner, 34 partial candidate-owner,
+Crosswalk digest: `3de52f87ea1bfed99336d306e66a649523933b71d951e611589e825757f45fd2`.
+The 970 site dispositions are 205 candidate-owner, 46 partial candidate-owner,
 one runtime-unverified candidate-owner, 36 reported separately, ten reported
 separately or partially bounded non-FP, one blocking-unresolved
-`np.linalg.eigvalsh`, 186 explicitly unresolved, 458 explicitly unresolved
+`np.linalg.eigvalsh`, 174 explicitly unresolved, 458 explicitly unresolved
 non-FP, and 39 unresolved or context-owned. These are syntax-site counts,
 not operation counts or FLOP totals. The report keeps unmatched sites visible
 and states that no site has a validated complete cost owner. The digest binds
@@ -646,12 +646,29 @@ gradient-norm division retaining its branch-interval qualification. It maps
 now joins the recognized `loss_grad` arithmetic sites to policy, residual,
 activation, objective-scalar, target-gradient, regularizer, and gradient-
 accumulation owners. Python shape/index arithmetic and list construction are
-reported separately. The preflight bitmask expressions remain explicitly
-unresolved; the crosswalk leaves the blocking eigensolver and every other
-unmatched site visible. The focused source-crosswalk plus eight owner suites
-pass 41/41. This is site-to-owner traceability, not validation that the
+reported separately. The 12 preflight `BitAnd`/`BitOr` sites now link to a
+partial output-element cardinality inventory, while comparison, Boolean
+inversion, reduction, indexing, and runtime work remain open. The crosswalk
+leaves the blocking eigensolver and every other unmatched site visible. The
+source-crosswalk, preflight cardinality/scan, and eight owner suites pass
+47/47. This is site-to-owner traceability, not validation that the
 aggregates capture every execution or that input validation/copy/runtime work
 is covered; `full_counter`, parity, and graph-freeze flags remain false.
+
+## Preflight Boolean bitwise cardinalities (2026-10-07)
+
+`tools/v212_preflight_bitwise_accounting.py` records source-shaped output
+element cardinalities for the 12 explicit `&`/`|` AST nodes in one successful
+`preflight_batch` call. At batch size 64, this is 35,584 Boolean output
+elements: transition consistency/invalid masks 512, actor-role masks 384,
+action-range and binary masks 16,640 each, horizon-complete masks 448,
+horizon-validity masks 384, and missing-target count masks 576. These are
+native cardinality units, not FLOPs, instruction counts, or runtime estimates;
+invalid inputs may short-circuit later checks. Comparison evaluations,
+Boolean inversion, reductions, indexing/control, finite-check cost, and
+one-time dataset preflight remain outside this subcounter. The focused
+crosswalk/preflight/owner suite passes 47/47. Full-counter, runtime,
+graph-freeze, and ≤5% parity eligibility remain false.
 
 ## Six-arm common-work dilution sensitivity (2026-10-07)
 

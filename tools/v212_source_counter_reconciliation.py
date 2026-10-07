@@ -53,6 +53,12 @@ def _site_disposition(module: str, site: dict) -> dict:
     if module == "two_player/v212_model.py" and node == "BinOp":
         source = site["source"]
         function = site.get("function")
+        if function == "preflight_batch" and detail in {"BitAnd", "BitOr"}:
+            return {
+                "status": "candidate_owner_partial",
+                "owner": "tools/v212_preflight_bitwise_accounting.py",
+                "scope": "Boolean bitwise output-element cardinality only; comparisons, inversion, reductions, indexing, and runtime costs remain open",
+            }
         if detail in {"Add", "Sub", "Mult", "Div"}:
             if (detail == "Add" and " @ p[" in source and " + p[" in source
                     and function in {"_encode", "_value", "loss_grad"}):

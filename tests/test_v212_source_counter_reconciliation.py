@@ -202,8 +202,9 @@ class SourceCounterReconciliationTests(unittest.TestCase):
                              if site["function"] == "preflight_batch"
                              and site["node"] == "BinOp"
                              and site["detail"] in {"BitAnd", "BitOr"}]
-        self.assertTrue(bitwise_preflight)
-        self.assertTrue(all(site["status"] == "explicitly_unresolved"
+        self.assertEqual(len(bitwise_preflight), 12)
+        self.assertTrue(all(site["status"] == "candidate_owner_partial"
+                            and site["owner"] == "tools/v212_preflight_bitwise_accounting.py"
                             for site in bitwise_preflight))
         self.assertFalse(self.report["coverage"]["full_counter"])
         self.assertFalse(self.report["coverage"]["graph_freeze_eligible"])

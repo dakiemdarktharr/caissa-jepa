@@ -4346,10 +4346,35 @@ The combined profile/target suite passes 11/11; the manifest contains 31 scenari
   partial candidate-owner, one runtime-unverified candidate-owner, 36
   separately reported, ten separately/partially bounded non-FP, one blocking
   unresolved `np.linalg.eigvalsh`, 186 explicitly unresolved, 458 explicitly
-  unresolved non-FP, and 39 unresolved/context-owned. Preflight Boolean
-  bitmask sites remain unresolved.
+  unresolved non-FP, and 39 unresolved/context-owned at that snapshot.
 - The source crosswalk and eight relevant owner suites pass 41/41 under Python
   3.14.7 / NumPy 2.5.3 via `/tmp/caissa-jepa-pv-deps`; `git diff --check`
   passes. No model, eigensolver, profile, data, inference, roots, scoring,
   simulation, service, or training ran. Full-counter, runtime, graph-freeze,
   fit, and six-arm ≤5% parity remain closed/untested and unpassed.
+
+### Latest continuation delta (2026-10-07; preflight bitwise cardinality ownership)
+
+- Added `tools/v212_preflight_bitwise_accounting.py` for source-shaped output
+  element cardinalities of the 12 explicit `BitAnd`/`BitOr` AST sites in one
+  successful `preflight_batch` call. For 64 windows it reports 35,584 Boolean
+  output elements: transition masks 512, role masks 384, action range/binary
+  masks 16,640 each, horizon-complete 448, horizon-validity 384, and
+  missing-target count masks 576. These are native array-cardinality units,
+  not FLOPs or runtime cost. Comparison evaluations, Boolean inversion,
+  reductions, indexing/control, and finite-check cost remain open.
+- All 12 bitwise AST sites now map to this explicitly partial owner. The
+  current crosswalk source hash is
+  `401482b01d69161bc551e197e4a50ed55cfffad0d16e73d644df77d4e863cb81`; its
+  digest is
+  `3de52f87ea1bfed99336d306e66a649523933b71d951e611589e825757f45fd2`.
+  Across 970 sites, counts are 205 candidate-owner, 46 partial candidate-
+  owner, one runtime-unverified candidate-owner, 36 separately reported,
+  ten separately/partially bounded non-FP, one blocking unresolved
+  eigensolver, 174 explicitly unresolved, 458 explicitly unresolved non-FP,
+  and 39 unresolved/context-owned. Full-counter, parity and graph-freeze
+  flags remain false.
+- The crosswalk, preflight bitwise/scan, and eight owner suites pass 47/47
+  under Python 3.14.7 / NumPy 2.5.3 via `/tmp/caissa-jepa-pv-deps`; `git diff
+  --check` passes. No model, data, eigensolver, profile, inference, roots,
+  scores, simulation, service, or training ran. No gate advanced.
