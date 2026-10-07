@@ -2,6 +2,17 @@
 
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
+### 2026-10-07 V2.12 LAPACK eigensolver path audit
+
+Followed the eigensolver gap to primary implementation references: NumPy 2.4
+documents `_syevd` for real symmetric matrices; Netlib's reference `DSYEVD`
+eigenvalues-only path calls `DSYTRD` then `DSTERF`, with conditional scaling.
+Netlib `DSTERF` caps the reference path at 30×N iterations (960 at N=32), but
+that does not by itself bound FP operations for the linked runtime. The audit
+also counts the repeated one-hot action validation reduction: 16,384 additions
+per 64-window `loss_grad` call. The linked LAPACK build and exact/bounded FLOP
+coverage remain open; no profile or experiment ran.
+
 ### 2026-10-07 V2.12 FLOP-counter source coverage audit
 
 Added `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md` as a static map of

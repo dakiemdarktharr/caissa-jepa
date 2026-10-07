@@ -1,5 +1,11 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; LAPACK eigensolver path audit)
+
+- Followed the counter-coverage gap through the pinned NumPy 2.4 reference and Netlib LAPACK source. NumPy documents `_syevd` for the real symmetric covariance; reference `DSYEVD` in eigenvalues-only mode calls `DSYTRD` and `DSTERF`, with conditional matrix scaling. This narrows the required counter path but does not identify the LAPACK binary/build linked by the future runtime or bound its exact operation trace and convergence work. Added these primary-source references to the counter audit; eigensolver coverage remains open pending a pinned implementation trace or reviewed bound.
+- Netlib's reference `DSTERF` source sets a total loop cap of `30*N` (960 iterations for this 32×32 spectrum), giving a finite algorithmic reference bound but not yet an operation-count bound for the linked runtime. The per-update structural `preflight_batch` call also sums 256 one-hot action rows of length 65, adding a fixed 16,384 FP additions per `loss_grad` call. The counter audit now includes this repeated work separately from D03's dataset-level one-time preflight; independent acceptance is still required.
+- No numerical input, profile, experiment, runtime configuration, data, label, score, outcome, or training operation was read or run. The ≤5% compute gate and all data/pre-fit gates remain unchanged and closed.
+
 ## Latest continuation delta (2026-10-07; static FLOP-counter coverage audit)
 
 - Added `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md`, mapping the current no-update six-arm graph and scratch Adam/EMA helper to the accepted D03 per-update FLOP accounting contract. It inventories active-prefix/mask-dependent projections and gradients, all-arm covariance/effective-rank diagnostics, policy/value losses, target encodes, clipping, Adam/EMA, scalar powers, and repeated preflight. This is source inspection only; no batch was profiled, no research data or labels were read, and no parameters were updated.
