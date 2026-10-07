@@ -16,7 +16,7 @@ from typing import Any
 from .games import BoardGame
 from .v212_episode_replay_receipt import _build_receipt_from_audited_windows
 from .v212_model import ARMS, preflight_batch
-from .v212_schedule_manifest import validate_schedule_manifest
+from .v212_schedule_manifest import ValidatedScheduleManifest
 from .v212_scheduled_batch import (
     ScheduledBatchResult,
     compute_scheduled_panel_batch,
@@ -113,7 +113,9 @@ def validate_window_receipt_binding(
         if not isinstance(window, Window):
             raise ValueError("scheduled input must contain Window records")
         identity = (window.game, window.episode_id, window.start_ply)
-        if record.get("id") != list(identity):
+        declared_identity = record.get("id")
+        if (not isinstance(declared_identity, (list, tuple))
+                or tuple(declared_identity) != identity):
             raise ValueError("schedule window order/identity differs from replay input")
         game = games.get(window.game)
         if game is None:
@@ -167,7 +169,7 @@ def validate_actual_mask_roster(
 
 
 def compute_receipt_bound_panel_batch(
-    manifest: Mapping[str, Any],
+    manifest: ValidatedScheduleManifest,
     receipt_index: TrainReplayReceiptIndex,
     windows: Sequence[Window],
     games: Mapping[str, BoardGame],
@@ -178,22 +180,23 @@ def compute_receipt_bound_panel_batch(
 ) -> ReceiptBoundBatchResult:
     """Validate one frozen schedule row before the paired no-update call.
 
-    The manifest validator checks the declared whole-schedule structure. This
-    seam then proves that the requested ordered row is the supplied windows,
+    The immutable schedule snapshot was structurally validated once before the
+    panel. This seam then proves that the requested ordered row is the supplied windows,
     each window is included in an exact-rule replay receipt in the supplied
     train index, the actual adapter mask equals the declaration, and the
     model initialization seed matches the row. It does not prevent unrelated
     callers from invoking ``loss_grad`` directly; a trainer must make this its
     only scheduled entry point.
     """
+    if not isinstance(manifest, ValidatedScheduleManifest):
+        raise ValueError("scheduled call requires a one-time validated frozen manifest")
     if not isinstance(receipt_index, TrainReplayReceiptIndex):
         raise ValueError("scheduled call requires a replay-audited train receipt index")
-    schedule_receipt = validate_schedule_manifest(manifest)
-    if type(seed_ordinal) is not int or not 0 <= seed_ordinal < len(manifest["seeds"]):
+    if type(seed_ordinal) is not int or not 0 <= seed_ordinal < len(manifest.seeds):
         raise ValueError("seed ordinal is outside the validated schedule")
     if type(update_index) is not int or not 1 <= update_index <= 87:
         raise ValueError("update index is outside the validated schedule")
-    seed_record = manifest["seeds"][seed_ordinal]
+    seed_record = manifest.seeds[seed_ordinal]
     update = seed_record["updates"][update_index - 1]
 
     per_window_receipts = validate_window_receipt_binding(
@@ -219,6 +222,6 @@ def compute_receipt_bound_panel_batch(
         raise ValueError("scheduled call digest differs from the frozen manifest row")
     return ReceiptBoundBatchResult(
         scheduled=scheduled,
-        schedule_sha256=str(schedule_receipt["schedule_sha256"]),
+        schedule_sha256=manifest.schedule_sha256,
         ordered_episode_receipt_sha256=ordered_receipts,
     )
