@@ -1,0 +1,157 @@
+{
+  "schema": "caissa.project-review.v1",
+  "review_date_local": "2026-10-25",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "reviewed_commit": "b3e14fde7fd389956626bd4374f9cca74e81a8f2",
+  "remote_main_observed": "b3e14fde7fd389956626bd4374f9cca74e81a8f2",
+  "source": {
+    "two_player/v212_model.py": "26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014",
+    "tests/test_v212_model.py": "d5804c862206f419bc2468dcc3f8ada149700a688910eb2f4e2cb785993fb97e"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "platform": "Linux",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "inventory": {
+    "tracked_files": 631,
+    "python_files_parsed": 339,
+    "markdown_files": 196,
+    "json_files_parsed_utf8_sig": 59
+  },
+  "tests_suite": {
+    "command": ".venv/bin/python -B -m unittest discover -s tests -v",
+    "total": 617,
+    "passed": 612,
+    "errors": 3,
+    "skipped": 2,
+    "seconds": 121.227,
+    "v212_tests_passed": 488,
+    "error_causes": [
+      "Two V2.11 tests require missing chess_data/v29_fit_panel_dev01/panel.json",
+      "V2.9 panel supervisor requires Windows"
+    ],
+    "log_sha256": "a6721eeb3cc97adee573bc0ca7ee6aa15e14bffefc0b9458e8ca00cff0166026"
+  },
+  "additional_core_suite": {
+    "command": ".venv/bin/python -B -m unittest -v test_reference_rules test_alpha_beta_reference test_reversi_reference test_v28_reversi4_rules_gate test_two_player_model test_v2_model test_v22_model test_v25_model",
+    "total": 68,
+    "passed": 63,
+    "skipped": 5,
+    "seconds": 15.495,
+    "skip_cause": "Pinned external Reversi originals unavailable",
+    "log_sha256": "952292208e02632f65e5421b6b1642b798fdbc6afd88bd35fdb0ca94bbafa429"
+  },
+  "gradient_probe": {
+    "fixture": "synthetic_batch from tests/test_v212_model.py; x multiplied by 10; model seed 9; epsilon 1e-6",
+    "conclusion": "Covariance derivative is weighted by 0.1 while scalar covariance loss is weighted by 0.01. No optimizer update occurred.",
+    "results": [
+      {
+        "arm": "multi-step-jepa",
+        "encoder_index": [
+          125,
+          31
+        ],
+        "analytic": 0.007839357843097116,
+        "finite_difference": 0.04096901951022858,
+        "error": -0.03312966166713146,
+        "predicted_extra_covariance_gradient": -0.03312966147838764
+      },
+      {
+        "arm": "single-pair-jepa",
+        "encoder_index": [
+          125,
+          31
+        ],
+        "analytic": 0.013321934986429196,
+        "finite_difference": 0.046451596347196755,
+        "error": -0.03312966136076756,
+        "predicted_extra_covariance_gradient": -0.03312966147838764
+      },
+      {
+        "arm": "recursive-raw-state",
+        "encoder_index": [
+          125,
+          31
+        ],
+        "analytic": -0.05728149001050427,
+        "finite_difference": -0.024151828315055468,
+        "error": -0.0331296616954488,
+        "predicted_extra_covariance_gradient": -0.03312966147838764
+      },
+      {
+        "arm": "value-only-latent-rollout",
+        "encoder_index": [
+          125,
+          31
+        ],
+        "analytic": 0.014531501348301511,
+        "finite_difference": 0.04766116301624379,
+        "error": -0.033129661667942276,
+        "predicted_extra_covariance_gradient": -0.03312966147838764
+      },
+      {
+        "arm": "direct-leaf-value",
+        "encoder_index": [
+          125,
+          31
+        ],
+        "analytic": -0.06291986994251413,
+        "finite_difference": -0.029790208300184418,
+        "error": -0.03312966164232971,
+        "predicted_extra_covariance_gradient": -0.03312966147838764
+      },
+      {
+        "arm": "single-horizon-jepa",
+        "encoder_index": [
+          125,
+          31
+        ],
+        "analytic": 0.003564002276831841,
+        "finite_difference": 0.03669366388514561,
+        "error": -0.03312966160831377,
+        "predicted_extra_covariance_gradient": -0.03312966147838764
+      }
+    ]
+  },
+  "structural_transfer_inventory": {
+    "training_union_cells": 42,
+    "heldout_cells": 64,
+    "new_cell_ids": [
+      7,
+      15,
+      23,
+      31,
+      39,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "new_input_coordinates_three_planes": 66,
+    "scope": "Static architecture/supported-coordinate analysis, not a trained-model performance result"
+  },
+  "limitations": [
+    "No fresh historical experimental reproduction",
+    "No GUI/Windows installer validation",
+    "No production training, matches, corpus generation or paid compute",
+    "No protected locked-final outcomes opened",
+    "No independent subagent review performed",
+    "New study/name/metrics are proposals, not adopted method changes"
+  ]
+}
