@@ -28,6 +28,45 @@ and visited-node expansion; it explicitly treats held-out-size exact support
 as not comparable. A self-audit removed the pooled legal-edge ratio as a
 headline because repeated states and game branching factor can dominate it;
 the draft instead reports per-state coverage and state/episode frequency.
+It now separates encoder-state exposure from exact transition edges used in
+valid nonterminal target unrolls; the eventual trainer's masks must verify that
+derivation before corpus generation. A source cross-check found that the
+existing trajectory auditor jointly maps state/action paths only for duplicate
+window detection; it does not provide a canonical edge-support ledger. The
+draft now requires joint `(state, action, successor)` transforms and explicit
+legal-set bijection/transition-commutation checks before any canonical edge
+summary is reported.
+The follow-on `docs/V212_DUPLICATE_AND_OVERLAP_POLICY_AUDIT_01.md` records a
+separate source conflict: the frozen synthetic fixture rejects all canonical
+duplicate windows, while split amendment v05 proposes retaining repeated fit
+content as a diagnostic. A production materializer must not reuse that fixture
+unchanged. Source-id uniqueness, prohibited cross-partition overlap, fit-bank
+content diagnostics, and symmetry-distinct development roots now have separate
+proposed dispositions; all remain subject to independent protocol review.
+The source inventory in that audit records the declared in-scope maps (two
+gravity-preserving maps for each Connect Four variant; D4 for Reversi), but
+`canonical_key` does not return its minimizing map and no adapter-wide
+legal-action/transition property suite exists. Canonical edge metrics remain
+disabled pending those code-property checks and independent protocol review.
+The same root-schedule review must also reconcile §7's independent-situation
+bootstrap with the proposal to keep only the first 16 symmetry-unique roots
+from 64 candidate slots per band. Rejection makes accepted roots dependent and
+can change their induced policy/prefix distribution; the development estimand
+and resampling unit must be frozen before scoring. The audit now proposes a
+versioned resolution: keep duplicate candidate slots as repeated IID draws
+conditional on validity, and stratify the crossed bootstrap by the fixed
+occupancy bands. This still requires independent statistical/protocol review;
+the root schedule remains unchanged and unapproved.
+The candidate resolution is now specified for review in
+`docs/METHOD_SPEC_V212_ROOT_SAMPLING_AMENDMENT_DRAFT_01.md`: it defines the
+success-conditional first-passage distribution, treats slot IDs as sampling
+units, and proposes a fixed one-third weighting with within-band bootstrap.
+This is a design proposal only; v04 and the existing root schedule remain
+unchanged pending independent review. The draft cites crossed and
+stratified-bootstrap method analogues and small-cluster cautions with explicit
+limits; none validates the proposed small-sample max-T/Holm procedure. The
+10,000 replicates improve resampling precision, not the number of independent
+seeds or root slots.
 This remains a review draft, with no thresholds, data generation, method
 amendment, or training authorization. Resolve it alongside the split matrix,
 development-root schedule, and compute cap before producing any corpus.
