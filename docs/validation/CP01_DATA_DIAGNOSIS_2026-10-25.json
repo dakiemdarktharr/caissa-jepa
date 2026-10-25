@@ -1,0 +1,39 @@
+{
+  "phase": "development-data-diagnosis",
+  "input_data_sha256": "442e97c0d685494df753a5723a0bb3389ad4e960ad6ac3c52e416256217b650b",
+  "source_commit": "09f18a5cf5e9a827ce526997714a035d4b07175e",
+  "summary": {
+    "connect4-6x7": {
+      "counts": {
+        "roots": 7,
+        "roots_all_actions_tied": 5,
+        "suboptimal_actions": 4,
+        "suboptimal_with_multiple_replies": 4,
+        "unique_worst_reply_actions": 1,
+        "root_decision_critical_actions": 1,
+        "terminal_critical_actions": 1
+      },
+      "reference_value_pairs": {}
+    },
+    "reversi6": {
+      "counts": {
+        "roots": 50,
+        "roots_all_actions_tied": 29,
+        "suboptimal_actions": 39,
+        "suboptimal_with_multiple_replies": 30,
+        "unique_worst_reply_actions": 18,
+        "root_decision_critical_actions": 15,
+        "nonterminal_pairable_actions": 15,
+        "roots_with_possible_nonzero_same_sign_support": 4
+      },
+      "reference_value_pairs": {
+        "critical0:control1": 6,
+        "critical-1:control1": 12
+      }
+    }
+  },
+  "selected_supervised_state_collisions_with_eval_roots": 0,
+  "selected_training_windows": 256,
+  "selected_development_windows": 64,
+  "interpretation": "Finite observed batch; no confidence or learned-model claim. For tanh q_hat in [-1,1], q_ref=-1 versus +1 gives opposite-signed nonzero residuals; such reference pairs cannot satisfy same-sign nonzero matching. This is a domain constraint, not a model measurement. Zero-residual repairs have zero effect."
+}

@@ -1,6 +1,6 @@
 # Counterplay current state
 
-Updated 2026-10-25T11:39:57.508172+07:00 (Asia/Saigon). Continue from evidence, not chat history.
+Updated 2026-10-25T11:43:09.997124+07:00 (Asia/Saigon). Continue from evidence, not chat history.
 
 - **Current gate:** Review 1 accepted the new outcome-independent CP-01 v2
   empirical design for entry to foundation work / Review 2. The original
@@ -19,7 +19,7 @@ Updated 2026-10-25T11:39:57.508172+07:00 (Asia/Saigon). Continue from evidence, 
   [prior work](PRIOR_WORK.md), [decisions](decisions.md), [issues](issues.csv).
 - **Scientific execution:** pre-training; 0 revised-study fits and 0 matches.
   Loss/regret/critical-reply preservation/Elo not measured. Final counts/seeds
-  are not frozen. No accepted current corpus, integrated production trainer,
+  are not frozen. One development-data construction attempt failed reference yield; no accepted corpus or integrated production trainer,
   paid rental, or locked-result access. Historical protocols and results remain
   intact and are not this study's confirmation.
 - **I01 closed on synthetic correctness:** covariance derivative coefficient
@@ -27,15 +27,23 @@ Updated 2026-10-25T11:39:57.508172+07:00 (Asia/Saigon). Continue from evidence, 
   arms and every trainable tensor; baseline had 35 failures. The original
   encoder coordinate independently passes on all six arms. See
   [repair receipt](../docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json).
-- **Immediate next task:** after this clean source checkpoint is verified
-  remote, run `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv/bin/python -B
-  -m tools.counterplay_data chess_data/cp01-dev-attempt1 --receipt
-  docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json --run-id cp01-data-attempt1`.
-  Use an external 330-second wall deadline. Independent data-foundation review
-  and [horizon-count correction](../docs/validation/CP01_HORIZON_SUPPORT_2026-10-25.json)
-  pass 9/9 scoped checks. This permits one model-blind construction batch only,
-  not training. Record complete/failed/no-candidate/duplicate/yield counts;
-  retain a failed gate without replacement. Raw data stay ignored/local.
+- **First actual data feasibility:** source `09f18a5cf5e9a827ce526997714a035d4b07175e`,
+  [receipt](../docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json), data hash
+  `442e97c0d685494df753a5723a0bb3389ad4e960ad6ac3c52e416256217b650b`.
+  164 episodes; 256 train / 64 development windows; zero prohibited selected
+  target/root collisions. All 57 attempted references completed. Pairable
+  roots: C4 0/7 (43/50 episodes no late candidate); Reversi 11/50. Required
+  5/game floor failed. 15.551 s wall, 15.392 s CPU, 80,281,600-byte peak RSS.
+  Raw data remain ignored at `chess_data/cp01-dev-attempt1/data.json`.
+- **Immediate next task:** independent scientific diagnosis before any new
+  batch or training. [Reference-only diagnosis](../docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json)
+  finds C4's sole decision-critical action already terminal; only 4 Reversi
+  roots have potential nonzero same-sign residual support. With tanh values,
+  -1/+1 reference pairs force opposite residual signs. Do not drop sign
+  matching or replace roots to manufacture yield. One prospective C4 empty-cell
+  widening may be reviewed within the cumulative 300-CPU-second cap; at most
+  two justified revisions, otherwise narrow the study explicitly. No revision
+  has run or been adopted yet; independent scientific review is pending.
 - **Subsequent Review 2 work:** freeze/generate bounded fresh data and selected
   H1/H2/H4 windows, validate rules/references and overlap/support; integrate
   trainer/evaluator and Adam/EMA/RNG/cursor checkpoint-resume; wire and verify
@@ -46,15 +54,15 @@ Updated 2026-10-25T11:39:57.508172+07:00 (Asia/Saigon). Continue from evidence, 
   on 2026-10-25. See [producer-test receipt](../docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json).
   Earlier 17-test workflow and 38-test foundation receipts remain dated history;
   full repository suite not rerun. Initial syntax/fixture errors are retained.
-- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-dda8b75e012e4c8ac9724584a28b8e85b0b657a50e2b4f8086153e87c8f9b903/snapshot.json)
-  contains 24 unique events across 4 workflow runs. Failures and unavailable
+- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-08da58b12f99c82fdf10c1440fd5994e0caf384584e2b42aaf8b828447b78c7f/snapshot.json)
+  contains 29 unique events across 6 runs (workflow plus development data). Failures and unavailable
   agent usage remain recorded. No trained-model results. Bounded export
   segmentation still required before long production runs.
 - **Agents/budget:** requested lead `gpt-6.1-sol` / `xhigh`; explicitly created
   reviewer `gpt-6-luna` / `xhigh`, no recursive delegation. Runtime attestation,
   actual tokens and billing are not exposed and remain null. Preserve settings.
   $50/month compute ceiling; no rental initiated or paid offer selected.
-- **Last verified prior remote:** `0385d69f8d1983015a8c4f36f0a8170eb6fd9257`
+- **Last verified prior remote:** `09f18a5cf5e9a827ce526997714a035d4b07175e`
   on `origin/main`, `git@github.com:dakiemdarktharr/caissa-jepa.git`, verified
   2026-10-25. Bootstrap system SSH permissions and sandbox DNS initially failed;
   command-level `GIT_SSH_COMMAND='ssh -F /dev/null'` with network access worked.

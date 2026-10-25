@@ -3,13 +3,12 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T11:39:30.890440+07:00 (Asia/Saigon, UTC+07:00).
-**Phase:** CP-01 foundations before Review 2; [Review 1 accepted](research/reviews/REVIEW1_CP01_2026-10-25.md).
-**This checkpoint:** repaired covariance-gradient weighting, verified all six
-arms/every parameter tensor, and added bounded data/reference construction
-and durable producer hooks. Independent review accepted the explicit H1/H2/H4 support-count correction
-for one bounded feasibility batch after this source checkpoint.
-No new scientific training or evaluation experiment ran.
+**Updated:** 2026-10-25T11:43:09.997124+07:00 (Asia/Saigon, UTC+07:00).
+**Phase:** CP-01 model-blind data feasibility; reference-yield gate failed.
+**This checkpoint:** preserved the first bounded corpus attempt and its
+[reference-only diagnosis](docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json).
+A development-data feasibility batch ran; no model fit, match or locked scoring ran.
+The failed gate is retained; corpus acceptance and Review 2 remain open.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
@@ -17,17 +16,20 @@ No new scientific training or evaluation experiment ran.
 | Scoped regression | **41/41 passed**, 0 failures/errors/skips; **1.275 s** | [Receipt](docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json), 2026-10-25; mathematical/model/accounting/ledger/data/producer fixtures. Full suite not rerun; initial fixture errors retained |
 | Current correction checks | **9/9 passed**, 0 failures/errors; **0.614 s** | [Horizon-support receipt](docs/validation/CP01_HORIZON_SUPPORT_2026-10-25.json), 2026-10-25; previous 41-test evidence retained above |
 | Lead cross-check | Original failing encoder coordinate passes on **6/6 arms**, max absolute error **2.17e-10** | [Foundation receipt](docs/validation/CP01_FOUNDATIONS_2026-10-25.json); same declared float64 derivative tolerance |
-| Data / training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [Data contract](research/data_contract.json), [state](research/STATE.md); only synthetic data fixtures ran |
+| First development-data batch | **164 episodes**, **256 train / 64 development windows**; **0 prohibited selected-state collisions** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json), [isolation check](docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json), 2026-10-25; finite batch, not population inference |
+| Reference yield | **57/57 complete**; pairable roots **0/7 C4**, **11/50 Reversi**; required floor 5/game failed | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); 43/50 C4 episodes had no eligible late root; no root replacement |
+| Measured resources | **15.551 s wall / 15.392 s CPU**, **80,281,600 bytes peak RSS** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); local CPU, 1 thread, no rental |
+| Training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); reference completion does not waive failed scientific eligibility |
 | Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
-| Workflow evidence | **24 unique events across 4 workflow runs** | [Snapshot](research/results/snapshot-dda8b75e012e4c8ac9724584a28b8e85b0b657a50e2b4f8086153e87c8f9b903/snapshot.json); includes baseline failures and corrected verification, no scientific outcomes |
+| Ledger evidence | **29 unique events across 6 runs** (workflow and development data) | [Snapshot](research/results/snapshot-08da58b12f99c82fdf10c1440fd5994e0caf384584e2b42aaf8b828447b78c7f/snapshot.json); includes all failed gates and data counts, no learned-model outcomes |
 | Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
-| Last verified prior GitHub checkpoint | [`0385d69`](https://github.com/dakiemdarktharr/caissa-jepa/commit/0385d69f8d1983015a8c4f36f0a8170eb6fd9257), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
+| Last verified prior GitHub checkpoint | [`09f18a5`](https://github.com/dakiemdarktharr/caissa-jepa/commit/09f18a5cf5e9a827ce526997714a035d4b07175e), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
 
 **Open gates:** independent data readiness, fresh corpus/window/split/reference
 audit; integrated trainer/evaluator, complete recovery/measurement hooks and
 bounded exports; Review 2/pilot; final analysis freeze and manuscript evidence.
-**Next:** generate the pinned,
-bounded model-blind development corpus and retain every gate/failure count.
+**Next:** independent scientific diagnosis of low reference yield and signed
+matching support; adopt at most a justified bounded revision before any new batch.
 GitHub stores source, protocols and reviewed small evidence. Raw datasets,
 weights, environments, logs and unreleased outcomes stay ignored/local; exact
 recovery of local-only artifacts is not guaranteed. No unattended service runs.

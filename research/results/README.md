@@ -48,3 +48,8 @@ corpus generation, training or matches ran in this milestone.
 Snapshot `snapshot-dda8b75e012e4c8ac9724584a28b8e85b0b657a50e2b4f8086153e87c8f9b903/` retains 24 events across four workflow runs, adding
 verified foundation publication and the independently reviewed horizon-support
 correction. No corpus generation or scientific training ran before this snapshot.
+
+Snapshot `snapshot-08da58b12f99c82fdf10c1440fd5994e0caf384584e2b42aaf8b828447b78c7f/` contains 29 events across 6 runs, now including
+one development-data run and its preparation. It retains the failed first
+reference-yield gate and reference-only diagnosis. No model was fitted. Raw
+data are excluded; the compact per-game audit and reconstruction hashes are public.

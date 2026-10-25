@@ -68,3 +68,24 @@ within the batch CPU cap. Existing independent bitboard rules and solvers are
 reused; no external-engine independence is claimed. Source-pinned production
 generation waits for the interim independent data-foundation review. Full
 Review 2 still requires corpus acceptance and trainer/evaluator/recovery/hooks.
+
+
+## CP-D004 — 2026-10-25, Asia/Saigon — retain failed data feasibility
+
+The [first batch](../docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json) meets
+window counts and completes all attempted references, but fails the frozen
+five-reference-pairable-roots-per-game floor: C4 0/7, Reversi 11/50. Training
+must not proceed on a falsely accepted corpus. The bounded source produced
+164 episodes, 256 training and 64 development windows with zero selected-state
+collisions against evaluation roots. This is feasibility, not model evidence.
+
+The [diagnosis](../docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json) identifies
+a terminal-critical C4 branch, and a signed-matching support limit from tanh
+value bounds and discrete references. Only four Reversi roots have potential
+nonzero common-sign support. This necessitates scientific diagnosis before
+trainer implementation or another data batch. An independent reviewer is
+checking one prospective widening of the C4 late-root window and whether the
+primary estimand itself needs narrowing. No outcomes were cherry-picked and
+no locked evidence or model score was inspected. The failed attempt remains
+in the durable ledger; cumulative construction CPU is 15.392 seconds of the
+300-second cap, excluding separately labeled software checks.
