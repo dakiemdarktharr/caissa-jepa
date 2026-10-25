@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "phase": "workflow-verification",
+  "recorded_utc": "2026-10-25T03:48:37.623670+00:00",
+  "base_commit": "0ce359a6c0b811d478f9a4e90f2cded2f68833e9",
+  "source_status": "new implementation verified before commit; exact file hashes below",
+  "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv/bin/python -B -m unittest tests.test_research_ledger tests.test_research_checkpoint -v",
+  "invocation_note": "Equivalent unittest loader and TextTestRunner used to capture structured counts and timing.",
+  "tests": {
+    "run": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "wall_seconds": 0.6402182359997823,
+    "successful": true
+  },
+  "environment": {
+    "python": "3.11.9",
+    "platform": "Linux-7.2.8-arch1-2-x86_64-with-glibc2.44",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "source_sha256": {
+    "research_ledger.py": "30a21b787ba5072dbf60424fcb21489630e55e45e97c57d97e82f25640e29d0d",
+    "tools/research_ledger.py": "ad4fa5aa15011042a7a46f77063103b11deb42579a96c1bc160d5974d42114d1",
+    "tools/research_checkpoint.py": "042818b25cb0eee5a75cee3a9fade1a399a135207bf0ab4f876e4df5bc0eaca5",
+    "tests/test_research_ledger.py": "a51a30f34aac8a37eb027c2851b8a4143e77ea97e53b0ed8266a1fffceeed8be",
+    "tests/test_research_checkpoint.py": "7779049a6b2e481b3b31672272fcea4977cd159f3b3de30d5f484aa95665f85d"
+  },
+  "whitespace_check": "pass",
+  "limits": [
+    "Focused infrastructure tests only; not a fresh whole-project test run.",
+    "Actual-objective equivalence uses a synthetic batch and performs no optimizer update.",
+    "Crash test is process exit, not a physical power-loss experiment.",
+    "Git recovery tests use temporary local bare remotes; actual GitHub recovery recorded separately.",
+    "No scientific training, rented GPU, unattended scheduler or production hook integration."
+  ]
+}

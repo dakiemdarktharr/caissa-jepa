@@ -1,0 +1,403 @@
+{
+  "date": "2026-10-25",
+  "timezone": "Asia/Saigon",
+  "tool": "Exa search/fetch",
+  "workstreams": [
+    "coordination",
+    "scientific-research",
+    "provenance"
+  ],
+  "successful_search_calls": 12,
+  "requested_result_slots": 79,
+  "returned_records": 79,
+  "unique_exact_urls": 77,
+  "schema_rejected_calls": 3,
+  "scope": "Discovery records were screened by title/highlights. Selected primary abstracts/sections and official documentation were fetched; this is a targeted review, not an exhaustive systematic review or a claim that every complete paper was read. URL deduplication does not deduplicate preprint versions, DOI mirrors, and later publications of the same work.",
+  "sources": [
+    {
+      "workstream": "scientific-research",
+      "title": "Hidden pitfalls of autonomous AI scientists",
+      "url": "https://www.pnas.org/doi/10.1073/pnas.2610214123"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "The AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search",
+      "url": "https://arxiv.org/abs/2504.08066"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
+      "url": "https://arxiv.org/pdf/2501.04227v2.pdf"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "The A I Sc ient ist -v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search",
+      "url": "https://pub.sakana.ai/ai-scientist-v2/paper/paper.pdf"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "Autonomous AI Scientist Systems: Alignment and Measurements",
+      "url": "https://www.cs.cmu.edu/~07280-s26/lectures/07280_AutonomousScientists.pdf"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "Towards end-to-end automation of AI research",
+      "url": "https://www.nature.com/articles/s41586-026-10265-5"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
+      "url": "https://arxiv.org/abs/2408.06292v2"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "SakanaAI/AI-Scientist-v2",
+      "url": "https://github.com/SakanaAI/AI-Scientist-v2"
+    },
+    {
+      "workstream": "provenance",
+      "title": "dtoolAI: Reproducibility for Deep Learning - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7660391/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "A rigorous uncertainty-aware quantification framework is essential for reproducible and replicable machine learning workflows  - Digital Discovery (RSC Publishing) DOI:10.1039/D3DD00094J",
+      "url": "https://pubs.rsc.org/en/content/articlehtml/2023/dd/d3dd00094j"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Workflow Provenance in the Lifecycle of Scientific Machine Learning",
+      "url": "https://arxiv.org/html/2010.00330v3"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Reproducibility standards for machine learning in the life sciences",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9131851/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Integrated Reproducibility with Self-describing Machine Learning Models",
+      "url": "https://doi.org/10.1145/3589806.3600039"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Are My Deep Learning Systems Fair? An Empirical Study of Fixed-Seed Training",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2021/file/fdda6e957f1e5ee2f3b311fe4f145ae1-Paper.pdf"
+    },
+    {
+      "workstream": "provenance",
+      "title": "The Challenge of Reproducible ML: An Empirical Study on The Impact of Bugs",
+      "url": "https://arxiv.org/html/2109.03991"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Deriva-ML: A Continuous FAIRness Approach to Reproducible Machine Learning Models",
+      "url": "https://arxiv.org/html/2407.01608"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "PaperBench: Evaluating AI’s Ability to Replicate AI Research",
+      "url": "https://proceedings.mlr.press/v267/starace25a.html"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "The More You Automate, the Less You See: The Hidden Pitfalls of AI Scientist Systems | OpenReview",
+      "url": "https://openreview.net/forum?id=7Sndugns1l"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "AstaBench: Rigorous Benchmarking of AI Agents with a Scientific Research Suite",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2026/file/b2ce9568dbb559aefc8c98ca5b5314ce-Paper-Conference.pdf"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery",
+      "url": "https://arxiv.org/html/2410.05080v3"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "ICLR Poster ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery",
+      "url": "https://iclr.cc/virtual/2025/poster/32108"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "N/A",
+      "url": "https://arxiv.org/pdf/2510.21652"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "ReplicatorBench: Benchmarking LLM Agents for Replicability in Social and Behavioral Sciences | Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2",
+      "url": "https://dl.acm.org/doi/abs/10.1145/3770855.3819003"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery",
+      "url": "https://doi.org/10.48550/arxiv.2410.05080"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Agentless :Demystifying LLM-based Software Engineering Agents",
+      "url": "https://arxiv.org/abs/2407.01489v2"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Towards a Science of Scaling Agent Systems",
+      "url": "https://arxiv.org/html/2512.08296v2"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Towards a science of scaling agent systems: When and why agent systems work",
+      "url": "https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How Do AI Agents Spend Your Money? Analyzing and ...",
+      "url": "https://digitaleconomy.stanford.edu/publication/how-do-ai-agents-spend-your-money-analyzing-and-predicting-token-consumption-in-agentic-coding-tasks/"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Towards a Science of Scaling Agent Systems",
+      "url": "https://arxiv.org/html/2512.08296v1"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Agent design pattern catalogue: A collection of architectural patterns for foundation model based agents ☆",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0164121224003224"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Overview ‹ When do AI agents benefit from collaboration?",
+      "url": "https://www.media.mit.edu/projects/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/overview/"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Towards a Science of Scaling Agent Systems",
+      "url": "https://www.rivista.ai/wp-content/uploads/2025/12/2512.08296v2.pdf"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "PaperBench: Evaluating AI's Ability to Replicate AI Research",
+      "url": "https://arxiv.org/abs/2504.01848"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "1 Introduction",
+      "url": "https://arxiv.org/html/2504.01848"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "PaperBench: Evaluating AI’s Ability to Replicate AI Research | OpenAI",
+      "url": "https://openai.com/index/paperbench/"
+    },
+    {
+      "workstream": "scientific-research",
+      "title": "PaperBench: Evaluating AI's Ability to Replicate AI Research",
+      "url": "https://doi.org/10.48550/arxiv.2504.01848"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Improving Reproducibility in Machine Learning ...",
+      "url": "https://www.jmlr.org/papers/v22/20-303.html"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Improving Reproducibility in Machine Learning Research Program)",
+      "url": "https://jmlr.org/papers/volume22/20-303/20-303.pdf"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Improving Reproducibility in Machine Learning Research ...",
+      "url": "https://arxiv.org/html/2003.12206v4"
+    },
+    {
+      "workstream": "provenance",
+      "title": "ReproducibilityChecklist-v2.0",
+      "url": "https://www.cs.mcgill.ca/~jpineau/ReproducibilityChecklist"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Improving Reproducibility in Machine Learning Research (A Report from the NeurIPS 2019 Reproducibility Program)",
+      "url": "https://arxiv.org/abs/2003.12206"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Introducing the NeurIPS 2021 Paper Checklist",
+      "url": "https://blog.neurips.cc/2021/03/26/introducing-the-neurips-2021-paper-checklist/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "N/A",
+      "url": "https://docs.github.com/en/repositories/archiving-a-github-repository/backing-up-a-repository"
+    },
+    {
+      "workstream": "provenance",
+      "title": "ML Experiment Tracking | MLflow AI Platform",
+      "url": "https://mlflow.org/docs/latest/ml/tracking/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Git - gitignore Documentation",
+      "url": "https://git-scm.com/docs/gitignore?origin_team=T0288D531"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Backend Stores",
+      "url": "https://www.mlflow.org/docs/latest/ml/tracking/backend-stores/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Artifact Stores | MLflow AI Platform",
+      "url": "https://mlflow.org/docs/latest/self-hosting/architecture/artifact-store/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "MLflow Projects",
+      "url": "https://mlflow.org/docs/latest/projects"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Recording provenance of workflow runs with RO-Crate | PLOS One",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0309210"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Recording provenance of workflow runs with RO-Crate",
+      "url": "https://doi.org/10.1371/journal.pone.0309210"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Recording provenance of workflow runs with RO-Crate - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11386446/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Workflow Run Crate | Workflow Run RO-Crate",
+      "url": "https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Workflow Run Crate specification | Zenodo",
+      "url": "https://zenodo.org/records/10013104"
+    },
+    {
+      "workstream": "provenance",
+      "title": "Abstract",
+      "url": "https://arxiv.org/html/2312.07852v2"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks",
+      "url": "https://arxiv.org/abs/2604.22750"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks",
+      "url": "https://arxiv.org/html/2604.22750v2"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks",
+      "url": "https://doi.org/10.48550/arxiv.2604.22750"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks - Microsoft Research",
+      "url": "https://www.microsoft.com/en-us/research/publication/how-do-ai-agents-spend-your-money-analyzing-and-predicting-token-consumption-in-agentic-coding-tasks/"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks | OpenReview",
+      "url": "https://openreview.net/forum?id=XdyOQ0zQEe&referrer=%5Bthe+profile+of+Erik+Brynjolfsson%5D%28%2Fprofile%3Fid%3D%7EErik_Brynjolfsson1%29"
+    },
+    {
+      "workstream": "coordination",
+      "title": "[2407.01502] AI Agents That Matter",
+      "url": "https://arxiv.org/abs/2407.01502"
+    },
+    {
+      "workstream": "coordination",
+      "title": "AI Agents That Matter",
+      "url": "https://doi.org/10.48550/arxiv.2407.01502"
+    },
+    {
+      "workstream": "coordination",
+      "title": "AI Agents That Matter",
+      "url": "https://arxiv.org/html/2407.01502"
+    },
+    {
+      "workstream": "coordination",
+      "title": "AI Agents That Matter",
+      "url": "https://agents.cs.princeton.edu/"
+    },
+    {
+      "workstream": "coordination",
+      "title": "AI Agents That Matter | ML Anthology",
+      "url": "https://mlanthology.org/tmlr/2025/kapoor2025tmlr-ai/"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Do More Agents Help?",
+      "url": "https://arxiv.org/html/2606.05670"
+    },
+    {
+      "workstream": "coordination",
+      "title": "ST-Bench",
+      "url": "https://arxiv.org/html/2610.07763"
+    },
+    {
+      "workstream": "coordination",
+      "title": "A Cloud-based Multi-Agentic Workflow for Science",
+      "url": "https://arxiv.org/html/2601.12607"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Why Do Multi-Agent LLM Systems Fail?",
+      "url": "https://arxiv.org/html/2503.13657v2"
+    },
+    {
+      "workstream": "coordination",
+      "title": "When Do Multi-Agent LLM Systems Outperform Single-Agent Approaches?",
+      "url": "https://ecer.eraa.at/archive/ecer-2026/papers/When_Do_Multi-Agent_LLM_Systems_Outperform_Single-Agent_Approaches_An_Empirical_Comparison_Across_Different_Task_Types.pdf"
+    },
+    {
+      "workstream": "coordination",
+      "title": "The Illusion of Multi-Agent Advantage",
+      "url": "https://arxiv.org/pdf/2606.13003v1.pdf"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Empirical Comparison of Multi-Agent Architectural Patterns for Unit Test Generation",
+      "url": "https://odr.chalmers.se/items/2a008985-ebbd-4cd1-926a-947499da2a66"
+    },
+    {
+      "workstream": "coordination",
+      "title": "SILO-BENCH",
+      "url": "https://arxiv.org/pdf/2603.01045"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Building effective AI agents",
+      "url": "https://www.anthropic.com/research/building-effective-agents"
+    },
+    {
+      "workstream": "coordination",
+      "title": "How we built our multi-agent research system",
+      "url": "https://www.anthropic.com/engineering/multi-agent-research-system"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Effective context engineering for AI agents",
+      "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Writing effective tools for AI agents",
+      "url": "https://www.anthropic.com/research/writing-tools-for-agents"
+    },
+    {
+      "workstream": "coordination",
+      "title": "Building Effective AI Agents guide",
+      "url": "https://resources.anthropic.com/building-effective-ai-agents"
+    }
+  ]
+}

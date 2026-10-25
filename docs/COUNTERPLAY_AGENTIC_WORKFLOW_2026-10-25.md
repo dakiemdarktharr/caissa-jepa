@@ -5,7 +5,7 @@ tags:
   - counterplay
   - agentic-workflow
   - research-plan
-status: Proposed execution design; no agents or experiments launched
+status: Revised after research audit; logging foundation implemented; scientific execution not started
 ---
 
 **Recommendation:** one lead agent, one worker used on demand, and one
@@ -18,6 +18,15 @@ minimum possible token usage. Agent usage and the **$50/month compute budget**
 are separate budgets. Model names and reasoning levels remain unassigned:
 the user must approve the exact model/effort for every created agent. This
 design does not create agents, rent hardware, or authorize training.
+
+**Audit revision, 25 October 2026:** the [research audit](COUNTERPLAY_WORKFLOW_RESEARCH_AUDIT_2026-10-25.md)
+and [metrics/recovery contract](COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md)
+add durable measurement events, failure accounting, explicit result-release
+rules, regular verified GitHub checkpoints, and recovery checks at every
+milestone. The user selected GitHub-only backup with large artifacts kept
+local. Source and small published results survive laptop loss; local-only
+datasets/checkpoints do not. The cadence is an active-work policy, not an
+installed unattended service. Future trainer/evaluator wiring remains a gate.
 
 **1. End-to-end workflow**
 
@@ -45,6 +54,12 @@ flowchart TD
     W --> R4{"Review 4: claims and reproduction pass?"}
     R4 -- "Correct analysis or wording" --> Y
     R4 -- "Pass" --> Z["Complete manuscript and reproduction package"]
+    T -. "Evidence" .-> L["Durable metrics and decision journal"]
+    P -. "Every update and scheduled evaluation" .-> L
+    X -. "Every root, pair, failure and resource sample" .-> L
+    Y -. "Analysis and claim provenance" .-> L
+    L --> K["Reviewed compact export and verified GitHub checkpoint"]
+    K --> D["Restore check and next-task handoff"]
 ```
 
 The dashed chess branch is optional and is decided using engineering
@@ -118,8 +133,10 @@ reproduction; it is not a replacement for the new H4/policy/split contract.
 
 **4. Keep context small and decisions durable**
 
-Create only the following working records when execution begins; this document
-does not create empty scaffolding or a new orchestration framework:
+Use the following working records incrementally; avoid empty scaffolding or a
+new orchestration framework. `research/STATE.md` and the durable ledger tools
+now exist; the remaining proposed records are created when their stage needs
+them. The metrics/recovery contract governs event cadence and publication.
 
 | Proposed record | Purpose |
 | --- | --- |
@@ -133,8 +150,11 @@ does not create empty scaffolding or a new orchestration framework:
 Large raw artifacts remain in ignored storage. Small curated receipts and
 source/configuration changes belong in Git. Mirror human-readable milestone
 notes to Obsidian; avoid repeating the entire research history in each note.
-Commit completed verified changes. Push only under the user's applicable
-publication authorization; no force-push or generated-data upload by default.
+Commit and normally push verified milestones under the user's October 25
+standing authorization, targeting at most 15 minutes between safe checkpoints
+during active work, and at experiment/session boundaries. Verify the remote
+hash. No force-push or large generated-data upload. Report missed checkpoints
+and the remaining local-only exposure; a local commit is not a remote backup.
 
 Each delegated task packet should normally fit in **about 1,000–1,500 tokens**:
 objective; input files and identities; allowed edits; constraints; exact
