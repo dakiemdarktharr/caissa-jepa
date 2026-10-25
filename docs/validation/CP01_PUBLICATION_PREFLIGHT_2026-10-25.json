@@ -1,0 +1,16 @@
+{
+  "phase": "workflow",
+  "timestamp": "2026-10-25T11:24:09.359981+07:00",
+  "publication_attempt": {
+    "status": "failed_before_commit",
+    "reason": "Git staged-whitespace gate rejected Markdown trailing hard-break spaces on reviewer date line 3",
+    "index": "only this workflow files; initially clean; preserved for explicit manual completion"
+  },
+  "correction": {
+    "file": "research/reviews/REVIEW1_CP01_2026-10-25.md",
+    "review_before_sha256": "42718f666bb3ca85858ef405de9ad6b1ff9e8be57a7e00f48ce7fe7db67ada52",
+    "review_after_sha256": "a0086ca425a124b8b643346b7a1a87e1cd372b585c9d7dde09e44fde3ceb1512",
+    "rule": "Remove two trailing Markdown hard-break spaces on date line only; review scientific text unchanged. The original hash is reconstructible by restoring those two spaces."
+  },
+  "scientific_experiment_ran": false
+}

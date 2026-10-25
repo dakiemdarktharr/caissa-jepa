@@ -1,0 +1,148 @@
+{
+  "protocol_id": "counterplay-cp01-v2",
+  "date": "2026-10-25",
+  "status": "prospective-design-review1-corrections-pending-targeted-rereview",
+  "format": "JSON-compatible YAML; parse with Python json",
+  "scope": {
+    "question": "Within a checkpoint, how do matched signed scalar corrections at reference-critical versus noncritical opponent replies change root regret? Other error sources are descriptive diagnostics.",
+    "games": [
+      "connect4-6x7",
+      "reversi6"
+    ],
+    "population": "Fresh legal late-game roots from declared behavior episodes; same-size only",
+    "primary_reference": "terminal-solved complete legal two-ply fork, root-player utility -1/0/+1",
+    "extensions": [
+      "separately named fixed-horizon reference",
+      "H4 sensitivity",
+      "paired-play external validity"
+    ],
+    "deferred": [
+      "board-size transfer",
+      "new ranking objective",
+      "self-play RL"
+    ],
+    "chess": "Decide inclusion before Review 3 by rules/history, data, paired-play readiness and cost; default defer if unmet"
+  },
+  "reference_contract": {
+    "q": "q(s,a,b) is root-player terminal minimax utility after exact a,b",
+    "Q": "Q(s,a)=min_b q(s,a,b); a terminal first action has exact utility and no reply set",
+    "regret": "max_a Q(s,a)-Q(s,selected_action), range [0,2]",
+    "tie_tolerance": 1e-10,
+    "tie_rule": "smallest legal action ID; preserve full best/worst sets for metrics",
+    "forced_pass": "ordinary legal transition, consumes one ply and reverses actor; terminal detection precedes expansion",
+    "critical_reply": "unique reference worst b for a suboptimal own action a; deleting b raises Q(s,a) to at least the original optimal root utility, with gap >= 0.5 to the next-worst reply",
+    "critical_selection": "Build all qualifying reference-critical pairs first; a primary pair requires nonterminal H2 critical child and at least one same-root/own-action noncritical nonterminal child with reference gap >=0.5. Choose lexicographically first such (a,b), before any model evaluation. Independently count terminal-critical and no-control roots.",
+    "control_candidates": "same root and same own action a, noncritical nonterminal H2 replies, with gap >= 0.5 above Q(s,a)",
+    "terminal_entries": "exact terminal branches are never learned or repaired; report separately",
+    "epsilon_worst_reply": 0.0,
+    "incomplete": "do not use partial action maps as exact; retain attempt and missingness; no easier-root replacement"
+  },
+  "interventions": {
+    "primary_depth": 2,
+    "operator": "complete exact legal tree with fixed action order and scalar leaf table; no search pruning differences between conditions",
+    "natural": "recursive learned transition/value leaves, exact terminal override",
+    "primary_repair": "replace one nonterminal q_hat(s,a,b) by common q_ref(s,a,b); all other scalar entries unchanged",
+    "matching": "Residual e=q_hat-q_ref; same residual sign under tolerance 1e-10, then abs(abs(e_control)-abs(e_critical)) <=0.1. Choose smallest magnitude difference then smallest b ID, without post-repair outcome use. Zero residuals are a separate sign stratum; no-match reasons retained.",
+    "primary_contrast": "regret(noncritical repair)-regret(critical repair) within checkpoint/root matched pairs in multi-step JEPA",
+    "population": "conditional checkpoint/root matched population, separately per game and training corpus; no unconditional causal interpretation",
+    "required_coverage": "Every scheduled seed/root counted in nested scheduled -> complete reference -> reference-critical -> nonterminal-critical -> reference-pairable -> model-evaluable -> common-sign-support -> caliper-matched. Report root failure, terminal-critical, no-control, no-sign-support, caliper-unmatched separately by game/corpus/seed/sign. Counts reconcile; no root replacement.",
+    "unmatched_reporting": "Conditional primary remains undefined for zero-match seeds. Secondary scheduled-policy contrast: use the two repairs on matched units, otherwise both conditions equal natural (contrast 0 for known structural noneligibility/nonmatch). Unknown reference/evaluation/matching status has contrast in [-2,2]. Bound each seed mean over ALL its predeclared N_g scheduled roots by (sum_observed_D +/-2*n_unknown)/N_g; then average over ALL scheduled seeds. These bound the coverage-adjusted repair-policy contrast, not an imaginary matched effect on nonmatches.",
+    "secondary": [
+      "exact-state re-encoding using same online encoder/value head",
+      "full common reference leaf substitution",
+      "other arms' repair sensitivity",
+      "tie-aware worst-reply preservation",
+      "natural decision agreement and regret",
+      "separate capped-search sensitivity"
+    ],
+    "limits": "Operational reference-defined stress test, not discovery that the model identifies criticality or identification of lost latent information. Repair compares behavior-trained values to minimax targets, mixing target mismatch and prediction/readout error. Signed magnitude matching restricts common support and does not remove all confounding; report sign/error/root strata and coverage.",
+    "all_root_critical": "Secondary scheduled-root effect natural regret minus one critical scalar repair; select the lexicographically first nonterminal reference-critical pair, even without a noncritical control; no critical pair means no-op effect 0. Unknown/failed unit receives [-2,2] sensitivity bounds, never zero."
+  },
+  "models": {
+    "arms": [
+      "multi-step-jepa",
+      "single-horizon-jepa",
+      "value-only-latent-rollout",
+      "recursive-raw-state",
+      "direct-leaf-value"
+    ],
+    "starting_source": "two_player/v212_model.py after derivative repair",
+    "dimensions": {
+      "features": 198,
+      "latent": 32,
+      "actions": 65
+    },
+    "supervision": "same recorded behavior action and terminal outcome labels; label equals behavior-mixture outcome, not minimax value",
+    "control": "paired initialization seeds, data/windows/order, updates, shared policy/value losses; objective-specific graphs disclosed",
+    "cost": "equal data/updates primary; measured time, calls, memory, parameters and scoped operation estimates; no dummy compute or inherited 5-percent FLOP gate",
+    "training_settings": "Review 2 freezes pilot Adam/EMA, clipping, weights and schedule; Review 3 freezes final duration/config once from development"
+  },
+  "data_contract": {
+    "provenance": "generator source hash, policy implementation/config/seed, episode actions/outcome, canonical state and source-row IDs, selected windows and masks",
+    "split_ownership": "episode group assigned before windows; symmetry-related episodes/roots grouped; locked generation after Review 3",
+    "roles": [
+      "train",
+      "development",
+      "locked"
+    ],
+    "selection": "development combines validation and bounded selection; no independent selection-confirmation claim",
+    "shared_start_track": "common openings permitted and enumerated for behavior training; these are not isolated generalization evidence",
+    "isolated_roots": "evaluation root canonical keys excluded from all train/development supervised root and future-state targets; reject on collision before model scoring, record all counts",
+    "reference_descendants": "reference descendant overlap is measured separately; no whole-tree-disjointness claim; terminal states may repeat",
+    "duplicates": "source ID unique; collapse canonical selected-window content within split with multiplicity retained, never count duplicates as independent roots",
+    "windows": "H1/H2/H4 exact-replayed prefixes; no synthetic post-terminal padding as valid targets; all arms share selected bank; H4 eligible support required for direct arm",
+    "labels": "no solver labels for training or model selection targets; reference utilities reserved for development diagnostics and locked evaluation",
+    "corpora": "independently generated seed streams; report cross-corpus overlap and analyze separately, do not infer corpus-population uncertainty from two corpora",
+    "before_pilot": "versioned generator/window policy, replay and overlap audit, label/mask lineage, support by action/role/ply, independent rules/reference checks"
+  },
+  "statistics": {
+    "primary": "For each game and corpus, compute mean paired D over matched roots within each scheduled seed, then equal mean over all scheduled seeds. If ANY scheduled seed has zero matches or unknown matching due to failure, the primary estimate is null with reason; show per-seed summaries and the scheduled-policy bounds. Do not silently drop seeds or failed units.",
+    "multiplicity": "Bonferroni 97.5-percent two-sided intervals for two primary games within each corpus (familywise 95 percent); replication corpus analyzed as replication, no pooled primary claim",
+    "dependence": "crossed training seed and episode/canonical root group resampling; every repair condition paired; retain unit-level rows",
+    "freeze_gate": "validate estimator coverage on design-matched synthetic null/heterogeneous/missing/matching cases before Review 3; otherwise descriptive bounds and no calibrated CI claim",
+    "precision_target": "primary half-width <=0.05 planning target only, not achieved or guaranteed; final count fixed before locked scoring",
+    "secondary": "Descriptive: scheduled repair-policy contrast, all-root critical repair, re-encoding, reference substitution, capped search and non-JEPA comparisons. No post hoc promotion or latent-information causal claim. No equivalence claim without new prospective margin.",
+    "failure": "every scheduled cell completed/failed/invalidated/not-run; no favorable seed replacement; missingness sensitivity and denominators required",
+    "nested_denominators": "N_g frozen scheduled roots shared across seeds before scoring; K frozen scheduled training seeds. Coverage table contains K*N_g units and all nested counts. Model-blind structural exclusions are reported as part of this finite scheduled population. No conditional estimate is generalized to unmatched roots."
+  },
+  "budget_and_gates": {
+    "compute_monthly_usd_ceiling": 50,
+    "paid_rental": "none requested; requires applicable spending authorization and actual plus committed/reserve accounting",
+    "prepilot_local_limit": "one serial CPU process, BLAS/OMP threads=1, <=2 GiB measured RSS target; each reference attempt <=100000 nodes/2 seconds, batch <=5 CPU minutes/100 candidate episodes; stop with yield report",
+    "pilot": "one bounded development configuration, <=10 CPU minutes total, maximum two justified revisions within same cap; exact manifest before execution",
+    "planning_only": "up to five arms x ten paired seeds x two corpora; NOT a frozen execution queue or achieved count",
+    "final_counts_seeds_budget": null,
+    "null_reason": "Review 3 must use measured development yield/time/variance to freeze an affordable design",
+    "review1": "question, prior-work boundaries, estimands, controls, data access, stop rules",
+    "review2": "gradient, corpus/reference, integrated trainer/evaluator, checkpoint/resume, metrics, resources and export segmentation before pilot",
+    "review3": "final arms/config/seeds/roots/analysis/references/cells/budget/release with synthetic validation before locked outcomes",
+    "review4": "claims/citations/generated figures/reproduction and complete manuscript",
+    "fallback": "diagnose repeated failures, narrow scope prospectively to feasibility/diagnostic report, preserve all attempts; no missing gate becomes a pass",
+    "prepilot_reference_screen": {
+      "episodes_total": 100,
+      "episodes_per_game": 50,
+      "root_choice": "one nonterminal late root per episode, chosen by smallest SHA-256 of seed/episode/canonical root key before solving; no replacement",
+      "max_empty_cells": {
+        "connect4-6x7": 8,
+        "reversi6": 6
+      },
+      "minimum_reference_pairable_roots_per_game": 5,
+      "minimum_complete_reference_fraction": 0.9,
+      "failure_rule": "If below these predeclared engineering thresholds, diagnose once and use at most two documented revisions within the same total cap, or stop and report feasibility. This is not power certification."
+    },
+    "development_match_screen": {
+      "minimum_matched_roots_per_game_per_seed": 2,
+      "minimum_matched_fraction_of_reference_pairable": 0.2,
+      "scope": "engineering floor for interpreting a pilot diagnostic, not final sample size/power; fail means descriptive feasibility only, no mechanism claim",
+      "freeze": "applies before viewing development repair effects; final counts/precision remain Review 3"
+    }
+  },
+  "measurement_recovery": {
+    "contract": "docs/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md",
+    "journal": "research_ledger.py; wire each producing boundary before production",
+    "source": "clean pinned commit or archived patch hash; immutable attempt IDs and input identities",
+    "locked_release": "Review 3 binds release plan; explicit manifest-bound review receipt before reading/exporting locked scientific outcomes",
+    "publication": "README refresh every commit, explicit small-file checkpoint CLI, normal push and remote verification; target <=15 minutes active meaningful work",
+    "storage": "GitHub source/protocols/small reviewed per-unit results; ignored raw data/checkpoints/logs local-only; no exact-recovery guarantee"
+  }
+}

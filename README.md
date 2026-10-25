@@ -3,32 +3,32 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25 11:08:53 (Asia/Saigon, UTC+07:00).
-**Phase:** workflow setup; revised scientific study remains pre-training.
-**This checkpoint:** saved the [agentic startup prompt](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md),
-fixed the approved agent configuration, and added a README-update requirement
-to the Git checkpoint tool. No new scientific experiment ran.
+**Updated:** 2026-10-25T11:22:35.082485+07:00 (Asia/Saigon, UTC+07:00).
+**Phase:** CP-01 prospective design accepted at Review 1; foundations before Review 2.
+**This checkpoint:** adopted the [contribution](research/CONTRIBUTION.md),
+[prospective protocol v2](research/protocol.yaml), [primary-source crosswalk](research/PRIOR_WORK.md)
+and issue register. [Independent Review 1](research/reviews/REVIEW1_CP01_2026-10-25.md)
+accepted four design corrections after a conditional first review. No new scientific experiment ran.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
-| Agents | Lead: `gpt-6.1-sol` / `xhigh`; all workers/reviewers: `gpt-6-luna` / `xhigh` | User-approved configuration, not runtime attestation; [instructions](AGENTS.md). No subagents launched for setup |
-| Current-change checks | **17/17 passed**, 0 failures/errors; 0.924 s measured verification time | [Current receipt](docs/validation/WORKFLOW_README_GATE_2026-10-25.json), 2026-10-25; full project suite not rerun. [Initial fixture error](docs/validation/WORKFLOW_README_GATE_ATTEMPT1_2026-10-25.json) retained |
-| Revised-study training / matches | 0 fits / 0 matches; planned confirmatory cells not frozen | [Current state](research/STATE.md); older studies below are separate evidence |
-| Revised-study scientific metrics | Loss, regret, critical-reply coverage and Elo: not measured | No accepted current corpus or production trainer; [data audit](docs/COUNTERPLAY_CHESS_AND_DATA_READINESS_2026-10-25.md) |
-| Workflow evidence | **10 unique events across 2 workflow runs**, including 3 new setup/verification events | [Latest snapshot](research/results/snapshot-7d9d08c983796b8815aeb1e773f8641592a0945e8595f81e72676f4d26b51a68/snapshot.json); cumulative snapshots are not independent samples |
-| Compute / agent usage | $50/month compute ceiling; no rental initiated by setup; actual token/billing usage unavailable | Budget is not measured spend; no unverified zero-dollar or zero-token claim |
-| Last verified prior GitHub checkpoint | [`d9e9ded`](https://github.com/dakiemdarktharr/caissa-jepa/commit/d9e9dedf2ed631e5983bff9bcdf580d1ae578999), verified 2026-10-25 | Recovered checkout passed 15 focused tests and both snapshot checksums on the same host/environment; this row does not claim the pending commit is pushed |
+| Agents | Requested lead `gpt-6.1-sol` / `xhigh`; reviewer `gpt-6-luna` / `xhigh`; runtime attestation unavailable | [Bootstrap receipt](docs/validation/CP01_BOOTSTRAP_2026-10-25.json); one independent reviewer, no substitution |
+| Scoped checks | **17/17 passed**, 0 failures/errors/skips; **0.801 s** | [Receipt](docs/validation/CP01_BOOTSTRAP_2026-10-25.json), 2026-10-25; ledger/checkpoint tests only, full suite not rerun |
+| Review 1 | Accepted for Review 2; **4 findings closed at design level**, 2 protocol versions retained | [Closure receipt](docs/validation/CP01_REVIEW1_CLOSURE_2026-10-25.json); no pilot or locked-evaluation gate waived |
+| Revised-study training / matches | **0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); historical measurements below remain separately dated and unchanged |
+| Revised-study scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | No accepted current corpus/trainer; earlier infrastructure checks are not scientific results |
+| Workflow evidence | **15 unique events across 3 workflow runs** | [Snapshot](research/results/snapshot-93f01ce1daaf4409e6d4dffd1981a707158947d59832b98226d02d5b1cb7d75d/snapshot.json); cumulative exports are not independent samples |
+| Cost / usage | $50/month compute ceiling; no rental initiated; actual token/billing usage unavailable | [Metrics contract](docs/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md); budget is not measured spend |
+| Last verified prior GitHub checkpoint | [`71a9275`](https://github.com/dakiemdarktharr/caissa-jepa/commit/71a92754230715f1fe4538554a2eac49a155dd97), verified 2026-10-25 | Expected SSH destination and `origin/main` verified during bootstrap; pending commit is not yet a verified backup |
 
-**Open gates:** prospective protocol, covariance-gradient repair, audited
-fresh data/splits, trainer/evaluator and measurement integration, export
-segmentation, reference/analysis validation.
-**Next:** start the approved lead with the saved prompt; close the prospective
-protocol/research-design gate, then numerically verify the gradient repair.
-**Update policy:** refresh this section in every new commit, targeting safe
-checkpoints every 15 minutes of active meaningful work and at milestones.
-No new measurements means an explicit statement, not fabricated values.
-No unattended timer or training process is running. GitHub stores code and
-reviewed small results; large datasets, checkpoints and logs stay local.
+**Open gates:** covariance-gradient repair; accepted fresh corpus/window/splits;
+independent references; integrated trainer/evaluator, recovery, metrics and
+bounded exports; pilot; final analysis/freeze and manuscript evidence.
+**Next:** fix the covariance derivative and verify numerical derivatives across
+all six affected historical arms and every parameter tensor, retaining the failing baseline.
+GitHub stores source/protocols and small reviewed evidence. Datasets, weights,
+raw logs, environments and unreleased outcomes stay local and excluded; exact
+recovery of local-only artifacts is not guaranteed. No unattended service runs.
 <!-- counterplay-status:end -->
 
 **For current continuation, use the [startup prompt](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md)
