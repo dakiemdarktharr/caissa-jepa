@@ -13,6 +13,12 @@ contains all seven events, adding the CSV publication failure and the passing
 15-test regression verification. These are cumulative snapshots of the same
 run: deduplicate by run ID and event key; never count both as separate samples.
 
+The latest `snapshot-7d9d08c983796b8815aeb1e773f8641592a0945e8595f81e72676f4d26b51a68/`
+has 10 unique events across two workflow runs. It adds the approved startup
+configuration, a failed test-fixture attempt and the passing 17-test README
+publication-gate verification. No subagents or scientific experiments were
+launched. This snapshot also includes the previous seven events unchanged.
+
 Within each immutable snapshot, `snapshot.json` is authoritative;
 `events.csv` is an event-oriented convenience table; `checksums.json` binds
 both files. The directory suffix is the SHA-256 of the canonical checksum

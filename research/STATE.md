@@ -10,8 +10,14 @@ point; resolve claims using linked versioned evidence rather than chat memory.
   prospective protocol; dataset/split/window contract; trainer/evaluator
   integration; trustworthy references and analysis validation. Recording
   metrics does not close these issues.
-- **Budget:** $50/month compute ceiling. No rental initiated. Agent models and
-  reasoning levels still require explicit approval; no subagents launched.
+- **Budget and agents:** $50/month compute ceiling. No rental initiated.
+  Approved lead: `gpt-6.1-sol` / `xhigh`; all workers and reviewers:
+  `gpt-6-luna` / `xhigh`. No silent substitution or repeat model approval.
+  Startup instructions are in `docs/COUNTERPLAY_AGENTIC_START_PROMPT.md`;
+  no subagents or training were launched while preparing that prompt.
+- **README publication rule:** every new commit refreshes the marked status
+  section with actual metrics/progress, evidence links and next action. The
+  checkpoint CLI checks that refresh; unavailable metrics remain missing.
 - **Backup decision:** user chose GitHub only, with large artifacts local.
   Source, notes and reviewed small result snapshots are to be pushed every
   verified milestone and at a 15-minute active-work target. Raw data, weights,
@@ -40,6 +46,10 @@ point; resolve claims using linked versioned evidence rather than chat memory.
   snapshot preserves five workflow events; a later snapshot adds the failed
   publication and its regression verification, preserving seven events.
   These are infrastructure measurements, not scientific training outcomes.
+  The README publication gate subsequently passed 17 focused tests; its
+  initial fixture error and correction are both retained in
+  `docs/validation/WORKFLOW_README_GATE_2026-10-25.json` and the linked first
+  attempt. The latest snapshot has 10 unique events across 2 workflow runs.
 - **Data:** active checkout contains only 12 old compute-pilot artifacts.
   A separate local archive contains about 933 MB of historical experiments;
   selected DEV09/V2 bytes were matched to original hashes. Neither is an

@@ -15,8 +15,10 @@ implement changes, interpret evidence, and write the paper.
 
 This is an economical design for this repository, not a measured claim of
 minimum possible token usage. Agent usage and the **$50/month compute budget**
-are separate budgets. Model names and reasoning levels remain unassigned:
-the user must approve the exact model/effort for every created agent. This
+are separate budgets. The user approved **`gpt-6.1-sol` / `xhigh` for the lead**
+and **`gpt-6-luna` / `xhigh` for every worker and reviewer** on 25 October 2026.
+Keep those exact settings with no silent fallback. Use the
+[copy-ready startup prompt](COUNTERPLAY_AGENTIC_START_PROMPT.md). Saving this
 design does not create agents, rent hardware, or authorize training.
 
 **Audit revision, 25 October 2026:** the [research audit](COUNTERPLAY_WORKFLOW_RESEARCH_AUDIT_2026-10-25.md)
@@ -155,6 +157,11 @@ standing authorization, targeting at most 15 minutes between safe checkpoints
 during active work, and at experiment/session boundaries. Verify the remote
 hash. No force-push or large generated-data upload. Report missed checkpoints
 and the remaining local-only exposure; a local commit is not a remote backup.
+Every new commit must refresh the README's marked status section with dated
+progress, measured metrics, scoped checks, evidence links, blockers and next
+action. If no new experiment ran, state that and retain the last verified
+measurements. The checkpoint CLI rejects a missing or unchanged section;
+semantic accuracy still requires evidence review. Only the lead publishes.
 
 Each delegated task packet should normally fit in **about 1,000–1,500 tokens**:
 objective; input files and identities; allowed edits; constraints; exact
@@ -179,10 +186,12 @@ specific unresolved question.
    small correction, re-review its diff and affected evidence rather than
    restarting a whole-repository audit. Do not waive a scientific blocker to
    meet a reviewer-call quota.
-4. **Escalate reasoning selectively.** Use approved less expensive settings
-   for mechanical edits, extraction, formatting and routine implementation.
-   Reserve stronger reasoning for objectives, novelty boundaries, leakage,
-   causal interpretation and uncertainty. Exact models remain user-selected.
+4. **Route tasks within the approved configuration.** The Sol lead owns
+   objectives, novelty boundaries, leakage, causal interpretation and
+   uncertainty. Luna workers perform bounded implementation, extraction,
+   analysis and writing; a separate Luna reviewer inspects consequential work.
+   All roles use `xhigh`. Reduce calls and context rather than changing the
+   approved reasoning effort or silently switching models.
 5. **Cache deterministic work.** Key reference results, parsed data and
    reports by their actual inputs/code/configuration. Verify identity before
    reuse. Do not reuse stale outputs after a relevant change or treat old

@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-10-25T11:07:41.342343+07:00",
+  "status": "failed",
+  "attempt": 1,
+  "tests_run": 17,
+  "failures": 0,
+  "errors": 1,
+  "runner_reported_seconds": 0.918,
+  "error_test": "test_rejects_traversal_oversize_and_symlink",
+  "cause": "The new test helper called git status on an intentionally outside-repository path before the production checkpoint validation could reject it. The fixture raised CalledProcessError rather than the expected ValueError.",
+  "scope": "Test-helper ordering issue; no commit/push or production experiment attempted.",
+  "source_sha256": {
+    "tools/research_checkpoint.py": "7b143add5c3872ada1abbc7aae4d3fe9def9c738cacc8ebdef0cb8d82e0fbf24",
+    "tests/test_research_checkpoint.py": "9da197550e2edd0c12cdead7bdcf022e80fc7d32111e488f3c7300d72260a85e"
+  }
+}

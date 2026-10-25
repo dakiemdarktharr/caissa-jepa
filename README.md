@@ -1,6 +1,42 @@
 # CAISSA-JEPA: two-player JEPA research
 
-**Continuing in a new project? Start with the [master handoff](MASTER_HANDOFF.md)
+<!-- counterplay-status:start -->
+## Counterplay — current research status
+
+**Updated:** 2026-10-25 11:08:53 (Asia/Saigon, UTC+07:00).
+**Phase:** workflow setup; revised scientific study remains pre-training.
+**This checkpoint:** saved the [agentic startup prompt](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md),
+fixed the approved agent configuration, and added a README-update requirement
+to the Git checkpoint tool. No new scientific experiment ran.
+
+| Item | Latest verified value / status | Evidence and scope |
+| --- | --- | --- |
+| Agents | Lead: `gpt-6.1-sol` / `xhigh`; all workers/reviewers: `gpt-6-luna` / `xhigh` | User-approved configuration, not runtime attestation; [instructions](AGENTS.md). No subagents launched for setup |
+| Current-change checks | **17/17 passed**, 0 failures/errors; 0.924 s measured verification time | [Current receipt](docs/validation/WORKFLOW_README_GATE_2026-10-25.json), 2026-10-25; full project suite not rerun. [Initial fixture error](docs/validation/WORKFLOW_README_GATE_ATTEMPT1_2026-10-25.json) retained |
+| Revised-study training / matches | 0 fits / 0 matches; planned confirmatory cells not frozen | [Current state](research/STATE.md); older studies below are separate evidence |
+| Revised-study scientific metrics | Loss, regret, critical-reply coverage and Elo: not measured | No accepted current corpus or production trainer; [data audit](docs/COUNTERPLAY_CHESS_AND_DATA_READINESS_2026-10-25.md) |
+| Workflow evidence | **10 unique events across 2 workflow runs**, including 3 new setup/verification events | [Latest snapshot](research/results/snapshot-7d9d08c983796b8815aeb1e773f8641592a0945e8595f81e72676f4d26b51a68/snapshot.json); cumulative snapshots are not independent samples |
+| Compute / agent usage | $50/month compute ceiling; no rental initiated by setup; actual token/billing usage unavailable | Budget is not measured spend; no unverified zero-dollar or zero-token claim |
+| Last verified prior GitHub checkpoint | [`d9e9ded`](https://github.com/dakiemdarktharr/caissa-jepa/commit/d9e9dedf2ed631e5983bff9bcdf580d1ae578999), verified 2026-10-25 | Recovered checkout passed 15 focused tests and both snapshot checksums on the same host/environment; this row does not claim the pending commit is pushed |
+
+**Open gates:** prospective protocol, covariance-gradient repair, audited
+fresh data/splits, trainer/evaluator and measurement integration, export
+segmentation, reference/analysis validation.
+**Next:** start the approved lead with the saved prompt; close the prospective
+protocol/research-design gate, then numerically verify the gradient repair.
+**Update policy:** refresh this section in every new commit, targeting safe
+checkpoints every 15 minutes of active meaningful work and at milestones.
+No new measurements means an explicit statement, not fabricated values.
+No unattended timer or training process is running. GitHub stores code and
+reviewed small results; large datasets, checkpoints and logs stay local.
+<!-- counterplay-status:end -->
+
+**For current continuation, use the [startup prompt](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md)
+and [research state](research/STATE.md).** The archived handoff below documents
+the earlier V2.12 program; its superiority objective is not the current paper's
+completion criterion.
+
+**Historical continuation reference: [master handoff](MASTER_HANDOFF.md)
 (2026-10-25) and [copy-ready resume prompt](docs/handoff/RESUME_PROMPT.md).**
 The handoff reconciles the local snapshot with all 415 newer GitHub commits,
 maps source and evidence, records excluded artifacts, and provides setup and
@@ -44,7 +80,7 @@ duration alone is not an algorithmic novelty claim. See [the V2.9 amendment](doc
 only nominate a separate model-selection study, not establish superiority or
 Q1 readiness.
 
-Current continuation (2026-10-03): the narrowly authorized V2.12 v04
+Historical continuation (2026-10-03): the narrowly authorized V2.12 v04
 no-training random-weight compute pilot v02 completed 1,152/1,152 cells across
 four variants, six inference arms, and three paired initializations. All
 reached four plies; wall-time p90 was 0.7970 s and maximum was 3.7419 s, with

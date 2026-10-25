@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-25T11:07:54.791296+07:00",
+  "timezone": "Asia/Saigon",
+  "base_commit": "d9e9dedf2ed631e5983bff9bcdf580d1ae578999",
+  "source_status": "Modified implementation tested before commit; exact source hashes below.",
+  "status": "pass",
+  "attempt": 2,
+  "previous_attempt_receipt": "docs/validation/WORKFLOW_README_GATE_ATTEMPT1_2026-10-25.json",
+  "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv/bin/python -B -m unittest tests.test_research_ledger tests.test_research_checkpoint -v",
+  "invocation_note": "Equivalent unittest loader/TextTestRunner used for structured counts and timing.",
+  "tests": {
+    "run": 17,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "wall_seconds": 0.924465780999526
+  },
+  "new_acceptance": [
+    "New checkpoint without README is rejected before staging.",
+    "README prose edits without status refresh are rejected before staging.",
+    "Missing, duplicate, reversed or empty status sections are rejected.",
+    "Changed README status is committed and recovered alongside selected work.",
+    "Push retry creates no unnecessary commit; Git exclusion, CSV and divergence checks still pass."
+  ],
+  "source_sha256": {
+    "research_ledger.py": "30a21b787ba5072dbf60424fcb21489630e55e45e97c57d97e82f25640e29d0d",
+    "tools/research_ledger.py": "ad4fa5aa15011042a7a46f77063103b11deb42579a96c1bc160d5974d42114d1",
+    "tools/research_checkpoint.py": "7b143add5c3872ada1abbc7aae4d3fe9def9c738cacc8ebdef0cb8d82e0fbf24",
+    "tests/test_research_ledger.py": "a51a30f34aac8a37eb027c2851b8a4143e77ea97e53b0ed8266a1fffceeed8be",
+    "tests/test_research_checkpoint.py": "1d0eb0cf43660b7d5efe88b71bb3faa37de86aac5a8cf00f3c71b5e0a71c587b"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "limitations": [
+    "Focused infrastructure verification, not a full-project test run.",
+    "README refresh is enforced by the checkpoint CLI, not an installed Git hook or GitHub branch rule.",
+    "Semantic accuracy of metrics still requires evidence review.",
+    "Agent configuration records approval, not runtime model attestation; no subagents or scientific training launched."
+  ]
+}

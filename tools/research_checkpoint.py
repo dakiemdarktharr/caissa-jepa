@@ -14,11 +14,39 @@ import subprocess
 DEFAULT_REMOTE = "git@github.com:dakiemdarktharr/caissa-jepa.git"
 ALLOWED = {".py", ".md", ".json", ".csv", ".yaml", ".yml", ".toml", ".txt", ".tex", ".bib"}
 EXCLUDED = {"chess_data", "fen_dataset", "downloads", "build", "dist", ".venv", ".git", ".aws", ".codex", ".agents"}
+STATUS_START = "<!-- counterplay-status:start -->"
+STATUS_END = "<!-- counterplay-status:end -->"
 
 
 def git(root, *args, check=True):
     return subprocess.run(["git", "--literal-pathspecs", "-C", str(root), *args],
                           check=check, text=True, capture_output=True)
+
+
+def status_section(text):
+    if text.count(STATUS_START) != 1 or text.count(STATUS_END) != 1:
+        raise ValueError("README must have exactly one Counterplay status section")
+    start, end = text.index(STATUS_START), text.index(STATUS_END)
+    if end <= start or not text[start + len(STATUS_START):end].strip():
+        raise ValueError("README status section must be ordered and nonempty")
+    return text[start:end + len(STATUS_END)]
+
+
+def require_readme_update(root, selected):
+    """Require a refreshed status section for new commits; allow push retries.
+
+    This checks the publication boundary, not the truth of reported metrics.
+    The lead must still verify evidence and distinguish missing measurements.
+    """
+    if not git(root, "status", "--porcelain", "--untracked-files=all", "--", *selected).stdout:
+        return
+    if "README.md" not in selected:
+        raise ValueError("each new checkpoint must select README.md and refresh its metrics/status section")
+    current = status_section((root / "README.md").read_text())
+    previous = git(root, "show", "HEAD:README.md", check=False)
+    if previous.returncode == 0 and STATUS_START in previous.stdout:
+        if status_section(previous.stdout) == current:
+            raise ValueError("README metrics/status section is unchanged; record new evidence or no new measurements")
 
 
 def checkpoint(root, paths, message, *, push=False, expected_remote=DEFAULT_REMOTE, branch="main"):
@@ -49,6 +77,7 @@ def checkpoint(root, paths, message, *, push=False, expected_remote=DEFAULT_REMO
         selected.append(name)
     if total > 10_000_000:
         raise ValueError("checkpoint exceeds the 10 MB curated-file budget")
+    require_readme_update(root, selected)
     git(root, "add", "--", *selected)
     # CSV's standard CRLF terminator is valid data. Accept it without disabling
     # checks for spaces before the terminator or other source whitespace errors.
@@ -68,7 +97,8 @@ def checkpoint(root, paths, message, *, push=False, expected_remote=DEFAULT_REMO
             raise RuntimeError("push is not verified at the expected remote head")
     return {"commit": head, "created_commit": changed, "destination": expected_remote,
             "branch": branch, "remote_head": remote_head, "remote_verified": remote_head == head,
-            "selected_files": selected, "validation": "staged whitespace check; caller supplies substantive checks"}
+            "selected_files": selected,
+            "validation": "README status refresh and staged whitespace checks; caller verifies metric evidence and substantive checks"}
 
 
 def main():

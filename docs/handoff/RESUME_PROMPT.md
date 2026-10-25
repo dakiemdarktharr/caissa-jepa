@@ -1,5 +1,9 @@
 # Copy-ready continuation prompt
 
+**Historical prompt:** its superiority objective and unassigned agent models
+have been superseded by the [Counterplay startup prompt](../COUNTERPLAY_AGENTIC_START_PROMPT.md)
+and current `research/STATE.md`. Preserve this text as historical context.
+
 Paste the following into the new project/chat after opening or cloning
 https://github.com/dakiemdarktharr/caissa-jepa (branch `main`):
 

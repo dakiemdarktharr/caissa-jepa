@@ -99,7 +99,11 @@ At a checkpoint:
 1. Flush/verify measurements and prepare an immutable reviewed export. Keep
    full local artifacts excluded and protected results withheld.
 2. Save the current state, unfinished work, exact next action, and evidence
-   pointers. Run the checks appropriate to changed code/data/analysis.
+   pointers. Refresh the README's marked status section in every new commit:
+   date/timezone, stage/change, measured metrics with evidence, scoped checks,
+   blockers and next action. If no experiment ran, state that and retain the
+   last verified measurements with dates. Keep locked results withheld. Run
+   the checks appropriate to changed code/data/analysis.
 3. Inspect the explicit selected files. Commit source, notes and small results
    with an accurate milestone or incomplete-work description. If a source
    change is not validated, do not label it ready for experiments; preserve a
@@ -115,7 +119,13 @@ At a checkpoint:
 
 Use `tools/research_checkpoint.py` for explicit existing files. It refuses
 pre-staged work, ignored artifacts, wrong destinations, oversized files and
-non-fast-forward pushes. It does not schedule itself or claim scientific
+non-fast-forward pushes, and requires a refreshed README status section for
+each new commit. The lead still verifies the metric evidence; a changed
+section alone does not prove accuracy. Retrying a push with no new commit
+does not require a README edit. Record the prior verified remote hash in the
+README, then verify/report the new hash after pushing and carry it into the
+next substantive update; do not create self-referential commit loops.
+The tool does not schedule itself or claim scientific
 validation. If a commit/check fails after staging, inspect and preserve the
 index; the tool deliberately does not reset the user's work. Deletions or
 other unusual changes need the ordinary reviewed Git workflow.
@@ -192,12 +202,12 @@ CLI boundaries:
 .venv/bin/python -B tools/research_ledger.py record RUN_ID research/event.json
 .venv/bin/python -B tools/research_ledger.py verify
 .venv/bin/python -B tools/research_ledger.py export research/results
-.venv/bin/python -B tools/research_checkpoint.py --message "Record verified milestone" --push research/STATE.md
+.venv/bin/python -B tools/research_checkpoint.py --message "Record verified milestone" --push README.md research/STATE.md
 ```
 
 The example manifest/event paths are supplied by the runner, not existing
 scientific datasets. Select every intended export file explicitly when
-checkpointing; the final command above publishes only the state file and any
+checkpointing; the final command above publishes only README, state and any
 already-committed ancestors, not an unlisted export directory.
 
 Before production readiness, test all actual producer hooks, optimizer/EMA

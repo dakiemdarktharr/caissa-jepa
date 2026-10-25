@@ -1,0 +1,38 @@
+{
+  "recorded_at": "2026-10-25T11:09:16.670467+07:00",
+  "timezone": "Asia/Saigon",
+  "status": "pass",
+  "files": [
+    {
+      "source": "docs/COUNTERPLAY_AGENTIC_START_PROMPT.md",
+      "destination": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/COUNTERPLAY_AGENTIC_START_PROMPT.md",
+      "sha256": "ea59950b3a804c6854ef49f6741ef17e4cca6ebd996398e4ba8f37bb2e183b85",
+      "previous_copy": null
+    },
+    {
+      "source": "docs/COUNTERPLAY_AGENTIC_WORKFLOW_2026-10-25.md",
+      "destination": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/COUNTERPLAY_AGENTIC_WORKFLOW_2026-10-25.md",
+      "sha256": "9ef6607015426e56226160e2b774bfeef205828b63e36f2fc7b28913cfa129a2",
+      "previous_copy": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/_sync_history/20261025T110916+0700/COUNTERPLAY_AGENTIC_WORKFLOW_2026-10-25.md"
+    },
+    {
+      "source": "docs/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md",
+      "destination": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md",
+      "sha256": "dd11836b0f95d570fe2ea09a25df60412ca9a04acfbb323e0a6563139e20a4ae",
+      "previous_copy": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/_sync_history/20261025T110916+0700/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md"
+    },
+    {
+      "source": "docs/validation/WORKFLOW_README_GATE_2026-10-25.json",
+      "destination": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/validation/WORKFLOW_README_GATE_2026-10-25.json",
+      "sha256": "d6f7be6b24f4ea8b7f76453f4b6e36af9132c3ff6cd1424a90684e0c696618ce",
+      "previous_copy": null
+    },
+    {
+      "source": "docs/validation/WORKFLOW_README_GATE_ATTEMPT1_2026-10-25.json",
+      "destination": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/validation/WORKFLOW_README_GATE_ATTEMPT1_2026-10-25.json",
+      "sha256": "2baed9d9480dca2c3bb7c940ad6280526b9aa2ddced56e93d45324251add3fa8",
+      "previous_copy": null
+    }
+  ],
+  "scope": "Filesystem mirror verified by SHA-256; not an Obsidian UI check or an independent backup."
+}

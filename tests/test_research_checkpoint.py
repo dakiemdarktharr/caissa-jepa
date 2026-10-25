@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 import unittest
 
-from tools.research_checkpoint import checkpoint, git
+from tools.research_checkpoint import STATUS_START, STATUS_END, checkpoint, git
 
 
 class ResearchCheckpointTests(unittest.TestCase):
@@ -19,11 +19,18 @@ class ResearchCheckpointTests(unittest.TestCase):
         git(self.root, "remote", "add", "origin", str(self.remote))
         (self.root / ".gitignore").write_text("chess_data/\n*.npz\n")
         (self.root / "note.md").write_text("initial\n")
-        git(self.root, "add", ".gitignore", "note.md")
+        (self.root / "README.md").write_text(f"{STATUS_START}\nSynthetic checkpoint 0\n{STATUS_END}\n")
+        self.revision = 0
+        git(self.root, "add", ".gitignore", "note.md", "README.md")
         git(self.root, "commit", "-m", "fixture")
 
     def publish(self, paths=("note.md",), **kwargs):
-        return checkpoint(self.root, list(paths), "fixture checkpoint", push=True,
+        selected = list(paths)
+        if git(self.root, "status", "--porcelain", "--untracked-files=all", "--", *selected, check=False).stdout:
+            self.revision += 1
+            (self.root / "README.md").write_text(f"{STATUS_START}\nSynthetic checkpoint {self.revision}\n{STATUS_END}\n")
+            selected.append("README.md")
+        return checkpoint(self.root, selected, "fixture checkpoint", push=True,
                           expected_remote=str(self.remote), **kwargs)
 
     def test_round_trip_clone_preserves_only_selected_files_and_can_retry_push(self):
@@ -35,6 +42,7 @@ class ResearchCheckpointTests(unittest.TestCase):
         clone = self.root.parent / "restored"
         subprocess.run(["git", "clone", str(self.remote), str(clone)], check=True, capture_output=True)
         self.assertEqual((clone / "note.md").read_text(), "verified progress\n")
+        self.assertIn("Synthetic checkpoint 1", (clone / "README.md").read_text())
         self.assertFalse((clone / "unrelated.md").exists())
 
     def test_rejects_excluded_artifacts_wrong_remote_and_staged_work(self):
@@ -87,6 +95,25 @@ class ResearchCheckpointTests(unittest.TestCase):
         (self.root / "bad.py").write_bytes(b"value = 1 \r\n")
         with self.assertRaises(subprocess.CalledProcessError):
             self.publish(["bad.py"])
+
+    def test_changed_files_require_readme_status_refresh_before_staging(self):
+        (self.root / "note.md").write_text("new source\n")
+        with self.assertRaisesRegex(ValueError, "select README"):
+            checkpoint(self.root, ["note.md"], "missing dashboard", expected_remote=str(self.remote))
+        readme = self.root / "README.md"
+        readme.write_text(readme.read_text() + "Unrelated prose edit\n")
+        with self.assertRaisesRegex(ValueError, "unchanged"):
+            checkpoint(self.root, ["note.md", "README.md"], "stale dashboard", expected_remote=str(self.remote))
+        self.assertEqual(git(self.root, "diff", "--cached", "--name-only").stdout, "")
+
+    def test_missing_duplicate_or_reversed_status_markers_rejected(self):
+        for content in ["No status section", f"{STATUS_START}\nx\n{STATUS_START}\n{STATUS_END}",
+                        f"{STATUS_END}\nx\n{STATUS_START}", f"{STATUS_START}\n{STATUS_END}"]:
+            with self.subTest(content=content):
+                (self.root / "README.md").write_text(content)
+                with self.assertRaises(ValueError):
+                    checkpoint(self.root, ["README.md"], "invalid dashboard", expected_remote=str(self.remote))
+                self.assertEqual(git(self.root, "diff", "--cached", "--name-only").stdout, "")
 
 
 if __name__ == "__main__":
