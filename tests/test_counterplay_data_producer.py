@@ -20,11 +20,13 @@ class CounterplayProducerTests(unittest.TestCase):
         self.recipe = {"corpus_seed": 2026102501, "train_episodes_per_game": 1,
                        "development_episodes_per_game": 1, "train_windows_per_game": 32,
                        "development_windows_per_game": 32}
-        (self.root / "research/data_contract.json").write_text(json.dumps({"pilot_recipe": self.recipe}))
+        (self.root / "research/data_contract.json").write_text(json.dumps({"pilot_recipe": self.recipe,
+            "protocol_id": "synthetic-cp01-producer-test", "contract_id": "synthetic-contract"}))
         self.fixture = {"roots": [{"root_id": "fixture", "reference": {"wall_seconds": 0.01}}],
                         "audit": {"fixture": {"count": 1}}, "cpu_seconds": 0.02,
                         "episodes": [{"episode_id": "fixture", "role": "train"}],
-                        "window_count_gate": True, "reference_yield_gate": True}
+                        "window_count_gate": True, "reference_yield_gate": True,
+                        "nonzero_signed_support_gate": True}
         self.patches = [patch.object(producer, "ROOT", self.root),
                         patch.object(producer, "SOURCES", ("research/protocol.yaml", "research/data_contract.json")),
                         patch.object(producer.subprocess, "check_output", side_effect=lambda args, **kw: "" if "status" in args else "a" * 40),
@@ -81,6 +83,23 @@ class CounterplayProducerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "chess_data"):
             producer.prepare(self.root / "public", self.root / "c.json", run_id="c")
         self.assertFalse((self.root / "chess_data").exists())
+
+    def test_revision_binds_prior_receipt_and_subtracts_its_cpu_budget(self):
+        previous = self.root / "previous.json"
+        previous.write_text(json.dumps({"cpu_seconds": 15.25}))
+        contract_path = self.root / "research/data_contract.json"
+        contract = json.loads(contract_path.read_text())
+        contract["revision"] = {"prior_receipt": "previous.json",
+                                "prior_receipt_sha256": file_sha256(previous)}
+        contract_path.write_text(json.dumps(contract))
+        with patch.object(producer, "build", return_value=copy.deepcopy(self.fixture)) as build:
+            result = producer.prepare(self.root / "chess_data/revision", self.root / "revision.json",
+                                      run_id="revision")
+        self.assertEqual(build.call_args.kwargs["cpu_seconds"], 284.75)
+        self.assertEqual(result["cumulative_feasibility_cpu_seconds"], 15.27)
+        previous.write_text(json.dumps({"cpu_seconds": 0}))
+        with self.assertRaisesRegex(ValueError, "identity changed"):
+            producer.prepare(self.root / "chess_data/corrupt", self.root / "corrupt.json", run_id="corrupt")
 
 
 if __name__ == "__main__":

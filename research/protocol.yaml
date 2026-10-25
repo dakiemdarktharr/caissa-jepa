@@ -1,7 +1,7 @@
 {
-  "protocol_id": "counterplay-cp01-v2",
+  "protocol_id": "counterplay-cp01-v3-feasibility",
   "date": "2026-10-25",
-  "status": "prospective-design-review1-corrections-pending-targeted-rereview",
+  "status": "prospective final data-feasibility revision before any model scoring",
   "format": "JSON-compatible YAML; parse with Python json",
   "scope": {
     "question": "Within a checkpoint, how do matched signed scalar corrections at reference-critical versus noncritical opponent replies change root regret? Other error sources are descriptive diagnostics.",
@@ -123,19 +123,25 @@
       "episodes_per_game": 50,
       "root_choice": "one nonterminal late root per episode, chosen by smallest SHA-256 of seed/episode/canonical root key before solving; no replacement",
       "max_empty_cells": {
-        "connect4-6x7": 8,
+        "connect4-6x7": 12,
         "reversi6": 6
       },
       "minimum_reference_pairable_roots_per_game": 5,
       "minimum_complete_reference_fraction": 0.9,
-      "failure_rule": "If below these predeclared engineering thresholds, diagnose once and use at most two documented revisions within the same total cap, or stop and report feasibility. This is not power certification."
+      "failure_rule": "If below these predeclared engineering thresholds, diagnose once and use at most two documented revisions within the same total cap, or stop and report feasibility. This is not power certification.",
+      "additional_necessary_support_gate": {
+        "minimum_roots_per_game": 2,
+        "minimum_fraction_of_reference_pairable": 0.2,
+        "meaning": "Necessary nonzero same-sign residual domain support from q_hat bounds and reference values, not achieved matching or power"
+      }
     },
     "development_match_screen": {
       "minimum_matched_roots_per_game_per_seed": 2,
       "minimum_matched_fraction_of_reference_pairable": 0.2,
       "scope": "engineering floor for interpreting a pilot diagnostic, not final sample size/power; fail means descriptive feasibility only, no mechanism claim",
       "freeze": "applies before viewing development repair effects; final counts/precision remain Review 3"
-    }
+    },
+    "final_feasibility_revision": "Same original 50 development episodes/game and original seed namespace, pre-solve hash selection unchanged. No further screen after this revision. Fail either reference or necessary sign-support gate => stop two-game mechanism study before trainer construction and issue scoped feasibility report."
   },
   "measurement_recovery": {
     "contract": "docs/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md",

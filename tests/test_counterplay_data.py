@@ -7,6 +7,7 @@ import numpy as np
 from benchmarks.reference_rules import ReferenceBudgetExceeded
 from counterplay.data import (GAMES, audit_state, build, candidate_root,
                              critical_pair, generate_episode, model_batch,
+                             potential_nonzero_signed_support,
                              replay_episode, selected_windows, solved_fork,
                              state_from)
 from two_player.games import BoardGame, exact_value
@@ -68,6 +69,10 @@ class CounterplayDataTests(unittest.TestCase):
         rows = [r(0, 1, -1, True), r(0, 2, 1),
                 r(1, 3, -1), r(1, 4, 1), r(1, 5, 1), r(2, None, 0, True)]
         self.assertEqual(critical_pair(rows), {"a": 1, "b": 3, "controls": [4, 5]})
+        self.assertFalse(potential_nonzero_signed_support(rows, critical_pair(rows)))
+        rows[2]["q"] = 0
+        rows[-1]["q"] = 1
+        self.assertTrue(potential_nonzero_signed_support(rows, critical_pair(rows)))
         rows[3]["terminal"] = rows[4]["terminal"] = True
         self.assertIsNone(critical_pair(rows))
         # A tied worst reply cannot qualify as a unique critical reply.

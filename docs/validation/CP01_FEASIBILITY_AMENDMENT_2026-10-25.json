@@ -1,0 +1,26 @@
+{
+  "phase": "workflow",
+  "timestamp": "2026-10-25T11:51:14.155765+07:00",
+  "protocol_id": "counterplay-cp01-v3-feasibility",
+  "tests_run": 10,
+  "failures": 0,
+  "errors": 0,
+  "wall_seconds": 0.621,
+  "scope": "data and producer synthetic checks only; no new experiment after attempt1",
+  "review": "conditional pass for exactly one final model-blind screen; no training approval",
+  "source_hashes": {
+    "research/protocol.yaml": "b6dcc6d38601982d9f92d4eb030ae9919982631bdaa7371873d2f508fbb82670",
+    "research/data_contract.json": "d7ba9dccc3fe6ff9da3e3f71630cea08634ef571acc07ce5e8d4f711a9791e9f",
+    "counterplay/data.py": "7ae09153a6fd57f9b9d97c8eacb944f2ed5c6c2c43fde00d2a875f7f3da611c3",
+    "tools/counterplay_data.py": "ba68e721850dec54d5a78e17345d0b4793e6b455df60019e2b8278abe750c09f",
+    "tests/test_counterplay_data.py": "54ff6b24ba493017418c97d7aa5b487f42b85ddaacbd6fed1a5e029bc3338a66",
+    "tests/test_counterplay_data_producer.py": "c32d863bd769e99922403a12d2076d95c66ea02262dc8ded19f6c69117bfacd2",
+    "research/reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md": "0e7a15307981e506b21cb77ae4e08c30a8d58123440ce72587034bf769f6fd5f"
+  },
+  "budget": {
+    "ceiling_cpu_seconds": 300,
+    "prior_cpu_seconds": 15.391540855,
+    "remaining_build_cpu_seconds": 284.608459145
+  },
+  "stop": "No further screen; failed yield or necessary sign support retires two-game mechanism design before trainer construction"
+}

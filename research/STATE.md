@@ -1,6 +1,6 @@
 # Counterplay current state
 
-Updated 2026-10-25T11:43:09.997124+07:00 (Asia/Saigon). Continue from evidence, not chat history.
+Updated 2026-10-25T11:51:14.155765+07:00 (Asia/Saigon). Continue from evidence, not chat history.
 
 - **Current gate:** Review 1 accepted the new outcome-independent CP-01 v2
   empirical design for entry to foundation work / Review 2. The original
@@ -35,15 +35,20 @@ Updated 2026-10-25T11:43:09.997124+07:00 (Asia/Saigon). Continue from evidence, 
   roots: C4 0/7 (43/50 episodes no late candidate); Reversi 11/50. Required
   5/game floor failed. 15.551 s wall, 15.392 s CPU, 80,281,600-byte peak RSS.
   Raw data remain ignored at `chess_data/cp01-dev-attempt1/data.json`.
-- **Immediate next task:** independent scientific diagnosis before any new
-  batch or training. [Reference-only diagnosis](../docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json)
-  finds C4's sole decision-critical action already terminal; only 4 Reversi
-  roots have potential nonzero same-sign residual support. With tanh values,
-  -1/+1 reference pairs force opposite residual signs. Do not drop sign
-  matching or replace roots to manufacture yield. One prospective C4 empty-cell
-  widening may be reviewed within the cumulative 300-CPU-second cap; at most
-  two justified revisions, otherwise narrow the study explicitly. No revision
-  has run or been adopted yet; independent scientific review is pending.
+- **Immediate next task:** after publishing this clean source, run the one
+  final amended screen: `timeout 330s env OPENBLAS_NUM_THREADS=1
+  OMP_NUM_THREADS=1 .venv/bin/python -B -m tools.counterplay_data
+  chess_data/cp01-dev-attempt2 --receipt
+  docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json --run-id cp01-data-attempt2`.
+  [Independent design review](reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md)
+  accepts CP-01 v3 for this invocation only. C4 empties 8->12, same episodes
+  and seed namespace, caps unchanged; Reversi stays at 6. Cumulative builder
+  CPU cap 300 seconds, first batch charged 15.391540855 seconds. New gate:
+  at least 2 roots/game and 20% of pairable roots with potential nonzero
+  same-sign residual domain support. This is not actual model matching/power.
+  If either gate fails, retire the two-game matched mechanism design before
+  trainer construction and write the scoped feasibility report. Do not retry:
+  the one-shot stop is an operator/protocol constraint, not a lock in code.
 - **Subsequent Review 2 work:** freeze/generate bounded fresh data and selected
   H1/H2/H4 windows, validate rules/references and overlap/support; integrate
   trainer/evaluator and Adam/EMA/RNG/cursor checkpoint-resume; wire and verify
@@ -54,15 +59,15 @@ Updated 2026-10-25T11:43:09.997124+07:00 (Asia/Saigon). Continue from evidence, 
   on 2026-10-25. See [producer-test receipt](../docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json).
   Earlier 17-test workflow and 38-test foundation receipts remain dated history;
   full repository suite not rerun. Initial syntax/fixture errors are retained.
-- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-08da58b12f99c82fdf10c1440fd5994e0caf384584e2b42aaf8b828447b78c7f/snapshot.json)
-  contains 29 unique events across 6 runs (workflow plus development data). Failures and unavailable
+- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-99c0eb8a7253a461cc664ec05785b009802040e65faa991f0d0738d4fe66fd9f/snapshot.json)
+  contains 34 unique events across 6 runs (workflow plus development data). Failures and unavailable
   agent usage remain recorded. No trained-model results. Bounded export
   segmentation still required before long production runs.
 - **Agents/budget:** requested lead `gpt-6.1-sol` / `xhigh`; explicitly created
   reviewer `gpt-6-luna` / `xhigh`, no recursive delegation. Runtime attestation,
   actual tokens and billing are not exposed and remain null. Preserve settings.
   $50/month compute ceiling; no rental initiated or paid offer selected.
-- **Last verified prior remote:** `09f18a5cf5e9a827ce526997714a035d4b07175e`
+- **Last verified prior remote:** `d2d12f29761f0e745d9c32a2b8df434cb6d1a84a`
   on `origin/main`, `git@github.com:dakiemdarktharr/caissa-jepa.git`, verified
   2026-10-25. Bootstrap system SSH permissions and sandbox DNS initially failed;
   command-level `GIT_SSH_COMMAND='ssh -F /dev/null'` with network access worked.

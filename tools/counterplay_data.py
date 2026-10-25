@@ -54,6 +54,7 @@ def prepare(destination, receipt, *, run_id, seed=2026102501):
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     sources = {name: file_sha256(ROOT / name) for name in SOURCES}
     contract = json.loads((ROOT / "research/data_contract.json").read_text())
+    protocol_id = contract["protocol_id"]
     recipe = contract["pilot_recipe"]
     if seed != recipe["corpus_seed"]:
         raise ValueError("this executable supports only the frozen development recipe")
@@ -64,9 +65,19 @@ def prepare(destination, receipt, *, run_id, seed=2026102501):
     destination.mkdir(parents=True)
     receipt.parent.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
+    prior_cpu = 0.0
+    if contract.get("revision"):
+        revision = contract["revision"]
+        previous = ROOT / revision["prior_receipt"]
+        if file_sha256(previous) != revision["prior_receipt_sha256"]:
+            raise ValueError("prior attempt receipt identity changed")
+        prior_cpu = json.loads(previous.read_text())["cpu_seconds"]
+    remaining_cpu = 300.0 - prior_cpu
+    if remaining_cpu <= 0:
+        raise ValueError("cumulative feasibility CPU budget exhausted")
     with Ledger(ROOT / "chess_data/research_metrics.sqlite") as ledger:
         prep_id = run_id + ":preparation"
-        ledger.create_run({"run_id": prep_id, "phase": "workflow", "protocol_id": "counterplay-cp01-v2",
+        ledger.create_run({"run_id": prep_id, "phase": "workflow", "protocol_id": protocol_id,
                            "code_commit": commit, "config": {"recipe": recipe, "sources": sources},
                            "inputs": {"protocol": sources["research/protocol.yaml"],
                                       "data_contract": sources["research/data_contract.json"]},
@@ -78,7 +89,9 @@ def prepare(destination, receipt, *, run_id, seed=2026102501):
             data = build(seed, train_episodes=recipe["train_episodes_per_game"],
                          development_episodes=recipe["development_episodes_per_game"],
                          train_cap=recipe["train_windows_per_game"],
-                         development_cap=recipe["development_windows_per_game"], cpu_seconds=300)
+                         development_cap=recipe["development_windows_per_game"], cpu_seconds=remaining_cpu,
+                         max_empty_cells=contract.get("development_roots", {}).get("max_empty_cells"))
+            data["contract_id"] = contract["contract_id"]
             cpu_seconds = data.pop("cpu_seconds")
             # Timing is evidence, but is not part of deterministic corpus bytes.
             root_times = {r["root_id"]: r["reference"].pop("wall_seconds")
@@ -86,7 +99,8 @@ def prepare(destination, receipt, *, run_id, seed=2026102501):
             write_new(destination / "data.json", data)
             payload_hash = file_sha256(destination / "data.json")
             audit = data["audit"]
-            acceptable = data["window_count_gate"] and data["reference_yield_gate"]
+            acceptable = (data["window_count_gate"] and data["reference_yield_gate"]
+                          and data["nonzero_signed_support_gate"])
             result = {"schema": "counterplay.data-receipt.v1", "phase": "development-data-feasibility",
                       "timestamp_utc": datetime.now(timezone.utc).isoformat(), "run_id": run_id,
                       "code_commit": commit, "source_clean_at_start": True, "source_hashes": sources,
@@ -94,10 +108,13 @@ def prepare(destination, receipt, *, run_id, seed=2026102501):
                       "config": recipe, "environment": environment, "audit": audit,
                       "window_count_gate": data["window_count_gate"],
                       "reference_yield_gate": data["reference_yield_gate"],
+                      "nonzero_signed_support_gate": data["nonzero_signed_support_gate"],
                       "status": "construction_gates_passed" if acceptable else "failed_feasibility_gate",
                       "acceptance": "Independent Review 2 still required before pilot",
                       "wall_seconds": time.perf_counter() - started, "cpu_seconds": cpu_seconds,
                       "reference_wall_seconds_by_root": root_times,
+                      "prior_feasibility_cpu_seconds": prior_cpu,
+                      "cumulative_feasibility_cpu_seconds": prior_cpu + cpu_seconds,
                       "peak_rss_bytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024,
                       "fits": 0, "matches": 0, "reference_descendant_overlap": None,
                       "missing_reason": "reference-descendant overlap not yet measured; no whole-tree-disjointness claim",
@@ -105,7 +122,7 @@ def prepare(destination, receipt, *, run_id, seed=2026102501):
                       "storage": "raw data local-only; exact recovery requires regeneration and hash verification"}
             write_new(receipt, result)
             manifest = {"run_id": run_id, "parent_id": prep_id, "phase": "development",
-                        "protocol_id": "counterplay-cp01-v2", "code_commit": commit,
+                        "protocol_id": protocol_id, "code_commit": commit,
                         "seed": seed, "arm": "model-blind-data", "config": {"recipe": recipe},
                         "inputs": {"dataset": payload_hash, "split": fingerprint({e["episode_id"]: e["role"] for e in data["episodes"]}),
                                    "protocol": sources["research/protocol.yaml"]}, "environment": environment}

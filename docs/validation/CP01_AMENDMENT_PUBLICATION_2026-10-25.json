@@ -1,0 +1,15 @@
+{
+  "phase": "workflow",
+  "failure": "checkpoint staged-whitespace gate stopped before commit; no experiment ran",
+  "file": "research/reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md",
+  "before_sha256": "0e7a15307981e506b21cb77ae4e08c30a8d58123440ce72587034bf769f6fd5f",
+  "after_sha256": "070bda15fd92c87e6e240a361bc73ff5fb899ff7e69f8dd3af49b05ae151fc23",
+  "normalization": [
+    {
+      "line": 3,
+      "removed_spaces": 2
+    }
+  ],
+  "scientific_text_changed": false,
+  "index": "own task files only, preserved for explicit manual completion"
+}

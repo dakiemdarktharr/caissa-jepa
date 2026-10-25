@@ -1,10 +1,16 @@
 {
-  "contract_id": "counterplay-data-cp01-v1",
-  "protocol_id": "counterplay-cp01-v2",
+  "contract_id": "counterplay-data-cp01-v2",
+  "protocol_id": "counterplay-cp01-v3-feasibility",
   "status": "prospective foundation contract; not corpus acceptance or Review 2",
-  "games": ["connect4-6x7", "reversi6"],
+  "games": [
+    "connect4-6x7",
+    "reversi6"
+  ],
   "behavior": {
-    "policies": ["uniform", "tactical"],
+    "policies": [
+      "uniform",
+      "tactical"
+    ],
     "ordered_pairs": "episode index modulo 4 selects uniform/uniform, uniform/tactical, tactical/uniform, tactical/tactical",
     "tactical": "uniform among immediate winning moves, else moves with no immediate opponent win, else all legal moves; project v28_data.choose_action",
     "episode_seed": "SHA256(contract, corpus seed, role, game, episode index), first 64 bits; numpy default_rng",
@@ -23,15 +29,24 @@
   "development_roots": {
     "episodes": 50,
     "per_game": true,
-    "population": "one nonterminal late state per development episode with <=8 C4 empty cells or <=6 Reversi empty cells, >=2 legal own actions",
+    "population": "one nonterminal late state per original development episode with <=12 C4 empty cells or <=6 Reversi empty cells, >=2 legal own actions",
     "selection": "minimum SHA256(corpus seed/episode ID/canonical state key); choose before reference solving; preserve no-candidate episodes; no replacement",
     "duplicate_roots": "first source identity per canonical key retained; all duplicate counts retained, no replacement",
     "isolation": "root canonical keys excluded from every train/development selected window's root and four future states; whole-tree disjointness is not claimed",
     "references": "complete legal H2 fork; root-player terminal minimax -1/0/+1; independently implemented bitboard ReferenceGame/ReferenceSolver",
-    "caps": {"nodes_per_root": 100000, "wall_seconds_per_root": 2, "batch_cpu_seconds": 300},
+    "caps": {
+      "nodes_per_root": 100000,
+      "wall_seconds_per_root": 2,
+      "batch_cpu_seconds": 300
+    },
     "failure": "no partial exact map accepted; failed/no-candidate/duplicate/not-run units remain accounted for",
     "criticality": "CP-01 v2 nonterminal reference-pairable candidate rule before any model scoring",
-    "yield_gate": "at least five reference-pairable roots per game and >=90% complete references among attempted unique roots; engineering gate only"
+    "yield_gate": "at least five reference-pairable roots per game and >=90% complete references among attempted unique roots; engineering gate only",
+    "max_empty_cells": {
+      "connect4-6x7": 12,
+      "reversi6": 6
+    },
+    "necessary_sign_support_gate": "At least two reference-pairable roots/game and >=20% of reference-pairable roots with some control reference difference <2; necessary domain support for nonzero same-sign errors only, not actual model matching"
   },
   "split_audit": {
     "shared_openings": "enumerated and allowed for train/development behavior; not a disjoint-state claim",
@@ -50,5 +65,14 @@
   },
   "locked": "generation forbidden before a separate Review 3 manifest binds exact roots/seeds/arms/budget/release; no historical holdout is reused",
   "acceptance": "deterministic regeneration identity; independent rules replay at every retained state/action; zero prohibited overlap; selected counts and support audited; complete reference and yield receipt; independent Review 2 before training",
-  "storage": "raw episodes/windows/roots under ignored chess_data; publish only recipe/source hashes, counts, compact audit receipts and later analysis-ready per-unit results"
+  "storage": "raw episodes/windows/roots under ignored chess_data; publish only recipe/source hashes, counts, compact audit receipts and later analysis-ready per-unit results",
+  "seed_namespace": "counterplay-data-cp01-v1 remains unchanged to regenerate exactly the original episodes",
+  "revision": {
+    "id": "feasibility-amendment1",
+    "prior_receipt": "docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json",
+    "prior_receipt_sha256": "a2c35335b2c1829d73eb789c6b6517314558df6abc4cda032efabd4c75d52a90",
+    "cumulative_cpu_seconds_cap": 300,
+    "remaining_rule": "subtract recorded first batch CPU time before build; charge all regeneration CPU again",
+    "stop": "No further root screen after this revision. Failure retires the two-game mechanism study before trainer implementation. Preserve original gate failure."
+  }
 }

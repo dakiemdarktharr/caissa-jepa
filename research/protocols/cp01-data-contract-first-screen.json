@@ -1,0 +1,54 @@
+{
+  "contract_id": "counterplay-data-cp01-v1",
+  "protocol_id": "counterplay-cp01-v2",
+  "status": "prospective foundation contract; not corpus acceptance or Review 2",
+  "games": ["connect4-6x7", "reversi6"],
+  "behavior": {
+    "policies": ["uniform", "tactical"],
+    "ordered_pairs": "episode index modulo 4 selects uniform/uniform, uniform/tactical, tactical/uniform, tactical/tactical",
+    "tactical": "uniform among immediate winning moves, else moves with no immediate opponent win, else all legal moves; project v28_data.choose_action",
+    "episode_seed": "SHA256(contract, corpus seed, role, game, episode index), first 64 bits; numpy default_rng",
+    "episode_bound": "2*board_cells+3 transitions, terminal required; all actions and absolute outcomes replay independently",
+    "ownership": "episode has exactly one role before window extraction; symmetry-identical complete episodes cannot cross train/development roles"
+  },
+  "window_bank": {
+    "eligibility": "exactly four legal transitions ending nonterminal; therefore H1/H2/H4 valid for every selected window, identical across arms",
+    "terminal_windows": "count and exclude from this first balanced bank; do not mislabel missing/terminal targets as valid",
+    "identity": "source ID corpus/role/game/episode/start-ply; content canonical full state/action path plus root-perspective outcome",
+    "duplicates": "collapse canonical content within role/game, retain all source IDs and multiplicity; unit weights one per selected unique content",
+    "selection": "sort unique eligible content IDs by SHA256(corpus seed/role/content ID), take declared fixed per-game cap; no label or model score sorting",
+    "batches": "32 unique windows per game, deterministic seed/epoch shuffle; 64 total; selected count per game multiple of 32; no sampled replacements",
+    "targets": "recorded action policy and behavior-episode terminal outcome in each current state's player perspective; never solver labels"
+  },
+  "development_roots": {
+    "episodes": 50,
+    "per_game": true,
+    "population": "one nonterminal late state per development episode with <=8 C4 empty cells or <=6 Reversi empty cells, >=2 legal own actions",
+    "selection": "minimum SHA256(corpus seed/episode ID/canonical state key); choose before reference solving; preserve no-candidate episodes; no replacement",
+    "duplicate_roots": "first source identity per canonical key retained; all duplicate counts retained, no replacement",
+    "isolation": "root canonical keys excluded from every train/development selected window's root and four future states; whole-tree disjointness is not claimed",
+    "references": "complete legal H2 fork; root-player terminal minimax -1/0/+1; independently implemented bitboard ReferenceGame/ReferenceSolver",
+    "caps": {"nodes_per_root": 100000, "wall_seconds_per_root": 2, "batch_cpu_seconds": 300},
+    "failure": "no partial exact map accepted; failed/no-candidate/duplicate/not-run units remain accounted for",
+    "criticality": "CP-01 v2 nonterminal reference-pairable candidate rule before any model scoring",
+    "yield_gate": "at least five reference-pairable roots per game and >=90% complete references among attempted unique roots; engineering gate only"
+  },
+  "split_audit": {
+    "shared_openings": "enumerated and allowed for train/development behavior; not a disjoint-state claim",
+    "cross_role_windows": "canonical identical window content cannot appear in both roles; deterministic train ownership, exclude development collision and count it",
+    "eval_root_target_collision": "zero required over all selected train/development root/future targets",
+    "reference_descendant_overlap": "report separately if measured; unavailable is missing, not zero",
+    "support": "selected windows and unique roots by game/role; action ID, transition ply and actor; target counts; policy-pair episode counts; all exclusions"
+  },
+  "pilot_recipe": {
+    "corpus_seed": 2026102501,
+    "train_episodes_per_game": 32,
+    "development_episodes_per_game": 50,
+    "train_windows_per_game": 128,
+    "development_windows_per_game": 32,
+    "role": "development-only; no locked generation"
+  },
+  "locked": "generation forbidden before a separate Review 3 manifest binds exact roots/seeds/arms/budget/release; no historical holdout is reused",
+  "acceptance": "deterministic regeneration identity; independent rules replay at every retained state/action; zero prohibited overlap; selected counts and support audited; complete reference and yield receipt; independent Review 2 before training",
+  "storage": "raw episodes/windows/roots under ignored chess_data; publish only recipe/source hashes, counts, compact audit receipts and later analysis-ready per-unit results"
+}

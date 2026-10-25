@@ -89,3 +89,19 @@ primary estimand itself needs narrowing. No outcomes were cherry-picked and
 no locked evidence or model score was inspected. The failed attempt remains
 in the durable ledger; cumulative construction CPU is 15.392 seconds of the
 300-second cap, excluding separately labeled software checks.
+
+
+## CP-D005 — 2026-10-25, Asia/Saigon — final reference-feasibility amendment
+
+[Independent review](reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md) confirms
+the endpoint support constraint and permits one prospective widening to C4
+<=12 empty cells with the original seed namespace/episodes/hash selection.
+CP-01 v3 and data contract v2 preserve earlier versions under `protocols/`.
+The original reference floor and new necessary nonzero-sign support floor
+apply before model scoring. Signed matching is not relaxed. At most one
+amended batch will run; 15.391540855 prior CPU seconds are charged against
+the cumulative 300-second cap. A failed gate retires this two-game design
+before trainer construction and triggers an honest scoped feasibility report.
+This is the final screen, not an invitation to keep changing root populations.
+The code binds the prior receipt but does not enforce one-shot execution; the
+lead must execute it once and retain its disposition without retry.

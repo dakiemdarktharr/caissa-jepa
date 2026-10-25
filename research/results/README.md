@@ -53,3 +53,11 @@ Snapshot `snapshot-08da58b12f99c82fdf10c1440fd5994e0caf384584e2b42aaf8b828447b78
 one development-data run and its preparation. It retains the failed first
 reference-yield gate and reference-only diagnosis. No model was fitted. Raw
 data are excluded; the compact per-game audit and reconstruction hashes are public.
+
+Snapshot `snapshot-16d0db814953c45d5b9dd4fc4df4bd90fc5a5a31c7d6a1082ef0551073d585e8/` contains 32 events across 6 runs. It adds the
+verified failed-batch publication, same-host fresh-clone recovery, and reviewed
+final prospective screen amendment. No second batch ran before this export.
+
+The amendment publication preflight found reviewer Markdown trailing hard-break
+whitespace. Its failure and whitespace-only normalization are preserved in
+`snapshot-99c0eb8a7253a461cc664ec05785b009802040e65faa991f0d0738d4fe66fd9f/` (34 events across six runs). No experiment ran during this correction.

@@ -203,6 +203,19 @@ def critical_pair(rows):
     return min(candidates, key=lambda r: (r["a"], r["b"])) if candidates else None
 
 
+def potential_nonzero_signed_support(rows, pair):
+    """Necessary domain support only; a tanh prediction is not observed here.
+
+    Reference -1/+1 branches have opposite nonzero residual signs throughout
+    [-1,1]. Zero corrections cannot change decisions. Smaller reference gaps
+    allow a common residual sign, without guaranteeing a caliper match.
+    """
+    if pair is None:
+        return False
+    group = {r["b"]: r["q"] for r in rows if r["a"] == pair["a"]}
+    return any(group[b] - group[pair["b"]] < 2 for b in pair["controls"])
+
+
 def selected_windows(episodes, forbidden_keys, cap, corpus_seed, seen_content=None):
     if type(cap) is not int or cap < 32 or cap % 32:
         raise ValueError("per-game window cap must be a positive multiple of 32")
@@ -266,7 +279,8 @@ def model_batch(windows):
 
 
 def build(corpus_seed, *, train_episodes=32, development_episodes=50,
-          train_cap=128, development_cap=32, cpu_seconds=300.0):
+          train_cap=128, development_cap=32, cpu_seconds=300.0,
+          max_empty_cells=None):
     """Construct one bounded development corpus in memory; no files or fits.
 
     A small fixture may override counts; production recipes bind exact values.
@@ -277,6 +291,11 @@ def build(corpus_seed, *, train_episodes=32, development_episodes=50,
             or development_episodes < 1 or cpu_seconds <= 0):
         raise ValueError("invalid bounded construction config")
     started = time.process_time()
+    max_empty_cells = ({"connect4-6x7": 8, "reversi6": 6}
+                       if max_empty_cells is None else max_empty_cells)
+    if (set(max_empty_cells) != set(GAMES)
+            or any(type(v) is not int or v < 1 for v in max_empty_cells.values())):
+        raise ValueError("invalid model-blind late-root limits")
     episodes, roots, banks, audits = [], [], {}, {}
     episode_owners, root_keys, train_content = set(), set(), set()
     for role, count in (("train", train_episodes), ("development", development_episodes)):
@@ -301,7 +320,7 @@ def build(corpus_seed, *, train_episodes=32, development_episodes=50,
                 stats["retained_episodes"] += 1
                 if role != "development":
                     continue
-                root = candidate_root(episode, corpus_seed, 8 if game.gravity else 6)
+                root = candidate_root(episode, corpus_seed, max_empty_cells[name])
                 if root is None:
                     stats["no_candidate_root"] += 1
                     continue
@@ -313,9 +332,12 @@ def build(corpus_seed, *, train_episodes=32, development_episodes=50,
                 try:
                     root["reference"] = solved_fork(game, state_from(root["state"]))
                     root["primary_pair"] = critical_pair(root["reference"]["rows"])
+                    root["potential_nonzero_signed_support"] = potential_nonzero_signed_support(
+                        root["reference"]["rows"], root["primary_pair"])
                     root["status"] = "complete"
                     stats["complete_references"] += 1
                     stats["reference_pairable_roots"] += root["primary_pair"] is not None
+                    stats["potential_nonzero_signed_support_roots"] += root["potential_nonzero_signed_support"]
                 except (TimeoutError, ReferenceBudgetExceeded) as error:
                     root["status"] = "failed"
                     root["reason"] = str(error)
@@ -344,8 +366,13 @@ def build(corpus_seed, *, train_episodes=32, development_episodes=50,
         and audits[f"development:{name}"].get("complete_references", 0)
         >= 0.9 * max(1, audits[f"development:{name}"].get("attempted_unique_roots", 0))
         for name in GAMES)
+    sign_support_gate = all(
+        audits[f"development:{name}"].get("potential_nonzero_signed_support_roots", 0)
+        >= max(2, 0.2 * audits[f"development:{name}"].get("reference_pairable_roots", 0))
+        for name in GAMES)
     return {"contract_id": CONTRACT, "corpus_seed": corpus_seed, "episodes": episodes,
             "windows": banks, "roots": roots, "audit": audits,
             "window_count_gate": sufficient, "reference_yield_gate": reference_gate,
+            "nonzero_signed_support_gate": sign_support_gate,
             "cpu_seconds": time.process_time() - started,
             "acceptance": "requires independent Review 2; construction gates alone are insufficient"}

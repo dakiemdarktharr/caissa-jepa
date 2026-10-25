@@ -1,0 +1,28 @@
+{
+  "phase": "recovery-verification",
+  "recovered_commit": "d2d12f29761f0e745d9c32a2b8df434cb6d1a84a",
+  "source": "fresh GitHub SSH clone on same host",
+  "environment": "existing original venv; not a clean replacement-machine environment",
+  "tests_run": 10,
+  "failures": 0,
+  "errors": 0,
+  "wall_seconds": 1.126836600000388,
+  "modules": [
+    "tests.test_counterplay_gradient",
+    "tests.test_counterplay_data",
+    "tests.test_counterplay_data_producer"
+  ],
+  "hashes": {
+    "counterplay/data.py": "18245686841335715f2bb31eaee886f74b8eea749302d306a488a161221439a5",
+    "tools/counterplay_data.py": "36a645feccb9dc6754b0ffba6be2dee290aa4fe4e535dfdc4b3eb718a197c922",
+    "two_player/v212_model.py": "93cc56127aebf2934670ecf7c18d2204565b9c85e4ef660394b98df7282eb7bf",
+    "research/protocol.yaml": "7c15ea31d090eec96e439812657559e205ec89e4f4d2de67dc5afe32fb1a1adc",
+    "research/data_contract.json": "4c84250c3737a9a75bd63ab61e91f40d851b9a0136b465931f6897d8b16ac0bd",
+    "tests/test_counterplay_gradient.py": "dddc88178429b1bca49113676e74a3b8f93f00c2ea2de774092fb5a596449ae8",
+    "tests/test_counterplay_data.py": "04f7419db21a156a453f286aa0ba57b3601a13b81701b5a1ade4262d5981eeae",
+    "tests/test_counterplay_data_producer.py": "f4fa5eb80b0e6bb61e487a7ce6884c3dae76dc4b54e22102624b2a754a99da43"
+  },
+  "raw_data_recovered": false,
+  "raw_data_reason": "ignored by GitHub-only storage choice",
+  "scientific_experiment_ran": false
+}
