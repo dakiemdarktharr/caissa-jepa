@@ -1,0 +1,312 @@
+{
+  "baseline_failure": {
+    "appendix_probe": {
+      "direct-leaf-value": {
+        "analytic_gradient": -0.06291986994251413,
+        "coordinate_column": 31,
+        "coordinate_row": 125,
+        "excess_covariance_gradient": -0.03312966147838764,
+        "numeric_gradient": -0.029790208300184418
+      },
+      "multi-step-jepa": {
+        "analytic_gradient": 0.007839357843097116,
+        "coordinate_column": 31,
+        "coordinate_row": 125,
+        "excess_covariance_gradient": -0.03312966147838764,
+        "numeric_gradient": 0.04096901951022858
+      },
+      "recursive-raw-state": {
+        "analytic_gradient": -0.05728149001050427,
+        "coordinate_column": 31,
+        "coordinate_row": 125,
+        "excess_covariance_gradient": -0.03312966147838764,
+        "numeric_gradient": -0.024151828315055468
+      },
+      "single-horizon-jepa": {
+        "analytic_gradient": 0.003564002276831841,
+        "coordinate_column": 31,
+        "coordinate_row": 125,
+        "excess_covariance_gradient": -0.03312966147838764,
+        "numeric_gradient": 0.03669366388514561
+      },
+      "single-pair-jepa": {
+        "analytic_gradient": 0.013321934986429196,
+        "coordinate_column": 31,
+        "coordinate_row": 125,
+        "excess_covariance_gradient": -0.03312966147838764,
+        "numeric_gradient": 0.046451596347196755
+      },
+      "value-only-latent-rollout": {
+        "analytic_gradient": 0.014531501348301511,
+        "coordinate_column": 31,
+        "coordinate_row": 125,
+        "excess_covariance_gradient": -0.03312966147838764,
+        "numeric_gradient": 0.04766116301624379
+      }
+    },
+    "broad_suite": {
+      "failed_checks": 35,
+      "finite_difference_checks": 192,
+      "focused_unittest": "failed on the original source as expected",
+      "probe_seconds": 0.4903018740005791,
+      "worst_normalized_error": 5143.579175610438
+    },
+    "checker_sha256": "bdb019fd2ea66db5704a13a397e0f0ec4bffc16edca1e05ffdb4c4c65b3cdc3e",
+    "failure_event_sha256": "0366b032bd76a781280fd9a4c02f65f15bf293fa3a00ab5a4b5d7e818bebebbf",
+    "run_manifest_sha256": "de33d3f3b63fd6da095aab9a688aabd10d1c9ccb74c5d6700b6939f15b3ac365",
+    "source_sha256": "26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014"
+  },
+  "date": "2026-10-25",
+  "environment": {
+    "git_tree": "dirty with assigned uncommitted repair files; source identities supplied by SHA-256",
+    "numpy": "2.4.6",
+    "omp_num_threads": "1",
+    "openblas_num_threads": "1",
+    "platform": "Linux-7.2.8-arch1-2-x86_64-with-glibc2.44",
+    "precision": "float64",
+    "python": "3.11.9"
+  },
+  "ledger": {
+    "baseline_failure_event_sha256": "0366b032bd76a781280fd9a4c02f65f15bf293fa3a00ab5a4b5d7e818bebebbf",
+    "database": "chess_data/research_metrics.sqlite (ignored local journal; no export performed)",
+    "phase": "workflow",
+    "run_id": "cp01-gradient-20261025",
+    "run_manifest_sha256": "de33d3f3b63fd6da095aab9a688aabd10d1c9ccb74c5d6700b6939f15b3ac365"
+  },
+  "limitations": [
+    "The check verifies the current synthetic objective graph and selected finite-difference probes; it is not a scientific training or performance result.",
+    "The database journal remains local and ignored; this receipt is not a published GitHub backup."
+  ],
+  "mathematical_verification": {
+    "absolute_tolerance": 1e-07,
+    "arm_scenario_coverage_count": 12,
+    "arms": [
+      "multi-step-jepa",
+      "single-pair-jepa",
+      "recursive-raw-state",
+      "value-only-latent-rollout",
+      "direct-leaf-value",
+      "single-horizon-jepa"
+    ],
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=tests .venv/bin/python -B -m unittest test_counterplay_gradient test_v212_model test_v212_regularizer_elementwise_accounting test_v212_model_matmul_flop_accounting test_v212_gradient_accumulation_accounting test_research_ledger",
+    "covariance_loss_unweighted_x10": 0.975339827670468,
+    "epsilon": 1e-06,
+    "epsilon_or_tolerance_adjusted": false,
+    "failed_checks": 0,
+    "finite_difference_checks": 192,
+    "frozen_ema_targets_unchanged": true,
+    "maximum_absolute_error": 4.124393881976829e-10,
+    "method": "central coordinate finite differences at the largest-magnitude analytic coordinate and normalized seeded directional finite differences, each for every trainable tensor",
+    "mixed_horizon_mask_counts": {
+      "1": 3,
+      "2": 2,
+      "4": 1
+    },
+    "numpy": "2.4.6",
+    "optimizer_updates": 0,
+    "parameter_tensor_scenario_coverage_count": 96,
+    "passed_checks": 192,
+    "per_arm_tensor_coverage": {
+      "covariance-active-x10-seed9/direct-leaf-value": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb"
+      ],
+      "covariance-active-x10-seed9/multi-step-jepa": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "covariance-active-x10-seed9/recursive-raw-state": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb",
+        "dw",
+        "db"
+      ],
+      "covariance-active-x10-seed9/single-horizon-jepa": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "covariance-active-x10-seed9/single-pair-jepa": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "covariance-active-x10-seed9/value-only-latent-rollout": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "variance-active-mixed-masks/direct-leaf-value": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb"
+      ],
+      "variance-active-mixed-masks/multi-step-jepa": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "variance-active-mixed-masks/recursive-raw-state": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb",
+        "dw",
+        "db"
+      ],
+      "variance-active-mixed-masks/single-horizon-jepa": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "variance-active-mixed-masks/single-pair-jepa": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ],
+      "variance-active-mixed-masks/value-only-latent-rollout": [
+        "ew",
+        "eb",
+        "pw",
+        "pb",
+        "vw",
+        "vb",
+        "fw",
+        "fb"
+      ]
+    },
+    "precision": "float64",
+    "probe_seconds": 0.4857698199994047,
+    "python": "3.11.9",
+    "python_flag": "-B",
+    "relative_tolerance": 0.0001,
+    "scenarios": [
+      "variance-active-mixed-masks",
+      "covariance-active-x10-seed9"
+    ],
+    "threads": {
+      "OMP_NUM_THREADS": 1,
+      "OPENBLAS_NUM_THREADS": 1
+    },
+    "tolerance_rule": "abs(analytic-numeric) <= 1e-7 + 1e-4 * max(abs(analytic), abs(numeric))",
+    "variance_active_coordinates": 27,
+    "worst_check": {
+      "absolute_error": 3.1983502348301163e-10,
+      "analytic": 0.0010383888061424634,
+      "arm": "recursive-raw-state",
+      "kind": "directional",
+      "normalized_error": 0.0015690579859898343,
+      "numeric": 0.00103838848630744,
+      "passed": true,
+      "scenario": "variance-active-mixed-masks",
+      "tensor": "pb",
+      "tolerance": 2.0383888061424634e-07
+    },
+    "worst_normalized_error": 0.0015690579859898343
+  },
+  "phase": "workflow",
+  "protocol": {
+    "id": "counterplay-cp01-v2",
+    "review_state": "Review 1 accepted; no scientific experiment authorized or run",
+    "sha256": "7c15ea31d090eec96e439812657559e205ec89e4f4d2de67dc5afe32fb1a1adc"
+  },
+  "repair": {
+    "behavior": "scale covariance contribution in _regularize from coefficient 4.0 to 0.4; loss_grad retains its 0.1 multiplier and the scalar loss weights remain 0.1 variance / 0.01 covariance",
+    "file": "two_player/v212_model.py",
+    "helper_semantics": "returns variance-loss derivative plus one-tenth of the covariance-loss derivative; caller multiplies the combined gradient by 0.1",
+    "historical_protocol_changed": false,
+    "losses_changed": false,
+    "operation_shapes_changed": false
+  },
+  "research_scope": {
+    "locked_data_accessed": false,
+    "matches_or_corpus_generation": false,
+    "new_scientific_metrics": false,
+    "scientific_experiment": false,
+    "training_or_pilot": false,
+    "usage_tokens": null,
+    "usage_tokens_missing_reason": "host exposes no actual token-usage measurement for this workflow"
+  },
+  "schema": "counterplay.cp01-gradient-repair-validation.v01",
+  "scoped_regression_tests": {
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=tests .venv/bin/python -B -m unittest test_counterplay_gradient test_v212_model test_v212_regularizer_elementwise_accounting test_v212_model_matmul_flop_accounting test_v212_gradient_accumulation_accounting test_research_ledger",
+    "failures": 0,
+    "included_matmul_source_expression_accounting_due_updated_coefficient_literal": true,
+    "reported_seconds": 0.632,
+    "result": "passed",
+    "tests_run": 32
+  },
+  "source_identity": {
+    "base_commit": "5378c0ce3c51fb1a04723a2b2b30d4a573d953a0",
+    "input_sha256": {
+      "gradient_checker": "bdb019fd2ea66db5704a13a397e0f0ec4bffc16edca1e05ffdb4c4c65b3cdc3e",
+      "gradient_test": "2251e612797f5f77a9ad125d3d4c00b3956640422ed02bf04198201d70ab8bed",
+      "protocol_cp01_v2": "7c15ea31d090eec96e439812657559e205ec89e4f4d2de67dc5afe32fb1a1adc",
+      "synthetic_fixture": "d5804c862206f419bc2468dcc3f8ada149700a688910eb2f4e2cb785993fb97e",
+      "v212_model_before": "26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014"
+    },
+    "output_sha256": {
+      "research/protocol.yaml": "7c15ea31d090eec96e439812657559e205ec89e4f4d2de67dc5afe32fb1a1adc",
+      "tests/test_counterplay_gradient.py": "dddc88178429b1bca49113676e74a3b8f93f00c2ea2de774092fb5a596449ae8",
+      "tests/test_v212_model.py": "d5804c862206f419bc2468dcc3f8ada149700a688910eb2f4e2cb785993fb97e",
+      "tests/test_v212_model_matmul_flop_accounting.py": "d17a5eaab3a08cfe5474003cf5c2c1a88a252e5299591d90ad4be82b32188d5e",
+      "tests/test_v212_regularizer_elementwise_accounting.py": "2821ad4e4928dd520c996e93457084726300a86dba9b632911fbc91f27fc86b3",
+      "tools/counterplay_gradient_check.py": "fd95dbeac6c80485dd15ba2c1ac8a418812fddab7923fda589418eed43e8f9c4",
+      "two_player/v212_model.py": "93cc56127aebf2934670ecf7c18d2204565b9c85e4ef660394b98df7282eb7bf"
+    },
+    "working_tree": "assigned uncommitted changes; exact file hashes below"
+  }
+}

@@ -1,10 +1,10 @@
 id,priority,status,owner,issue,closure_evidence
-I01,P1,open,worker,Covariance derivative receives tenfold declared weight,All-arm all-tensor numerical derivative receipt after repair
+I01,P1,closed_synthetic_verification,worker,Covariance derivative receives tenfold declared weight,CP01_GRADIENT_REPAIR_2026-10-25.json: 192 checks all six arms and every tensor; independent lead fixed-coordinate verification
 I02,P1,scoped_out_primary,lead,Unsupported coordinates confound size transfer,CP-01 same-size primary; transfer requires separate future protocol
-I03,P1,pending_review1,lead,Outcome-dependent project completion,CONTRIBUTION.md and protocol.yaml accepted by independent Review 1
+I03,P1,closed_design,lead,Outcome-dependent project completion,CP-01 v2 and independent Review 1 accepted outcome-independent completion
 I04,P1,open,worker,No integrated current trainer or evaluator,End-to-end audited fixture and checkpoint resume equivalence
-I05,P1,open,worker,No accepted fresh corpus,Versioned generator manifests and full retained trajectory replay
-I06,P1,open,worker,No accepted window bank and schedule,Selected IDs masks support counts and schedule audit
+I05,P1,foundation_in_progress,worker,No accepted fresh corpus,Versioned generator manifests and full retained trajectory replay
+I06,P1,foundation_in_progress,worker,No accepted window bank and schedule,Selected IDs masks support counts and schedule audit
 I07,P1,contract_proposed,lead,Duplicate source and content identity conflict,Adopted split/window multiplicity contract plus audit
 I08,P1,contract_proposed,lead,Shared starts defeat absolute split isolation,Named shared-opening and isolated-root tracks with collision counts
 I09,P1,open,worker,Producer entrypoint not exclusively validated,Trainer authenticates inputs and rejects corruption
@@ -12,7 +12,7 @@ I10,P1,contract_proposed,lead,Behavior outcome is not minimax value,Explicit sep
 I11,P1,open,worker,Counterfactual reply training support unknown,Action role depth and critical-reply coverage audit
 I12,P1,contract_proposed,lead,Heterogeneous graph FLOP parity conflict,Equal-data/update CP-01 cost convention reviewed and measured
 I13,P1,scoped_out_primary,lead,Native accounting work delays science,CP-01 ordinary reproducibility scope; advanced attestation deferred
-I14,P1,open,worker,Reference completeness and feasibility,Independent exact tractable checks and complete action tables
+I14,P1,foundation_in_progress,worker,Reference completeness and feasibility,Independent exact tractable checks and complete action tables
 I15,P1,pending_review1,lead,Root population matching and uncertainty unresolved,Review 1 estimands then synthetic analysis validation before Review 3
 I16,P1,open,lead,No fresh frozen locked study,Review 3 freeze then every planned cell accounted for
 I17,P2,open,worker,Actual planner runtime unmeasured,Bounded local pilot with failure and cap accounting
@@ -21,7 +21,7 @@ I19,P2,open,worker,Live worker and supervisor integration incomplete,Minimal rel
 I20,P2,open,worker,Sampled RSS and request caps are not hard containment,External deadline and OS limits with scoped receipts
 I21,P2,scoped_out_primary,lead,Native byte attestation incomplete,Ordinary pinned environment only unless stronger claims adopted
 I22,P1,open,lead,Historical raw artifacts not in GitHub,Current recipes hashes and small results plus disclosed local-only loss
-I23,P2,open,worker,Existing passing tests missed objective defect,All-arm numerical checks and portable versus optional tiers
+I23,P2,partly_resolved,worker,Existing passing tests missed objective defect,All-arm numerical checks and portable versus optional tiers
 I24,P2,partly_resolved,lead,Stale historical README and method status,Marked current status and dated preserved history; current module map needed
 I25,P2,open,lead,Large repeated historical documentation,Active module map and compact state with historical files preserved
 I26,P2,open,lead,Portable CI license citation metadata absent,Core CI and citation metadata; license remains owner choice

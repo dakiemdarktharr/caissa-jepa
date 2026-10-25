@@ -38,3 +38,9 @@ Publication preflight stopped before committing because the reviewer used a
 Markdown trailing hard break. The [receipt](../../docs/validation/CP01_PUBLICATION_PREFLIGHT_2026-10-25.json) preserves that failure
 and a one-line whitespace-only normalization. Snapshot `snapshot-93f01ce1daaf4409e6d4dffd1981a707158947d59832b98226d02d5b1cb7d75d/` contains
 15 events across three workflow runs and retains the original 13 events.
+
+The foundation snapshot `snapshot-aac52d91312e03b6911f8d2f4151d7c102c1a62fad3414476764e1f94e19a3c4/`
+contains 22 events across 4 workflow runs. It adds the covariance-gradient
+failing baseline/repair, data-source and producer-fixture failures, corrected
+synthetic verification and the prior verified GitHub publication. No actual
+corpus generation, training or matches ran in this milestone.

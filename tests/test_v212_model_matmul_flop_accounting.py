@@ -42,7 +42,7 @@ class ModelMatmulFlopAccountingTests(unittest.TestCase):
             if isinstance(node, ast.BinOp) and isinstance(node.op, ast.MatMult)
         )
         expected = sorted((
-            "centered.T @ centered", "4.0 * centered @ offdiag",
+            "centered.T @ centered", "0.4 * centered @ offdiag",
             "x @ p['ew']", "z @ p['vw']", "z0 @ p['pw']",
             "z0.T @ dlogits", "dlogits @ p['pw'].T", "z0.T @ droot",
             "droot @ p['vw'].T", "x.T @ enc_delta", "leaf_z.T @ dv",

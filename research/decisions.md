@@ -48,3 +48,23 @@ seed/root and all unknown failures. It does not invent a matched counterfactual
 on roots without a control. The manuscript question now concerns operational
 scalar location sensitivity; value/search diagnostics remain descriptive and
 behavior-outcome/minimax mismatch is explicit. Targeted re-review is pending.
+
+
+## CP-D003 — 2026-10-25, Asia/Saigon — gradient and data foundations
+
+The covariance derivative repair preserves scalar loss weights and operation
+shapes. The [repair receipt](../docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json)
+preserves the 35/192 failing baseline checks and the corrected 192/192 checks
+across six arms and every tensor. Lead fixed-coordinate checks also pass.
+No historical scientific result is reinterpreted as corrected or rerun.
+
+The [data contract](data_contract.json) starts with complete nonterminal H4
+windows shared across all arms, retaining terminal/short-window exclusion
+counts. Two behavior policies form four ordered pairs. This new CP-01 contract
+does not claim the historical V2.12 four-policy corpus was built. Candidate
+reference roots remain late, same-size, selected before solving. Exactly 100
+development reference-candidate episodes and 64 training episodes are planned
+within the batch CPU cap. Existing independent bitboard rules and solvers are
+reused; no external-engine independence is claimed. Source-pinned production
+generation waits for the interim independent data-foundation review. Full
+Review 2 still requires corpus acceptance and trainer/evaluator/recovery/hooks.

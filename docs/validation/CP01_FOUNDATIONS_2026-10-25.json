@@ -1,0 +1,37 @@
+{
+  "phase": "synthetic-correctness",
+  "timestamp": "2026-10-25T11:32:44.406068+07:00",
+  "tests_run": 38,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "wall_seconds": 1.2207108910006355,
+  "modules": [
+    "tests.test_counterplay_gradient",
+    "tests.test_v212_model",
+    "tests.test_v212_regularizer_elementwise_accounting",
+    "tests.test_v212_model_matmul_flop_accounting",
+    "tests.test_v212_gradient_accumulation_accounting",
+    "tests.test_research_ledger",
+    "tests.test_counterplay_data"
+  ],
+  "source_hashes": {
+    "counterplay/data.py": "190c90ae97e4fcd0c81bf42ad4a7c8aabe0def780c5262c030c72474b83c5081",
+    "counterplay/__init__.py": "1233f0670cf350b5d91c63033e417830ab827380765addd7b997edc373372575",
+    "tools/counterplay_data.py": "36a645feccb9dc6754b0ffba6be2dee290aa4fe4e535dfdc4b3eb718a197c922",
+    "tests/test_counterplay_data.py": "45dde74ef7ad3964db3591178afefaca97bf5dda1841d97108f2580653df096b",
+    "research/data_contract.json": "4c84250c3737a9a75bd63ab61e91f40d851b9a0136b465931f6897d8b16ac0bd",
+    "two_player/v212_model.py": "93cc56127aebf2934670ecf7c18d2204565b9c85e4ef660394b98df7282eb7bf"
+  },
+  "independent_fixed_encoder_coordinate": {
+    "coordinate": [
+      125,
+      31
+    ],
+    "arms": 6,
+    "max_absolute_error": 2.1706115724273722e-10,
+    "tolerance": "1e-7 + 1e-4*max(abs(analytic),abs(numeric))"
+  },
+  "scope": "No production corpus generation; no training, matches, locked data, or scientific performance result. CLI producing-boundary checks still require fixture verification before use.",
+  "excluded_full_suite": "Not run; historical missing-artifact/Windows constraints remain"
+}

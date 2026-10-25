@@ -3,31 +3,32 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T11:22:35.082485+07:00 (Asia/Saigon, UTC+07:00).
-**Phase:** CP-01 prospective design accepted at Review 1; foundations before Review 2.
-**This checkpoint:** adopted the [contribution](research/CONTRIBUTION.md),
-[prospective protocol v2](research/protocol.yaml), [primary-source crosswalk](research/PRIOR_WORK.md)
-and issue register. [Independent Review 1](research/reviews/REVIEW1_CP01_2026-10-25.md)
-accepted four design corrections after a conditional first review. No new scientific experiment ran.
+**Updated:** 2026-10-25T11:36:05.964856+07:00 (Asia/Saigon, UTC+07:00).
+**Phase:** CP-01 foundations before Review 2; [Review 1 accepted](research/reviews/REVIEW1_CP01_2026-10-25.md).
+**This checkpoint:** repaired covariance-gradient weighting, verified all six
+arms/every parameter tensor, and added bounded data/reference construction
+and durable producer hooks. Independent data-foundation review conditionally accepts one feasibility batch;
+explicit horizon support counts remain a pre-acceptance correction.
+No new scientific training or evaluation experiment ran.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
-| Agents | Requested lead `gpt-6.1-sol` / `xhigh`; reviewer `gpt-6-luna` / `xhigh`; runtime attestation unavailable | [Bootstrap receipt](docs/validation/CP01_BOOTSTRAP_2026-10-25.json); one independent reviewer, no substitution |
-| Scoped checks | **17/17 passed**, 0 failures/errors/skips; **0.801 s** | [Receipt](docs/validation/CP01_BOOTSTRAP_2026-10-25.json), 2026-10-25; ledger/checkpoint tests only, full suite not rerun |
-| Review 1 | Accepted for Review 2; **4 findings closed at design level**, 2 protocol versions retained | [Closure receipt](docs/validation/CP01_REVIEW1_CLOSURE_2026-10-25.json); no pilot or locked-evaluation gate waived |
-| Revised-study training / matches | **0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); historical measurements below remain separately dated and unchanged |
-| Revised-study scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | No accepted current corpus/trainer; earlier infrastructure checks are not scientific results |
-| Workflow evidence | **15 unique events across 3 workflow runs** | [Snapshot](research/results/snapshot-93f01ce1daaf4409e6d4dffd1981a707158947d59832b98226d02d5b1cb7d75d/snapshot.json); cumulative exports are not independent samples |
-| Cost / usage | $50/month compute ceiling; no rental initiated; actual token/billing usage unavailable | [Metrics contract](docs/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md); budget is not measured spend |
-| Last verified prior GitHub checkpoint | [`71a9275`](https://github.com/dakiemdarktharr/caissa-jepa/commit/71a92754230715f1fe4538554a2eac49a155dd97), verified 2026-10-25 | Expected SSH destination and `origin/main` verified during bootstrap; pending commit is not yet a verified backup |
+| Gradient correctness | **192/192 numerical checks passed**; worst error/tolerance **0.001569**; original source failed **35/192** | [Repair receipt](docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json), 2026-10-25; synthetic checks on 6 arms and 96 arm/scenario/tensor combinations |
+| Scoped regression | **41/41 passed**, 0 failures/errors/skips; **1.275 s** | [Receipt](docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json), 2026-10-25; mathematical/model/accounting/ledger/data/producer fixtures. Full suite not rerun; initial fixture errors retained |
+| Lead cross-check | Original failing encoder coordinate passes on **6/6 arms**, max absolute error **2.17e-10** | [Foundation receipt](docs/validation/CP01_FOUNDATIONS_2026-10-25.json); same declared float64 derivative tolerance |
+| Data / training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [Data contract](research/data_contract.json), [state](research/STATE.md); only synthetic data fixtures ran |
+| Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
+| Workflow evidence | **22 unique events across 4 workflow runs** | [Snapshot](research/results/snapshot-aac52d91312e03b6911f8d2f4151d7c102c1a62fad3414476764e1f94e19a3c4/snapshot.json); includes baseline failures and corrected verification, no scientific outcomes |
+| Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
+| Last verified prior GitHub checkpoint | [`5378c0c`](https://github.com/dakiemdarktharr/caissa-jepa/commit/5378c0ce3c51fb1a04723a2b2b30d4a573d953a0), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
 
-**Open gates:** covariance-gradient repair; accepted fresh corpus/window/splits;
-independent references; integrated trainer/evaluator, recovery, metrics and
-bounded exports; pilot; final analysis/freeze and manuscript evidence.
-**Next:** fix the covariance derivative and verify numerical derivatives across
-all six affected historical arms and every parameter tensor, retaining the failing baseline.
-GitHub stores source/protocols and small reviewed evidence. Datasets, weights,
-raw logs, environments and unreleased outcomes stay local and excluded; exact
+**Open gates:** independent data readiness, fresh corpus/window/split/reference
+audit; integrated trainer/evaluator, complete recovery/measurement hooks and
+bounded exports; Review 2/pilot; final analysis freeze and manuscript evidence.
+**Next:** add explicit H1/H2/H4 support/exclusion counts, then generate the pinned,
+bounded model-blind development corpus and retain every gate/failure count.
+GitHub stores source, protocols and reviewed small evidence. Raw datasets,
+weights, environments, logs and unreleased outcomes stay ignored/local; exact
 recovery of local-only artifacts is not guaranteed. No unattended service runs.
 <!-- counterplay-status:end -->
 

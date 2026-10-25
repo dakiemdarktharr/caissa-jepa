@@ -1,0 +1,42 @@
+{
+  "phase": "synthetic-correctness",
+  "timestamp": "2026-10-25T11:34:51.977420+07:00",
+  "tests_run": 41,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "wall_seconds": 1.2754748680017656,
+  "modules": [
+    "tests.test_counterplay_gradient",
+    "tests.test_v212_model",
+    "tests.test_v212_regularizer_elementwise_accounting",
+    "tests.test_v212_model_matmul_flop_accounting",
+    "tests.test_v212_gradient_accumulation_accounting",
+    "tests.test_research_ledger",
+    "tests.test_counterplay_data",
+    "tests.test_counterplay_data_producer"
+  ],
+  "source_hashes": {
+    "counterplay/data.py": "190c90ae97e4fcd0c81bf42ad4a7c8aabe0def780c5262c030c72474b83c5081",
+    "tools/counterplay_data.py": "36a645feccb9dc6754b0ffba6be2dee290aa4fe4e535dfdc4b3eb718a197c922",
+    "tests/test_counterplay_data.py": "45dde74ef7ad3964db3591178afefaca97bf5dda1841d97108f2580653df096b",
+    "tests/test_counterplay_data_producer.py": "f4fa5eb80b0e6bb61e487a7ce6884c3dae76dc4b54e22102624b2a754a99da43",
+    "research/data_contract.json": "4c84250c3737a9a75bd63ab61e91f40d851b9a0136b465931f6897d8b16ac0bd",
+    "two_player/v212_model.py": "93cc56127aebf2934670ecf7c18d2204565b9c85e4ef660394b98df7282eb7bf"
+  },
+  "prior_attempts": [
+    {
+      "check": "initial source compile",
+      "result": "SyntaxError in counterplay/data.py due to extra parenthesis; corrected before execution"
+    },
+    {
+      "check": "initial producer fixture tests",
+      "tests_run": 3,
+      "errors": 1,
+      "failures": 0,
+      "result": "KeyError from fixture using event payload rather than content; corrected; producer unchanged"
+    }
+  ],
+  "scope": "Synthetic correctness and temporary producer fixtures only; no accepted corpus, training, matches or locked data",
+  "full_suite_run": false
+}

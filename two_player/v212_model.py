@@ -193,7 +193,12 @@ class V212Model:
         return np.concatenate((z, actions, actors[:, None], descriptors), axis=1)
 
     def _regularize(self, z):
-        """V2.8-pinned root variance/covariance losses and their gradients."""
+        """Return V2.8 loss components and the combined root latent gradient.
+
+        The covariance derivative's 4.0 coefficient is scaled to 0.4 here:
+        ``loss_grad`` applies 0.1 to the returned gradient, matching the
+        scalar objective's separate 0.1 variance and 0.01 covariance weights.
+        """
         d, n = z.shape[1], len(z)
         centered = z - z.mean(axis=0, keepdims=True)
         std = np.sqrt(np.mean(centered ** 2, axis=0) + 1e-4)
@@ -203,7 +208,7 @@ class V212Model:
         covariance = centered.T @ centered / n
         offdiag = covariance - np.diag(np.diag(covariance))
         covariance_loss = float(np.sum(offdiag ** 2) / d)
-        dz += 4.0 * centered @ offdiag / (n * d)
+        dz += 0.4 * centered @ offdiag / (n * d)
         spectrum = np.maximum(np.linalg.eigvalsh(covariance), 0.0)
         spectrum_sum = float(spectrum.sum())
         if spectrum_sum <= 1e-12:

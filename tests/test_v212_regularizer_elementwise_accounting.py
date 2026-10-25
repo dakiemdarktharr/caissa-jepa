@@ -94,7 +94,7 @@ class RegularizerElementwiseAccountingTests(unittest.TestCase):
         )
         self.assertEqual(
             ast.unparse(covariance_gradient.value),
-            "4.0 * centered @ offdiag / (n * d)",
+            "0.4 * centered @ offdiag / (n * d)",
         )
         self.assertTrue(any(
             isinstance(node, ast.Assign)
