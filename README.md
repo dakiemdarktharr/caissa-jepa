@@ -3,18 +3,21 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T11:57:10.863347+07:00 (Asia/Saigon, UTC+07:00).
+**Updated:** 2026-10-25T12:04:42.041880+07:00 (Asia/Saigon, UTC+07:00).
 **Phase:** two-game CP-01 mechanism design retired at its frozen feasibility stop;
 scoped technical report in preparation. Review 2 pilot readiness did not pass.
-**This checkpoint:** preserved the final failed screen and
-[stop disposition](docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json).
-The final development-data screen ran; no model fitting, matches or locked scoring ran.
+**This checkpoint:** preserved **116 per-root analysis rows** and the complete
+[manuscript source](paper/manuscript-source.md), [claim map](paper/claims.csv)
+and [reproduction instructions](paper/REPRODUCE.md). Report rendering/visual
+and independent final review remain pending. No new experiment ran; the two
+2026-10-25 development screens below are unchanged.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
 | Gradient correctness | **192/192 numerical checks passed**; worst error/tolerance **0.001569**; original source failed **35/192** | [Repair receipt](docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json), 2026-10-25; synthetic checks on 6 arms and 96 arm/scenario/tensor combinations |
 | Scoped regression | **41/41 passed**, 0 failures/errors/skips; **1.275 s** | [Receipt](docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json), 2026-10-25; mathematical/model/accounting/ledger/data/producer fixtures. Full suite not rerun; initial fixture errors retained |
-| Current amendment checks | **10/10 passed**, 0 failures/errors; **0.621 s** | [Amendment receipt](docs/validation/CP01_FEASIBILITY_AMENDMENT_2026-10-25.json), 2026-10-25; cumulative CPU and receipt identity checked |
+| Latest scoped checks | **50/50 passed**, 0 failures/errors/skips; **2.353 s** | [Report-source receipt](docs/validation/CP01_REPORT_SOURCE_2026-10-25.json); foundation/data/ledger/checkpoint tier only, full suite not run |
+| Prior amendment checks | **10/10 passed**, 0 failures/errors; **0.621 s** | [Amendment receipt](docs/validation/CP01_FEASIBILITY_AMENDMENT_2026-10-25.json), 2026-10-25; cumulative CPU and receipt identity checked |
 | GitHub recovery | **10/10 passed**, 8 source hashes verified; **1.127 s** | [Fresh-clone receipt](docs/validation/CP01_GITHUB_RECOVERY_2026-10-25.json); same host/original venv, raw data not recovered |
 | Lead cross-check | Original failing encoder coordinate passes on **6/6 arms**, max absolute error **2.17e-10** | [Foundation receipt](docs/validation/CP01_FOUNDATIONS_2026-10-25.json); same declared float64 derivative tolerance |
 | First development-data batch | **164 episodes**, **256 train / 64 development windows**; **0 prohibited selected-state collisions** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json), [isolation check](docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json), 2026-10-25; finite batch, not population inference |
@@ -24,15 +27,15 @@ The final development-data screen ran; no model fitting, matches or locked scori
 | Measured resources | **15.551 s wall / 15.392 s CPU**, **80,281,600 bytes peak RSS** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); local CPU, 1 thread, no rental |
 | Training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); reference completion does not waive failed scientific eligibility |
 | Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
-| Ledger evidence | **41 unique events across 8 runs** (workflow and development data) | [Snapshot](research/results/snapshot-d3324954d19c278095d0f88ade020bffe478a49e2b976de521b3a6f29ea4e75b/snapshot.json); includes all failed gates and data counts, no learned-model outcomes |
+| Ledger evidence | **45 unique events across 10 runs** | [Snapshot](research/results/snapshot-c83a5ed3f639f329d81b2f5f66156e1e38cedc2db9a1f0d01e08c28f1fc6a743/snapshot.json); workflows and development-data evidence, no model outcomes |
 | Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
-| Last verified prior GitHub checkpoint | [`c0503be`](https://github.com/dakiemdarktharr/caissa-jepa/commit/c0503beeee856a51a781c9c2ea29b0434475f490), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
+| Last verified prior GitHub checkpoint | [`2b10bef`](https://github.com/dakiemdarktharr/caissa-jepa/commit/2b10bef418d4b909f19b1e506d13ebbbadd73618), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
 
 **Remaining report work:** per-root exports, generated tables/figure, complete
 text and claim map, independent claim/citation/reproduction review. The unexecuted
 trainer, pilot, locked study and chess extension remain explicitly uncompleted.
-**Next:** export the two screens' paired analysis units from this published
-revision, complete and verify the scoped feasibility manuscript. No further screen.
+**Next:** render tables/figure and the scoped PDF from this clean published
+source, inspect all pages, and obtain independent claim/citation/reproduction review.
 GitHub stores source, protocols and reviewed small evidence. Raw datasets,
 weights, environments, logs and unreleased outcomes stay ignored/local; exact
 recovery of local-only artifacts is not guaranteed. No unattended service runs.

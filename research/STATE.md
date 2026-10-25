@@ -1,6 +1,6 @@
 # Counterplay current state
 
-Updated 2026-10-25T11:57:10.863347+07:00 (Asia/Saigon). Continue from evidence, not chat history.
+Updated 2026-10-25T12:04:42.041880+07:00 (Asia/Saigon). Continue from evidence, not chat history.
 
 - **Current gate:** Review 1 accepted the new outcome-independent CP-01 v2
   empirical design for entry to foundation work / Review 2. The original
@@ -49,15 +49,16 @@ Updated 2026-10-25T11:57:10.863347+07:00 (Asia/Saigon). Continue from evidence, 
   Review 2 did not approve a pilot; Review 3/final locked study not reached.
   All production trainer/evaluator, recovery/export scaling and inferential
   analysis hooks remain requirements for a future separate study.
-- **Immediate next task:** publish this failed-batch milestone, then export
-  both receipts' per-root units with `tools.counterplay_feasibility_units` to
-  `/tmp` while the analysis source is clean; copy reviewed small CSVs into
-  `research/results/`. Complete `paper/counterplay-feasibility.md` and PDF,
-  generated tables/figure, claim map and reproduction instructions, then obtain
-  fresh independent scoped Review 4 and verify GitHub recovery. Do not claim
-  novelty, model performance, population prevalence, equivalence or independent
-  replication from the finite dependent screens. Future Reversi-only work
-  requires a new prospective protocol and is outside this retired design.
+- **Immediate next task:** report source, 116 per-root CSV rows, claim map and
+  reproduction instructions are ready. Publish this source, then call the PDF
+  skill's artifact-start marker once and run the separate renderer environment:
+  `/tmp/counterplay-report-env/bin/python -B -m tools.counterplay_render_report`.
+  It requires a clean source and writes figures, tables, complete Markdown,
+  `output/pdf/counterplay-feasibility.pdf`, checksummed manifest and ledger event.
+  Render all pages with Poppler and inspect them. Then fresh independent scoped
+  Review 4 must check claims/citations/counts/reproduction; publish verified
+  artifacts and verify their GitHub recovery. No further data screen or model
+  training under the retired design.
 - **Verified checks:** 41/41 scoped tests pass, 0 failures/errors/skips, 1.275 s
   on 2026-10-25. See [producer-test receipt](../docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json).
   Earlier 17-test workflow and 38-test foundation receipts remain dated history;
@@ -70,7 +71,7 @@ Updated 2026-10-25T11:57:10.863347+07:00 (Asia/Saigon). Continue from evidence, 
   reviewer `gpt-6-luna` / `xhigh`, no recursive delegation. Runtime attestation,
   actual tokens and billing are not exposed and remain null. Preserve settings.
   $50/month compute ceiling; no rental initiated or paid offer selected.
-- **Last verified prior remote:** `c0503beeee856a51a781c9c2ea29b0434475f490`
+- **Last verified prior remote:** `2b10bef418d4b909f19b1e506d13ebbbadd73618`
   on `origin/main`, `git@github.com:dakiemdarktharr/caissa-jepa.git`, verified
   2026-10-25. Bootstrap system SSH permissions and sandbox DNS initially failed;
   command-level `GIT_SSH_COMMAND='ssh -F /dev/null'` with network access worked.

@@ -1,0 +1,15 @@
+claim_id,claim,scope,evidence,qualification
+C01,164 original episodes reused exactly,development data,docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json,Not 328 independent episodes or replication corpora
+C02,57 and 59 complete reference roots,finite screens,docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json;docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json,All attempted roots completed; no population rate inference
+C03,C4 pairable yield 0 of 7 then 0 of 9,finite screens,docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json;docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json,Only this sampled root population and criticality definition
+C04,Reversi pairable 11 of 50 with four domain-possible signed-support roots,finite screens,research/results/cp01-attempt1-roots.csv;research/results/cp01-attempt2-roots.csv,Potential domain support is not achieved model matching
+C05,31.534437001 cumulative builder CPU seconds,measured resources,docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json,Excludes tests agents packaging rendering; no measured dollar or token total
+C06,Opposite endpoint references exclude shared strictly positive or negative residual strata,mathematical implication,counterplay/data.py:potential_nonzero_signed_support;research/reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md,Near-zero tolerance stratum distinct; no observed model effect and no novelty claim
+C07,Five of seven initial C4 roots all minima tied and only decision-critical branch terminal,reference diagnosis,docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json,Does not establish that critical replies are absent in C4
+C08,256 training and 64 development windows each screen,construction support,docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json;docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json,Window-count success did not make an accepted scientific corpus
+C09,Zero first-bank selected-state collisions with eval roots,selected-position isolation,docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json,Shared openings and unmeasured reference-descendant overlap; no whole-tree isolation
+C10,192 numerical checks pass after 35 baseline failures,synthetic engineering correctness,docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json,No model learning or performance evidence
+C11,No training matches locked evaluation or chess experiment,execution accounting,research/runs.csv;docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json,Unexecuted model panel not a negative JEPA comparison
+C12,Prospective final amendment and frozen stop,design provenance,research/protocol.yaml;research/reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md;research/decisions.md,Analysis report scope adopted after development observations; not confirmatory preregistration
+C13,Related-work overlaps already established concepts,primary-source attribution,research/PRIOR_WORK.md;paper/references.bib,Targeted sections and abstracts only; no exhaustive novelty or acceptance claim
+C14,Fresh-clone ten-test eight-hash recovery,same-host recovery,docs/validation/CP01_GITHUB_RECOVERY_2026-10-25.json,Existing environment; ignored raw data not recovered

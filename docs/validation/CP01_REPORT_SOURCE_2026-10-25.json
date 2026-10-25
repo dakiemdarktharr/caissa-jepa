@@ -1,0 +1,32 @@
+{
+  "phase": "synthetic-correctness-and-report-source",
+  "timestamp": "2026-10-25T12:04:42.041880+07:00",
+  "tests_run": 50,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "wall_seconds": 2.3526116460016055,
+  "modules": [
+    "tests.test_counterplay_gradient",
+    "tests.test_v212_model",
+    "tests.test_v212_regularizer_elementwise_accounting",
+    "tests.test_v212_model_matmul_flop_accounting",
+    "tests.test_v212_gradient_accumulation_accounting",
+    "tests.test_research_ledger",
+    "tests.test_counterplay_data",
+    "tests.test_counterplay_data_producer",
+    "tests.test_research_checkpoint"
+  ],
+  "source_hashes": {
+    "tools/counterplay_render_report.py": "b684651f2a8636c952a41683d3c717dffbd8346919c63e35fb64ed38aef227c4",
+    "paper/manuscript-source.md": "79a6f485e8b8ed2ad5245b6109631c07e329721c9c97eb2ae191a404ffdb11ff",
+    "paper/requirements-render.txt": "6ca46316cd35dd6df0c960c0fbe0dc72c7720b077021568be5408c1a44aa1d1a",
+    "paper/claims.csv": "9e195fad150dbb22873b0150e5898ba4d396acf339087dfc00e87edf2c48f9d6",
+    "paper/REPRODUCE.md": "4ed485092535fc33866925e376806ee16887c1a6adbc28f593a547dd165871f1",
+    "paper/references.bib": "d7434f8cb28551ac95c9922419c8877017cc8fd7c2d97b5d9bf657000ddf10ac",
+    "research/results/cp01-attempt1-roots.csv": "30c2739f552ecad0c7549abb322177ecfe6afbae4256f877879c77cdbe7cc55e",
+    "research/results/cp01-attempt2-roots.csv": "c5a0ba7cb311e01c74951d52281d73a3ba5f887ddd05cd87fa751f75b22ab459"
+  },
+  "scope": "Scoped foundation/data/ledger/checkpoint regressions only; no new experiment. Renderer source prepared but PDF not yet created or visually reviewed. Full repository suite not run.",
+  "root_rows": 116
+}

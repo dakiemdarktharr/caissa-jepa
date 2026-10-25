@@ -66,3 +66,8 @@ Snapshot `snapshot-d3324954d19c278095d0f88ade020bffe478a49e2b976de521b3a6f29ea4e
 the final failed feasibility gate, exact episode equality, and the decision
 to retire the two-game mechanism study and write a descriptive feasibility
 report. Neither screen fitted a model; no third screen is planned.
+
+Report-source snapshot `snapshot-c83a5ed3f639f329d81b2f5f66156e1e38cedc2db9a1f0d01e08c28f1fc6a743/` contains 45 events
+across 10 runs, including two receipt-bound per-root exports (57 and 59
+rows) and 50 passing scoped regression tests. The complete report is not yet
+rendered or independently reviewed at this source checkpoint.
