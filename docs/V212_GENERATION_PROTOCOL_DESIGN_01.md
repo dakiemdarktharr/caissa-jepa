@@ -61,9 +61,11 @@ Before generating any candidate data, a new protocol version should bind:
   before window materialization, with a complete raw, role-normalized, and
   symmetry-normalized H0–H4/H1-H2-H4 key
   audit and explicit quarantine counts;
-- canonical window deduplication and the definition of 928 distinct eligible
-  training windows, including terminal masks and whether short tail windows
-  count;
+- source-window identity `(game/rules fingerprint, episode id, start ply)` and
+  the definition of 928 distinct eligible training windows, including
+  terminal masks and whether short tail windows count. Under split amendment
+  v05, canonical-equivalent content is reported as a diagnostic, not silently
+  dropped or upweighted;
 - development root situations and both seat assignments, generated from a
   seed namespace disjoint from training, with reachability and cross-split key
   checks at the exact game/rules identity used by the auditor;
@@ -92,8 +94,114 @@ claim follows from the synthetic tests. Independent review found this note
 accurate as a non-authorizing design document. The method amendment draft now
 proposes training episodes/windows on fit variants and standalone development
 roots on held-out sizes, explicitly replacing the ambiguous episode-split
-wording. The companion `V212_DEV_ROOT_SCHEDULE_DESIGN_01.md` proposes a fixed
-48-root bank and fail-closed candidate schedule; independent review found it
-suitable for further design review, but the 64-slot yield, occupancy bands, and
-symmetry uniqueness rule remain unverified and must be frozen before any root
-generation.
+wording. The current companion
+`V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` proposes 48 accepted slot observations
+per held-out variant, with 16 accepted from each of three occupancy bands out
+of 64 candidate slots per band. It retains repeated board states as repeated
+slot draws; no symmetry-unique-root filter is proposed. Its global six-stratum
+under-yield stop is also only a proposal. Slot-independence assumptions,
+occupancy weights, yield disposition and acceptable schedule-pass probability
+remain unreviewed or unresolved; no root generation is authorized.
+
+
+## Exact source compatibility audit
+
+The follow-on static audit in
+docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md resolves one reuse
+question at source level. V2.8 has exact rules for V2.12's training-size
+Connect Four 6x7 and Reversi6 variants and a deterministic full-episode replay
+pattern, but it does not implement the V2.12 generation protocol. Its split
+policy maps training episodes only to the uniform/tactical ordered pairs,
+while V2.12 requires all 16 independently drawn ordered pairs; its record
+materializer only emits H1/H2 fields and applies V2.8 phase/duplicate rules.
+The synthetic V2.12 auditor is in-memory validation only, not a generator.
+Therefore a separate V2.12 generator and manifest are required after protocol
+review. No V2.8 data was read or repurposed and no feasibility result exists.
+
+
+## Follow-on behavior-policy definition audit
+
+The source compatibility audit has now recorded the actual V2.8 semantics for
+uniform, tactical, positional, and bounded-search. In particular, tactical is
+an immediate-win/one-reply-threat filter; positional is a stochastic
+handcrafted heuristic with temperature 0.75; bounded-search is depth-four
+alpha-beta with a 192-node cap and may stop before scoring every legal root
+action. These are behavior policies for synthetic episode generation, not
+expert labels or game-theoretic references. The V2.8 episode RNG derives from
+seed/episode/board dimensions while policy-pair assignment is split/episode
+parity; V2.12 requires a separately frozen ordered-pair draw and seed contract.
+See docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md. No generation or
+policy execution occurred.
+
+## Independent production-generator contract review (2026-10-04)
+
+**Disposition: do not implement a production generator from the current
+documents.** The synthetic in-memory auditor is accepted only for its fixture
+contract. Independent review found the following decisions must be frozen or
+revised in a reviewed method/protocol version first:
+
+1. **Split matrix and episode quota.** Accept or reject Draft v05's replacement
+   of v04's episode train/development wording with fit-only episodes on the two
+   training-size variants and standalone development roots on held-out sizes.
+   Set numeric per-game episode quotas and their resource basis. The draft
+   requires a quota but supplies none; v04 says counts must be fixed from
+   resource measurements. Define fail behavior for invalid/short episodes and
+   insufficient selected windows without data-dependent top-up.
+2. **Policy draws and reproducibility.** Pin RNG algorithm/library version;
+   derive separate, deterministic streams for ordered seat-policy draws,
+   episode/action sampling, stochastic policy choices and tie-breaking; bind
+   each stream and policy pair to a manifest ID. Decide whether per-pair/seat
+   support is descriptive or a fail condition. Any support-based redraw or
+   rejection must be treated as a change to the realized policy mixture.
+3. **The 928-window sampling contract.** Accept or reject source-window IDs,
+   no-replacement episode-first/start-ply selection, short-tail eligibility,
+   terminal-only windows counting toward 928, and the exact meaning of
+   “valid.” Specify how these choices alter root/task supervision versus
+   available H1/H2/H4 JEPA targets. Freeze the minibatch rule and fail if any
+   batch has no valid latent target; never silently replace windows.
+4. **Identity, lineage and overlap.** Freeze raw, role-normalized and
+   symmetry-normalized H0–H4 context and H1/H2/H4 target keys, while keeping
+   episode/source lineage outside content identity. Define diagnostic-only
+   within-fit repeated content versus fail-closed prohibited partition
+   collisions under the accepted split matrix. The synthetic audit does not
+   settle real-corpus shared-opening or prefix-overlap handling.
+5. **Atomic artifact and receipt behavior.** Specify the exact manifest,
+   episode and audit receipt schemas; canonical serialization; code/config/
+   rules/policy/data hashes; stage and commit markers; how partial output is
+   hidden, removed or recovered; failed-audit receipt retention; and an
+   immutable `training_approved: false` state. The current design lists these
+   properties but does not define their executable contract.
+
+These are implementation prerequisites, not new findings about leakage,
+support, or feasibility. V2.8 remains incompatible as a V2.12 corpus source;
+no episode or policy was executed and no data were read/generated. Independent
+review of the completed, versioned protocol is still required before generator
+implementation. The separate held-out-root schedule and statistical review
+remain distinct gates.
+
+## Source-derived episode-quota lower bound (not a quota)
+
+The exact adapters give a simple optimistic lower bound for the proposed 928
+source-window bank. Under the Draft v05 rule that every nonterminal action
+start is eligible, one complete episode yields at most one source window per
+legal ply:
+
+- Connect Four 6×7 has 42 cells; each legal action places one disc and there
+  are no pass actions, so a terminal episode has at most 42 plies/windows.
+- Reversi6 starts with four occupied squares and has 32 empty squares. Every
+  placement consumes one empty square. A nonterminal pass (action 64) is
+  available only when the current player has no placement and the opponent
+  does; the subsequent turn therefore has a placement. Thus passes cannot
+  exceed placements, which cannot exceed 32, giving at most 64 plies/windows.
+
+Consequently, even in the impossible-to-assume best case where every episode
+reaches its maximum length and every action-start window is eligible, 928
+windows require at least `ceil(928/42)=23` Connect Four episodes and
+`ceil(928/64)=15` Reversi6 episodes. These bounds assume Draft v05's
+terminal-only eligibility and source-window identity. Early termination,
+short trajectories, invalid replay/quarantine, or stricter eligibility can
+only increase the required episode count. The bounds say nothing about
+expected usable windows, wall time, disk size, per-policy support, or the
+probability of meeting the bank size. They are not episode quotas and do not
+replace the required resource measurement and independent review. No game was
+played and no episode/window was materialized for this arithmetic.

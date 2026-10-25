@@ -1,0 +1,106 @@
+{
+  "command": "UV_CACHE_DIR=/tmp/caissa-uv-cache uv run --with 'numpy>=1.26' python -B tools/v212_minimax_interval_profile.py",
+  "measurements": [
+    {
+      "expanded_nonterminal_descendants": 2281,
+      "game": "synthetic-connect4-6x7",
+      "mean_root_action_interval_width": 2.0,
+      "point_identified_root_action_fraction": 0.0,
+      "record_type": "synthetic_root_measurement",
+      "root_action_count": 7,
+      "root_state_sha256": "8688166bd8860e97192495b51265a792ab81f66dffcc26e72fcace84155aa854",
+      "root_value_interval_width": 2,
+      "rule_transition_calls": 4092,
+      "transition_budget": 4096,
+      "wall_seconds_single_run": 0.6197334750031587
+    },
+    {
+      "expanded_nonterminal_descendants": 10614,
+      "game": "synthetic-connect4-6x7",
+      "mean_root_action_interval_width": 2.0,
+      "point_identified_root_action_fraction": 0.0,
+      "record_type": "synthetic_root_measurement",
+      "root_action_count": 7,
+      "root_state_sha256": "8688166bd8860e97192495b51265a792ab81f66dffcc26e72fcace84155aa854",
+      "root_value_interval_width": 2,
+      "rule_transition_calls": 16383,
+      "transition_budget": 16384,
+      "wall_seconds_single_run": 2.7554963110014796
+    },
+    {
+      "expanded_nonterminal_descendants": 43375,
+      "game": "synthetic-connect4-6x7",
+      "mean_root_action_interval_width": 2.0,
+      "point_identified_root_action_fraction": 0.0,
+      "record_type": "synthetic_root_measurement",
+      "root_action_count": 7,
+      "root_state_sha256": "8688166bd8860e97192495b51265a792ab81f66dffcc26e72fcace84155aa854",
+      "root_value_interval_width": 2,
+      "rule_transition_calls": 65533,
+      "transition_budget": 65536,
+      "wall_seconds_single_run": 11.345279080007458
+    },
+    {
+      "expanded_nonterminal_descendants": 2574,
+      "game": "synthetic-reversi6",
+      "mean_root_action_interval_width": 2.0,
+      "point_identified_root_action_fraction": 0.0,
+      "record_type": "synthetic_root_measurement",
+      "root_action_count": 4,
+      "root_state_sha256": "7f2090cbbab6157bcfb20cd1da9c13508d809f0be1079a92b1147f94c981deca",
+      "root_value_interval_width": 2,
+      "rule_transition_calls": 4096,
+      "transition_budget": 4096,
+      "wall_seconds_single_run": 0.3004686490021413
+    },
+    {
+      "expanded_nonterminal_descendants": 11097,
+      "game": "synthetic-reversi6",
+      "mean_root_action_interval_width": 2.0,
+      "point_identified_root_action_fraction": 0.0,
+      "record_type": "synthetic_root_measurement",
+      "root_action_count": 4,
+      "root_state_sha256": "7f2090cbbab6157bcfb20cd1da9c13508d809f0be1079a92b1147f94c981deca",
+      "root_value_interval_width": 2,
+      "rule_transition_calls": 16384,
+      "transition_budget": 16384,
+      "wall_seconds_single_run": 1.0478990620031254
+    },
+    {
+      "expanded_nonterminal_descendants": 45399,
+      "game": "synthetic-reversi6",
+      "mean_root_action_interval_width": 2.0,
+      "point_identified_root_action_fraction": 0.0,
+      "record_type": "synthetic_root_measurement",
+      "root_action_count": 4,
+      "root_state_sha256": "7f2090cbbab6157bcfb20cd1da9c13508d809f0be1079a92b1147f94c981deca",
+      "root_value_interval_width": 2,
+      "rule_transition_calls": 65536,
+      "transition_budget": 65536,
+      "wall_seconds_single_run": 4.107262708988856
+    }
+  ],
+  "profile_manifest": {
+    "logical_cpu_count": 12,
+    "machine": "x86_64",
+    "model_calls": 0,
+    "numpy": "2.5.3",
+    "platform": "Linux-7.2.8-arch1-2-x86_64-with-glibc2.44",
+    "profile_kind": "single-run synthetic opening-state diagnostic",
+    "python": "3.12.15",
+    "record_type": "profile_manifest",
+    "rules_version": "tiny-rules-v1",
+    "schema": "v212.minimax_interval_profile_v01",
+    "source_sha256": {
+      "tools/v212_minimax_interval_profile.py": "b49f28b7c0e3d04d7aa36e796fedf7c5dfaeae65f5d7ddc224a7ea9f83dccc29",
+      "two_player/games.py": "fbdce0893f6dcc76d30b71d4391842abbcd7c15a0d1a9e20c40077457e273d3a",
+      "two_player/v212_minimax_bounds_v01.py": "cca2c73f4939d37dbb7df06c1cf48882245060b74b2922fcbe6ee555b83bd751",
+      "two_player/v212_minimax_transition_balanced_bounds_v01.py": "6a1cd2edaf0773902072d89b914bd13d6897e307521c22f6a20b476e99f9dc5a",
+      "two_player/v212_minimax_transition_bounds_v01.py": "062a8cc891cd78393aed21068aa6a5e5476f6585a169ea74cc1d690f50601072"
+    }
+  },
+  "raw_stdout_path": "/tmp/caissa-v212-minimax-interval-profile-v01.jsonl",
+  "raw_stdout_sha256": "d321fbf614e4ec90243353898810addc2c22416937ad075870d82b4d733da44f",
+  "schema": "v212.minimax_interval_profile_receipt_v01",
+  "scope": "single-run synthetic opening-state diagnostic; not a model pilot or representative cap estimate"
+}

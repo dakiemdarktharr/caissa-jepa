@@ -1,5 +1,1757 @@
 # CAISSA-JEPA — Ground Truth
 
+## Latest continuation delta (2026-10-07; missing post-exit state polling)
+
+- Added a mocked v01 controller regression for post-exit manager responses that
+  omit both `ActiveState` and `SubState`. The controller keeps polling until
+  its caller deadline, then rejects before response read, journal capture,
+  receipt publication, unit stop, or workspace cleanup; the IPC workspace is
+  retained for reconciliation. Added the named test to the MGR-01 traceability
+  row in the supervision failure test plan.
+- The full armed-service-smoke module passes 46/46 in the locked Python 3.11.9
+  / NumPy 2.4.6 environment; `compileall` and `git diff --check` pass. This is
+  mocked v01 coverage only. v02 controller integration, live manager failures,
+  and the complete manager-field/failure cross-product remain open. No service,
+  adapter, inference, OOM, training, scoring, or match ran; no gate advanced.
+
+## Latest continuation delta (2026-10-07; raw-state H4 gradient path)
+
+- Added a synthetic model-level regression that disables raw-state target
+  supervision at H1/H2/H3 while keeping the four transitions available and the
+  H4 target valid. The predictor weight attached to action 64, which occurs
+  only at transition three in this path, has a nonzero H4-loss gradient that
+  agrees with a central finite difference. This checks gradient flow through
+  the otherwise-unsupervised intermediate transition.
+- The locked Python 3.11.9 / NumPy 2.4.6 `tests.test_v212_model` suite passes
+  9/9. A system-Python attempt could not import NumPy; it was not used for the
+  successful validation. This is synthetic objective evidence only: no
+  optimizer/update, corpus, root, score, inference, training, or match ran.
+  The approved read-only `gpt-6-luna/high` reviewer independently confirmed
+  the source reverse pass traverses active transitions H4→H1. The six-arm
+  preregistered parity criterion is specified, but still not executable: the
+  trainer, replay-derived 20×87 masks, and complete compute/runtime accounting
+  remain absent. Graph freeze remains **NO** and ≤5% parity remains
+  **untested and unpassed**; no gate advanced.
+
+## Latest continuation delta (2026-10-07; retained manager-unit identity)
+
+- The post-exit controller previously accepted an exit-state snapshot without
+  requiring the transient unit to remain loaded, despite using
+  `RemainAfterExit=yes`. Both no-inference v01 controller paths now reject a
+  missing or non-`loaded` `LoadState` before response acceptance. Regressions
+  confirm `not-found` and omitted state fail closed, with no receipt/stop and
+  the dispatched workspace retained.
+- The armed-service, supervision-collector, and live-supervision suites pass
+  82/82; `compileall` and `git diff --check` pass. This is mocked/parser
+  evidence only. The complete manager-field matrix, v02 integration, and live
+  manager failures remain open; no service, request adapter, inference, OOM,
+  training, scoring, or match ran. No gate advanced.
+
+## Latest continuation delta (2026-10-07; pre-publication deadline seam)
+
+- Added a named CLK-02 regression using the real temporary atomic receipt
+  writer and a controlled mocked deadline that expires immediately after the
+  writer reports durable completion. It confirms the receipt bytes remain
+  unchanged, service/workspace reconciliation handles are retained, and stop
+  and cleanup are skipped. Updated both the case inventory and the named-test
+  traceability row in the supervision failure map.
+- Added a CLK-01 regression that finishes receipt assembly, injects deadline
+  expiry at the next check, and confirms no receipt publication, stop, or
+  cleanup occurs while dispatched handles remain available.
+- The armed-service-smoke module passes 45/45; `compileall` and
+  `git diff --check` pass. This is mocked controller evidence only: deadline
+  crossing during write/fsync and production deadline-aware stop/evidence
+  boundaries remain untested. No live service, request adapter, inference,
+  OOM, training, scoring, or match ran; no gate advanced.
+
+## Latest continuation delta (2026-10-07; approved raw-state/parity review)
+
+- An approved read-only `gpt-6-luna/high` review found the adopted raw-state
+  `F→D→E` objective and current no-update graph consistent in the inspected
+  paths. It confirmed graph freeze is still **NO**: there is no exclusive
+  production trainer, replay-derived 20×87 mask schedule, or direct-leaf H4
+  schedule proof; the current receipt-bound seam validates one call but does
+  not prevent bypass through direct `loss_grad` calls.
+- The six-arm ≤5% decision remains **untested and unpassed**. D03 requires
+  complete compute across all 20×87 updates, while the partial ledger still
+  marks the full counter and parity eligibility false; eigensolver coverage
+  and loaded runtime/dispatch identity remain unresolved. The raw-state arm's
+  larger dense-forward MAC count and parameter count are a risk signal, not a
+  total-training-FLOP verdict. Review was documents/code only; no tests,
+  computations, roots, inference, or training ran. No gate advanced.
+
+## Latest continuation delta (2026-10-07; receipt-index constructor audit)
+
+- Closed the directly forgeable receipt-index constructor path: the public
+  `TrainReplayReceiptIndex` constructor now accepts episodes/adapters and runs
+  the exact-rule in-memory audit before publishing immutable receipt maps.
+  This prevents callers from passing fabricated receipt dictionaries through
+  the typed boundary, but does not authenticate the supplied episodes or
+  establish source-file provenance, corpus completeness, or split separation.
+- Focused receipt-bound tests pass 6/6; the combined episode/trajectory,
+  manifest, scheduled-call, adapter, model, and receipt-bound suites pass
+  47/47 under Python 3.11.9 / NumPy 2.4.6. `compileall` and
+  `git diff --check` pass. Test-only exact-rule fixtures only; no research
+  corpus, roots, scores, service, inference, or training. No gate advanced:
+  source/data provenance, exclusive trainer, complete counter/runtime binding,
+  graph freeze, and six-arm ≤5% parity remain open or untested and unpassed.
+
+## Latest continuation delta (2026-10-07; model execution telemetry units)
+
+- An approved read-only `gpt-6-luna/high` review found no discrepancy between
+  the adopted v06 raw-state `F→D→E` objective and the no-update graph. It
+  noted that three `executed_*_calls` fields counted active examples rather
+  than invocation units. Renamed the model metrics to distinguish nonempty
+  vectorized prefix/horizon bundle invocations from active examples for the
+  predictor, raw decoder/re-encoder, and EMA target encoder.
+- Focused model tests pass 8/8 and source-counter reconciliation tests pass
+  5/5 under the temporary Python 3.11.9 / NumPy 2.4.6 environment; targeted
+  compile and `git diff --check` pass. These are instrumentation-label checks,
+  not a trainer trace or compute profile. No gate advanced: the full counter,
+  runtime/LAPACK identity, trainer/replay schedule, graph freeze, and six-arm
+  ≤5% parity remain open / untested and unpassed.
+
+## Latest continuation delta (2026-10-07; receipt-bound paired-call integration fixture)
+
+- Upgraded the receipt-bound schedule's high-level fixture to build one
+  deterministic exact-rule train episode per game, bind audited in-memory
+  window receipts, replace selected synthetic schedule-bank IDs, materialize
+  the real 64-window batch, check actual masks and invoke the real paired
+  boundary with six model test doubles. It verifies schedule digest and shared
+  read-only inputs. The 20×87 schedule remains synthetic and only one update is
+  called; models do not evaluate the objective. This is not source-file
+  provenance, a production schedule, corpus audit, or training evidence.
+- Focused receipt-bound tests pass 5/5 at that checkpoint; the
+  episode/trajectory, manifest, scheduled-call, adapter, model, and
+  receipt-bound suites pass 46/46 under
+  Python 3.11.9 / NumPy 2.4.6, with compile and diff checks passing. Only
+  test-only exact-rule trajectories were constructed; no research corpus,
+  roots, model scores, service, inference, or training were used. This closes a
+  test-wiring gap only; no method or compute gate advances. Exclusive trainer,
+  source/data provenance, actual replay and mask roster, complete counter and
+  runtime identity remain open; graph freeze is **NO** and six-arm ≤5% parity
+  is **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; approved read-only protocol reviews)
+
+- Four approved `gpt-6-luna/high` reviews inspected documents/code only; no
+  runtime, roots, scores, outcomes, simulations, inference, or training was
+  used. The pre-fit register records their detailed disposition.
+- V03 remains a static candidate, not runtime-ready: RSS is cooperative,
+  supervision/memory containment and durable operational attribution remain
+  open, and its source/runtime fingerprint describes metadata rather than
+  proving the exact executed interpreter/native bytes. The candidate
+  generation protocol is still unfrozen and lacks accepted split/quota,
+  RNG/policy, window-eligibility, overlap, and atomic receipt rules.
+- V05 root sampling/calibration remain non-authorizing proposals. The 48-slot
+  interpretation of the v04 ≥40 rule, six-stratum under-yield disposition,
+  schedule-completion target, estimand/weights, and bootstrap finite-sample
+  calibration remain unaccepted. Calibration draft 03 is an ordinal abstract
+  generator with an explicit scope limitation around state/prefix/score-linked
+  yield; simulation remains gated.
+- The action-sensitivity and executed-action regret estimands are coherent as
+  separate diagnostics, but the drafts are not preregistration-complete. They
+  now name current METHOD_SPEC v06 after editorial rebase; follow-up review
+  confirmed the anchors and added explicit cross-arm latent-scale, split
+  overlap, evaluator-identity, and query-plan caveats. Before adoption, resolve
+  root/reference/depth, limits/failure/aggregation and inference status; bind
+  evaluator fingerprints to actual implementation; audit episode, state,
+  augmentation, and symmetry overlap before model scoring; and keep raw latent MSE
+  descriptive within each arm unless a train-only calibration and
+  cross-arm estimand are preregistered. No metric or reference was adopted.
+- Raw-state accounting has no identified omission within the current partial
+  source ledger, but the ledger is not total FLOP parity evidence. The
+  trainer, selected-window/replay artifacts, fixed 20×87 masks, complete
+  counter/runtime identity, and raw-target/direct-leaf schedule proof remain
+  absent. Graph freeze remains **NO** and the six-arm ≤5% gate remains
+  **untested and unpassed**. No gate advanced.
+
+## Latest continuation delta (2026-10-07; eigensolver component bridge)
+
+- Added `tools/v212_eigensolver_component_inventory.py` to sum the separately
+  owned N=32 reference-source components for DSYEVD scaling/driver, unblocked
+  DSYTD2/DLARFG direct sites, DLARFG helpers, reference DNRM2, and DSTERF.
+  The sum of component maxima is 494,677 add/subtract/multiply/divide
+  operations, plus 2,114 scalar power sites and 2,254 square-root calls
+  separately (496,791 if every power site is treated as one multiplication).
+  The maxima are conditional and may not be jointly attainable; the result is
+  only the sum of currently covered source candidates, not a bound on total
+  eigensolver work.
+- Provenance is heterogeneous: OpenBLAS v0.3.31 LAPACK-derived source for
+  DSYTD2/DLARFG and DSTERF/DLAE2, Netlib LAPACK 3.12.1 for separately counted
+  helper/driver sources, and Netlib reference BLAS formulas for update
+  operations. Updated the DSTERF composition metadata to expose this source
+  split rather than labeling the entire inventory as LAPACK 3.12.1. Loaded
+  runtime identity, wrapper/compiler/dispatch behavior, non-FP activity, and
+  exact path reconciliation remain unresolved.
+- Twenty focused aggregation/subcounter tests pass;
+  targeted `compileall` and `git diff --check` pass. No numerical eigensolver,
+  profile, inference, simulation, or training ran. Complete eigensolver/full
+  counter, graph freeze, and six-arm ≤5% parity remain **NO / untested and
+  unpassed**; profile and fit remain unauthorized.
+
+## Latest continuation delta (2026-10-07; DSYEVD source composition correction)
+
+- Added `tools/v212_dsyevd_source_inventory.py` to compose the N=32,
+  eigenvalues-only DSYEVD-owned source scopes. Direct driver/DSCAL work is
+  2–36 operations; its two direct DLAMCH calls add 4. Conditional matrix
+  scaling contributes up to 532 DLASCL-body operations plus 2 from DLASCL's
+  own DLAMCH('S') call, giving a DSYEVD-only interval of 6–574 arithmetic
+  operations and two square roots separately.
+- This caught a component-ownership omission: the previous total included the
+  driver's four DLAMCH operations but not DLASCL's own conditional helper
+  call. The 532 body bound is unchanged; the corrected composed upper is 574.
+  DLANSY('M') scans 528 triangle entries with zero add/subtract/multiply/divide
+  operations. DSYTRD, DSTERF, linked runtime, and full-counter coverage remain
+  outside this DSYEVD-only candidate. Three focused tests pass; no eigensolver
+  or model ran and no gate advanced.
+
+## Latest continuation delta (2026-10-07; DSTERF scan/sort cardinalities)
+
+- Added `tools/v212_dsterf_scan_sort_source_bound.py` for DLANST/DLASRT source
+  activity in reference DSTERF. At N=32, DLANST has at most 16 calls; aggregate
+  scan maxima are 32 diagonal and 31 off-diagonal absolute evaluations, with
+  up to 62 relational-comparison and 62 DISNAN call sites. These maxima have
+  different block partitions and are reported separately. The norm-mode
+  source has zero add/subtract/multiply/divide operations.
+- On successful completion, DLASRT is called once with 32 values. Its
+  quicksort/insertion-sort path has a conservative upper bound of 1,123
+  D-array comparisons: at most 11 quicksort partitions of sizes 32 down to
+  22, with at most `2*m` scan comparisons and three median-of-three
+  comparisons each, plus at most 496 insertion-sort comparisons. The quicksort
+  `i<j` integer check adds at most 297 checks; other integer/control
+  comparisons, indexing, swaps, and memory work remain unresolved.
+  This sub-bound is unreviewed,
+  reference-source-only evidence; it does not attest the loaded runtime or
+  complete the DSTERF/eigensolver counter. Three focused tests, compile, and
+  diff checks pass. No numerical solver or model ran; graph freeze remains
+  **NO** and the ≤5% gate remains **untested and unpassed**.
+- Added `tools/v212_dsterf_source_inventory.py` to compose the source
+  arithmetic subcounter owners without overlap: 428,497 direct DSTERF/DLAE2,
+  3,844 setup-DLAMCH/DLAPY2, and 368 DLASCL/per-call-DLAMCH operations, totaling
+  432,709. It reports 1,008 scalar power sites and 2,016 square roots
+  separately, and carries DLANST/DLASRT cardinalities in native non-FLOP
+  units. This is a composition consistency check, not runtime evidence or a
+  complete eigensolver/full-counter result. Three new focused tests pass;
+  gates remain unchanged.
+- The approved read-only raw-state/six-arm review found the adopted recurrence,
+  loss, gradients, and MAC-vs-matmul scopes internally consistent; trainer,
+  selected-window replay, actual 20×87 masks, and complete counter/runtime
+  evidence remain missing. That review also caught a source-label mix-up:
+  `2^-970..2^970` are DSYEVD's scaling thresholds, while DLASCL's local
+  binary64 `DLAMCH('S')` limits are `2^-1022..2^1022`. Tool/docs labels were
+  clarified; existing one-pass conclusions and operation ceilings are
+  conservative and unchanged. No gate advanced.
+
+## Latest continuation delta (2026-10-07; conditional DSTERF scaling bound)
+
+- Added `tools/v212_dsterf_dlascl_source_bound.py`. Under finite IEEE
+  binary64 tridiagonal inputs, DSTERF's two input-scale calls and one restore
+  call per scaled block have one DLASCL pass; each call also includes its
+  `DLAMCH('S')` helper. At N=32, at most 16 active blocks give 48 calls, 80
+  scaled vector elements, and 368 source arithmetic operations (including 96
+  DLAMCH helper operations).
+- The earlier DSTERF iteration + DLAE2 + DLAMCH/DLAPY2 partial candidate now
+  totals 432,709 arithmetic operations after adding that separate scale
+  sub-bound, plus 1,008 power sites and 2,016 square roots; treating each
+  power as one multiply gives 433,717. This remains unreviewed partial
+  reference-source accounting. DLANST/DLASRT non-FLOP work, actual loaded
+  LAPACK/runtime, compiler behavior, and complete eigensolver coverage remain
+  unresolved. Fourteen focused formula tests, targeted `compileall`, and
+  `git diff --check` pass. No eigensolver/model ran; no gate changed.
+
+## Latest continuation delta (2026-10-07; DSTERF helper sub-bound)
+
+- Added `tools/v212_dsterf_helper_source_bound.py` as a separate conditional
+  supplement for reference DSTERF's three setup DLAMCH calls and at most 960
+  DLAPY2 calls from shifted QL/QR iterations at N=32. Under IEEE binary64,
+  the helper candidate adds 3,844 add/subtract/multiply/divide operations,
+  960 scalar power sites, and 960 square-root calls. Combined with the
+  existing deliberately partial DSTERF source inventory, the arithmetic
+  subtotal is 432,341 operations plus 1,008 separate power sites (433,349 if
+  each power counts as one multiply) and 2,016 square roots.
+- This is not complete DSTERF/eigensolver accounting: norm/sort helper work,
+  non-FLOP work, linked runtime/dispatch, and execution identity remain
+  unresolved. A later conditional source sub-bound covers the DSTERF DLASCL
+  calls under binary64 assumptions, but does not attest their runtime. The
+  helper sub-bound has not received
+  independent review and does not close the `eigvalsh` blocker or advance any
+  gate. Seven focused formula tests, targeted `compileall`, and
+  `git diff --check` pass. No eigensolver or model was run; graph freeze
+  remains **NO** and ≤5% remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; independent raw-state/parity re-review)
+
+- An approved read-only `gpt-6-luna/high` reviewer rechecked current HEAD
+  `3666804cfded4880d511658e6fee9fd3fb409269`. The adopted v06 raw-state
+  recurrence/objective remains consistent across the spec, v05 amendment, and
+  no-update model: recursive `F→D→E`, four transitions including unsupervised
+  step 3, pooled masked exact-feature loss, and recurrent gradients through all
+  three maps. Current dense-forward MAC figures and the per-64-window
+  forward/backward matmul inventory use distinct units and scopes.
+- The review found no source mismatch requiring correction. It confirmed the
+  existing blockers: no integrated trainer/trace, selected-window manifest or
+  exact-rule replay receipt, frozen 20×87 replay-derived mask schedule, or
+  complete counter/runtime/LAPACK bounds. The partial ledger still explicitly
+  marks graph freeze and parity ineligible. Graph freeze remains **NO** and
+  ≤5% remains **untested and unpassed**.
+- The reviewer inspected documents/code only; no tests, eigensolver, data,
+  roots, scores/outcomes, inference, profile, simulation, or training ran.
+  No gate changed.
+
+## Latest continuation delta (2026-10-07; reference DNRM2 source bound)
+
+- Added `tools/v212_dnrm2_reference_source_bound.py` for the Netlib LAPACK
+  3.12.1 three-accumulator DNRM2 reference source, using the DLARFG N=32
+  vector lengths 1..30 and at most two calls per reflector. The conditional
+  source ceiling is 2,154 add/subtract/multiply/divide operations, with 1,046
+  scalar square-power sites and 176 square-root calls reported separately.
+  The reference implementation does not fast-return for length one. The
+  source and architecture-specific disassembly candidates are alternative
+  implementation accounts and must not be added.
+- Combining this unreviewed source inventory with the previous 59,240
+  conditional partial subtotal gives 61,394 arithmetic operations, plus
+  1,106 separate scalar power sites (60 DLAPY2 + 1,046 DNRM2) and 236 square
+  roots (60 DLAPY2 + 176 DNRM2). Treating every power site as one multiply
+  gives the 62,500 sensitivity. This remains incomplete source accounting:
+  actual linked BLAS/dispatch, DSYTRD/DSTERF, NumPy wrapper, and runtime
+  operations remain unresolved.
+- Focused standard-library tests, targeted `compileall`, and whitespace checks
+  pass. No eigensolver, model, profile, service, inference, simulation,
+  score/outcome access, or training ran. Graph freeze remains **NO** and ≤5%
+  remains **untested and unpassed**; no gate changed.
+
+## Latest continuation delta (2026-10-07; reference DSYEVD driver sites)
+
+- Added `tools/v212_dsyevd_driver_source_bound.py` for the N=32,
+  eigenvalues-only (`JOBZ='N'`) reference DSYEVD path. The covered driver
+  arithmetic ranges from 2 to 4 divisions and 0 to 32 DSCAL multiplications
+  (2–36 add/subtract/multiply/divide operations total), with two square-root
+  calls reported separately. The interval reflects whether DSYEVD's matrix
+  scaling and eigenvalue-rescaling branch runs; the DSCAL upper count follows
+  the reference unit-stride vector loop.
+- The source call inventory records two DLAMCH calls, one DLANSY, conditional
+  DLASCL/DSCAL calls, then DSYTRD and DSTERF. DLAMCH, DLANSY, DLASCL,
+  DSYTRD/DSTERF internals, the NumPy wrapper, and the actual linked runtime
+  remain outside this bound. It is not added to the partial ledger and does
+  not complete the eigensolver or counter, establish six-arm FLOP parity, or
+  authorize a profile. The scope follows [LAPACK 3.12.1 DSYEVD](https://www.netlib.org/lapack/explore-html/d1/da2/dsyevd_8f_source.html)
+  and [reference DSCAL](https://www.netlib.org/blas/dscal.f).
+- An approved read-only review confirmed the 2–4 driver divisions, 0–32
+  reference DSCAL multiplications, and two separately reported roots under
+  the cited source semantics. The reviewer emphasized that these are only
+  driver-owned sites; helper divisions/work such as DLASCL remain excluded.
+- Only source/formula tests and static checks ran; no eigensolver, model,
+  profile, inference, simulation, score/outcome access, or training ran.
+  Graph freeze remains **NO** and ≤5% remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; static DNRM2 binary candidate)
+
+- Added `tools/v212_openblas_dnrm2_binary_bound.py` and focused formula tests.
+  Its `--audit-binary` mode verifies the observed wheel SHA-256
+  `05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`, finds
+  exactly five `dnrm2_k_*` symbols with `nm`, and checks static `objdump`
+  counts for each using GNU Binutils 2.47. All five have 18 `fmul`, 21
+  `faddp`, and one `fsqrt`; no library code is loaded or executed. Manual
+  disassembly inspection gives the 8-element loop/tail accounting used by the
+  formula. Under the DLARFG N=32 vector-length and at-most-two-call
+  assumptions, the candidate is 1,102 additions, 928 multiplications, and 58
+  square-root calls (2,030 add/multiply FLOPs), plus two length-one
+  absolute-value fast paths.
+- An approved read-only review confirmed the arithmetic and invocation
+  decomposition under these assumptions. The reproducible static audit now
+  checks artifact identity, symbol inventory, and opcode totals; it does not
+  prove the runtime-selected function pointer, dynamic loop-path execution,
+  execution bytes, or target Windows runtime. Helper internals and complete
+  eigensolver accounting also remain unresolved. This candidate is not folded
+  into the reference-source 58,910 subtotal and opens no counter, parity,
+  profile, or fit gate.
+- A second read-only audit-code review caught that the first static auditor
+  rejected missing expected symbols but accepted extra kernel symbols. The
+  inventory check now fails on either missing or unexpected defined
+  `dnrm2_k_*` symbols; regression tests cover both cases. The reviewer did not
+  inspect or execute the binary.
+  No library kernel, eigensolver, service, model, inference, simulation,
+  scoring, or training was run. Graph freeze remains **NO** and ≤5% remains
+  **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; DSYTRD reference path and partial helper accounting)
+
+- Added `tools/v212_dsytd2_rank_update_bound.py` for the reference-source
+  unblocked DSYTD2 path. Its reference-BLAS rank-update subtotal is 47,165
+  candidate add/subtract/multiply/divide operations across active reflector
+  orders 2–31. A further source expression count adds 11,745 direct DLARFG /
+  DSCAL candidate operations under the 20-pass underflow bound, for a combined
+  subtotal of 58,910. This still excludes DNRM2, DLAMCH, and DLAPY2 internals;
+  it is not a complete DSYTD2 bound.
+- Source inspection now pins the *reference* N=32 DSYTRD branch: reference
+  ILAENV returns NB=32 for DSYTRD, and DSYTRD's `NB>1 .AND. NB<N` condition
+  therefore selects the unblocked DSYTD2 call. This is not evidence that the
+  future NumPy-linked ILAENV/runtime follows that path. DNRM2 architecture
+  dispatch, other helper internals, DSYEVD scaling/wrapper, and actual runtime
+  identity remain open. Reference BLAS expressions remain semantic proxies,
+  not linked-kernel counts.
+- An approved read-only `gpt-6-luna/high` review confirmed the rank-update
+  formulas and 47,165 subtotal; the added DLARFG/DSCAL callsite subtotal is a
+  separate unreviewed source calculation. The focused DSYTD2/DSTERF suite
+  passes 7/7 under the pinned Python 3.11.9 temporary environment; targeted
+  `compileall` and `git diff --check` pass. No eigensolver, model, profile,
+  service, inference, simulation, data, or training ran. No eigensolver/full
+  counter or six-arm parity gate is cleared; graph freeze remains **NO** and
+  ≤5% remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; DSTERF source-bound correction)
+
+- Added `tools/v212_dsterf_iteration_bound.py` for the reference OpenBLAS
+  v0.3.31 DSTERF N=32 path, with DLAE2 separately bounded. It covers up to
+  960 shifted QL/QR iterations, both per-iteration convergence scans, the
+  initial N−1 block-split scan, up to N(N−1) no-shift completion/limit scans,
+  and at most 16 DLAE2 calls. The result is 428,497 source-visible
+  add/subtract/multiply/divide operations per invocation; 48 power sites are
+  separate, or 428,545 if all map to one multiplication.
+- Independent read-only review found the first 428,466 draft omitted
+  no-shift convergence scans and was low. The corrected bound adds those
+  scans; it also tightens the initial block-split scan after confirming split
+  indices are not revisited. This correction is preserved as negative
+  intermediate evidence. Four focused formula/contract tests pass, with
+  targeted `compileall` and `git diff --check` passing on Python 3.11.9.
+- Scope remains partial: DSYEVD wrapper/scaling, DSYTRD and helper paths,
+  DLASCL/DLANST/DLAMCH/DLAPY2/DLASRT internals, actual linked-binary identity,
+  and non-FLOP work are excluded. It is not a complete eigensolver bound or
+  six-arm counter. No model, covariance/eigenvalue operation, data, profile,
+  service, or training ran; graph freeze remains **NO**, and ≤5% remains
+  **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; exact-version runtime observation)
+
+- The host contains CPython 3.11.9. A temporary environment under `/tmp`
+  installed NumPy 2.4.6 from its pinned package version, so the prior
+  “locked versions unavailable” statements are historical and superseded for
+  interpreter/package availability. This is a Linux wheel/runtime; the lock
+  file describes a verified Windows CPU environment, so this is not yet the
+  final D03 execution runtime.
+- `tools/v212_runtime_observation.py` reported both version-match flags true,
+  stable normalized executable mappings across its before/after inventory,
+  and matching mapped-file path/device/inode hashes at read time. NumPy build
+  metadata identifies `scipy-openblas` 0.3.31.188.0 with the
+  `OpenBLAS 0.3.31.188.0 USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell`
+  configuration. The mapped OpenBLAS backing file hash was
+  `05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`;
+  NumPy native module hashes and the full observation digest are recorded in
+  the session output (`c415ffe30a5b21ba66db1a37903d19b907af79104276b6143cb85bacae99e4e0`).
+- This collector remains observational: `execution_bytes_verified=false`,
+  thread fields are environment requests only, and the snapshot is not atomic.
+  It did not execute `eigvalsh`, a model, profile, service, or training. It
+  narrows the runtime acquisition gap but does not attest the future D03
+  process, bound LAPACK FLOPs, or clear any gate. No receipt/environment was
+  added to the repository; graph freeze remains **NO** and the six-arm ≤5%
+  gate remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; partial-ledger parity sensitivity)
+
+- Added `tools/v212_parity_shared_work_sensitivity.py` to apply the D03
+  `(max F - min F) / min F ≤ 0.05` rule to the current all-valid source-covered
+  intervals under a specific dilution scenario: omitted floating-point work is
+  exactly equal across all six arms and the same per-update fixture repeats
+  across the 20×87 schedule. The widest existing partial endpoints are the
+  recursive raw-state upper value 27,130,740 and direct-leaf lower value
+  4,588,091 FLOPs/invocation. That hypothetical equal omitted term would need
+  to be at least 446,264,889 FLOPs per invocation (776,500,906,860 summed
+  across 1,740 updates) to dilute those endpoints to 5%.
+- This is a sensitivity result only. It does not show omitted work is equal,
+  estimate actual LAPACK/runtime cost, use replay-derived masks, or decide
+  parity. The tool explicitly withholds full-counter, parity, profile, and fit
+  eligibility. Three focused tests pass; combined validation is recorded
+  below. No data, model, profile, root, inference, score/outcome, simulation,
+  service, or training ran. The ≤5% six-arm gate remains **untested and
+  unpassed**.
+
+## Superseded source-operation ownership snapshot (2026-10-07)
+
+- The preceding crosswalk reported 964 AST sites (829 model + 135 optimizer),
+  digest `a78afac2369f200a792bfdeb09a96cdc1db7e4c1814b00ac89d55072061fe7e9`,
+  and earlier disposition counts. That snapshot is superseded by the current
+  970-site recomputation below; its counts and digest are historical only.
+- Candidate owner means only that a relevant partial subcounter exists.
+  Expression context, branch cardinality, component overlap, non-FP cost, and
+  runtime behavior are not thereby validated. The previous review's
+  `_finite_array` and `np.asarray` findings remain unresolved as described in
+  the current coverage audit. This crosswalk is not a complete counter or
+  execution trace.
+
+## Preceding source-operation crosswalk snapshot (2026-10-07; superseded below)
+
+- The current inventory contains 835 model AST sites (40 `AugAssign`) and 135
+  scratch-optimizer sites, 970 total. Current source hashes are
+  `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014`
+  (model) and
+  `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb`
+  (optimizer). The crosswalk source hash is
+  `fd61e68476fe3540508b00bd2b2a16e7148a4c35faec2b61bebd0bbc5ca78d1c`; its
+  current digest is
+  `ff2d5a92dffe9bb39d13a0b100695c9b1c4a80646b38a7b30718f17560950152`.
+  Dispositions are 145 candidate-owner, 32 partial candidate-owner, one
+  runtime-unverified candidate-owner, ten separately reported, ten
+  separately/partially bounded non-FP, one blocking unresolved eigensolver,
+  186 explicitly unresolved, 458 explicitly unresolved non-FP, and 127
+  unresolved/context-owned. These are syntax-site counts, not operation or
+  FLOP counts.
+- The `_regularize` mapping assigns ordinary scalar/elementwise arithmetic to
+  the regularizer owner and spectrum/probability arithmetic to the effective-
+  rank owner; integer shape products and unary negations remain separately
+  reported. The targeted source-crosswalk, regularizer, and effective-rank
+  suites pass 15/15 under Python 3.14.7 / NumPy 2.5.3 from
+  `/tmp/caissa-jepa-pv-deps`; `git diff --check` passes. These tests validate
+  static ownership logic, not model or eigensolver execution.
+- Full counter, runtime verification, graph freeze, fit, and six-arm parity
+  remain ineligible/closed. No data, roots, simulation, inference,
+  scoring, profile, service, or training ran. The ≤5% parity gate remains
+  **untested and unpassed**.
+- The approved read-only six-arm raw-state/parity review found the current
+  `F→D→E` forward/reverse source path and partial source accounting internally
+  consistent, but explicitly withheld graph freeze and parity. Linked
+  eigensolver/runtime cost and unresolved source sites remain; so do the
+  integrated trainer, exact-rule replay, selected-window manifest, frozen
+  20-seed × 87-update mask schedule, and per-batch raw-target/H4-leaf
+  prerequisites. The next admissible work remains static operation-owner
+  reconciliation and independent review; no replay/profile gate advanced.
+  Evidence is in `two_player/v212_model.py`,
+  `tools/v212_partial_flop_ledger.py`,
+  `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md`, and
+  `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md`.
+
+## Initial V2.12 source-operation inventory snapshot (2026-10-07; superseded counts)
+
+- Added `tools/v212_source_operation_inventory.py` to enumerate AST-level
+  arithmetic/unary operators, comparisons, calls, indexing, and control-flow
+  sites in `two_player/v212_model.py` and
+  `two_player/v212_scratch_optimizer.py`, with source SHA-256 values and
+  deterministic site ordering. The initial report had 829 model sites
+  (including 37 augmented assignments) and 135 optimizer sites; the current
+  inventory count is in the latest crosswalk entry above. The reviewed follow-up also
+  added `return` and `raise` control-flow nodes that the first version omitted.
+  A read-only follow-up confirmed no other currently used arithmetic,
+  indexing, or explicit control-flow syntax class is omitted. All sites remain
+  semantically unresolved by this inventory; this is not a FLOP count or
+  runtime trace.
+- Three standard-library tests pass under Python 3.11.17 and 3.14.7. The
+  locked Python 3.11.9 / NumPy 2.4.6 runtime is unavailable locally: Python
+  3.11.17 has no NumPy installed, and the available shared NumPy is 2.5.3.
+  No runtime/profile, data, roots, inference, scoring, simulation, or training
+  ran. This inventory does not clear counter coverage, runtime identity,
+  graph-freeze, or ≤5% parity gates.
+- Local code milestone `c1b503a` is not confirmed on GitHub. `origin/main` was
+  last read as `86eb81b` before the ordinary push attempt; the push and a later
+  read both stopped at the system SSH-config ownership error. No force push or
+  alternate write path was used.
+
+## Latest continuation delta (2026-10-07; V2.12 runtime observation utility)
+
+- Added `tools/v212_runtime_observation.py`, a read-only collector for the
+  current Python/NumPy versions and build config, process thread-control
+  environment, host identifiers, and hashes of file-backed executable maps
+  when their device/inode can be matched at read time. It emits a deterministic
+  observation digest and reports whether Python 3.11.9 / NumPy 2.4.6 match.
+- The collector explicitly reports `identity_status=observational_only` and
+  `execution_bytes_verified=false`: post-startup file hashes do not prove the
+  bytes already executed or mapped pages. Thread variables are environment
+  values only; active threadpool state is not queried. It loads the relevant
+  NumPy native modules before reading maps, removes map-order-dependent fields,
+  and compares normalized segment ranges, permissions, offsets and backing
+  identities before and after hashing. This can detect observed changes, but
+  is not an atomic snapshot and cannot satisfy
+  the D03 runtime freeze or request-service executed-byte attestation contract.
+- The combined source-counter/runtime-observation suite passes 65/65 under
+  Python 3.14.7 / NumPy 2.5.3, with targeted compile and whitespace checks
+  passing. An approved read-only reviewer confirmed sorted segment comparison,
+  stable segment digest, and explicit non-atomic/non-attesting semantics; the
+  reviewer did not run tests or the collector. A one-off in-memory collector
+  check observed Python 3.14.7 / NumPy 2.5.3 and
+  36 mapped executable backing files; all 36 path/device/inode hashes matched
+  at read time, normalized segment-inventory equality held before/after
+  hashing, and the observation digest recomputed. Both NumPy native modules
+  were observed under `/tmp/caissa-jepa-pv-deps`, and the lock-match flag was
+  false. No receipt was persisted. This is not the locked runtime. No D03
+  counter/profile, model, data, root, inference, scoring, simulation, or
+  training ran. Graph freeze remains **NO** and ≤5% parity remains **untested
+  and unpassed**.
+
+## Latest continuation delta (2026-10-07; repeated preflight scan accounting)
+
+- Added `tools/v212_preflight_scan_accounting.py` and composed its narrowly
+  scoped counts into each arm's one-invocation partial ledger. At the
+  illustrative 64-row shape, one `loss_grad` call invokes `preflight_batch`
+  once; its numeric finite checks span 80,640 input elements across seven
+  arrays, while action validation passes 16,640 entries to `count_nonzero`,
+  emits 256 row counts, and evaluates 66,560 action-domain predicates. These
+  are source cardinalities/predicate-element counts for a successful valid-
+  batch path, not FLOPs or runtime cost. Invalid inputs may short-circuit and
+  evaluate fewer predicates.
+- The inventory explicitly omits most legal/value/role/transition/mask
+  predicates, row scans, indexing, copying, control flow, NumPy runtime work,
+  and the distinct one-time dataset preflight. It is not a complete
+  preflight/counter inventory and does not aggregate the 20×87 schedule.
+- The focused accounting suite passes 58/58 and targeted `compileall` plus
+  `git diff --check` pass under Python 3.14.7 / NumPy 2.5.3 from
+  `/tmp/caissa-jepa-pv-deps`, not the locked Python 3.11.9 / NumPy 2.4.6
+  runtime. The approved read-only reviewer confirmed arithmetic and scope and
+  prompted the valid-path short-circuit qualification; the reviewer ran no
+  tests or project code. No dataset, profile, roots, inference, scores,
+  outcomes, simulation, or training ran. Graph freeze remains **NO** and the
+  ≤5% compute gate remains **untested and unpassed**; prior negative findings
+  and novelty risks remain in force.
+- Local milestone commit: `c2d20667824a33b1615662be56ce2a28aa5211f4`.
+  `origin` remains `git@github.com:dakiemdarktharr/caissa-jepa.git`; current
+  `main` SHA could not be reverified. Normal SSH remote access fails the system
+  SSH-config ownership check, and a read-only retry with `/dev/null` SSH config
+  failed DNS resolution for `github.com`; the ordinary non-force push was
+  blocked before connecting. The commit is local only, not confirmed on GitHub.
+
+## Latest continuation delta (2026-10-07; owner-reconciled partial FLOP ledger)
+
+- Added `tools/v212_partial_flop_ledger.py`, which composes the current
+  source-level candidate FP subcounters through sole-owner fields for one
+  64-window model/optimizer invocation. It removes known overlaps, separates
+  effective-rank and clipping branches into intervals, and hard-codes no
+  selected-window schedule. The four partial-ledger tests and the composed
+  source-counter suite pass 55/55; targeted compileall and `git diff --check`
+  pass. Tests ran with Python 3.14.7 and NumPy 2.5.3 from
+  `/tmp/caissa-jepa-pv-deps`, not the locked Python 3.11.9 / NumPy 2.4.6
+  runtime.
+- The approved read-only reviewer found no owner/overlap arithmetic defect.
+  Its initial masked-test coverage caveat was resolved with exact expected
+  values for all mask-dependent component categories on all six arms; the
+  ledger now also explicitly qualifies intervals as bounds on the listed
+  subset only, never on total training FLOPs.
+- A further read-only follow-up confirmed that log and square-root fields now
+  distinguish vectorized calls from output-element counts and that known
+  non-FP values remain explicitly incomplete, unconverted counts.
+- Under an illustrative all-valid mask fixture, source-covered candidate
+  intervals are 9,540,294–9,540,390 (multi-step JEPA), 7,885,496–7,885,592
+  (single-pair JEPA), 27,130,644–27,130,740 (recursive raw-state),
+  7,038,991–7,039,087 (value-only latent rollout), 4,588,091–4,588,187
+  (direct-leaf value), and 7,885,496–7,885,592 (single-horizon JEPA) per
+  invocation. The raw-state subtotal is a material compute-risk signal only;
+  the figures omit runtime/LAPACK, multiple non-FP and unsupported categories,
+  and the replay-derived 20×87 schedule. They are not total FLOPs or a parity
+  result.
+- The ledger additionally reports existing known non-FP counts by their native
+  units (call and output-element counts for tanh/exp/log/sqrt, comparisons,
+  optimizer predicates, and two integer shape multiplications). It does not
+  convert these to FLOPs and does not complete preflight/indexing/copy/control-
+  flow/runtime coverage.
+- Corrected the residual subcounter's stale square-convention caveat: review
+  accepts one candidate multiply per fixed-shape square element semantically,
+  without claiming the loaded NumPy kernel follows that operation trace.
+- No research data, profile, roots, inference, outcomes, or training ran.
+  The partial ledger is not accepted as the D03 counter; graph freeze remains
+  **NO** and the ≤5% gate remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; raw-state and six-arm freeze review)
+
+- An approved read-only `gpt-6-luna/high` review found the adopted v05/v06
+  raw-state `F→D→E` method and current objective source internally consistent.
+  Method-level raw-state ambiguity is resolved; this does not freeze the full
+  six-arm graph or establish a compute result.
+- Freeze blockers remain: no integrated trainer/trace binds all six graphs to
+  the exact v06 optimizer helper or proves every invocation uses the 64-window
+  adapter; no selected-window roster, replay receipt, or frozen 20-seed ×
+  87-update batch/mask schedule exists; and data/preflight authorization is
+  absent. The model entry points still accept arbitrary batch sizes, and the
+  adapter does not prove the 32-per-game composition.
+- There is no complete owner-reconciled counter. Actual NumPy reduction/runtime
+  identity, linked-LAPACK eigensolver coverage, full per-update non-FP work,
+  unsupported operators, and conservative bounds over value-dependent branches
+  remain unresolved. D03 also had stale wording that treated the narrowly
+  accepted source-level `x ** 2` semantic convention as open; it now
+  distinguishes that convention from loaded-kernel and total-counter gaps.
+- Graph freeze remains **NO** and the ≤5% six-arm training-FLOP gate remains
+  **untested and unpassed**. The reviewer inspected documents/source only; no
+  tests, data, roots, profiles, simulations, inference, scoring, or training
+  were run. Prior negative results and novelty risks remain unchanged.
+
+## Latest continuation delta (2026-10-07; reduction owner fields)
+
+- `tools/v212_model_reduction_shape_accounting.py` now tags each candidate
+  addition row with its owner and emits split totals for ordinary reduction
+  versus effective-rank entropy additions. It also breaks the root `std`
+  candidate report into its unique reduction, square, deviation-subtraction,
+  variance-division, and square-root fields. Its source regression now links
+  the fixed `(64, 32)` diagnostic shape to the 64-window adapter guard, fixed
+  latent-width config, root encoder, and `z0.std(axis=0)` call. The existing
+  all-operation totals are unchanged; the output schema is v04.
+- The native reduction suite could not import because available Python
+  3.11.17/3.12.15/3.14.7 environments have no NumPy; the research lock calls
+  for NumPy 2.4.6 under Python 3.11.9. Its six tests then passed under a
+  temporary in-process Boolean-mask shim that implements only the mask methods
+  used by these shape formulas. Five effective-rank tests passed on the native
+  interpreter; targeted compileall and `git diff --check` passed. This does
+  not verify NumPy behavior or the locked runtime.
+- The independent ledger remains a draft. No combined FLOP total, runtime
+  fingerprint, linked-LAPACK bound, replay-derived 20×87 masks, or integrated
+  trainer evidence exists. No data/model/profile/outcome work ran; graph freeze
+  remains **NO** and the ≤5% gate remains **untested and unpassed**.
+- The approved read-only `gpt-6-luna/high` follow-up found no current owner or
+  arithmetic double-counting defect. It notes the AST regression still does
+  not prove an integrated caller routes the guarded adapter batch into
+  `loss_grad`; the latter remains an open trainer-boundary requirement. The
+  source test was extended to bind initialized encoder width to `LATENT_SIZE`.
+
+## Latest continuation delta (2026-10-07; candidate counter ownership reconciliation)
+
+- Added a draft additive-owner partition to
+  `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md`. It identifies which
+  existing subcounter component could own each arithmetic family and which
+  overlapping headline fields must not be summed. It deliberately emits no
+  combined FLOP total and is not independently reviewed or frozen for D03.
+- The reconciliation confirms remaining source-export work: reduction rows
+  need field-level owner filtering; the linked LAPACK eigensolver lacks an
+  accepted operation bound; and non-FP/unsupported work is incomplete. The
+  replay-derived 20×87 masks, pinned loaded runtime/backend, and integrated
+  trainer trace are also absent.
+- Documentation-only milestone. No tests, model/data, profile, roots,
+  inference, scores/outcomes, simulations, or training ran. Graph freeze stays
+  **NO** and the ≤5% parity gate remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; six-arm arithmetic ownership review)
+
+- The approved read-only `gpt-6-luna/high` source sweep found plausible
+  source-level owners for the explicit arithmetic in `_encode`, `_value`,
+  `_regularize`, `loss_grad`, and the scratch Adam/EMA helper. It independently
+  confirmed the latest scalar correction and all-valid scalar subtotals
+  **46 / 30 / 46 / 22 / 3 / 30**. No files or tests were changed by the
+  reviewer.
+- The sweep explicitly did **not** find full counter coverage. Open items
+  include the linked-LAPACK eigensolver path, exact loaded reduction/runtime
+  behavior, complete per-update non-FP work (preflight, comparisons, indexing,
+  finite guards and branches), and an integrated trainer trace proving one
+  objective/optimizer call per scheduled update. Square/residual/activation/
+  reduction reports also have intentional overlaps that need one reconciled
+  ledger before summation.
+- No data, model, profile, roots, inference, scores/outcomes, or training ran.
+  Graph freeze remains **NO**; the ≤5% parity gate remains **untested and
+  unpassed**. No gate advanced.
+
+## Latest continuation delta (2026-10-07; objective scalar counter correction)
+
+- AST review found two scalar operations missing from the horizon-objective
+  inventory: the shared `2.0 / batch_size` root-value gradient coefficient,
+  and the per-enabled-horizon `/ d` or `/ FEATURE_SIZE` loss normalization.
+  Added both exactly once at their source sites.
+- The approved read-only `gpt-6-luna/high` reviewer confirmed the corrected
+  all-valid totals of **46 / 30 / 46 / 22 / 3 / 30** operations per invocation
+  in six-arm order and found no overlap with the regularizer, activation,
+  reduction, accumulation, or target-gradient inventories. The combined
+  objective scalar, gradient accumulation, target-gradient, activation,
+  residual, and square tests pass 26/26; targeted compile and
+  `git diff --check` pass. This is still source-level partial accounting; no
+  model/data/profile or outcome work ran. Freeze remains **NO**, and the ≤5%
+  compute gate remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; pooled target-gradient multiplier inventory)
+
+- Added `tools/v212_objective_gradient_elementwise_accounting.py` to count the
+  one per-coordinate multiply of scalar target-gradient coefficient by latent
+  or raw-feature residual. Illustrative full-valid counts are 6,144 / 2,048 /
+  38,016 / 0 / 0 / 2,048 in six-arm order. Outcome-value gradient scaling
+  remains in the activation inventory; residuals/squares, scalar coefficients,
+  gradient accumulation, and matmuls remain separately assigned.
+- The approved read-only `gpt-6-luna/high` review found the formulas source-
+  consistent with enabled horizons and target dimensions, with no overlap in
+  the inspected subcounters. The combined target-gradient, accumulation,
+  activation, residual, and square suites pass 21/21; targeted compile and
+  `git diff --check` pass. No model/data/profile, roots, inference,
+  scores/outcomes, or training ran. This does not establish a full counter or
+  parity: graph freeze remains **NO**, and ≤5% remains **untested and
+  unpassed**.
+
+## Latest continuation delta (2026-10-07; gradient-accumulation source audit)
+
+- Added `tools/v212_gradient_accumulation_accounting.py` for candidate array
+  additions at explicit loss-gradient buffer/state accumulation sites, by
+  horizon masks. It excludes the regularizer-owned `dz0 += 0.1*dreg` site to
+  avoid overlap with the regularizer inventory.
+- The approved read-only `gpt-6-luna/high` reviewer found the first raw-state
+  formula omitted `fw/fb` predictor-gradient buffer additions at each active
+  recurrent step. Corrected by 3,360 additions per active step; under
+  illustrative full-valid masks, six-arm subtotals are now 48,709 / 44,613 /
+  182,877 / 42,565 / 19,043 / 44,613. The other arm formulas were accepted
+  within this narrow source-shape scope.
+- Gradient accumulation, objective scalar, regularizer, and policy accounting
+  tests pass 16/16; targeted compile and `git diff --check` pass. These are
+  still analytical subcounters, not a loaded-runtime trace or total FLOP
+  comparison. No model/data/profile, roots, inference, outcomes, or training
+  ran. Graph freeze remains **NO** and ≤5% parity remains **untested and
+  unpassed**; no gate advances.
+
+## Latest continuation delta (2026-10-07; pooled objective scalar inventory)
+
+- Added `tools/v212_objective_scalar_accounting.py` for scalar denominator
+  weighting, horizon scales, pooled loss accumulation, and gradient
+  coefficients in the horizon objective. Under illustrative all-valid masks,
+  the corrected candidate subtotal is 46 operations/invocation for multi-step
+  JEPA and recursive raw-state, 30 for single-pair and single-horizon JEPA, 22
+  for value-only rollout, and 3 for direct-leaf value. These are narrowly scoped
+  source-level subtotals, not comparable total compute estimates. The direct
+  leaf counter rejects schedules without a valid H4 row.
+- Objective scalar, regularizer, and policy softmax source-accounting tests
+  pass 11/11; targeted compile and `git diff --check` pass. A first expected
+  count assertion exposed a test-fixture arithmetic mistake, which was
+  corrected before the passing rerun. No model/data/profile, roots, inference,
+  scores/outcomes, or training ran. Graph freeze remains **NO** and ≤5% parity
+  remains **untested and unpassed**; no gate advances.
+
+## Latest continuation delta (2026-10-07; regularizer and softmax elementwise inventories)
+
+- Added `tools/v212_policy_softmax_accounting.py` for the fixed 64×65 root
+  policy path: 4,160 shift subtractions, exp elements, and probability
+  divisions, and policy-gradient batch-normalization divisions; 64 NLL log
+  elements and each of the two 64-element subtraction sites; and 4,096
+  candidate comparisons in the row-max reductions. The two denominator sums
+  and NLL mean remain assigned to the reduction inventory; matrix products
+  remain assigned to the matmul inventory.
+- Added `tools/v212_regularizer_elementwise_accounting.py`. Per root call it
+  reports candidate array arithmetic of 4,128 additions, 3,104 subtractions,
+  6,208 multiplications, and 5,120 divisions, plus separate scalar counts.
+  Reductions, squares, matmuls, comparisons, and eigensolver work are explicitly
+  excluded or delegated to their existing inventories to avoid double counting.
+- Policy and regularizer source-AST/shape tests pass 6/6. Both are candidate
+  subcounters, not loaded-kernel traces or a full counter. No model/data/profile,
+  roots, inference, scores/outcomes, or training ran. Graph freeze remains
+  **NO** and ≤5% parity remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; schedule mask-integrity v03)
+
+- Versioned the schedule validator contract as v03, preserving draft 02 as
+  history. The structural 20×87 validator now requires every horizon's declared
+  `valid_nonterminal`, `terminal_masked`, and `missing_or_truncated` counts must
+  classify exactly 64 windows, and `invalid_transition` must be zero. D03
+  requires rejecting a panel with any invalid selected transition; the adapter
+  also rechecks each local edge before materializing a batch. Added regression
+  cases for unclassified rows and invalid-transition declarations, and updated
+  synthetic fixtures to form a complete partition. See
+  `docs/V212_SCHEDULE_MANIFEST_AUDIT_DRAFT_03.md`.
+- An exact-rule synthetic adapter batch now asserts the same count partition
+  directly from `preflight_batch`, rather than validating only a declared
+  manifest fixture.
+- Schedule v03/rejection, receipt-bound, adapter, and replay-focused tests pass
+  29/29. This validates
+  declaration consistency only; it does not prove actual manifest counts,
+  source provenance, or selected-window replay. No research data, profile,
+  roots, scores/outcomes, inference, or training ran. Graph freeze remains
+  **NO**; the ≤5% gate remains **untested and unpassed**. No gate advances.
+
+## Latest continuation delta (2026-10-07; clipping branch source correction)
+
+- Corrected the six-arm optimizer subcounter's branch disclosure: source
+  materializes `grads[key] * clip_scale` for every parameter tensor whether the
+  global norm is ≤5 or >5. The only branch-dependent FP operation is the scalar
+  `5.0 / gradient_norm` division on the >5 path. The report now enumerates both
+  branch components, and an AST regression checks the condition and scaling
+  expression against `scratch_adam_ema_step`.
+- Optimizer-accounting tests pass 4/4; no optimizer step, model objective,
+  data, profile, roots, score/outcome, inference, or training ran. This corrects
+  source coverage only; objective/LAPACK counts, frozen masks and runtime
+  identity remain open. Six-arm graph freeze stays **NO** and ≤5% compute parity
+  remains **untested and unpassed**. No gate advances.
+
+## Latest continuation delta (2026-10-07; raw-state and six-arm parity review)
+
+- An approved read-only `gpt-6-luna/high` review found the raw-state method
+  specified but its selected-window/data lineage not demonstrated. The batch
+  adapter accepts caller-provided windows and outcomes; current synthetic
+  checks do not establish full-episode replay, split/duplicate identity,
+  production manifest provenance, or the 32-window-per-game cross-arm roster.
+- The static dense-forward inventory is 72,544 MAC/window for raw-state versus
+  40,864 for multi-step JEPA on fully valid illustrative masks (+77.53%). This
+  is a material parity risk signal, not a full-graph comparison or verdict:
+  backward/objective work and actual masks are not fully counted. Current
+  matrix, activation, residual/square, reduction, effective-rank, and optimizer
+  counters remain analytical subcomponents; loaded runtime/LAPACK identity and
+  full branch bounds remain open.
+- Graph freeze remains **NO** and the ≤5% gate remains **untested and
+  unpassed**. The reviewer accessed code/documents only; no tests, data, roots,
+  scores/outcomes, simulations, service, inference, profiling, or training ran.
+  No gate advances and no superiority claim is supported.
+
+## Latest continuation delta (2026-10-07; effective-rank branch interval)
+
+- Added `tools/v212_effective_rank_branch_accounting.py` for the work after
+  `spectrum_sum`/selected-set construction: the inactive branch or active
+  selected count K=1..32. Per arm across 20×87 scheduled slots, the conservative
+  upper candidate interval is 53,940 reduction additions, 55,680 multiplies,
+  55,680 divisions, 55,680 `log` calls, and 1,740 `exp` calls. The inactive
+  lower work is zero for these branch-specific operations. Comparisons and
+  unary negations are reported separately. These are source-level bounds, not
+  observed schedule branches or linked-eigensolver costs.
+- Tightened the reduction inventory to reject an impossible input combination
+  (active entropy branch with zero selected eigenvalues). The branch and
+  reduction suites pass 10/10, including AST checks against the current source
+  expressions. No model, data, profile, roots, inference, scores/outcomes, or
+  training ran. This is a partial bound only: DSYEVD/LAPACK, exact loaded NumPy
+  reductions, the real 20×87 mask schedule, and other branches remain open.
+  Six-arm graph freeze remains **NO**; ≤5% parity remains **untested and
+  unpassed**. No gate advances.
+
+## Latest continuation delta (2026-10-07; square-site counter inventory)
+
+- An approved read-only `gpt-6-luna/high` reviewer accepts one candidate
+  multiplication per element for fixed-shape array `x ** 2` as a consistent
+  semantic source-level convention; this does not assert that the loaded
+  NumPy power loop performs one hardware multiply. Ordinary reduction `I-O`
+  additions and mean `O` divisions remain shape-level candidates, not exact
+  loaded-kernel counts.
+- Added `tools/v212_model_square_flop_accounting.py`, mapping all 20 current
+  array-square AST sites to mask-dependent shapes, including regularizer,
+  recurrent derivative, supervised-loss, and returned-gradient-norm squares.
+  Fully valid illustrative candidate counts are 38,242 / 30,050 / 116,712 /
+  25,954 / 16,002 / 30,050 for multi-step JEPA, single-pair JEPA, raw-state,
+  value-only, direct-leaf, and single-horizon respectively. Existing activation,
+  residual and latent-`std` square subcounts overlap; do not sum them again.
+- Square/reduction/residual/activation focused synthetic-source validation
+  passes 17/17; no model, research data, profile, root, inference, score,
+  outcome, or training ran. This is still a subcounter, not full coverage.
+  Linked-LAPACK counts, exact loaded NumPy reductions, frozen masks and
+  full-schedule branch bounds remain open. Six-arm graph freeze remains
+  **NO**; ≤5% parity remains **untested and unpassed**. No gate advances.
+
+## Latest continuation delta (2026-10-07; reduction-counter source review)
+
+- An approved read-only `gpt-6-luna/high` review found that Python's built-in
+  `sum` in `metrics["gradient_norm"]` starts with scalar zero and performs one
+  scalar addition per gradient tensor. The provisional source counter had
+  counted one fewer. Corrected the diagnostic counter and its AST regression;
+  fully valid illustrative six-arm candidate totals are now 36,376–186,745
+  additions and 132–137 mean divisions.
+- Official NumPy 2.4.6 source supports the `std` call expansion used in the
+  inventory, conditional on the assumed float64 `(64, 32)` input, but the
+  pinned runtime, actual reduction kernel/build dispatch, linked LAPACK, and
+  full branch bounds remain unverified. Local retrieval of the locked NumPy
+  wheel failed because package-index DNS was unavailable.
+- The focused reduction-accounting suite passes 5/5; relevant `compileall`
+  and `git diff --check` pass. This remains a candidate source inventory, not
+  an accepted full FLOP counter or measured parity result.
+  Six-arm graph freeze remains **NO**; ≤5% compute parity remains **untested
+  and unpassed**. No profile, roots, scores/outcomes, simulation, inference,
+  or training was run; no gate advances.
+
+## Latest continuation delta (2026-10-07; receipt-bound schedule seam)
+
+- Added `two_player/v212_receipt_bound_schedule.py`: build an immutable
+  in-memory episode/window receipt index from the exact-rule audited train
+  collection, then check a frozen manifest row's ordered IDs/payload hashes,
+  receipt membership, paired model seed, and actual adapter-derived masks
+  before the paired six-arm no-update helper. The index is built once so the
+  full train replay is not repeated per update.
+- Added a detached immutable schedule snapshot: validate the complete
+  structural 20×87 manifest once, then reuse its frozen seed/update rows and
+  digest for scheduled calls instead of rewalking the manifest for every
+  update. Its public constructor accepts only a raw manifest and performs
+  that validation itself, preventing caller-supplied digests/mutable rows from
+  masquerading as validated state. Synthetic tests verify detachment,
+  immutability, and rejection of a forged constructor call.
+- The seam is not an exclusive trainer: `loss_grad` and the existing helper
+  remain directly callable. A pre-model callback checks actual masks against
+  the one read-only materialized batch, and a callback exception prevents all
+  arm calls. This removes duplicate adapter materialization; the callback adds
+  one structural preflight and each arm repeats its own, all of which must be
+  counted before profile. Five new synthetic tests cover its components; the
+  high-level coordination test uses a structurally validated synthetic 20×87
+  schedule but mocks row-to-receipt binding, mask extraction, and the paired
+  helper, so it is not an end-to-end data call. The snapshot test itself
+  validates all 20×87 synthetic rows.
+- Receipt/trajectory/schedule/adapter/model regression passes 44/44 under
+  Python 3.14.7 with temporary NumPy 2.5.3; compile and whitespace checks
+  pass. This is not the locked runtime. No research corpus, selected schedule,
+  roots, scores/outcomes, profile, inference, or training was used.
+- No gate advances. Six-arm graph freeze remains **NO** and ≤5% parity remains
+  **untested and unpassed**. Source-file/data provenance, an exclusive trainer,
+  a valid replay-derived 20×87 mask roster, full counter/branch bounds and
+  pinned runtime/backend/source identity remain open. Preserve negative
+  results and novelty risks.
+
+## Latest continuation delta (2026-10-07; episode replay receipt candidate)
+
+- Added a strict-schema in-memory episode receipt helper that invokes the
+  existing whole-episode exact-rule replay audit, hashes canonical complete
+  episode content plus adapter/rules identity, and lists the digest of each
+  derived window. It does not hash source-file bytes, authenticate lineage,
+  fingerprint loaded rules code, or integrate with the schedule/trainer.
+- Three synthetic receipt fixtures and the existing trajectory-audit suite
+  pass 10/10 using temporary NumPy 2.5.3 on Python 3.14.7, not the locked
+  runtime. No corpus, roots, scores/outcomes, profile, inference, or training
+  was used. This is not production replay/provenance evidence.
+- An approved read-only `gpt-6-luna/high` review finds the adopted raw-state
+  `F→D→E` method consistent with the current no-update graph at source level.
+  Six-arm graph freeze remains **NO**; compute parity remains **untested and
+  unpassed**. Trainer exclusivity, actual selected-window replay/masks,
+  schedule-to-receipt binding, full FLOP counter/branch bounds, and pinned
+  runtime/backend/source identity remain open. No gate advanced; retain prior
+  negative results and novelty risks.
+
+## Latest continuation delta (2026-10-07; V2.12 window-payload binding)
+
+- Added canonical `window_payload_sha256` over each materialized `Window` and
+  its adapter/rules identity. The paired scheduled-batch result now carries
+  ordered per-window payload hashes and a batch digest bound to seed ordinal,
+  update index, window IDs, and payload hashes. Schedule-manifest schema v02
+  records those hashes and rejects an ID whose payload digest changes within
+  a seed's 87 updates or across its three epochs. V01 audit history is retained.
+- Thirteen payload/schedule-boundary tests pass; with the adapter and model
+  suites, focused validation is 26/26. `compileall` and `git diff --check`
+  pass under Python 3.14.7 / NumPy 2.5.3, not the locked runtime. All inputs
+  were synthetic; no dataset, episode, score, outcome, inference, profile, or
+  training was used.
+- The digest binds only the four-ply Window object and adapter identity; it is
+  not source-episode provenance, full-episode terminal verification, a signed
+  replay receipt, or a loaded-code fingerprint. The manifest validator still
+  checks declared fields rather than actual selected data, and `loss_grad`
+  remains directly callable. Trainer/replay integration and compute gates
+  remain open; ≤5% parity is **untested and unpassed**. No negative finding or
+  novelty risk changed.
+
+## Latest continuation delta (2026-10-07; V2.12 schedule-manifest validator)
+
+- Added `two_player/v212_schedule_manifest.py` and a versioned structural
+  contract for the accepted 20-seed × 87-update schedule: chronological
+  epoch/batch identity, 64 IDs with 32 per training game, 928 distinct selected
+  IDs per game per epoch with the same bank across all three epochs, per-arm
+  horizon-mask counts, and a valid H4 leaf for every direct-leaf update.
+  Validation computes a canonical digest over the manifest declaration.
+- Six synthetic-manifest tests pass; together with the scheduled-call,
+  adapter, and model suites, focused V2.12 validation is 23/23. The schedule
+  fixture contains generated IDs/counts only; companion model tests use
+  synthetic arrays. No real research windows, episodes, roots, profile,
+  inference, score, outcome, or training was used. Runtime remains Python
+  3.14.7 / NumPy 2.5.3, not the locked runtime. `compileall` and
+  `git diff --check` pass.
+- The validator does not establish payload/episode hashes, train provenance,
+  exact-rule replay, masks against actual windows, the frozen selection
+  procedure, or trainer use. It is a structural preflight only and does not
+  amend D03 or authorize data/profile/fit. All compute gates remain closed and
+  the ≤5% parity gate remains **untested and unpassed**; preserve prior
+  negative findings and novelty risks.
+
+## Latest continuation delta (2026-10-07; paired scheduled-batch boundary helper)
+
+- Added `two_player/v212_scheduled_batch.py` as a no-update boundary for one
+  paired six-arm call. It accepts audited `Window` records rather than
+  caller-built arrays, checks the two exact training adapter identities, 64
+  rows with 32 per game, unique within-batch window IDs, all six arms and a
+  common model seed, then materializes once and passes a read-only batch to
+  each arm. The caller supplies seed ordinal/update index in the 20×87 range.
+- Four new spy-model tests plus the existing window-adapter and model suites
+  pass 17/17 under Python 3.14.7 / NumPy 2.5.3; `compileall` and
+  `git diff --check` pass. This is not the locked Python 3.11.9 / NumPy 2.4.6
+  runtime. No real window, schedule, profile, inference, score, outcome,
+  optimizer update, or training was used.
+- This helper does not generate or validate the frozen 20×87 manifest, prove
+  episode/replay provenance, ensure cross-update uniqueness/order, or hash
+  window payloads (its digest covers ordered IDs only). `loss_grad` remains
+  directly callable; a future trainer must route every scheduled call through
+  this boundary. It is not trainer integration and establishes no graph freeze
+  or ≤5% parity. Those gates remain closed and prior negative findings and
+  novelty risks remain unchanged.
+
+## Latest continuation delta (2026-10-07; independent raw-state/six-arm readiness recheck)
+
+- An approved read-only `gpt-6-luna/high` review rechecked the adopted v06
+  raw-state `F→D→E` graph against the no-update implementation. It found the
+  recurrent masks/backward path, pooled raw-feature and outcome losses,
+  terminal handling, arm shapes, shared initialization, and JEPA-only EMA
+  routing internally consistent at source level. This is not evidence from a
+  trainer, selected data, or executed schedule.
+- Six-arm graph freeze remains **NO** and the ≤5% compute gate remains
+  **untested and unpassed**. The 64-window adapter guard is narrow:
+  `preflight_batch` and `loss_grad` remain directly callable with other batch
+  sizes. Trainer enforcement, 32-windows-per-game composition, shared 20×87
+  batch/mask roster, selected-window provenance and exact-rule replay, a full
+  counter with branch bounds and linked-LAPACK coverage, and pinned runtime/
+  backend/source fingerprints remain absent.
+- D03 already requires identical scheduled batch boundaries, blocks direct
+  guard bypass in the future trainer, and specifies the direct-leaf per-batch
+  valid-H4 condition. The next narrow code step is a scheduled-call boundary
+  wrapper with a regression against bypass, after its accepted input/identity
+  contract is made concrete. That would close only an adapter/model-call
+  boundary gap; it would not establish schedule validity, compute parity, or
+  open a profile/fit gate. No tests or model/data operations ran in this
+  review; prior negative findings and novelty risks are unchanged.
+
+## Latest continuation delta (2026-10-07; source-expanded latent-std subcounter)
+
+- Expanded the candidate reduction inventory for the source-pinned NumPy
+  2.4.6 `z0.std(axis=0)` diagnostic (`z0` shape 64×32): 2,016 additions for
+  the internal mean, 32 mean divisions, 2,048 deviation subtractions, 2,048
+  square operations, 2,016 variance-sum additions, 32 variance divisions, and
+  32 square roots per model invocation. These are analytical counts, with the
+  square provisionally treated as one multiply; they do not pin the actually
+  loaded NumPy reduction kernel or establish total FLOPs.
+- Updated the reduction tool and source-shape tests. No data, model graph,
+  profile, inference, scores, outcomes, or training ran. The focused source/
+  synthetic suite passes 5/5; `compileall` and `git diff --check` pass.
+  Independent counting acceptance, the actual runtime/library fingerprint,
+  linked-LAPACK coverage, and other counter gaps remain open; the ≤5% gate
+  remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; reduction-shape inventory)
+
+- Added `tools/v212_model_reduction_shape_accounting.py` to map NumPy
+  mean/sum calls in the objective and bias-gradient diagnostics to input and
+  output shapes, retaining the two separate softmax denominator reductions
+  and per-horizon mask skips. Candidate addition/division counts use ordinary
+  `input_elements - output_elements` reductions and one division per mean
+  output; the active-set size for effective-rank entropy is an explicit input.
+- Five synthetic/source tests pass. The combined model, activation, matmul,
+  residual, and reduction suite passes 25/25; `compileall` and
+  `git diff --check` pass. With fully valid illustrative masks and all 32
+  effective-rank entries selected, candidate reduction additions range from
+  32,343 (direct-leaf) to 182,712 (raw-state), with 100–105 mean divisions.
+- These are candidate operation counts, not accepted FLOPs or runtime results.
+  source-level `np.std` arithmetic is now expanded in a later continuation
+  entry, but its loaded runtime/kernel and summation fingerprint, effective-
+  rank branch intervals, LAPACK, scalar/elementwise work, and the rest of the
+  graph remain unresolved or excluded. No data, roots, profile, inference, score,
+  outcome, or training ran; the ≤5% compute gate remains **untested and
+  unpassed**.
+
+## Latest continuation delta (2026-10-07; independent raw-state/six-arm freeze review)
+
+- An approved read-only `gpt-6-luna/high` review found the adopted v06 raw-state
+  `F→D→E` recurrence, pooled feature loss, masks, and recurrent backward pass
+  internally consistent with the no-update graph. Adapter feature fixtures
+  still do not establish selected-window exact-rule replay, label provenance,
+  decoder behavior on audited batches, or trainer integration.
+- At the time of review, `two_player/v212_window_batch.py::windows_to_model_batch`
+  accepted arbitrary nonempty batch lengths although D03 and the analytical
+  counters assume 64; the subsequent adapter guard is recorded below. Six-arm
+  graph-freeze readiness remains **NO**.
+  The adapter guard now enforces exactly 64 windows; the trainer must preserve
+  it, and manifest/replay evidence must attest identical batch boundaries
+  across arms/updates. The full counter, branch bounds, selected window replay
+  and mask roster, trainer integration, and pinned runtime/LAPACK fingerprint
+  remain absent. The ≤5% compute gate remains **untested and unpassed**.
+- The raw-state MAC, matmul, reduction, and optimizer inventories remain
+  partial risk indicators, not total-compute parity results. The reviewer ran
+  no tests, roots, simulations, profiles, inference, training, or scoring. No
+  method or gate changed; prior negative results and novelty risks remain.
+
+## Latest continuation delta (2026-10-07; fixed V2.12 adapter batch size)
+
+- `windows_to_model_batch` now rejects any batch other than exactly 64 windows,
+  matching the v06 fixed-batch contract. The focused synthetic adapter fixtures
+  now exercise that batch shape and cover empty, 63-window, and 65-window
+  rejection. This enforces only the adapter boundary; it does not prove the
+  schedule's 32-windows-per-game composition or matching boundaries across all
+  arms and updates. An approved read-only reviewer accepts the guard's narrow
+  64-window contract, while noting `preflight_batch`/`loss_grad` can still be
+  called directly with other sizes; the future trainer must prevent bypass for
+  every scheduled update.
+- The adapter/model batch path remains an in-memory conversion fixture, not a
+  selected-window manifest, trainer, or exact-rule dataset pipeline. No real
+  windows, profile, inference, scores, outcomes, or training ran. Graph freeze
+  readiness remains **NO** and the ≤5% compute gate remains **untested and
+  unpassed**.
+
+## Latest continuation delta (2026-10-07; loss-residual/square subcounter)
+
+- Added `tools/v212_model_loss_residual_accounting.py`, a mask-parameterized
+  source inventory of array residual subtractions and squared-error elements
+  for root, direct-leaf, outcome, latent-rollout, and raw-state losses. It
+  counts the second `delta ** 2` materialization where the source evaluates a
+  per-horizon mean and a separate pooled sum. Four tests cover six-arm
+  full-valid shapes, mask-dependent counts, malformed inputs, and square
+  expression source sites; the four-module model/activation/matmul/residual
+  suite passes 20/20 with compile and whitespace checks passing.
+- For illustrative fully valid masks, residual subtractions range from 128
+  (direct-leaf) to 38,272 (raw-state); square-operation elements range from
+  128 to 76,480. The combined arithmetic subtotal assumes each square is one
+  multiplication, a convention that D03 still requires independent acceptance.
+  Reductions, scalar weights, gradients, regularizer/effective-rank arithmetic,
+  LAPACK and remaining elementwise work are excluded. No data, roots, profile,
+  inference, score, outcome, or training ran; the ≤5% compute gate remains
+  **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; raw-state and compute review follow-up)
+
+- An approved read-only `gpt-6-luna/high` reviewer found the adopted raw-state
+  v05/v06 `F→D→E` method coherent with the current no-update graph, with no
+  arithmetic contradiction in pooled losses, masks, terminal handling,
+  recurrent backpropagation, parameter shapes, common initialization, or
+  optimizer routing. This is method/source consistency evidence only.
+- Six-arm graph-freeze readiness remains **NO**. Trainer integration,
+  selected-window exact-rule replay, the 20×87 mask roster, a full counter
+  with linked-LAPACK coverage and branch bounds, and runtime/backend/source
+  fingerprinting remain absent. The current ≤5% compute gate is **untested
+  and unpassed**.
+- The reviewer identified an additional per-batch schedule condition already
+  enforced by `two_player/v212_model.py`: every direct-leaf batch needs at
+  least one valid nonterminal H4 leaf, even when another horizon has targets.
+  D03 and the FLOP coverage audit now make this check explicit and require
+  rejection of the panel if violated. This clarifies existing source behavior;
+  it does not change the method, authorize a schedule, or open a gate.
+- No tests/profile, roots, simulation, inference, score, outcome, or training
+  ran during the review. Preserve all existing negative results and novelty
+  risks; no superiority or Q1-readiness claim is supported.
+
+## Latest continuation delta (2026-10-07; value-gradient scale subcounter correction)
+
+- Source reinspection of the activation accounting found that value-head
+  gradients multiply the loss-scaled delta by the tanh derivative. The prior
+  derivative-only inventory counted the derivative square, subtraction, and
+  derivative multiplication, but omitted that distinct upstream array-scale
+  multiplication. `tools/v212_model_activation_flop_accounting.py` now reports
+  the scales separately and includes them in a combined activation-gradient
+  array subtotal, without double-counting the derivative multiplication.
+- Fully valid illustrative masks add 256 upstream array multiplications per
+  recurrent arm and 128 for direct-leaf. Scalar coefficient construction,
+  other loss/reduction work, and eigensolver remain excluded; this is still a
+  partial analytical subcounter, not total FLOPs or a parity result.
+- The focused four-module regression run passes 20/20, including synthetic
+  accounting checks and the source-site guard; `compileall` and
+  `git diff --check` pass. No game states, roots, profiles, inference, scores,
+  outcomes, or training were used. The six-arm ≤5% compute gate remains
+  **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; activation/bias subcounter)
+
+- Added `tools/v212_model_activation_flop_accounting.py` for affine bias
+  additions, `tanh` element counts, and the explicit square/subtract/multiply
+  arithmetic at tanh-derivative sites, parameterized by the same 64-row horizon
+  masks and active prefixes. An AST regression asserts the four current
+  `np.tanh` source sites; three synthetic accounting tests check all six arms
+  and mask-dependent counts. The combined nine-module regression suite passes
+  38/38; `compileall` and `git diff --check` pass.
+- For a fully valid illustrative batch, affine bias additions range from
+  8,384 to 73,536, `tanh` element counts from 4,224 to 18,688, and
+  tanh-derivative arithmetic from 12,672 to 56,064 FLOPs by arm. These omit
+  other elementwise/reduction work, `tanh` cost, LAPACK, matmul, optimizer,
+  preflight and runtime, so they are not total compute or a parity result. The
+  accounting tool does not execute the model; no real data/profile/inference/
+  training ran. Full counter and pre-fit gates remain open; ≤5% compute remains
+  **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; explicit model-matmul accounting)
+
+- Added `tools/v212_model_matmul_flop_accounting.py` to derive FLOPs for every
+  explicit dense `@` in the current six-arm objective graph, including
+  backward products and covariance matmuls. It accepts per-horizon masks for
+  the fixed 64-window batch and derives each active prefix from downstream
+  valid horizons. Four synthetic tests match full-valid forward projection
+  counts to the existing MAC inventory, assert all current `@` source sites,
+  and check masked rows and malformed masks.
+- Under a fully valid illustrative batch, explicit-matmul FLOPs range from
+  4,329,472 (direct-leaf) to 26,128,384 (raw-state). This is only matrix-product
+  arithmetic under assumed masks, not the actual scheduled compute or a total
+  FLOP result. The tool omits elementwise/reduction math, nonlinearities,
+  eigensolver/LAPACK, optimizer, preflight, runtime, and non-FLOP work. No
+  trajectory/data, model graph, profile, inference, score, outcome, or training
+  ran. The counting tool itself did not execute the model; the combined
+  regression suite also exercised existing no-update graph tests on synthetic
+  fixture arrays only; the combined eight-module validation passed 35/35.
+  Full-counter, data/replay, runtime, and independent
+  review gates remain open; ≤5% compute remains **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; optimizer-only FLOP accounting)
+
+- Added `tools/v212_optimizer_flop_accounting.py`, an analytical translation of
+  the current scratch Adam/EMA source into FP arithmetic counts and clipping-
+  branch intervals. It cross-checks trainable/EMA coordinate and tensor counts
+  for all six arms. Per update, optimizer-only arithmetic ranges from 136,750
+  to 136,751 FLOPs for direct-leaf, 190,514–190,515 for value-only,
+  209,620–209,621 for each JEPA arm, and 295,062–295,063 for raw-state. Across
+  20×87 scratch updates, branch intervals are recorded in the tool output.
+- Three synthetic formula tests pass; `compileall` and `git diff --check`
+  pass. Powers, square roots, finite predicates and validation/copy work are
+  reported outside FLOPs. This is not optimizer execution, an instrumented
+  counter, or a total-training comparison. The arm differences are a compute
+  risk signal only; objective-graph/LAPACK work, full counter coverage, source
+  runtime identity and independent acceptance remain open. No profile, data,
+  roots, inference, scores, outcomes or training ran; the ≤5% gate remains
+  **untested and unpassed**.
+
+## Latest continuation delta (2026-10-07; action-validation accounting follow-up)
+
+- Changed `preflight_batch` action validation from a floating-point row sum to
+  `np.count_nonzero` after the existing finite/range/binary checks. Acceptance
+  semantics remain exactly one set bit for a present transition and zero for
+  an absent transition. Synthetic regression coverage includes valid,
+  multiple-bit, padded-action, and nonbinary inputs; the focused model/window/
+  trajectory/raw-state/MAC/scratch-optimizer suite passes 28/28, with
+  `compileall` and `git diff --check` passing.
+- This removes the previously identified floating-point reduction but still
+  scans the same 256×65 action entries; the integer count/comparison work must
+  be itemized separately by a future counter. No runtime reduction is claimed.
+  No profile, roots, data, inference, scores, outcomes, or training ran. The
+  linked-LAPACK coverage gap, missing trainer/data/replay/runtime fingerprint,
+  and all pre-fit gates remain open. The six-arm ≤5% compute gate remains
+  **untested and unpassed**; preserve prior negative results and novelty risks.
+
+## Latest continuation delta (2026-10-07; raw-state and six-arm parity review)
+
+- An approved read-only `gpt-6-luna/high` source review found the adopted v06
+  raw-state `F→D→E` contract coherent with the no-update objective graph and
+  found no arithmetic contradiction in that graph. This is static consistency
+  evidence only: adapter fixtures establish feature coordinates, while exact-
+  rules selected-window replay, transition/label provenance, decoder behavior
+  on real batches, and trainer integration remain unevidenced.
+- Six-arm graph freeze/profile readiness is **NO**. The trainer, selected-
+  window manifest and replay runner, real 20×87 mask schedule, full counter
+  and branch bounds, and pinned runtime/LAPACK fingerprint remain absent. The
+  dense-forward MAC difference remains a risk signal only; the ≤5% total
+  training-FLOP gate is **untested and unpassed**. No tests, roots, simulation,
+  inference, profile, scores, outcomes, or training were run by the reviewer.
+- The review spotted proposal-stage wording in raw-state draft 02 despite its
+  adoption header. The draft now labels that wording as preserved history and
+  points readers to the adopted v05/v06 method spec and amendment. No method,
+  arm, gate, or negative finding changed.
+
+## Latest continuation delta (2026-10-07; LAPACK eigensolver path audit)
+
+- Followed the counter-coverage gap through the pinned NumPy 2.4 reference and Netlib LAPACK source. NumPy documents `_syevd` for the real symmetric covariance; reference `DSYEVD` in eigenvalues-only mode calls `DSYTRD` and `DSTERF`, with conditional matrix scaling. This narrows the required counter path but does not identify the LAPACK binary/build linked by the future runtime or bound its exact operation trace and convergence work. Added these primary-source references to the counter audit; eigensolver coverage remains open pending a pinned implementation trace or reviewed bound.
+- Netlib's reference `DSTERF` source sets a total loop cap of `30*N` (960 iterations for this 32×32 spectrum), giving a finite algorithmic reference bound but not yet an operation-count bound for the linked runtime. At this audit's initial checkpoint, per-update `preflight_batch` also summed 256 one-hot action rows of length 65. A later source change replaced that floating reduction with integer nonzero counting; the counter audit now records the 256×65 scan separately from D03's one-time dataset preflight. Independent acceptance is still required.
+- No numerical input, profile, experiment, runtime configuration, data, label, score, outcome, or training operation was read or run. The ≤5% compute gate and all data/pre-fit gates remain unchanged and closed.
+
+## Latest continuation delta (2026-10-07; static FLOP-counter coverage audit)
+
+- Added `docs/V212_FLOP_COUNTER_COVERAGE_AUDIT_DRAFT_01.md`, mapping the current no-update six-arm graph and scratch Adam/EMA helper to the accepted D03 per-update FLOP accounting contract. It inventories active-prefix/mask-dependent projections and gradients, all-arm covariance/effective-rank diagnostics, policy/value losses, target encodes, clipping, Adam/EMA, scalar powers, and repeated preflight. This is source inspection only; no batch was profiled, no research data or labels were read, and no parameters were updated.
+- The audit identifies `np.linalg.eigvalsh` as a specific unresolved coverage item: the current graph executes a 32×32 symmetric eigensolver in every arm/update, but no algorithm-specific count or reviewed upper bound is frozen. It also flags that the graph calls `preflight_batch` on each loss invocation while D03 describes one-time preflight separately. These require a reviewed counter specification; no profile can yet meet D03.
+- No runtime/counter fingerprint, selected-window manifest/replay, trainer integration, or 20-seed × 87-update mask schedule exists. The available NumPy 2.5.3 / Python 3.14.7 environment differs from the locked research runtime. No data/preflight authorization, compute, training, roots, outcomes, inference, or score gate advanced. The ≤5% compute gate remains **untested and unpassed**; preserve the Reversi8 negative and novelty risks.
+
+## Latest continuation delta (2026-10-07; no-update V2.12 six-arm objective graph)
+
+- Added `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_01.md` to specify a non-operative path for eventually evaluating the mandatory six-arm ≤5% training-FLOP gate. It includes forward/loss/backward, clipping, Adam, EMA, and executed covariance-spectrum diagnostics; requires common batch/mask semantics and no persistent updates; and states that a synthetic structural run cannot establish panel parity. An approved read-only reviewer found two protocol wording gaps and a follow-up confirmed their correction: v05 per-example masking is allowed while scheduled work stays fixed, and omitted FLOP uncertainty must not affect the 5% pass/fail decision. The draft also separates protocol review from later data/preflight authorization. This was an internal-consistency review, not protocol acceptance; no profile or optimizer dry-run ran. A pure one-step scratch Adam/clipping/EMA helper now enforces EMA routing across all six arms; four focused synthetic-array tests pass. Independent read-only code review confirmed its update equations and routing guard. It is not integrated into a trainer or the objective graph. Selected-window manifest/replay and a full FLOP counter remain absent. The ≤5% gate remains **untested and unpassed**; fitting and all other closed gates remain closed.
+
+- Implemented `two_player/v212_model.py` as a no-update NumPy loss/gradient graph for all six frozen arms, with no dataset loader, optimizer, fit loop, checkpoint writer, inference planner, roots, or outcomes. It implements v05 pooled latent/raw/outcome losses, terminal/truncation masks and active-prefix execution, raw `F→D→E` recurrent gradients, paired common initialization, and per-arm parameter inventories. It reports per-horizon loss diagnostics, root latent mean/std, covariance spectrum/effective rank, and gradient norm. The in-memory `transition_exists` versus `transition_valid` contract keeps absent tails distinct from invalid source transitions; invalids fail closed before loss evaluation.
+- Independent read-only `gpt-6-luna/high` review found and helped close three discrepancies: pooled reductions initially divided by horizon counts twice; terminal/missing rows initially executed later transitions; and absent transitions were conflated with invalid ones. A follow-up found latent `L_roll` missing its 32-coordinate mean; that was fixed. Final review found no remaining source-level objective blocker before a no-outcome dry-run profile. Reviewer did not run tests or profiles.
+- Six focused synthetic-array tests pass using the already-present NumPy 2.5.3 at `/tmp/caissa-jepa-pv-deps`: finite-difference gradients across all arm families, pooled raw/outcome and latent loss formula checks, all six online/EMA parameter totals, diagnostic shapes/finite values, invalid/missing/terminal masks, active-prefix operation counts, and no parameter mutation. `compileall` and `git diff --check` pass. Independent read-only review confirms the diagnostics do not alter objectives/gradients; it notes eigenspectrum work must be included in any future runtime profile and is absent from static dense-MAC counts. No game roots, trajectory data, simulation, model fitting, inference, scoring, or outcomes were created or accessed.
+- This is an objective graph, not a complete trainer or a compute result. Optimizer, global clipping, EMA update accounting, and exact-rule replay of all selected windows remain outside it. No FLOP profile ran: the revised no-outcome compute protocol and remaining pre-fit gates still require review. The ≤5% total-training-FLOP gate remains **untested and unpassed**; the Reversi8 2-second p90 negative and all novelty/superiority limitations remain unchanged. No fit, data, runtime, compute, or evaluation gate advanced.
+
+## Latest continuation delta (2026-10-07; V2.12-05 raw-state method adoption)
+
+- Adopted the independently reviewed D02 raw-state contract as the narrow V2.12-05 method amendment. `METHOD_SPEC_V212.md` is now v05; the unchanged v04 text is preserved in `docs/METHOD_SPEC_V212_V04.md`, and the adopted details are recorded in `docs/METHOD_SPEC_V212_V05_RAW_STATE_AMENDMENT.md`. The approved read-only `gpt-6-luna/high` reviewer found no remaining raw-state blocker for method-level adoption. The change preserves all six arms, common 20 seeds/windows/three epochs/87 updates, preflight fail-closed behavior, and prior negative results. The review did not accept unrelated v04 sections or open any operational, data, compute, or training gate.
+- The ≤5% six-arm training-FLOP gate is **untested and unpassed**. Static dense-forward counts are only a risk signal; no full six-arm FLOP profile or trainer implementation graph exists. The v04 Reversi8 2-second p90 failure remains in force. No tests, implementation, data, roots, simulations, inference, service, training, scores, or outcomes occurred; no operational/data/compute/training gate changed. `git diff --check` passes.
+
+## Latest continuation delta (2026-10-07; raw-state gradient and parity review)
+
+- An approved read-only `gpt-6-luna/high` review found the latent-then-decode proposal to be a defensible but non-unique interpretation of v04. It found no arithmetic contradiction in the proposed raw-state loss/mask under its stated interpretation, but identified unresolved gradient paths through `F→D→E`, terminal-target meaning, separate terminal/missing/invalid-transition accounting, and uniform feature weighting with pooled horizon normalization. Draft 02 records these choices as proposals and keeps v04 unchanged.
+- Reproduced the static dense-forward inventory: raw-state is 72,544 versus multi-step JEPA 40,864 MAC per fully valid four-ply window (+31,680; +77.53%). The difference decomposes into four decoder/re-encoder pairs (50,688 MAC) versus three JEPA EMA target encodes (19,008 MAC). This is a material risk signal, not a measured FLOP result or proof the 5% total-training-FLOP gate fails; backward/optimizer/EMA updates and other work are omitted. A same-batch, same-mask forward/backward profile across all six implemented arms remains required. No trainer, roots, outputs, simulations, inference, fitting, training, or scoring ran; no gate advanced. See `docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_02.md` and `docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.
+- Read-only follow-ups tightened draft 02 to preflight-replay all selected training windows/transitions and compute every fixed minibatch's valid-target count before the first optimizer update. Any invalid source transition or zero-valid-target minibatch rejects the run before updates, avoiding partial fitting. Its approved method disposition supported the narrow v05 adoption recorded above. Compute-gate readiness remains NO: ≤5% total-training-FLOP parity is unmeasured and mandatory before fitting. No implementation, training profile, or gate advancement occurred.
+
+## Latest continuation delta (2026-10-07; action/regret decision register)
+
+- An approved read-only `gpt-6-luna/high` review found no hard mathematical contradiction in the proposed one-step retrieval/collision/terminal rules or horizon denominator. It confirmed the action-sensitivity and regret drafts remain gated: root population/statistical unit/weights/yield; actual six-arm trainer/loss support; all-legal-action feasibility and charged work; regret estimand/reference identity and resource/failure rules; and diagnostic priority/result contract are unresolved. Added a cross-draft decision register and clarified that exact fixed-horizon is not full-game exact minimax, “primary regret” is primary only within the regret diagnostic, and the proposed horizon-2/4 action-sensitive rollout does not replace the frozen 1/2/4/8 latent-error horizons. No arm, estimator, schedule, threshold, budget, or gate was selected. No roots, branches, outputs, scores, outcomes, simulations, inference, or training were accessed/run. At that earlier decision point v04 remained current; the raw-state-only v05 adoption is recorded above. See `docs/V212_PREFIT_ACTION_REGRET_DECISION_REGISTER_DRAFT_01.md` and the two protocol drafts.
+
+## Latest continuation delta (2026-10-07; corrected six-arm dense-forward operation inventory)
+
+- Corrected the static MAC inventory after independent review found that the first version counted only three recursive transitions for horizons 1/2/4. Constructing horizon 4 requires four predictor calls, including the unsupervised transition-3 intermediate; the raw-state graph adopted later in v05 likewise requires four decoder and online re-encoder calls. Per fully valid nonterminal four-ply window, corrected dense forward MAC counts are 40,864 for multi-step JEPA, 72,544 for recursive raw-state (+77.53%), 21,856 for value-only, 28,192 for single-pair and single-horizon, and 14,816 for direct-leaf. The earlier published counts (37,536, 56,544, 18,528, and 24,864) are superseded. The corrected difference reinforces that the measured 5% all-arm compute gate is a substantive risk.
+- Regression checks now assert four recursive predictor calls, three rollout-value calls for horizons 1/2/4, and four raw-state decoder/re-encoder calls. EMA target-encoder calls remain arm-specific: three for multi-step JEPA and one each for single-pair and single-horizon JEPA. The inventory still omits backward, optimizer, EMA updates, activations, losses, masks, and data movement. It is not a FLOP measurement and does not decide whether the gate passes or fails. No model, root, data, score, outcome, inference, training, or match was run/accessed. No method or gate changed. See `tools/v212_arm_dense_forward_macs_audit.py` and the architecture reconciliation draft.
+
+## Latest continuation delta (2026-10-07; combat world-model prior-art refresh)
+
+- Full-text review of ICML 2026 ResDreamer found adjacent prior art for self-supervised world-model representation learning, multistep visual foresight, and combat against reactive enemies. It is a Dreamer-style hierarchical recurrent model evaluated in MineDojo combat tasks, not JEPA, explicit two-player modeling, exact legal-action search, or zero-sum minimax. This further disallows broad claims about learned self-supervised combat/world-model reasoning while leaving the narrower matched-JEPA question untested. Updated `docs/RELATED_WORK.md`; no local score/data was reproduced or accessed, no method changed, and no gate advanced.
+
+## Latest continuation delta (2026-10-07; root-schedule minimum-count interpretation)
+
+- An approved static follow-up found that design 02's 48 accepted root slots meet v04's numeric minimum of 40 only if “independently generated situations” means independent generation events, not 40 distinct board states. Because the 48 slots are split 16/16/16 across three band-conditional first-passage populations, they are not necessarily IID from one variant-wide population; design 02 instead proposes an equal-weight mixture. V04 is ambiguous on both points, so this is an estimand/method amendment, not demonstrated unchanged-v04 compliance. Design 02 and the sampling review now state this explicitly. No root generation, simulation, scores, outcomes, inference, or training occurred; v04 remains current and no gate advanced. See `docs/V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` and `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+## Latest continuation delta (2026-10-07; raw-state feature coordinate audit)
+
+- Made the proposed 198-coordinate raw-state target explicit against `BoardGame.features`: current-player occupancy at `[0:64]`, opponent occupancy at `[64:128]`, board indicator at `[128:192]`, and `(rows/8, cols/8, k/8, placement, reversi, gravity)` at `[192:198]`, on a row-major 8×8 padded grid. Added deterministic fixtures for both training and held-out sizes and a forced-pass perspective swap. The two focused tests pass under Python 3.14.7 with the existing NumPy runtime; compile and whitespace checks pass.
+- This verifies only existing adapter feature coordinates and side-to-move behavior. It does not verify decoder outputs, loss normalization/masks, gradients, raw-state training graph, compute parity, or any learned model. The amendment remains a proposal and all training/scoring/pilot gates remain closed. No root schedule or model result changed.
+
+## Latest continuation delta (2026-10-07; manager and journal failure-map regressions)
+
+- Closed a contradiction in the mocked armed-smoke success path: a post-exit manager snapshot with `ActiveState=failed` and `SubState=failed` could pass when `Result=success` and `ExecMainStatus=0`. The armed synthetic-success flow now rejects that combination before response read, receipt, stop, or workspace cleanup. Generic receipt parsing still retains raw failed state for OOM evidence.
+- Added consumer-seam journal binding regressions for foreign unit, invocation, boot ID, out-of-window monotonic time, and missing cursor. Each prevents receipt publication, stop, and workspace cleanup. These are mock composition checks and do not test system journal behavior or the amended v02 controller.
+- The full armed-smoke module passes 43/43; Python `compileall` and `git diff --check` pass. Updated the failure matrix and named-test crosswalk; live manager/journal behavior and full failure-map integration remain open. No service, OOM operation, inference, root generation, score, outcome, simulation, or training ran/accessed; no gate advanced.
+
+## Latest continuation delta (2026-10-07; pre-fit action-sensitivity and regret review)
+
+- An approved static review found the standalone v02 protocol helper accepted any JSON object with a matching nonce, even though the composed bootstrap checked a canonical synthetic envelope. Tightened the helper to require canonical bytes, the exact v02 envelope, a fixed five-file source manifest with lowercase SHA-256 entries, and an internally recomputed manifest digest equal to the expected digest before waiting for release. Added direct-helper regressions for wrong schema, noncanonical bytes, manifest digest mismatch, and expected-manifest mismatch. The approved read-only follow-up confirmed the direct-helper gap is closed and clarified that a self-consistent manifest is not an independent trust anchor. The focused bootstrap/protocol suites pass 32/32; compileall and `git diff --check` pass. This closes only the isolated helper contract; controller/receipt wiring, executed-runtime proof, complete failure map, and service review remain open. No service, adapter, inference, OOM, roots, scores, outcomes, simulation, or training ran; no gate changed. See `two_player/v212_armed_protocol_v02.py`, its tests, and `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+- Refreshed the REQ-01a/REQ-01b test-plan crosswalk with the new direct-helper schema and pre-release mismatch cases, including the renamed noncanonical-byte regression. An AST/name audit found all 116 documented test-method references resolve to test methods in the repository. This confirms reference existence only, not assertions or completeness; REQ-01 and the overall manager/journal/counter controller map remain partial because v02 is not integrated. No runtime/service/model operation or gate transition occurred. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+- An approved read-only runtime review found no offline path to prove executed interpreter/loader/stdlib/native bytes without an independently trusted immutable boundary or equivalent measurement. Added a separate bounded diagnostic observation-inventory candidate whose fixed assurance states are `partial` or `unavailable`, with no trust anchor and no immutable-boundary claim. Eight synthetic standard-library tests pass, including rejection of deeply nested input through the schema error contract. It is not connected to bootstrap, release token, controller, service, adapter, or receipt; no runtime inventory was collected. The host probes remain context-limited, and no runtime/pilot/training gate advanced. No service, OOM, inference, roots, scores, outcomes, simulations, or training were run/accessed. See `docs/V212_RUNTIME_OBSERVATION_INVENTORY_DRAFT_01.md`.
+
+- An approved read-only `gpt-6-luna/high` review found the action-sensitivity diagnostics and executed-action regret definitions mostly coherent under stated assumptions, but recommended keeping both protocols gated. Freeze blockers include unavailable trained six-arm graph/loss support and unresolved raw-state target/mask behavior; unsettled accepted-root population, occupancy/seat weighting, and yield/failure estimand; unmeasured all-legal-action branch feasibility and charged-work allocation; and unselected exact/bounded reference, including scalar versus interval regret and evaluator/rules identity. The review also requested explicit occupancy-stratum construction and terminal-cell denominator/failure handling, and cautioned that rollouts condition on each root receipt's policy pair rather than estimating behavior-policy first actions or uniform legal continuations.
+- No arm, metric, root schedule, reference, solver, threshold, or allocation was selected or frozen. No roots, branches, model outputs, scores, outcomes, simulations, inference, or training were accessed or run. No research gate advanced. See `docs/V212_ACTION_SENSITIVITY_DIAGNOSTIC_PROTOCOL_DRAFT_01.md` and `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- A follow-up documentation crosswalk states a conditional alignment to root-schedule design 02: three occupancy bands, repeated slot IDs, equal band/variant weights, its six-band yield failure, and v04's within-cell two-seat average for regret. The action-sensitivity draft now separates planned, terminal-masked, target-eligible, and completed horizon cells. These are candidate clarifications only; design 02 remains unaccepted and no schedule, estimand, or gate changed. No roots or model outputs were generated.
+- The approved reviewer found that a branch interrupted before horizon `h` needed explicit classification. The draft now counts it as target-eligible but incomplete unless an exact terminal was observed by `h`, reports planned/terminal/eligible/completed counts by variant-band, arm, seed and horizon as applicable, and names the horizon error as conditional on exact branches nonterminal at `h`. The review accepted/froze nothing; no roots or outputs were accessed.
+- A read-only follow-up confirmed the revised horizon ledger resolves that ambiguity and the conditional crosswalk matches schedule design 02 and METHOD_SPEC v04 by inspection. Acceptance/freeze remains inappropriate: first-passage population, repeated-slot independence, minimum-situation interpretation, and global yield stop remain open; six-arm/raw-state support and all-legal-action feasibility are unresolved; and regret reference, budget, evaluator identity, and failure policy remain unselected. No roots, scores, outcomes, simulation, inference, or training were accessed/run; no gate advanced.
+- A separate approved read-only review of calibration draft 02 found its shared-arm, seat-swap, macro derivation, covariance/profile mapping, endpoint counts, and workload arithmetic internally consistent by inspection, but did not recompute tails or run audit tools. It identified that pair-only yield does not model root-quality, state/prefix, or within-pair score-yield association; the protocol now states this limited synthetic structural-proxy scope and requires review disposition or added stresses before simulation. Root schedule/v05 estimand, calibration requirement, yield contract, tolerances, and failure response remain unaccepted; v04 remains current. No simulation, roots, scores, outcomes, inference, or training occurred; no gate advanced. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+- To address that calibration-DGP scope gap, drafted a separate shared-root-quality/yield sensitivity addendum with four proposed P2 null/boundary cells, a validity model dependent on a latent root factor, and conditional-mean calibration. Independent review found the variance split, conditional law, cell/endpoint counts and workload arithmetic coherent under its stated assumptions after two documentation fixes; it did not accept the proposal. A deterministic assurance audit for 63 endpoints gives union lower bound 0.794741 at R=18,000 (below 0.80) and 0.805948 at R=18,200, making the latter a candidate only if reviewers retain the target and endpoint family. Pair-yield × root-quality interaction, stress magnitudes, scope, and local feasibility remain open. No simulation, roots, scores, outcomes, inference, or training ran/accessed; v04 remains current and no gate advanced. See `docs/V212_CALIBRATION_ROOT_QUALITY_STRESS_DESIGN_01_DRAFT.md` and the review log.
+- Added a deterministic, no-RNG audit for the proposed root-quality selection law, conditional `η` targets, P2 covariance split, 120-row manifest, and 63-endpoint assurance. Seven focused standard-library tests pass after the intercept-width clarity fix; output and log are under `/tmp/caissa-v212-root-quality-calibration-audit.json` and `/tmp/caissa-v212-root-quality-calibration-tests.log`. The audit ran under Python 3.14.7, different from the Windows Python 3.11.9 runtime in the research lock; no runtime is selected/frozen for calibration. Read-only source review found no major formula/scope mismatch, and its dedicated intercept bracket-width finding is resolved by follow-up. No calibration simulation, root, score, outcome, inference, or training was generated/accessed; v04 and all gates remain unchanged.
+- Drafted a separate policy-pair-yield × root-quality interaction stress to address the open dependence gap. Its deterministic audit confirms the q=.20/.60 mixture retains marginal validity .40, accepted weights .25/.75, and declared null/+0.05 weighted targets; the P2 variance split, 39-cell/69-endpoint inventory, and workload arithmetic also reconcile. Six focused tests pass. The assurance grid is discrete/non-monotone: the union lower bound is .806789 at R=18,450 but .794551 at R=18,500; neither R nor the proposal is selected. Read-only review found no major math/count mismatch; its convergence finding was resolved by checking and requiring ≤1e-10 agreement for selected-root first/second moments, variance, and all other integration outputs. No simulation, roots, scores, outcomes, inference, or training occurred; calibration and all gates remain unapproved/closed. See `docs/V212_CALIBRATION_ROOT_QUALITY_YIELD_INTERACTION_DESIGN_01_DRAFT.md`.
+
+## Current checkpoint (2026-10-06; supervision coverage and runtime availability audit)
+
+- The v01 smoke checks the caller deadline immediately after bounded response read/parse and each `memory.events.local` snapshot. Controlled mocked expiry after response parsing blocks journal collection; expiry after counter sample one blocks release; expiry after sample two blocks exit polling. All cases skip receipt publication and unit stop and retain the workspace. The armed-smoke/collector/live-evidence/receipt regression group passes 91/91; log: `/tmp/caissa-v212-counter-deadline-tests-20261006.log`. This closes only these three v01 seams: journal/other evidence-operation crossings and the v02 controller remain untested. No live service, inference, OOM, training, score, or match ran; no gate changed. See the smoke controller, its orchestration tests, and CLK-01 in the failure plan.
+- The offline v02 schema-proposal auditor now offers `validate_response_wire`, joining bounded canonical decoding, closed-schema/request-binding validation, and metadata derivation from one exact response byte buffer. It returns the validated response plus response schema, SHA-256, and byte length; fixtures cover the maximum-size valid response and reject non-canonical and cap-plus-one inputs. The IPC/schema/smoke/receipt/bootstrap regression group passes 139/139; log: `/tmp/caissa-v212-response-wire-schema-audit-tests-20261006.log`. This remains audit-only code with no request controller or receipt publisher: the accepted receipt does not yet carry/recompute response wire metadata, the candidate is unreviewed, and no service, request, inference, OOM, training, score, or match ran; no gate changed. See `two_player/v212_request_schema_v02_proposal_audit.py`, its tests, and RESP-01b in the failure plan.
+- The IPC layer now exposes the exact bytes from its bounded, identity-checked response-file read through `read_response_bytes`; `parse_response_bytes` parses that same buffer under the existing strict UTF-8/object/duplicate-key/non-finite rules, and legacy `read_response` delegates through both without changing its return shape. A regression proves hashing whitespace-formatted received bytes differs from hashing a re-serialized object and checks caller size limits on both APIs. The focused IPC/schema/smoke/receipt/bootstrap regression group passes 137/137; log: `/tmp/caissa-v212-response-wire-bytes-tests-20261006.log`. This is an enabling helper only: v02 response-schema validation and exact digest/length binding in an accepted receipt remain unimplemented; no v02 controller integration, service, request, inference, OOM, training, score, or match ran, and no gate changed. See `two_player/v212_worker_ipc.py`, `tests/test_v212_worker_ipc.py`, and the request-adapter integration design.
+- At that checkpoint, the v01 no-inference smoke compared the post-exit manager snapshot's unit, invocation ID, boot ID, and any retained cgroup path to the active worker snapshot before reading response bytes. Table-driven mocked tests injected foreign invocation/cgroup values and missing or malformed invocation, `Result`, and `ExecMainStatus`; each rejected before response read/receipt and preserved the workspace without stopping the service. The armed-smoke/collector/live-evidence/receipt regression group passed 89/89; log: `/tmp/caissa-v212-exit-snapshot-identity-tests-20261006.log`. At that time, boot-source loss, v02 integration, live manager failure behavior, the full manager/journal/counter matrix, runtime attestation, and independent review remained open. The new MGR-01 mock coverage is recorded in the latest continuation entry below. No service, inference, OOM, training, score, or match ran at that checkpoint. See `two_player/v212_armed_service_smoke_v01.py`, its orchestration tests, and the failure plan.
+- The v02 worker bootstrap now requires canonical request bytes: after bounded raw-stdin parsing and schema checks, it re-encodes with sorted keys, compact separators, UTF-8, and `allow_nan=False`, then rejects any byte mismatch before opening project helpers. Fixtures reject trailing whitespace, leading newline, reordered keys, and a non-canonical request exactly at the byte cap; the canonical source-verified release-to-response fixture still passes. The focused bootstrap/protocol/release-token/IPC/service-smoke/receipt regression group passes 139/139; log: `/tmp/caissa-v212-canonical-request-regression-20261006.log`. This is offline candidate evidence only: caller-deadline proof, executed runtime fingerprint, controller/service acceptance integration, full manager/journal/counter failure mapping, and independent review remain open. The v02 bootstrap is not wired to systemd or the request adapter. No live service, request, inference, OOM, training, score, or match ran; no gate changed. See `two_player/v212_armed_worker_bootstrap_v02.py`, its tests, and the failure plan.
+- Hardened journal record parsing to reject duplicate JSON keys (including nested objects) and non-standard constants such as `NaN`, in addition to the existing UTF-8, object-shape, partial-line, record-size, and exact-one-marker checks. Added parser fixtures for partial, malformed, invalid-UTF-8, non-object, duplicate-key, and non-finite records. The collector plus receipt-assembler regression suites pass 48/48; run log and PID: `/tmp/caissa-v212-journal-strict-tests-20261006.log` and `.pid`. This remains parser/assembler and mocked no-inference evidence: request-controller action/receipt/handle invariants, live journal failures, and independent review remain open. No service, request adapter, inference, OOM, training, score, or match ran; no gate changed. See `two_player/v212_supervision_collector_v01.py`, `tests/test_v212_supervision_collector_v01.py`, and the failure test plan.
+- Hardened the live evidence reader's `memory.events.local` open with `O_NONBLOCK`/`O_NOCTTY`, so a FIFO substituted at the counter path fails at the regular-file check without hanging before `fstat`. Added fixtures for FIFO substitution and malformed rows, extra fields, duplicate names, negative/overflow counts, non-ASCII bytes, and oversized files. The focused live-evidence plus collector suites pass 32/32; test log and PID are under `/tmp/caissa-v212-counter-failure-tests-20261006.{log,pid}`. This is parser and mocked-collector evidence only: actual disappearance between counter snapshots, amended accepted-receipt integration, manager/journal failure mapping, and independent review remain open. No live service/cgroup, OOM operation, adapter, inference, training, score, or match ran; no gate changed. See `two_player/v212_live_supervision_v01.py`, `tests/test_v212_live_supervision_v01.py`, and the failure test plan.
+- A targeted primary-source refresh added UWM-JEPA (arXiv:2605.25313) and Flow-JEPA (arXiv:2608.29029) to the related-work ledger. UWM-JEPA reports that teacher-forced targets can leave its action term nearly inert in a hidden-velocity task, while simulator-generated counterfactual targets restore action-perturbation sensitivity; this is a partial-observation control result, not evidence about CAISSA or board-game planning. Flow-JEPA is a conditional flow-matching trajectory predictor evaluated on continuous-control tasks. These works reinforce that action conditioning and multi-step prediction alone are not evidence of action sensitivity or planning benefit. The current v04 targets follow recorded policy-mixture branches; any counterfactual-target training would require a separately versioned, fairly matched design. The 2026-10-04 conditional six-arm review cites ActSWM/AD-WM but not UWM-JEPA, so its scope acceptance needs explicit reconsideration before fit. No source code/data was downloaded; no method arm, gate, root, model, score, or outcome changed. See `docs/RELATED_WORK.md` and `docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md`.
+- A static resource-profile reconciliation corrected the request-schema audit: the 10,000-node/5-second/6-second values belong to the unintegrated `v212_request_adapter_v02`, while standalone `v212_pilot` remains 500,000 nodes/8 seconds; both candidate code paths use 1.5 GiB RSS, and the armed supervision fixture uses 128 MiB max/96 MiB high with an 8-second service runtime. Thus the adapter's expected `memory.max` is 12× the smoke profile, its node cap is 50× below the V2.12 v04 method's provisional 500,000, and the profile does not compose with the smoke as written. This is a source reconciliation only: the v04 2-second gate remains failed at rule-only Reversi8 p90 6.037 seconds; no cap was selected, no root/model/request was run, and no gate changed. Updated `docs/V212_REQUEST_SCHEMA_BOUND_AUDIT_DRAFT_01.md`.
+- Added a separate worker-bootstrap v02 source builder. Generated source reads bounded stdin before opening project files, rejects malformed/duplicate-key requests, verifies a manifest containing the bootstrap plus five worker helpers, compiles those exact helper bytes in dependency order, and passes the untouched raw request into the v02 armed protocol. Helper loading is anchored through `root/two_player/file` directory descriptors with `O_NOFOLLOW`; source opens are nonblocking, reject non-regular files, and cap each helper at 256 KiB before digest validation. Sixteen subprocess/static tests include valid release-to-response and altered-byte rejection; malformed schema/manifest inputs; source mutation, exact-limit acceptance, oversized-file, FIFO, and symlink-escape checks. Valid-path fixture cgroup files are temporary and the synthetic journal marker is suppressed; no systemd unit is created. The combined bootstrap/protocol/release-token/IPC/service-smoke-mock/receipt suites pass 121/121; Python bytecode compilation and `git diff --check` pass. Canonical request enforcement, runtime fingerprinting, controller receipt integration, and independent review remain open. The candidate is not wired to systemd or the adapter; no live service, inference, OOM, training, score, or match ran. No gate changed. See `two_player/v212_armed_worker_bootstrap_v02.py`, `tests/test_v212_armed_worker_bootstrap_v02.py`, and `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+- Extended the v03 receipt-boundary fixture tests to carry forward v02 counter regressions: rollback, Boolean, negative, non-integer, and missing-key values are rejected while requiring the counter pair. The v03 plus v02 receipt suites pass 31/31. This is isolated assembler evidence; manager/journal identity variants and the integrated action/receipt/handle failure matrix remain open. No service, OOM operation, request adapter, inference, training, score, or match ran; no gate changed. See `tests/test_v212_supervision_receipt_v03.py` and the failure test plan.
+- Added an isolated bounded-stdin bridge to the request-byte release v02 candidate. Its byte buffer is capped at the existing 65,536-byte IPC limit plus one probe byte, then it passes the exact bytes into the existing digest/parser/release path. Five new reader/wrapper tests cover short EOF, the exact configured cap, cap-plus-one rejection, invalid bounds, truncated JSON, and invalid UTF-8 before release/callback; the focused v02 suite passes 10/10, compileall and `git diff --check` pass. This is helper-level mock evidence only: the proposed schema-specific 811-byte limit is not adopted, no worker bootstrap or service uses the helper, and request/runtime receipt integration, failure-map completion, independent review, service/inference/OOM/training/scoring/match gates remain closed. A stream that never reaches EOF still relies on the outer caller deadline. See `two_player/v212_armed_protocol_v02.py`, `tests/test_v212_armed_protocol_v02.py`, and `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+- Continued the interval-reference study with hard-transition-cap DFS and root-balanced candidates plus a source-hashed stdout profile tool. Ten focused tiny-game tests pass. On only the standard opening state in memory for Connect Four 6x7 and Reversi6, root/action WDL intervals stayed full width 2 with 0% point identification through 65,536 transitions; single-run times at that cap were 11.345 s and 4.107 s. This is a negative result for these naive no-heuristic DFS orders on two states, not a representative cap estimate or model pilot. Do not adopt these orders or revise model inference caps from this profile. No benchmark root schedule, model output, training label, or empirical game result was accessed; built-in terminal checks on synthetic descendants supplied exact leaves to the bound search. See `tools/v212_minimax_interval_profile.py` and `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- A custom bound-critical principal-variation schedule passed three tiny-fixture tests and was compared at 4,096 transitions on the same two opening states against transition-DFS and root-balanced DFS. Every schedule still had full-width root/action intervals and 0% point identification. The custom schedule was slower in single runs (4.038 s Connect Four, 7.142 s Reversi6, versus 0.286–0.636 s for DFS variants); an exploratory Connect Four 16,384-transition run took 80.348 s with no narrowing and was stopped before larger-cap/second-game measurements. These are narrow diagnostics, not benchmarks. The custom schedule is not adopted; no model cap or gate changes. Source-hashed output/PID: `/tmp/caissa-minimax-pv-profile-final.jsonl`, `/tmp/caissa-minimax-pv-profile-final.pid`. Primary work on best-first minimax and FSSS-Minimax is summarized with links in `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- Replaced that schedule's tied-path scan with an incremental single-PV allocator using cached frontier counts and ancestor-only backups. Six source-hashed single-run measurements at 4,096/16,384/65,536 transitions still left all root/action intervals at width 2 and identified 0% of actions on the same two opening states. The new schedule was faster than DFS on these Connect Four runs but slower on Reversi6, reaching 18.735 s at 65,536 versus 4.861 s for transition-DFS. Sixteen focused solver tests pass. This is still negative feasibility evidence limited to two openings; the schedule is not adopted, and no inference cap or gate changed. Full output/PID and hash are documented in `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- Added an isolated V2.12 minimax-interval candidate plus four focused tests. Every integer DFS expansion budget on a reachable four-empty-cell Tic-Tac-Toe fixture contained the exact tiny-game oracle for root/action values and executed-action regret; intervals narrowed monotonically and collapsed when solved. A separate Reversi4 fixture verified forced-pass transition accounting, and zero-budget Tic-Tac-Toe retained all root actions as unresolved. The focused tests passed using a temporary `/tmp` environment with the already-declared NumPy dependency. Independent code review confirmed the recurrence and led to rejecting Boolean action IDs, now regression-tested. This budget counts expanded descendants, not transitions; cap feasibility remains open, so the interval option is not frozen and no gate changed. The full suite ran 621 tests but ended with 24 errors tied to unavailable PySide6, platform-only checks, absent pinned fixture data, and sandbox restrictions; 11 tests were skipped. No benchmark roots, model evaluation, results, or research training ran. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- A deep-search pass found a reference alternative to an arbitrary scalar leaf heuristic: propagate sound W/D/L minimax intervals from unexpanded leaves through MAX/MIN nodes, yielding per-root game-theoretic regret bounds and point values only when resolved. Independent review found no blocker in the derivation, provided each expanded node covers all legal successors or retains unexpanded moves as unresolved bounds; intervals may be conservative. A primary optimistic-minimax paper supports only the general interval-search pattern; a pinned Connect Four solver documents alpha-beta bound semantics; Takizawa distinguishes solved from estimated positions. This is not a validated CAISSA implementation. Tiny-game containment tests, compute-cap feasibility and configuration remain open; no roots/scores were inspected and no gate changed. See the new section in `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- A source-code audit of the draft regret protocol found that the legacy V2.8 `_line_score` is used both by the positional synthetic-data policy and as a bounded-search leaf heuristic, making it a potentially policy-aligned reference for roots drawn from those policies. Independent review accepted the proposed primary-regret calculation from an exact maximum under the declared bounded reference plus independent full-window queries for each executed action; exact Q values for all legal actions remain a separate ranking diagnostic. Tiny-oracle implementation checks and a fixed reference configuration remain pending, and no gate changed. No roots/scores were examined. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- Published supervision architecture audit 01, then drafted a versioned request/runtime-binding amendment. It proposes hashing the exact bounded request bytes read by the worker and binding that digest through release, response, and receipt; it also defines a loaded-source/runtime fingerprint contract. The configured independent reviewer found no P1/P2 issue and requested precise canonical JSON rules and a mapped-native-binary identity method; the draft now specifies these, with `/proc/map_files` access still requiring platform validation. No implementation or adapter run followed. See `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md` and `docs/V212_REQUEST_RUNTIME_BINDING_AMENDMENT_DRAFT_01.md`.
+- Related-work synthesis also incorporates the detailed `docs/RELATED_WORK.md` audit: ConnectX is a close latent-model plus exact adversarial search precedent, and LAMIR establishes latent look-ahead in two-player zero-sum games. The recent JEPA Arcade model card describes an unreviewed JEPA pipeline in two-player Atari. Broad first-game/first-two-player and generic latent-game-planning claims are unsupported. A narrow JEPA-objective comparison remains possible, but v04 trains only on recorded action branches while planning over alternative legal branches; before fitting, resolve whether an action-sensitive JEPA control and all-legal-root decision-regret diagnostic are required. See `docs/V212_RELATED_WORK_POSITIONING_AUDIT_01.md`.
+- These are documentation/research updates only. No adapter, inference, game evaluation, score/outcome, training, pilot, or OOM operation ran; all scientific and supervision gates remain closed.
+- A targeted primary-source refresh added ARC-Bench and D-JEPA to the related-work ledger. Both strengthen prior art for fixed-candidate action-ranking diagnostics and outcome-supervised candidate-set alignment, but neither evaluates deterministic board games with exact-rule adversarial max/min. This raises a required pre-fit review of whether the frozen six-arm v04 panel isolates recursive JEPA transition prediction without a decision-alignment control; no arm or gate was changed. See `docs/RELATED_WORK.md`.
+- A static estimand audit recommends retaining v04’s six arms for its prespecified candidate-versus-control contrast family around the multi-step JEPA candidate. A single D-JEPA-style outcome-supervised ranker would add a separate benchmark contrast, compute, and multiplicity; it would not be a matched control. This is a recommendation, not independent approval; a reviewer must accept the scope exclusion before fitting. The wider decision-architecture comparison remains future work. See `docs/V212_DECISION_ALIGNMENT_CONTROL_REVIEW_DRAFT_01.md`.
+- The independent reviewer conditionally accepted retaining v04’s six arms for the narrow contrast family, with no P1/P2 blocker, after a primary-source comparison of ActSWM and AD-WM. The disposition excludes broader action-sensitive-JEPA performance claims; those need a versioned benchmark. Proposed diagnostics cover every legal root action, recorded-support versus counterfactual branches, exact consequences, and exact/bounded decision regret; latent separation alone is insufficient. Review did not freeze this protocol or open fit. The method, regret, compute, data, and fit gates remain unchanged. See `docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md`.
+- A primary-source search found a 6x6 Reversi semi-strong solution artifact with exact value queries over orientation-specific certified regions, potentially useful for an exact W/D/L action stratum only at covered free-agent roots in that same region. Union-only membership is insufficient. Independent static review confirmed the orientation condition and separation of executed-action regret from extra-compute ranking diagnostics; it did not adopt the artifact or open a gate. The artifact is not a strong solve over arbitrary policy-mixture roots. The 138.4 GB Zenodo release has no license value in the inspected metadata and was not downloaded. This lead does not replace unresolved bounded references for other variants or uncovered roots. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+- Starting from `b048320b6201944133cf9598f9099a7dfbba9407`, added `two_player/v212_armed_service_smoke_v01.py` and its orchestration tests. The harness verifies exact worker bootstrap/helper bytes before execution, waits for the service's active resource/cgroup checks before release, binds the request and release to invocation/cgroup/deadline evidence, and persists the receipt before unit/workspace cleanup. It also fingerprints and rechecks the harness plus its evidence dependencies and hashes the request through identity-checked directory-relative file descriptors.
+- The reviewer cleared one bounded normal-exit synthetic service run after three follow-up fixes. The run used no CAISSA model/search, request adapter, project data, inference, OOM operation, training, score, or outcome. It verified armed release, receipt-before-cleanup, embedded receipt digest, mode `0600`, and unit `LoadState=not-found`. Receipt: `/tmp/caissa-v212-armed-smoke-a_a4wly0/receipt.json`, 3,731 bytes, SHA-256 `ee1d679c27f5a2c2b009045582a5d18eb8668f396fa33fb82e7203185a26a3a0`.
+- Extended the armed-service orchestration suite with invalid/duplicate-key response, missing-marker, pre/post-publication receipt failure, unit-stop failure, IPC-cleanup failure, active-state-query failure, `LoadState=not-found` start-race timeout, non-success manager result, caller-deadline polling expiry, and Ctrl-C before dispatch/during release/after dispatch. Assertions check that no response/receipt/stop occurs on deadline or manager failure and that reconciliation handles persist. Post-dispatch errors now include the validated invocation ID and worker cgroup alongside unit/workspace handles. Independent review confirmed the controlled-clock polling branches, interruption cleanup, and diagnostic content. The focused smoke/collector/live-evidence/receipt/armed-protocol/release-token/IPC suites now pass 116/116 under `unittest`; `git diff --check` and AST parsing pass.
+- This remains one normal-exit lifecycle observation, not repeatability, live timeout/interruption/OOM validation, request-adapter integration, inference feasibility, or pilot evidence. Training, pilot, and OOM gates remain closed; OOM still requires separate explicit authorization.
+- Static architecture audit: worker helper bytes are compiled from the verified in-memory bundle, but caller-side file hashes are collected after module import and do not attest the already-loaded code objects. The receipt also lacks a structured Python/systemd runtime fingerprint. The raw request SHA is in the envelope but not the release token or worker's stdin-byte verification. Manager/journal/counter checks bind the successful normal-exit receipt, while failure-path evidence remains mock-only. No current smoke finding invalidates the one synthetic normal-exit observation; these gaps block request-adapter reproducibility. See `docs/V212_SUPERVISION_ARCHITECTURE_AUDIT_01.md`.
+- The independent reviewer confirmed those four additions and the follow-up clarification that response bytes use the same canonical encoding, value types, int64 bounds, recursive key checks, duplicate-key rejection, and canonical re-encoding as request bytes. This remains a design-only change; no adapter, inference, training, pilot, or OOM operation ran. Implementation remains blocked on immutable/executed-byte proof, bounded request/response details, and full integrated regression coverage. See `docs/V212_REQUEST_RUNTIME_BINDING_AMENDMENT_DRAFT_01.md`.
+- Drafted `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` as a phase-aware test inventory for request/release binding, resource-placement gates, manager-state loss, post-exit response validation, marker cardinality/binding, counter loss/mismatch, deadlines, receipt certainty, cleanup and interruption. Source review found a concrete versioning requirement: the legacy receipt assembler permits both counter snapshots to be omitted, so any amended accepted-receipt boundary must require the pair explicitly. The configured reviewer confirmed the pre-release binding/resource rows, in-run counter timing, and distinct post-exit response-validation row. Existing tests remain mock coverage, not live recovery evidence.
+- Expanded the matrix into `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`, with case IDs, fault-injection seams, joint fail-closed assertions and an explicit map of existing versus missing coverage. Independent review found the plan coherent as a design-only inventory. The reviewer noted that Boolean and rollback counter cases already exist in the legacy receipt tests; the plan now explicitly requires carrying those regressions into the amended schema. No new test execution or code integration was performed.
+- Primary Linux/Python documentation review distinguishes three claims: `fexecve` pins an open executable inode but does not prevent content mutation between hashing and execution; fs-verity can make file content read-only and reverify reads/mmap, but its measured digest must be authenticated against a trusted expected value; Python can compile exact source bytes into code objects, supporting an allowlisted in-memory project loader. Details and primary links: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+- A short no-inference systemd worker probe used the reviewed 128/96 MiB, swap-zero, 8-second profile. It ran `/usr/bin/python3.14 -I -S`, completed successfully, and the manager reported effective memory limits of 134,217,728/100,663,296 bytes. Inside that worker both `/` and the project path were the same ext4 `rw` mount, unlike the earlier shell's `ro` root. The unit had no `RootDirectory`, `RootImage`, `ProtectSystem`, private mounts, or read-only path binds. `/proc/self/maps` listed Python, loader, libc/libm/libpython and two sampled extensions, but their device/inode identities were not bound to a trusted manifest. `/proc/1/ns/mnt` returned EACCES.
+- The worker reported `Seccomp: 0` and `Seccomp_filters: 0`; `FS_IOC_MEASURE_VERITY` still returned errno 95 on all seven sampled runtime files. The running kernel reports `CONFIG_FS_VERITY=y`, ext4 reports `/sys/fs/ext4/features/verity=supported`, while kernel documentation defines this errno as missing kernel support or the current superblock's missing `verity` feature. A read-only `dumpe2fs` attempt on `/dev/nvme0n1p2` was denied, so the likely superblock cause remains unconfirmed. The same kernel config has modular dm-verity and loop support plus signed-root-hash verification; those modules were not loaded/exposed at inspection time. CPython `-I -S` was effective, but dynamic-loader environment/configuration and pre-bootstrap import provenance remain unverified.
+- Probe unit `caissa-v212-runtime-attestation-20261005b.service` completed successfully with invocation `b6a8fefba4ce45ac9f7e55920e126856`, main PID 235483, and restricted log `/tmp/caissa-v212-runtime-attestation-20261005b.log`. An earlier probe attempt exited 1 when `/proc/1/ns/mnt` returned EACCES; a later run treated it as unavailable. All three temporary units were stopped and verified `LoadState=not-found`. No adapter, project model/search, inference, game evaluation, OOM allocation, training, score, or outcome ran.
+- The IPC transport has a 65,536-byte hard limit and 4,096-byte release limit. Current response reading is bounded and checks file identity around the read, but returns parsed JSON without exact wire-byte digest/length or canonical-byte verification. No final request-v02 schema exists from which to derive smaller protocol caps. These remain design/implementation blockers.
+- A follow-on unreviewed v02 schema proposal defines candidate request/response field domains and canonical maxima of 811/747 bytes using compact sorted JSON. A static audit found the original 811-byte request witness paired a 64-cell board with Connect Four 6x7, which requires 42 cells. Enumerating extremal, variant-sized witnesses gives the same 811-byte maximum on Connect Four 8x8; the response maximum remains 747 bytes. Added a standalone proposal-only validator and eleven standard-library tests for full field/range validation, canonical/duplicate-key rejection, request/response binding, all four board sizes, and exact/cap-plus-one byte boundaries. It also checks response cgroup digest and memory limit against the request. `python3 -m unittest tests.test_v212_request_schema_v02_proposal_audit` passed 11/11. This does not validate a reachable root, integrate the adapter, or establish an accepted service protocol. Design review, resource-profile reconciliation, and worker/caller stream tests remain required; all gates stay closed. See `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md` and `two_player/v212_request_schema_v02_proposal_audit.py`.
+- Independent review found no contract blocker, confirmed the systemd v262 image/signature description, and requested a precise `FS_IOC_MEASURE_VERITY` errno interpretation; that clarification is now incorporated. Current transient worker properties do not provide a runtime immutability boundary, and fs-verity measurement is unavailable on the sampled ext4-root files, likely because the volume superblock lacks the verity feature (not directly confirmed). systemd v262 plus the running kernel's dm-verity/signature configuration make signed `RootImage` a candidate. The user-namespace sysctl prerequisite is enabled, but `systemd-mountfsd.service` is inactive, its socket disabled, and `systemd-nsresourced.service` inactive; no RootImage mount was attempted. The mountfsd documentation requires a trusted image location or a signed Verity partition with a trusted kernel key / certificate. `/etc/verity.d`, `/usr/lib/verity.d`, `/run/verity.d`, and `/lib/verity.d` are all absent; the user-level keyring query still does not establish kernel keyring contents. A usable signing trust anchor and a no-configuration-change route have not been demonstrated, so no RootImage test was attempted. User-manager feasibility and actual image/mapping identity remain untested. Keep adapter integration, inference, pilot, and training gates closed; OOM still requires separate explicit authorization. Sources and probe scope: `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+- The v01 service-smoke worker command and offline v02 raw-stdin bootstrap now use and verify Python `-I -S -B -c`; the synthetic/mock suites pass 54/54. This only disables environment/site startup hooks and aligns with the candidate contract. It does not establish executable, dynamic-loader, native-library, or mapped-byte authenticity/immutability. No systemd service was launched; runtime attestation, independent review, v02 controller/adapter integration, and all downstream gates remain open. See the roadmap delta and `docs/V212_EXECUTED_RUNTIME_ATTESTATION_RESEARCH_01.md`.
+- The v01 armed-smoke controller now rereads `/proc/sys/kernel/random/boot_id` after a successful post-exit manager snapshot and before response acceptance. If the source is unavailable/malformed or differs from the pre-dispatch ID, it fails closed before response/journal/receipt/stop and retains the dispatched unit/workspace. Both injected cases pass. This is mocked MGR-01 coverage only; live boot/manager behavior, v02 controller integration, and the complete manager failure map remain open. No service or model operation ran. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md`.
+- The v01 controller-flow mock now mutates the request at final caller-side rehash, once without changing byte length and once by replacing the request path with a symlink. Both fail before receipt persistence and unit stop and retain the dispatched IPC workspace. This adds partial REC-02 controller coverage only; after-receipt recovery, live filesystem behavior, and v02 integration remain open. No service or model operation ran. See the failure test plan and matrix.
+- Follow-up read-only host checks returned `LoadState=not-found` for both `systemd-mountfsd.service` and its socket. `keyctl` could not resolve `.builtin_trusted_keys`; the accessible session/user keyrings and filtered `/proc/keys` view exposed no trusted-keyring name. This still does not prove the kernel trusted keyring is empty, but no existing signing trust anchor is demonstrable from the authorized user context. No image, unit, key, module, or system setting was created or changed; no `RootImage` attempt is justified by the current evidence. Preserve this runtime path as unavailable pending an inspectable trusted keyring and an existing mountfsd installation. Adapter, inference, pilot, training, and OOM gates remain closed.
+- Added a named-test traceability map for all 22 rows in `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`. A Python AST check confirmed all 40 fully qualified test references resolve to existing test classes/methods and all 54 distinct referenced method names exist. The map marks helper/mock coverage as partial and identifies request integration, durable-receipt deadlines, mandatory amended-counter pairs, and post-receipt interruption as still-open or partial. Subsequent mock tests below cover both counter-read positions and stop-boundary timeout/interruption. This checks reference accuracy, not assertion behavior or full contract coverage. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+- Extended the mock armed-service suite with separate failures on the first and second worker-local counter samples, a stop-command timeout after durable receipt, and Ctrl-C at stop after durable receipt. All four new tests pass; the full focused armed-smoke module passes 28/28. Assertions confirm no receipt on either counter-read failure and exact receipt-byte preservation plus retained reconciliation handles on timeout/interruption after publication. The stop timeout is an injected mock result, not a real deadline crossing; live recovery, inference and OOM remain untested. Updated the failure matrix and test map; no gate changed. See `docs/V212_ARMED_SERVICE_SMOKE_V01.md`.
+- Added an isolated `two_player/v212_supervision_receipt_v03.py` boundary for CNT-01b. It requires both counter snapshots, emits a v03 schema/source digest, and records the delegated v02 source identity; four focused tests cover both-missing, each one-sided omission, a complete pair, and unchanged v02 compatibility. The v03 boundary delegates existing validation/classification to v02 and is not integrated into the request/runtime controller, so this closes only the isolated assembler case. Focused v02/v03 suites pass 30/30; no live service, inference, OOM, training, pilot, or gate change.
+
+## Previous checkpoint (2026-10-04; reviewed supervision smoke)
+
+- At the start of this checkpoint the authoritative research worktree was clean on `codex/v212-supervision-receipt-v02` at source baseline `4aec5fbc448dcb8e2d13066a70fd7a3131c9e50f`, matching `origin/main`. This update only brings the session-entry record current.
+- The focused collector/live-evidence/receipt/armed-protocol/release-token/IPC suites pass 92/92 under `unittest`. Independent follow-up review cleared the mocked lifecycle assertions after requiring response-read-after-exit and reconciliation-handle retention.
+- Two bounded systemd v262 synthetic services have completed normal exit. Both validated distinct caller/worker cgroups, resource properties, worker-local counter snapshots, invocation-bound journal marker, receipt persistence before cleanup, and unit `not-found` afterward. Latest receipt: `/tmp/caissa-v212-smoke-183523/receipt.json`, mode `0600`, SHA-256 `55937b10f67666b0f0ca3bdb2365cf22b28ac93a3e2e92ee901bbceef5d351f4`; its embedded digest matches.
+- These are no-inference normal-exit observations only. They do not validate OOM attribution/containment, live timeout or interruption recovery, request-adapter integration, inference feasibility, or systematic repeatability. No model, project data, score, or outcome was run/accessed; training, pilot, and OOM gates remain closed. OOM testing still requires separate explicit authorization.
+- Current next step: integrate the armed-release protocol into a synthetic no-inference service harness and cover its full failure/reconciliation contract before request-adapter use. See `ROADMAP.md`, `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`, and `docs/V212_SUPERVISION_COLLECTOR_V01.md`.
+
+## Latest continuation delta (2026-10-04; mocked armed controller/worker protocol)
+
+- Added `two_player/v212_armed_protocol_v01.py`. The mock controller enforces the exact v01 effective service profile and equality between manager memory properties and live cgroup values; it releases only after the FIFO reader is ready and carries the absolute monotonic deadline in the canonical token. The worker verifies the token/context/live files and checks deadline again immediately before the synthetic callback.
+- The combined IPC/release-token/armed-protocol suites pass 36/36; `git diff --check` passes. Tests confirm invalid policy, memory disagreement, wrong nonce, pre-release expiry, and expiry after release suppress the callback. Independent static review found no remaining issue in this mock-only scope.
+- Systemd snapshot provenance, service termination/reap, journal and counter capture, receipt durability, cleanup/recovery, and live service behavior remain unimplemented or unverified. No service, adapter, inference, OOM, training, project data, score, or outcome was run/accessed. Research/pilot gates remain closed.
+- Next: mock supervisor lifecycle, receipt and cleanup failure boundaries; then independently review the complete architecture before any live normal-exit service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+## Latest continuation delta (2026-10-04; synthetic worker release-token verifier)
+
+- Added `two_player/v212_release_token_v01.py`: a worker-side blocking FIFO consumer and strict versioned token verifier. It checks FIFO identity, bounded one-message-to-EOF input, canonical sorted JSON, duplicate/extra fields, digest, request nonce, service unit, systemd invocation, boot ID, exact cgroup path, expected source-manifest SHA-256, and live `memory.max`, `memory.high`, and `memory.swap.max` fixture values.
+- The combined FIFO/token suites pass 30/30; `git diff --check` passes. Independent static review found no remaining helper-level blocker. The FIFO read has no internal timeout and depends on a future controller deadline/service runtime. No controller/service integration, adapter call, inference, OOM, training, project data, score, or outcome was run/accessed. Research and pilot gates remain closed.
+- Next: implement and test the mocked no-inference service/controller failure protocol, then independently review before a live normal-exit service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+## Latest continuation delta (2026-10-04; release-FIFO IPC primitive)
+
+- Added an optional mode-0600 release FIFO to `two_player/v212_worker_ipc.py`. The caller-side helper checks the private directory and FIFO identity before and after nonblocking writer open, enforces one writer and one bounded write of at most 4096 bytes, checks the opened descriptor, and refuses cleanup after FIFO substitution. Existing workspaces remain unchanged unless the FIFO option is explicitly enabled. The readiness test uses a blocking reader open and verifies the read unblocks only after release.
+- The focused IPC suite passes 21/21; `git diff --check` passes. Sequential and concurrent duplicate opens and duplicate writes are rejected. This does not implement release-token parsing/digest/cgroup checks, service launch, worker-local supervision, receipt binding, or failure-path service protocol. No service, adapter, inference, OOM, training, project data, score, or outcome was run/accessed. Research and pilot gates remain closed.
+- Next: implement a synthetic no-inference armed worker protocol and mocked failure-path tests, then obtain independent review before any live service smoke. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+## Latest continuation delta (2026-10-04; request-adapter integration design review)
+
+- Read the current v01/v02 request adapters against the new live receipt collector and staged supervision requirements. The existing v02 request path still launches a pipe-based worker in the caller's cgroup and samples the caller's hierarchical counters; simply wrapping that path in a transient unit would not provide the required worker-local evidence or caller/worker boundary.
+- Added `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`. It defines a caller/worker split, schema+nonce-bound file IPC, a pre-compute armed handshake with an identity-checked release FIFO, a release token containing canonical effective-property and live-cgroup values, strict no-action failure handling, and exact-source execution/fingerprinting. The token digest is recomputed over the included values; the worker compares invocation/cgroup/limits before model initialization. Source verification must execute the exact bytes checked, not mutable files that can change between hashing and import.
+- Independent read-only design review found and the follow-up resolved sequencing and token/source-binding ambiguities. No code, adapter request, inference, training, project data, score, or outcome was run/read in this review. This does not authorize OOM or open the pilot gate. The next permitted implementation step is a synthetic no-inference armed/release service and its failure-path tests; stage-3 OOM remains separately authorized, and stage-4 request integration remains downstream of the documented stages/reviews.
+- NumPy is absent from available Python runtimes, so request-adapter test suites remain unverified. The design note records the exact limits and evidence reviewed.
+
+## Latest continuation delta (2026-10-04; invocation-bound normal-exit receipt collector)
+
+- Added `two_player/v212_supervision_collector_v01.py` to run one synthetic worker as a bounded transient user service, bind its normal-exit manager snapshot and service-journal marker to the same invocation/cgroup, sample worker-local `memory.events.local`, and persist the assembled receipt before cleanup. It collects no kernel OOM journal and performs no OOM operation or inference. Failure and interruption paths retain recovery identifiers and fail closed on uncertain receipt/workspace cleanup state.
+- The collector, receipt assembler, live evidence adapter, and worker IPC focused suites pass 62/62 on Python 3.11.17; `git diff --check` passes. Independent static review found no remaining P1/P2 issue in this scope. The broader request-adapter suites could not import because NumPy is unavailable in the installed Python environments.
+- One normal-exit no-inference smoke completed: the response nonce/schema validated; caller and worker occupied separate cgroups; effective memory/swap/file/runtime limits and two local counter snapshots were checked; one same-invocation journal marker was bound; the receipt was persisted before cleanup; and the unit ended `not-found`. The private mode-0600 receipt is retained at `/tmp/caissa-v212-smoke-receipt-00ywfuj4/receipt.json` (2,683 bytes; SHA-256 `79dabba0e715ba1fe03cca0d1390aba198620f1164e1ae300db453e7349ba03a`); its embedded receipt digest verifies. This is a single lifecycle/instrumentation smoke, not an OOM, inference, pilot, strength, or JEPA comparison result. No training data, scores, or outcomes were accessed or produced; research, pilot, training, and OOM gates remain closed.
+- See `docs/V212_SUPERVISION_COLLECTOR_V01.md` for exact scope and limitations. OOM fault testing still requires separate explicit authorization.
+
+## Latest continuation delta (2026-10-04; live evidence adapter primitives)
+
+- Added `two_player/v212_live_supervision_v01.py` for bounded `systemctl show` parsing, exact unit/InvocationID/boot-bound snapshot normalization, fail-closed local cgroup counter reads, and private one-shot receipt persistence. The receipt destination is exclusively reserved before the assembler's atomic fsync-and-rename writer; failed persistence leaves a claim marker to require reconciliation. Raw systemd `ActiveState=failed` is retained while the existing receipt contract receives normalized post-exit state.
+- Ten new synthetic tests cover duplicate/malformed manager properties, active, failed and retained-success post-exit snapshots, local-counter provenance/path failures, receipt durability, no-overwrite, and private directory plus ancestor requirements. Combined with IPC and receipt suites, 49/49 pass; `git diff --check` passes. Independent final review found no remaining P1/P2 blocker after fixes for retained-success mapping, writable ancestors, and timestamp order.
+- This code does not run systemctl/journalctl, follow journal streams, schedule live counter samples, assemble the full receipt, launch a service, or prove same-invocation pre-cleanup persistence. It is groundwork only. No inference, service, OOM, training, project data, score, or outcome was run/read. Broader supervision and pilot gates remain closed; OOM fault testing still needs separate explicit authorization. See `docs/V212_LIVE_EVIDENCE_ADAPTER_01.md`.
+
+## Latest continuation delta (2026-10-04; synthetic IPC primitive and normal-exit service smoke)
+
+- Added `two_player/v212_worker_ipc.py` with private request/response file creation and bounded fail-closed JSON-object reading. It does not start services, validate the application response schema, call the inference adapter, or assemble receipts. Independent static review found no remaining P1/P2 issue after tightening parent-path validation and failure cleanup.
+- The new 13-case IPC suite plus the 26-case synthetic receipt-assembler suite pass 39/39; `git diff --check` passes. The broader request-adapter module was not run in the available Python because `numpy` is unavailable.
+- One no-inference transient-service smoke verified file-backed stdin/stdout, retained normal-exit manager result, separate caller/worker cgroups, effective `MemoryMax=128 MiB`, `MemoryHigh=96 MiB`, swap 0, `LimitFSIZE=65536`, matching live cgroup files, zero `oom_kill`, and final `LoadState=not-found`. It used one synthetic request and produced one 109-byte JSON response; no receipt was assembled or persisted.
+- Preserve one observed failure: reading cgroup files from inside the worker by joining `/sys/fs/cgroup` to its own `/proc/self/cgroup` yielded `FileNotFoundError`; supervisor-visible `/proc/<MainPID>/cgroup` matched the manager `ControlGroup` and enabled the successful placement check. The root cause is unknown. No inference, OOM fault test, training, data, model, scores, or outcomes were accessed or produced. Stage 3/pilot gates remain closed. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`.
+
+## Latest continuation delta (2026-10-04; file-backed transient-service IPC design)
+
+- Verified against official systemd v262 source that `systemd-run --wait --remain-after-exit` and `--pipe --remain-after-exit` are rejected; `--collect` discards the unit, while garbage collection removes manager result fields. v262 supports file-backed stdin/stdout.
+- Revised the supervision design to replace the pinned-D-Bus assumption with a tentative mode-0700 per-request directory, exclusive mode-0600 request/response files, `StandardOutput=truncate:`, and a `LimitFSIZE=65536` response-growth ceiling. The worker's only writable destination must be its inherited response descriptor, or an independently bounded area; `LimitFSIZE` is not a disk quota. The caller still must poll under a monotonic deadline and capture evidence before unit cleanup. Exact open/write behavior, races, partial output, counter sampling, and cleanup need tests. This is a candidate only; no transient service, inference, OOM test, or pilot ran. Gates remain closed.
+- Updated `docs/V212_COMPUTE_PILOT_V03.md` to reflect its completed independent static review while preserving the runtime restrictions. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md` for official systemd v262 source/manual links.
+
+## Earlier continuation delta (2026-10-04; systemd worker IPC/lifecycle constraint; design superseded below)
+
+- Checked the official systemd v262 CLI implementation against the external-supervision design: `systemd-run` rejects `--wait` with `--remain-after-exit`, rejects `--pipe` with `--remain-after-exit`, and `--collect` unloads the unit. The v262 unit contract also says garbage-collected units lose manager execution results except journal data.
+- This rules out one tempting CLI composition for simultaneously streaming a request/response and retaining manager result fields. The pinned-D-Bus direction in this historical entry was superseded by the tentative file-backed IPC candidate above; neither path has been implemented or runtime-verified. No service, inference, OOM test, or pilot was run. Existing gates remain closed. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`; sources are linked to the official v262 implementation/manual.
+
+## Latest continuation delta (2026-10-04; V03 pilot RSS fail-closed candidate)
+
+- Preserved the executed V02 implementation and added a V03 candidate that checks sampled RSS at entry, every 256 search nodes, and exit; an over-cap sample returns a compute-only row and causes the runner to stop the schedule.
+- Added a durable per-cell JSONL progress journal and create-only, fsynced final receipt path. Partial/interrupted runs remain explicitly incomplete and cannot pass the full-receipt verifier. RSS remains cooperative, not a hard limit.
+- Eleven V03 tests now cover entry, periodic, and final RSS crossings, V02 search-counter parity, progress-journal creation, create-only receipt writing, runner RSS-stop journaling, and post-link publication failures; the combined V02/V03 focused suites pass 17/17. These use synthetic roots, random initialization, mocks, and temporary files; the actual V03 schedule runner was not run. Independent static review found and the follow-up review cleared code-level fixes for known RSS crossings and uncertain receipt publication. V03 was not run as a pilot and remains gated on external supervision/review requirements. No method/gate advanced; no project data, score, outcome, training, service, or inference request was accessed or run.
+- See `docs/V212_COMPUTE_PILOT_V03.md`; independent review and existing external-supervision/no-outcome gates remain prerequisites.
+
+## Latest continuation delta (2026-10-04; JEPA Arcade two-player prior art)
+
+- Added the JEPA Arcade author model card: an action-conditioned latent predictor/state head applied to two-player Atari Pong, Tennis, and Boxing, with a hand-written controller. Reported state-probe correlations and state loss are not game-strength, minimax, regret, or matched-baseline evidence; the card notes heuristic/epsilon-random training data and privileged RAM use.
+- This closes broad novelty wording that JEPA has not been used in two-player games. It does not test exact-rule symbolic board states or JEPA's incremental decision effect under alternating max/min. The linked GitHub code was not independently inspected, and no peer-reviewed paper was identified in this pass; metrics remain author-reported.
+- No method or gate changed; no project data, outcomes, model, or experiment was accessed or generated. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`. Source: [JEPA Arcade model card](https://huggingface.co/sauravvvv/jepa-arcade).
+
+## Latest continuation delta (2026-10-04; root-schedule yield sensitivity)
+
+- Added a closed-form sensitivity for the proposed rule of at least 16 valid slots among 64 candidates in each of six strata. With hypothetical equal and independent slot validity, `q≈0.3834` yields about 95% whole-schedule pass probability; this is not an observed rate, accepted target, or feasibility result.
+- The result exposes the need for independent method/statistical review to decide whether a minimum schedule-pass probability is required and what heterogeneity/dependence assumptions support it. It does not calibrate coverage/FWER/power or authorize roots. No roots, data, scores, outcomes, or models were generated/accessed. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_01.md`.
+
+## Latest continuation delta (2026-10-04; LAMIR two-player game prior art)
+
+- Added the full-text-reviewed LAMIR study to the V2.12 novelty crosswalk. LAMIR establishes learned latent look-ahead and CFR+-based reasoning for two-player zero-sum imperfect-information games; its formalism also notes that sequential games can be represented with fictitious actions for the non-acting player.
+- This closes broad claims that latent look-ahead in alternating two-player games is new. The narrower candidate comparison remains the specific EMA-target JEPA objective and decision-rank/regret effect in deterministic, fully observed exact-rule games versus matched controls. This is a testable question, not a novelty finding or evidence of advantage.
+- No method or gate changed; no data, model, roots, scores, matches, or outcomes were generated or accessed. See `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md` and `docs/RELATED_WORK.md`. Source: [Kubíček & Lisý, arXiv:2510.05048](https://arxiv.org/abs/2510.05048), published at ICLR 2026.
+
+## Latest continuation delta (2026-10-04; root-inference methods literature)
+
+- Checked primary methods literature on crossed/pigeonhole bootstrap, multiway clustering, few-cluster inference, and resampling-based multiple testing. These sources establish methods under their own assumptions; they do not calibrate the proposed V2.12 20-seed × 16-slot-per-band paired-score/max-|T| procedure or its conditional global-yield design.
+- Added `docs/V212_ROOT_INFERENCE_LITERATURE_NOTE_01.md`. Recommendation: require design-matched calibration before the v05 bootstrap is used for nomination, subject to independent statistical review. The reviewer must freeze scenarios, tolerances, outer Monte Carlo precision and failure consequences before any simulation. This is a recommendation only; v04 remains current and no gate changed.
+- Independent static review requested a more direct Romano–Wolf step-down citation and calibration scenarios that preserve macro-contrast algebra, paired-seat/shared-arm dependence, variance heterogeneity, and separate schedule-yield probability from conditional inferential error rates. The note was revised accordingly. This is still not a qualified statistical acceptance, and any future calibration would support only its prespecified scenario grid.
+- No roots, calibration simulations, scores, training, matches or outcomes were generated or accessed.
+
+## Latest continuation delta (2026-10-04; production generator protocol review)
+
+- Independent static review concluded the current drafts do not justify implementing a production V2.12 episode/window generator. The accepted trajectory auditor is only an in-memory synthetic fixture.
+- Recorded five grouped prerequisite areas in `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`: split matrix and episode quota; RNG/manifest streams and policy-support semantics; the exact 928-window/terminal-mask/minibatch contract; content keys separate from lineage and overlap dispositions; and atomic manifest/receipt/failure semantics with `training_approved: false`.
+- This is a protocol-readiness finding, not evidence of corpus leakage or insufficiency. No trajectories, policies, labels, or data were executed/read/generated; no gate advanced.
+
+## Latest continuation delta (2026-10-04; static episode quota bound)
+
+- Source-level rules imply a best-case lower bound, conditional on v05 eligibility: at most 42 action-start windows per complete Connect Four 6×7 episode and at most 64 per Reversi6 episode (32 placements plus at most 32 forced passes). Thus 928 source windows require at least 23 and 15 episodes respectively, even under unattainable maximum-length assumptions.
+- Recorded the derivation in `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`. This is not a quota, feasibility estimate, or resource measurement; real episode counts can only be higher. No game was played and no episode/window data were generated.
+
+## Latest continuation delta (2026-10-04; root-sampling review disposition)
+
+- Independent static review found the first-valid-slot IID argument coherent only under the draft's slot-local validity, IID-within-variant×occupancy-band, and no-adaptive/identity/outcome-rejection assumptions. Repeated boards can remain distinct draws under that target.
+- The proposal changes v04 §7's target, sampling unit, equal-weighting, and bootstrap. It is not v04-compatible and is not calibrated for finite-sample coverage or familywise error with 20 seeds and 16 slots per band. Added a replacement §7 v05 draft and review record; v04 remains current until independent method/statistical review accepts or rejects the change.
+- Follow-up review found the v05 draft must explicitly retain v04's fresh/disjoint locked-confirmation situations/seeds and no-replacement/no-censoring loss treatment of timeouts and invalid moves. It also found that the proposed global two-variant yield stop is stricter than design 02's earlier per-variant wording; both documents now identify the global stop as unresolved, not accepted.
+- No calibration simulation, roots, scores, training, or outcomes were generated or accessed. Independent method/statistical review must freeze the estimand, slot/RNG/yield contract, bootstrap/failure rules, and decide whether design-matched calibration is required before any root generation. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md` and `docs/METHOD_SPEC_V212_V05_ROOT_SAMPLING_DRAFT.md`.
+
+## Latest continuation delta (2026-10-04; RePAIR chess representation prior art)
+
+- Read the full primary paper and author repository for RePAIR, which learns self-supervised latent sequence repair/reconstruction on chess states. Its selected later-experiment loss omits the optional JEPA alignment term; the headline 93.71% ± 0.05% is square-element reconstruction after 80% state masking over three runs, with a 50% always-empty baseline—not move accuracy, planning, strength, or regret.
+- This establishes same-domain latent sequence reconstruction, but not explicit action-conditioned transitions or alternating adversarial planning. It further narrows the possible contribution to the specific action-conditioned EMA-target objective under exact-rule max/min, still untested and high-risk. The inspected author-repository file listing exposes no top-level license; nothing was downloaded or run and reuse rights remain unknown. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`; no method gate changed.
+
+## Latest continuation delta (2026-10-04; synthetic invocation-bound receipt assembler)
+
+- Added `two_player/v212_supervision_receipt_v02.py` with typed/versioned active-worker and post-exit manager snapshots, exact unit/InvocationID/ControlGroup/boot binding, strict post-active event windows, typed `memory.events.local` samples, normalized kernel OOM proof plus message digest, and bounded atomic receipt writing.
+- The 26-case suite and static independent review pass. Evidence remains synthetic: no live journal/cgroup collector integration, same-invocation OOM receipt, request adapter integration, OOM fault test, or inference run was performed. The current adapter v02 still uses a same-cgroup worker and does not gain caller isolation or worker-specific OOM attribution from this assembler. OOM fault injection remains behind separate explicit authorization. See `docs/V212_RECEIPT_ASSEMBLER_DESIGN_01.md`.
+
+## Latest continuation delta (2026-10-04; multimodal JEPA game-domain prior art)
+
+- Added Campese and Moschitti's ICML 2026 workshop study of offline multimodal JEPA pretraining on Pokémon Red: pixels plus engineered RAM features, followed by a frozen encoder for PPO. The authors report higher cumulative reward on 48 held-out starting states than several representation baselines and report a trajectory-diversity advantage over expert-policy provenance in their tested comparison.
+- This establishes adjacent JEPA use in an interactive videogame, but the setup is not shown to be an action-conditioned transition planner or two-player minimax method. The source reader could verify only the official paper's abstract/first-page text, so details beyond those statements remain unchecked. No claim about CAISSA or its data policy follows; no method or gate changed. See `docs/RELATED_WORK.md`. Source: [ICML 2026 workshop paper](https://openreview.net/pdf/6d63e486bddf8678304b1ec6d1bb11ef034e620e).
+
+## Latest continuation delta (2026-10-04; EB-JEPA action-conditioned planning prior art)
+
+- Added Terver et al.'s EB-JEPA / AC-video-JEPA as direct adjacent prior art: an action-conditioned multi-step latent world model uses MPPI/CEM to plan in Two Rooms. On random-wall navigation, the authors report 97±2% success over three seeds and their last three checkpoints; removing the inverse-dynamics term reports 1±1%, while variance, covariance, and temporal-similarity ablations also reduce success. Results are author-reported and were not reproduced.
+- This closes standalone novelty claims for action-conditioned JEPA planning and inverse-action auxiliary objectives. It does not study exact symbolic two-player zero-sum games or worst-case max/min search. The inverse-action factorial remains an unreviewed control proposal; this source does not establish that it is needed or beneficial for CAISSA. Method v04 and all gates remain unchanged. Updated `docs/RELATED_WORK.md` and `docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md`. Sources: [arXiv:2602.03604](https://arxiv.org/abs/2602.03604), [ICLR 2026 World Models Workshop](https://openreview.net/pdf?id=ZVAMdXGCUC), [author repository](https://github.com/facebookresearch/eb_jepa).
+
+## Latest continuation delta (2026-10-04; composite no-inference journal/receipt rehearsal)
+
+- A tracked controller armed a journalctl follower before a unique transient service, sampled local cgroup events 12 times while live, and captured three journal records carrying cursor/boot/monotonic metadata. The worker marker's invocation ID matched systemd's InvocationID and the exact unit/cgroup; normal-exit Result=success was captured after cgroup teardown.
+- The assembler separately replayed the previous worker-cgroup kernel OOM entry as a historical fixture and correctly matched CONSTRAINT_MEMCG plus oom_memcg/task_memcg. It explicitly did not treat that entry as an OOM from the current normal-exit invocation.
+- A versioned receipt was file-fsynced, atomically replaced, and directory-fsynced before cleanup; a separate post-cleanup record verified LoadState=not-found. Independent review accepts the no-inference composition prerequisite. No live OOM journal event, same-invocation OOM receipt, positive counter transition, or failure path was tested. Broader operational supervision and pilot gates remain closed. See docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md; receipts/logs under /tmp/caissa_v212_receipt_composite_v02*.
+## Latest continuation delta (2026-10-04; kernel-attributed bounded worker-cgroup OOM trial)
+
+- After the stage-2 capture-path check was accepted by independent review, one bounded 64 MiB transient-service worker attempted a 256 MiB allocation. systemd recorded Result=oom-kill/ExecMainStatus=9; the external caller survived and the completion marker was absent.
+- The open memory.events.local descriptor did not capture a positive counter before the cgroup disappeared. A filtered kernel journal query after cleanup recorded constraint=CONSTRAINT_MEMCG with oom_memcg and task_memcg matching the transient worker unit, then recorded group termination because memory.oom.group was set. This positively attributes this single event to the worker memory cgroup. systemd-oomd was inactive when queried.
+- The journal excerpt was copied to a local filtered log only after cleanup; pre-teardown, invocation-bound receipt integration and positive event-counter capture remain open. This is one bounded OOM/caller-survival observation, not a general containment guarantee. Repeatability, ancestor/host headroom, request timing, inference, and broader supervision remain unvalidated; pilot gate remains closed. Logs: /tmp/caissa_v212_oom_probe_v2.log and /tmp/caissa_v212_oom_probe_v2_journal.log.
+## Latest continuation delta (2026-10-04; no-inference event/result capture check)
+
+- A gated 128 MiB transient service verified the sibling-cgroup/finite-limit preflight. The controller captured 14 worker-local memory.events.local samples while the cgroup existed, then captured SubState=exited, Result=success, ExecMainStatus=0, and empty ControlGroup after normal exit; the cgroup file was gone. It persisted the receipt and verified the unit not-found after cleanup. No OOM occurred. Log: /tmp/caissa_v212_capture_preflight_v2.log.
+- Independent review accepted this as the stage-2 placement/lifecycle/capture-order prerequisite. It does not validate a nonzero event transition or OOM attribution; stage 3 must capture a positive worker-local OOM counter before teardown. If only systemd Result=oom-kill is captured, report the source as uncorroborated. No inference, training, project data, or outcomes were involved.
+
+## Latest continuation delta (2026-10-04; bounded transient-service OOM probe — ambiguous)
+
+- A gated worker in a transient user service passed preflight: separate worker/caller cgroups, effective MemoryMax=64M, MemorySwapMax=0, memory.oom.group=1, Restart=no, and OOMPolicy=kill. It attempted a 256 MiB allocation. systemd reported Result=oom-kill and ExecMainStatus=9; the external controller remained alive and the worker completion marker was absent.
+- The last captured worker-local memory.events.local showed max=3 but oom=0, oom_kill=0, and oom_group_kill=0. The transient unit was verified LoadState=not-found after cleanup. Logs: /tmp/caissa_v212_oom_probe.log; the prior controller failure is preserved separately as /tmp/caissa_v212_oom_probe.attempt1.log.
+- Independent review classified the source as ambiguous: systemd's OOM result establishes a manager-classified OOM/SIGKILL observation, but does not attribute it to the worker's memory.max; max alone is not an OOM-kill counter, and no positive local OOM event was captured. OOMPolicy=kill covers kernel OOM and systemd-oomd handling. Do not claim demonstrated cgroup-local containment or mark the OOM gate passed.
+- Before another fault injection, verify the event/result capture path under a no-inference stage-2 run, preserve worker-local event deltas and manager result before cgroup teardown, distinguish kernel-local from ancestor/global/systemd-oomd causes, and obtain independent review. No inference, training, project data, outcomes, or method/gate advancement occurred.
+## Latest continuation delta (2026-10-04; transient service placement)
+
+- After independent review, no-inference transient user services verified worker placement in sibling cgroups, effective `MemoryMax=128M`/`MemoryHigh=96M`, swap limit 0, runtime limit 10s, `Restart=no`, and `OOMPolicy=kill`. The worker saw the matching cgroup values; caller was outside the worker unit.
+- On successful exit, systemd retained `Result=success`/exit status only while the unit was retained, while `ControlGroup` and kernel cgroup files disappeared immediately. With `--collect`, the completed unit became `LoadState=not-found` and the cgroup evidence was gone. The synthetic `Result=success` for a not-found unit was not treated as persisted evidence.
+- All temporary units were verified absent after cleanup. This is stage-2 no-inference placement/lifecycle evidence only; no OOM, inference, project data, score, or pilot ran. OOM classification, caller survival, external monitoring, receipt integration, and request timing remain open. Logs: `/tmp/caissa_v212_placement_check.log`, `/tmp/caissa_v212_collect_check.log`.
+
+## Latest continuation delta (2026-10-04; supervision design independent review)
+
+- The independent reviewer requested a lifecycle check for transient service cgroup files and unit result fields after worker exit/release, since manager garbage collection and cgroup teardown may remove evidence. The external supervision design now requires testing cgroup-file disappearance, capture timing, manager result retention, and a verified external monitor fallback; it fails closed if no OOM/timeout evidence can be captured. OOM validation still requires a separate authorization and earlier gates.
+- The review accepted the bounded cgroup-local OOM, ancestor-pressure, deadline, and partial preflight claims, subject to re-review of the corrected draft. No service, OOM fault, inference, or pilot ran. See [review record](docs/V212_TRAJECTORY_AND_RUNTIME_AUDIT_01.md) and [revised design](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md).
+
+
+## Latest continuation delta (2026-10-04; read-only supervision preflight)
+
+- On lattice, systemd 262 and the user manager responded to read-only queries; the manager health query returned `degraded`. `user@1000.service` is active with `Delegate=yes` and memory accounting enabled; the memory controller is enabled in the delegated cgroup-v2 subtree.
+- systemd reports an effective inherited user/app-slice memory maximum of 16,092,520,448 bytes (about 15 GiB), while direct `MemoryMax`/`MemoryHigh` values are unlimited. This is not live headroom and does not verify a transient worker service's effective limit or OOM behavior.
+- No transient unit, worker, inference, or OOM test was created/run. The preflight log is at `/tmp/caissa_v212_supervision_host_preflight.log`; the design and runtime audit now record the limits of this evidence. Stages 2–5 remain gated; no pilot/training/data/outcome gate changed.
+
+## Latest continuation delta (2026-10-04; external supervision design)
+
+- Added [external worker supervision design 01](docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md) from current Linux cgroup v2 and systemd primary documentation. It proposes a transient systemd service for an isolated worker while the request caller remains outside the unit, with explicit checks for ancestor/host OOM, deadline accounting, unit-result capture, receipt integrity, and cleanup.
+- This is a design proposal, not a host capability check, independent review, OOM test, or operational result. Earlier disposable tests exercised cgroup scopes only; no transient-service worker, request/inference, or receipt integration ran.
+- The only authorized next decision is review of the design and staged validation plan. No pilot, training, data generation, match, or outcome gate changed. Sources: [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html), [systemd-run](https://github.com/systemd/systemd/blob/main/man/systemd-run.xml), [resource control](https://github.com/systemd/systemd/blob/main/man/systemd.resource-control.xml), [service units](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml).
+
+
+## Latest continuation delta (2026-10-04; request adapter v02 candidate)
+
+- Preserved v01 and added versioned v02 to account for full function-processing latency; a late result is classified as a forfeit. Added a mocked-clock regression for delayed post-worker cgroup handling.
+- Exact remote v02 source/test blobs passed 8/8 focused tests in an isolated overlay with hash-matched dependencies. This is mocked/in-memory verification only, not real request timing, cgroup enforcement, or inference.
+- v02 still lacks independent review, an external OOM supervisor, receipt integration, and caller-observed deadline evidence. No pilot/training/data/outcome access occurred; gate remains closed.
+
+## Latest continuation delta (2026-10-04; mocked supervision lifecycle boundaries)
+
+- Added nine mocked collector-orchestration tests covering success, invalid response, service dispatch failure, non-success manager result, missing counter/journal evidence, receipt persistence failure, post-publication durability uncertainty, unit-stop failure, and IPC cleanup failure. Tests assert a completed receipt precedes stop and cleanup; ambiguous publication retains any visible receipt and the IPC workspace and does not stop the unit.
+- The configured independent reviewer found no remaining fixture issue. The collector, live-evidence, receipt, armed-protocol, release-token, and IPC suites pass 92/92 using `unittest`; `pytest` is unavailable in the runtime. These fixtures replace systemd, cgroup, journal, clock, IPC lifecycle, and persistence boundaries (except the real local receipt helper used in the post-publication case), so they establish no live host behavior.
+- A broader architecture review identified two additional fixture gaps: response availability preceded the exited snapshot, and missing evidence did not assert reconciliation retention. Both were corrected; tests now require worker exit before reading the response and prove evidence failures do not stop the unit or clean the workspace. A follow-up review found no remaining issue in these changes.
+- No service, request adapter, inference, OOM, training, project data, score, or outcome ran/accessed; no research/runtime gate changed. Next: review remaining protocol failure contracts and the integrated architecture before any live service step. OOM still requires separate explicit authorization. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+## Latest continuation delta (2026-10-04; reviewed no-inference normal-exit smoke)
+
+- Following the mock lifecycle fixes and independent architecture review, one bounded synthetic transient user service ran under systemd 262 and exited normally. The collector validated the nonce/schema response, distinct caller/worker cgroups, effective limits, worker-local counter pair, invocation-bound journal marker, durable receipt-before-stop ordering, and `LoadState=not-found` after cleanup.
+- Receipt: `/tmp/caissa-v212-smoke-183523/receipt.json`, 2,683 bytes, mode `0600`, SHA-256 `55937b10f67666b0f0ca3bdb2365cf22b28ac93a3e2e92ee901bbceef5d351f4`; embedded receipt digest matches. Unit `caissa-v212-smoke-5f506842ca976f98.service`, invocation `46fd79df69194b90af17ea900af4312d`. This is a second normal-exit no-inference observation, not a repeatability study or validation of OOM/timeout behavior.
+- No request adapter, inference, OOM, training, project data, score, or outcome ran/accessed. No method or pilot/training gate changed. Next: close remaining armed-worker integration and failure-contract gaps before request-adapter use; OOM remains separately authorization-gated. Details: `docs/V212_SUPERVISION_COLLECTOR_V01.md`.
+
+## Latest continuation delta (2026-10-04; response-deadline contract audit)
+
+- Exact-remote-blob mocked-clock probe found the request adapter samples reported elapsed time before post-worker cgroup validation, response classification, and action checks. It returned `response` after a synthetic 0.10-second deadline (reported 0.05s; simulated return clock 0.25s).
+- This is a source-contract gap, not real request latency or cgroup/inference evidence. Logged the finding and required a versioned correction, delayed-post-worker regression test, independent review, and caller-observed no-outcome integration before use.
+- No code, corpus, pilot, training, or outcome data changed/accessed; no gate passed from this probe.
+
+## Latest continuation delta (2026-10-04; JEPA planning prior-art refresh)
+
+- Reviewed primary arXiv full texts for JEPA-TTT v1 (persistent predictor adaptation across dynamics shifts), the point-cloud JEPA planning study v2, and decision-metric alignment for latent MPC.
+- These add adjacent action-conditioned JEPA planning and planning-alignment evidence, but none studies V2.12's deterministic two-player exact-rule max/min setup or isolates its fixed EMA-target loss against matched controls. This narrows positioning; it is not a novelty finding or evidence for V2.12.
+- Updated Related Work and the draft prior-art crosswalk with source scope, reported baselines/results, and limits. No method/gate changed; no code, data, root schedule, outcomes, training, or pilot ran.
+
+
+## Latest continuation delta (2026-10-03; exact remote adapter test)
+
+- Hash-verified the adapter/test blobs on `main` (adapter `3303a144...`, test `7470a46e...`) and their exact `games.py` and `v212_pilot.py` dependencies. Re-ran the remote seven-test subset in a `/tmp` overlay with the project virtualenv: 7/7 passed.
+- This is mocked/in-memory software verification only; it does not measure a real cgroup-contained request or authorize a pilot. The local untracked copies differ only in OOM error wording/assertion and remain untouched. No project data, scores, or training were accessed.
+- The adapter remains pending independent review and receipt integration; no method or gate changed.
+
+
+## Latest continuation delta (2026-10-03; trajectory episode-origin audit)
+
+- Read-only review of the remote in-memory trajectory auditor found it validates exact replay from the supplied first state but does not require that state to equal the game's initial state or bind a full-game seed/policy lineage.
+- A deterministic suffix fixture beginning after ply one was accepted as a four-window episode and renumbered with start ply zero; the existing focused trajectory-audit suite passed 7/7. This demonstrates the helper's segment-level scope, not corpus contamination.
+- Added a pre-generation integration requirement to the trajectory/runtime audit and roadmap: enforce full-game origin and provenance, or represent segments with parent-episode IDs and original-ply offsets. No corpus, training, method, or gate changed.
+
+
+## Latest continuation delta (2026-10-03; JEPA-for-RL prior art)
+
+- Added Kenneweg et al.'s ESANN 2025 action-conditioned JEPA for image-based CartPole RL: one-hot action prediction with EMA targets and PPO task gradients; the paper reports collapse without task gradients/variance regularization in some configurations.
+- This closes any broad claim that action-conditioned JEPA representations for reinforcement learning are new. It does not assess recursive multi-step JEPA under exact-rule adversarial board-game search or decision regret.
+- Updated Related Work and the novelty crosswalk. No method or gate changed; no code, dataset, simulation, root generation, scoring, or training was run. Source: [ESANN proceedings](https://www.esann.org/sites/default/files/proceedings/2025/ES2025-19.pdf), [DOI](https://doi.org/10.14428/esann/2025.es2025-19).
+
+
+## Latest continuation delta (2026-10-03; chess state-tracking prior art)
+
+- Added Walker and Lyons' Chess-World-Model as adjacent prior art: exact full-state reconstruction from legal chess move sequences, with held-out human-game and uniformly random legal-play evaluation. It narrows broad state-tracking novelty but does not test JEPA planning or decision quality.
+- An aggregator surfaced a second JEPA-Chess title, but this pass found no matching primary paper/DOI/repository and excluded its reported metrics as unverified.
+- Updated remote Related Work and the V2.12 prior-art crosswalk only. The method, gate, and research claims remain unchanged; no code/data, model, root schedule, simulation, scoring, or training was run. Sources: [Chess-World-Model paper](https://arxiv.org/abs/2605.30100), [author repository](https://github.com/Benjamin-Walker/Chess-World-Model).
+
+
+## Latest continuation delta (2026-10-03; paired outer-simulation precision)
+
+- Added the CRN caveat from primary simulation-method sources: sharing generated datasets can yield positive or negative dependence, so it does not automatically reduce Monte Carlo error. The protocol now treats pairing as necessary for direct precision estimates of method differences, with any variance benefit left to measured covariance.
+- Refined the open Monte Carlo-precision note: marginal FWER/coverage/power rates need binomial uncertainty intervals, while a method comparison run on shared outer datasets needs a direct paired-difference MC error based on the replicate-level difference indicators.
+- Clarified that common random numbers refer to reusing each generated outer dataset across methods; the datasets remain independent across replicates, and inner bootstrap/resampling streams need an explicit shared-or-separate rule.
+- This is a review-only documentation clarification. It does not choose an outer R, acceptance margin, calibration method, or authorize simulation. No roots, outcomes, or training were accessed. Sources: [Koehler, Brown, and Haneuse (2009)](https://doi.org/10.1198/tast.2009.0030), [Glasserman and Yao (1992)](https://doi.org/10.1287/mnsc.38.6.884), and [Wright and Ramsay (1979)](https://doi.org/10.1287/mnsc.25.7.649).
+
+
+## Latest continuation delta (2026-10-03; crossed-bootstrap alternatives scan)
+
+- Extended the source audit to Owen and Eckles (2012): product-factor reweighting covers arbitrary-order crossed random-effects data and studies variance estimation for the mean, under stated conditions. It is a plausible comparison against pigeonhole resampling in a design-matched simulation, but does not establish V2.12 max-|T| interval or Holm-test behavior.
+- Reviewed Tho, Chambers, and Welsh (2026-v2): its proportional random-effect block bootstrap reports finite-sample performance for nested cluster linear mixed models. That layout differs from crossed model-seed/root-slot outcomes; it is not a drop-in option without changing the model and estimand.
+- Updated the remote inference audit with these scopes and left method selection to independent statistical review. No simulation, root generation, scoring, or training occurred; no gate changed. Sources: [Owen & Eckles](https://arxiv.org/abs/1106.2125), [PREB](https://arxiv.org/abs/2510.07770).
+
+
+
+## Latest continuation delta (2026-10-03; root-bootstrap source audit)
+
+- Checked the primary sources cited for the proposed stratified crossed bootstrap. Owen (2007) gives a mean-consistency result for row/column resampling in crossed random-effects models; MacKinnon, Nielsen, and Webb (2021) derive asymptotic conditions for specific two-way cluster-robust regression inference. Preston's rescaled bootstrap addresses stratified multistage sampling without replacement; MacKinnon and Webb (2018) address few treated clusters in linear treatment models.
+- These sources motivate respecting crossed/stratified structure but do not establish finite-sample coverage or type-I error control for the proposed 20 model seeds, 16 slots per occupancy band, paired seats, 15 contrasts, max-|T| intervals, and centered bootstrap tests. Holm adjustment requires valid input p-values; more bootstrap replicates reduce Monte Carlo error but do not add independent sampling units.
+- Added a remote-only statistical source audit draft. It calls for independent review of whether a design-matched synthetic coverage/power study is needed, with scenarios and acceptance criteria frozen in advance. This is an open validation item, not proof the bootstrap is invalid. No roots were generated and no outcomes were accessed; no method or gate changed.
+- Checkout remains untouched with pre-existing modified/untracked files; Obsidian remains deferred. Sources: [Owen](https://arxiv.org/abs/0712.1111), [MacKinnon et al.](https://doi.org/10.1080/07350015.2019.1677473), [Preston](https://www150.statcan.gc.ca/n1/pub/12-001-x/2009002/article/11044-eng.pdf), [MacKinnon & Webb](https://doi.org/10.1111/ectj.12107).
+
+
+
+## Latest continuation delta (2026-10-03; executable game-model prior-art check)
+
+- Read Lehrach et al., *Code World Models for General Game Playing* (ICLR 2026), from the official proceedings and primary arXiv source. It synthesizes executable Python rules/transition/legal-action models from game descriptions and sample trajectories, then uses MCTS for perfect-information games and ISMCTS for imperfect-information games. Its ten-game suite includes Connect Four and four paper-created games; it reports matching/beating Gemini 2.5 Pro on nine of ten.
+- This further closes broad claims to model-based search or general game-model planning. It is materially distinct from CAISSA: LLM-generated executable code rather than learned neural latent dynamics/JEPA, and a general-LLM policy baseline rather than compute-matched learned-dynamics controls. The paper's trajectory-derived checks do not guarantee unseen-state rule correctness. No CAISSA benchmark/result is implied.
+- No gates, code, data, outcomes, training, or local checkout changed. Obsidian remains deferred. Sources: [official ICLR proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html), [arXiv](https://arxiv.org/abs/2510.04542).
+
+
+
+## Latest continuation delta (2026-10-03; LAMIR game-model prior-art refresh)
+
+- Read the primary-source paper by Kubíček and Lisý, *Look-ahead Reasoning with a Learned Model in Imperfect Information Games* (LAMIR), arXiv:2510.05048; the paper identifies itself as published at ICLR 2026.
+- LAMIR learns latent representations for both players' information sets, predicts next abstract states from joint actions together with reward, termination and legal actions, and uses a learned abstraction with depth-limited CFR+ look-ahead. It reports lower exploitability than concurrent RNaD on smaller games and up to 80% head-to-head wins in larger games. These published claims were not independently reproduced.
+- Novelty positioning is narrowed: learned latent game models plus look-ahead, and alternating/zero-sum game domain alone, are not new. LAMIR is imperfect-information, simultaneous-action/no-chance, MuZero-inspired rather than JEPA, and uses equilibrium-oriented CFR+; it does not test CAISSA's deterministic fully observed exact-rule board-game setup or JEPA-versus-matched-control regret question. That difference is a candidate empirical question, not an established novelty claim. V2.12 max/min remains a heuristic, not a Nash solver.
+- No source, data, model, outcome, method, or gate changed. No training, scoring, or match occurred. Obsidian remains deferred. Source: [primary paper](https://arxiv.org/abs/2510.05048).
+
+
+## Latest continuation delta (2026-10-03; lattice memory.peak probe)
+
+- A no-inference process ran in a disposable user systemd scope with `MemoryMax=1536M`; it reported the same cgroup's `memory.max=1610612736`, `memory.peak` present, `memory.oom.group=0`, and a 5,529,600-byte current/peak reading.
+- Systemd subsequently reported the scope `LoadState=not-found` and `ActiveState=inactive`. Log: `/tmp/caissa_v212_memory_peak_audit.log`.
+- This confirms interface availability and scope cleanup only. It does not measure inference memory/headroom, verify peak-reset semantics under a workload, or demonstrate supervisor survival under all OOM victim choices. No model, request worker, pilot, or project data was used.
+
+## Prior continuation delta (2026-10-03; cgroup memory and OOM policy audit)
+
+- The current compute-budget amendment v05 calls sampled RSS a hard process safety stop, but the code samples process RSS and the host audit says that sampling is not a hard limit. Linux cgroup v2 documents `memory.max` as the hard-limit/OOM mechanism and `memory.high` as throttling/reclaim.
+- The adapter requires `memory.oom.group=0` with an error claiming this makes the supervisor survive. Kernel semantics do not guarantee that: zero avoids indivisible group killing, but any eligible process in the cgroup may still be selected. The lattice child OOM probe showed one surviving-parent case only.
+- Added an unreviewed v06 compute-budget correction draft and clarified the adapter error message/test. Proposed node/time caps are unchanged; no operational budget, pilot, or fit authorization follows.
+- Scratch verification copied exact remote adapter/test blobs (Git blob IDs `9dbf3b75dd5526d1577e7c9cdfd3dcf4313543cf` and `3df288c070da39ef98146ee85bb6a9337266c22c`) to `/tmp`, changed only the OOM wording/assertion, and passed the seven adapter tests in 0.331 seconds. Log: `/tmp/caissa_v212_oom_audit.log`. The project worktree was not edited.
+- The next runtime gate needs external OOM supervision/receipt handling, actual `memory.peak` availability evidence, and separate worker-OOM/watchdog integration tests, all without training or outcome access.
+
+## Prior continuation delta (2026-10-03; counterfactual-support count audit)
+
+- Further self-audit found “multiple independent episodes” in the support draft was stronger than the implemented definition, which only counted distinct episode IDs. The draft now reports distinct IDs, declared seeds, policy-pair/seat diversity, and repeated trajectory/prefix content separately; it makes no statistical-independence claim.
+- Remote-only documentation update based on source-level protocol review. No code, local checkout state, data, pilot, or experiment artifact changed; no tests or outcome access were performed.
+
+## Prior continuation delta (2026-10-03; alpha-beta root-score contract audit)
+
+- Read-only inspection of the lattice checkout found `main` at `0cba5d646db40f4da0ef07e1d84c26b098580b2e`, four commits behind `origin/main`, with pre-existing modified `ROADMAP.md` and `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md`, plus untracked root-sampling draft, duplicate/overlap audit, request-adapter code/tests, and symmetry tests. The checkout was left untouched; remote GitHub remains authoritative for this update.
+- Source audit of frozen `two_player/v212_pilot.py` found the runner passes the incumbent root alpha through later root-action searches and discards its per-action value map after selection. Under alpha-beta cutoffs, a returned non-selected action value can be an upper bound rather than its exact fixed-depth value. The compute-only pilot publishes no action-score ledger, so this does not alter prior receipts or compute findings.
+- Updated `docs/V212_COUNTERFACTUAL_SUPPORT_PROTOCOL_DRAFT_01.md` to require exact/bound/missing status and provenance, prohibit point-ranking or point-regret from bounds, and leave the exact all-action diagnostic and separate budget for independent review. This is a draft clarification only.
+- No tests, inference, pilot, data generation, training, match, or outcome access occurred in this documentation/source-audit step. Existing gates and negative results remain unchanged.
+
+## Prior latest continuation delta (2026-10-03; request scope and related-work update)
+
+## Latest continuation delta (2026-10-03; request scope and related-work update)
+
+- The latest remote checkpoint before this delta was `6c671e3e4e57abc3310a8f8563568f2add7b7e6d` on `main`; updates were made only to research documentation through the authenticated GitHub integration. No local checkout, source code, generated data, or experiment state was changed.
+- The request adapter focused suite passed 20/20 after adding a bounded parent/child scope-inheritance test; compile and `git diff --check` passed. Frozen V02 pilot files remain unchanged.
+- A no-inference subprocess preflight inside a disposable lattice 1.5 GiB scope verified parent and spawned preflight worker had the same cgroup path, `memory.max=1610612736`, and `memory.oom.group=0`. The scope was removed. This did not execute a request, model inference, or pilot cell.
+- A targeted first-party literature check added Nam et al., Causal-JEPA (ICML 2026/PMLR), as adjacent work on object-level masking and counterfactual-like prediction queries. It does not evaluate complete legal-action branches or exact adversarial board-game transitions, so the V2.12 counterfactual-support protocol gap remains open.
+- Adapter independent review, end-to-end request timing/headroom, report/receipt integration, trajectory generation and split audits remain open. No data generation, training, match, or outcome inspection occurred. Do not treat this checkpoint as pilot authorization.
+
+## Prior latest continuation delta (2026-10-03; V2.12 RSS guard-path audit)
+
 ## Latest continuation delta (2026-10-03; V2.12 RSS guard-path audit)
 
 - At continuation start, verified `/home/koi/src/caissa-jepa`, branch `main`, HEAD and `origin/main` `e5b02d0ddb91abf824a3df3dd3b0194a4f643627`, clean; remote is `https://github.com/dakiemdarktharr/caissa-jepa.git`.
@@ -1892,3 +3644,846 @@ held-out evaluation design as a draft. The companion
 variant; it is suitable for further review but not frozen. Candidate yield,
 occupancy bands, and canonical uniqueness rules remain unverified. These notes
 authorize no data or root generation.
+
+
+### V2.12 root-schedule reconciliation draft (2026-10-03)
+
+The previous held-out root schedule proposal accepted the first 16 unique
+canonical boards per occupancy band, while the later sampling amendment
+proposes accepting the first 16 valid candidate slots regardless of repeated
+boards. Added `docs/V212_DEV_ROOT_SCHEDULE_DESIGN_02.md` as a replacement design
+draft that aligns the schedule with the amendment's success-conditional
+first-passage slot estimand, fixed 64-slot yield bound, and stratified
+bootstrap proposal. Design 01 remains as historical context. The change
+resolves only the text-level conflict; independent review has not accepted the
+conditional target, PRNG independence assumptions, equal band weights, or
+inference procedure. No roots were generated and no method or data gate passed.
+
+
+### V2.12 bounded symmetry property checks (2026-10-03)
+
+Added `tests/test_v212_symmetry_properties.py` for the four current V2.12
+variants. It checks every declared spatial map over deterministic in-memory
+legal paths, and uses a hand-built Reversi forced-pass fixture to verify legal
+set mapping, exact transition commutation, terminal-result preservation,
+canonical-key invariance, role normalization, and fixed pass action 64. The
+combined symmetry and synthetic trajectory-auditor tests passed 9/9. This is
+bounded fixture coverage, not exhaustive state-space verification or a
+leakage/support result. Canonical edge reporting, root generation, data
+creation, matches, and training remain gated pending broader and independent
+review.
+
+
+### V2.12 expanded symmetry fixture coverage (2026-10-03)
+
+Expanded the symmetry property test to enumerate every distinct exact-rule
+state reachable through four legal plies for each of the four in-scope
+variants, then supplement with three deterministic legal paths through
+terminal states and the hand-built forced-pass fixture. Every declared mapping
+is checked over every legal action at those states for bijection and transition
+commutation, as well as terminal and canonical-key invariance. The symmetry
+test passed 2/2 in 19.7 seconds; combined with the synthetic trajectory
+auditor it passed 9/9 in 19.3 seconds. This remains shallow bounded software
+coverage, not an exhaustive later-game proof or a data/leakage result.
+Canonical edge reporting and all generation/training gates remain closed.
+
+
+### V2.12 disposable cgroup containment probe (2026-10-03)
+
+Using the authorized lattice session, a temporary user systemd scope with
+`MemoryMax=1536M` reported `memory.max=1610612736` bytes; a child inherited the
+same cgroup path; all initial `memory.events` counters were zero. A separate
+64 MiB scope with swap disabled terminated a 128 MiB page-touch child and
+reported `oom_kill=1`, while its parent survived to read the event. Both cgroup
+directories were removed; the OOM-failed unit required `reset-failed` before
+systemd reported it absent. Reservation-only and swap-enabled probes produced
+memory.max events but no OOM kill and are not counted as passes. This verifies
+the host cgroup mechanism only; the V2.12 pilot worker/request watchdog has not
+been implemented or launched, so no pilot hard-memory claim is made. RSS
+remains sampled telemetry. No project data, model, or pilot process was used.
+
+
+### V2.12 request-adapter design v01 (2026-10-03)
+
+Added `two_player/v212_request_adapter_v01.py` and
+`tests/test_v212_request_adapter_v01.py`, leaving the frozen
+`two_player/v212_pilot.py` and `two_player/v212_pilot_v02.py` unchanged (their
+Git blob hashes still match the source recorded in prior receipts). The new
+adapter starts its monotonic clock before validation/cgroup preflight/worker
+spawn, passes an absolute 5-second planner deadline, and supervises a worker
+with a 6-second response deadline. It kills a timed-out worker process group,
+checks whether it was reaped, validates exact-root legal actions, preserves the
+last completed depth, verifies parent/worker cgroup identity and 1.5 GiB
+`memory.max`, and distinguishes OOM kills from response watchdog timeouts using
+`memory.events`. It refuses cgroups unless `memory.oom.group=0`. The returned
+action is transient; the adapter has no receipt writer or score output.
+
+The focused request-adapter, symmetry, frozen V02 pilot, and trajectory-auditor
+suite passed 19/19; compile and `git diff --check` passed. Tests compare request
+search counters to the frozen search on synthetic in-memory roots and exercise
+timeout/kill/reap and OOM classification. The cgroup preflight helper alone was
+run inside a disposable 1.5 GiB systemd scope; it reported the expected limit
+and `memory.oom.group=0`, and the scope was removed. No request worker ran in
+that scope and no pilot batch, data generation, training, match, or outcome
+inspection occurred. The adapter awaits independent review and has no integrated
+pilot receipt; runtime headroom and cleanup remain unverified.
+
+
+## V2.12 external OOM observer probe (2026-10-03)
+
+A disposable 64-MiB, no-swap transient systemd service touched 128 MiB. Its
+cgroup was distinct from the external caller's user-session service cgroup;
+the worker's `memory.max` was 67,108,864 bytes. systemd killed the worker
+(status 9) and surfaced `Result=oom-kill` through both `systemd-run --wait
+--pipe --service-type=exec` output and the retained unit's
+`systemctl --user show` properties; the recorded peak was 64 MiB. The caller
+captured result/status/peak, ran `reset-failed`, and verified the unit was
+`not-found/inactive`. The command's nonzero exit was specifically classified
+as OOM. By the time status was queried, the cgroup path/event files were gone,
+so this test did not capture post-exit `memory.events`.
+
+This verifies one host-level external OOM-observation and cleanup path. It is
+not V2.12 adapter integration, a request/inference pilot, or evidence of
+response deadlines, watchdog handling, receipt persistence, repeated-job
+cleanup, or universal supervisor survival. Preserve failed unit metadata until
+a receipt is stored; do not collect the unit first. No data, model, training,
+match, or outcome was used. The compute proposal remains unapproved pending
+independent review.
+
+
+## Research update: action-sensitive JEPA and counterfactual planning prior art (2026-10-03)
+
+Primary-source review of two recent arXiv preprints materially narrows V2.12's
+novelty scope. AD-WM (Qiu et al., arXiv:2609.30264v2) combines factual latent
+transition prediction with action-recovery objectives and evaluates CEM
+candidate selection using shared-sequence counterfactual diagnostics and elite
+regret. ActSWM (Gan et al., arXiv:2607.26712v2) combines multi-step JEPA
+rollouts with action-contrastive rollout separation and a frozen action
+readout, and reports Minecraft planning plus offline gameplay action recovery.
+Neither paper tests exact legal transitions and finite-horizon worst-case
+max-min decisions in deterministic alternating two-player games; both are
+preprints and their results were not independently reproduced in this audit.
+The sources eliminate standalone novelty claims around multi-step JEPA,
+action-aware dynamics, counterfactual planning, or cross-game action recovery.
+
+The remaining candidate is an empirical, compute-matched question about
+minimax decision regret in the narrowly declared board-game scope. V2.12-04
+still trains only on recorded trajectory branches; its support-count proposal
+does not prove action ranking over complete legal sets. Before any fit/model
+scoring, a versioned independent review must decide on an action-sensitive
+JEPA control and freeze legal-root action scoring plus bounded-reference
+regret. Reviewed v04 remains unchanged; training, matches, and superiority or
+novelty claims remain unauthorized. Source comparison is in
+`docs/RELATED_WORK.md` and `docs/V212_RESEARCH_GATE.md`.
+
+
+## Decision-regret metric design draft (2026-10-03)
+
+Static source inspection found that the compute-only alpha-beta runner shares
+the incumbent alpha between root actions, uses the temporary root score map
+only for selection, and discards it. Later root-action values may be bounds;
+the frozen random-weight pilot receipt does not record actions or values.
+Therefore no retrospective decision-regret analysis can be derived from that
+receipt. A new design proposal is in
+docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md: it defines
+root-perspective regret against one common exact or explicitly bounded
+max-min reference, requires complete exact scores for every legal root action,
+labels missing/bound cases rather than converting them to point estimates, and
+keeps reference values out of training. This is a draft only; reference
+heuristic/depth and evaluation allocation are unresolved and require
+independent review. No scoring, code changes, or pilot were performed.
+
+
+## Exact-regret oracle scope audit (2026-10-03)
+
+The legacy two_player/evaluate.py plus two_player/games.py::exact_value path
+provides a precedent for all-legal-root scoring and complete-case regret, but
+only on tiny registered games (tic-tac-toe, connect3 4x4, reversi4, and held
+out connect3 3x4). Its full-game solver is unbudgeted and warns callers to
+restrict state-space size. V2.12's compute runner targets Connect Four 6x7/8x8
+and Reversi6/8 and does not emit root scores. No pinned bounded-reference
+nonterminal evaluator/config was found in the inspected V2.12 runner/game
+path, despite the method spec requiring one for larger bounded references.
+Keep exact solved and bounded-reference results separate; resolve the latter
+before model scoring. No solver, dataset, model, or pilot was run.
+
+
+## V2.12 data-generator compatibility finding (2026-10-03)
+
+A static source audit documents in
+docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md that V2.8's exact
+Connect Four 6x7 and Reversi6 rules and full-episode replay may be reused as
+implementation references, but its generator cannot produce V2.12-compliant
+training data unchanged. V2.8 train policy assignment covers only the two
+opposite uniform/tactical seat pairs, while V2.12 requires all 16 ordered
+policy pairs; V2.8 applies its own split/phase/duplicate rules and materializes
+H1/H2 records, not V2.12 H0-H4 windows with H1/H2/H4 targets. The synthetic
+V2.12 auditor does not generate data. This proves incompatibility only; data
+feasibility, leakage, and the 928-window quota remain untested. No corpus was
+read or created, and all generation/training gates remain closed.
+
+
+## Behavior-policy source audit (2026-10-03)
+
+The V2.8 generator's four policy names now have a source-backed semantic
+description in docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md.
+Uniform samples legal actions; tactical filters immediate wins and one-ply
+opponent wins; positional samples from a handcrafted board heuristic;
+bounded-search is depth-four alpha-beta capped at 192 nodes and may stop before
+scoring every legal action. These define the synthetic behavior distribution;
+none is an expert label or the V2.12 bounded-reference oracle. V2.8 assigns
+policy pairs from split/episode parity and uses one action RNG stream, while
+V2.12 needs its own frozen 16-pair draw and RNG derivation. This is source
+inspection only. No policies, data, models, or roots were generated.
+
+
+## External exact-reference candidate audit (2026-10-03)
+
+Read-only inspection pinned Markus Thill's MIT-licensed Connect-Four
+framework to upstream commit `2a58844594ac022846385dd3ddc8bbbf0a26eae5`.
+Its README claims exact game-theoretic position and state-action values.
+Source inspection found `AlphaBetaAgent.getNextVTable`, which iterates legal
+columns and evaluates each child through a fresh full-window `rootNode(true)`;
+the default search depth is 100 for a 42-cell board, and passing a null
+opening-book object disables book lookups. This is a plausible exact terminal
+minimax candidate for valid reachable nonterminal Connect Four 6x7 roots.
+
+The source hard-codes 7x6 and cannot cover Connect Four 8x8 or Reversi. This
+finding is not independent correctness verification: no code or position was
+run. Player-1 value orientation and win-distance scores require reviewed
+root-perspective win/draw/loss normalization; legal-action completeness,
+reachability, turn and terminal contracts, license provenance, and bounded
+runtime remain unverified. Treat the source as a candidate only. It does not
+close the overall exact-reference gap and does not authorize root/model
+scoring, data generation, training, or matches. No local files were changed;
+see the updated remote decision-regret design and research gate.
+
+## Exact Connect Four reference-source audit (2026-10-03)
+
+A primary-source pass found several standard-board exact references. The
+MIT-licensed Rust `connect-four-ai` at pinned upstream commit
+`28a112adaf3ff89ee23fb09411fa592b6597010e` exposes per-legal-column exact
+scores, but assumes a valid nonterminal state, scores from side-to-move, and
+encodes win/loss remoteness. Its no-book hard-opening benchmark averages
+5.09 s by the author's report; this is not our measurement, and its API has no
+call deadline. Pascal Pons's solver exposes exact per-column analysis under
+AGPL-3.0-or-later. Böck (2025) reports a 89.6 GB strongly solved W/D/L table
+built in 47 h using 128 GB RAM. The BDD repository had no license file in the
+inspected tree. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`
+and `docs/RELATED_WORK.md`.
+
+These sources narrow the candidate-oracle gap for Connect Four 6x7 only.
+They do not cover 8x8 or Reversi and do not establish an integrated,
+resource-bounded oracle. The 10,000 planner-node/5-second V2.12 proposal is
+not comparable to third-party internal counters/timing. Exact regret still
+needs reviewed root-player W/D/L normalization, a decision about whether
+remoteness is secondary, complete legal-action results, and an independent
+hard-deadline/resource contract. No solver was run, installed, or queried;
+no scores, roots, data, models, or outcomes were produced. All generation,
+scoring, and training gates remain closed.
+
+
+### V2.12 focused request and symmetry regression check (2026-10-03)
+
+The current `main` adapter already contains the corrected cgroup explanation: `memory.oom.group=0` avoids group OOM behavior but does not guarantee supervisor survival; its focused test asserts that wording. A focused run on the local working checkout passed all 7 request-adapter tests and both bounded symmetry tests (9 total). The adapter and test semantics match the verified remote versions for this check. The local checkout was not synchronized or edited during this continuation. This is software-contract regression evidence only: no cgroup OOM integration, request pilot, data generation, scoring, training, matches, or outcome inspection was performed. Independent review and integrated receipt validation remain open; all research gates remain closed.
+
+
+### V2.12 Reversi8 weak-solution prior-art check (2026-10-03)
+
+- Read Takizawa, *Othello is Solved*, arXiv:2310.19387v3. The result is a weak solution from the standard initial 8x8 position (draw plus a strategy guaranteeing at least a draw), not a strong solution for arbitrary reachable positions. The paper explicitly leaves all-position “semi-strong” solving as future work.
+- The proof uses targeted subproblems and a modified Edax engine; the source repository carries GPL-3.0 and analysis outputs are hosted separately. Nothing was downloaded, installed, run, or queried.
+- Static comparison with two_player/games.py suggests the Reversi8 opening, alternating turns, flips, forced passes, and terminal disc-count result align with standard Othello. This is not a verified adapter contract.
+- This gives an opening-position theoretical anchor, but not complete values for every legal action at the benchmark's sampled roots. Exact/bounded regret, generation, scoring, and training gates remain unchanged. Source: [paper](https://arxiv.org/pdf/2310.19387), [pinned modified Edax source](https://github.com/eukaryo/edax-reversi-AVX-v446mod2/tree/fbec6a324775b55cafe4a6d9691d92b3fdde2ffc).
+
+
+### V2.12 decision-metric JEPA prior-art update (2026-10-03)
+
+- Reviewed Wang et al., *Decision-Metric Alignment in Latent World Models: Diagnostics and Action-Conditioned Objectives for MPC Planning*, arXiv:2608.18746v1 (submitted 2026-08-19). It introduces Plan-Real and CEM-stage Spearman and DA-LeWM, which adds inverse-action and demonstration-conditioned goal-action heads to an action-conditioned LeWM predictor.
+- The overlap closes standalone novelty claims around action-conditioned JEPA planning, inverse/goal-action auxiliary objectives, and generic candidate-rank diagnostics. The study is single-agent Euclidean-goal CEM over four robotics tasks; it does not evaluate complete legal root actions under alternating two-player zero-sum max/min.
+- The authors report near-zero/negative elite-stage CEM Spearman for all variants, including DA-LeWM, despite positive random-stage gains. They report one training run per configuration and three evaluation seeds. Treat as preprint evidence, not independent replication.
+- A root-player decision-regret question under adversarial finite-horizon backup remains only a candidate distinction; novelty is unresolved. Before fitting, independent review must decide whether to add an inverse-action control and how to avoid treating logged policy goal-actions as optimal decisions.
+- No local files, CAISSA code, data, outcomes, or gates changed. Source: [arXiv paper](https://arxiv.org/abs/2608.18746).
+
+
+### V2.12 inverse-action control design checkpoint (2026-10-03)
+
+- The v04 predictor already receives exact actions, and all arms already share a recorded-root-action policy loss. DA-LeWM's inverse head is therefore a distinct auxiliary-pressure control, not evidence that current v04 lacks action conditioning.
+- Added docs/V212_INVERSE_ACTION_CONTROL_DESIGN_01_DRAFT.md on the remote branch. It proposes, for independent review only, a factorial crossing the six v04 arms with inverse-action loss on/off, using exact observed state transitions, legal masks, and action 64 for forced pass. It explicitly labels this as potentially redundant and gives no outcome or performance prediction.
+- The draft rejects logged future-action sequences as optimal labels: they represent behavior-policy choices, may be non-unique for a state/goal pair, and do not encode minimax value. A future goal-action behavior-control would need a separate estimand.
+- No current method, data, code, tests, root schedule, or gate changed. No training, scoring, match, or outcome access occurred. Independent review must decide the extra factorial's necessity, compute parity, loss scale, and multiplicity before any fitting.
+
+
+### Inverse-action draft weighting clarification (2026-10-03)
+
+Clarified that the proposed inverse-action loss is averaged over transition
+slots in the frozen v04 windows. Overlapping windows may repeat a source
+transition; the draft now requires counts for slots, transition IDs, repeat
+frequency, and distinct state/action/successor content. Repeated slots are
+training exposures, not independent observations, and are not silently
+deduplicated. This only clarifies the unreviewed proposal; no data, method,
+or gate changed.
+
+
+### Latest continuation delta (2026-10-03; null-versus-effects inference evidence)
+
+- Bakshy and Eckles evaluate online user–item bootstrap procedures using real-data A/A experiments and simulated item–treatment heterogeneity. Their results support checking both sharp-null and effect scenarios when evaluating dependent-data inference; A/A alone does not expose every failure under effects. One-way bootstrap coverage fell to 87.5% for a nominal 95% interval in a reported simulated condition, while their multiway method remained mildly conservative in the studied conditions.
+- This is a methodological analogy only. It does not validate CAISSA's 20-seed × 16-root-slot design, max-|T| intervals, centered tests, or Holm family. Their arXiv v4 explicitly withdraws its Section 3.4/Figure 4 imbalance simulation for a software error; the project audit excludes it.
+- If independent review requires a design-matched simulation, predeclare sharp-null and heterogeneous/nonzero seed/root-effect scenarios and relevant error/coverage/power criteria before running it. Review must decide whether it is required. No simulation, roots, outcome access, training, or gate transition occurred. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and [Bakshy & Eckles](https://arxiv.org/abs/1304.7406).
+
+
+### Latest continuation delta (2026-10-03; few-factor inference scope)
+
+- Reviewed primary sources on multiway wild-cluster bootstrap and cluster-robust practice. They show that small cluster dimensions make inference difficult, and that regression-based wild-cluster alternatives rely on a defined regression/score model and a choice of bootstrap dimension. These papers do not directly validate the CAISSA paired contrasts, two-factor resampling, max-|T| intervals, or Holm family.
+- V2.12 has 20 seed clusters × 16 root-slot clusters within each occupancy stratum. Independent statistical review should decide whether this factor count is adequate for the selected method and whether a design-matched study is needed; any comparison must preserve pairing, fixed stratum weights, and the 15-contrast family. No universal safe-count threshold was established by this scan.
+- No method was selected; no roots, simulation, outcomes, or training occurred, and no gate changed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md; [MacKinnon, Nielsen & Webb (2021)](https://doi.org/10.1080/07350015.2019.1677473), [Roodman et al. (2019)](https://doi.org/10.1177/1536867X19830877), and [MacKinnon et al. (2023)](https://doi.org/10.1177/1536867X231212433).
+
+
+### Latest continuation delta (2026-10-03; crossed mixed-model comparator scan)
+
+- Identified crossed linear mixed-effects models as a structurally relevant comparator for model-seed × root-slot outcomes (Baayen et al., 2008) and Kenward–Roger's small-sample adjusted fixed-effect inference for Gaussian mixed models (1997).
+- This is not direct validation: the sources do not cover CAISSA's game-score response, three fixed-weight strata, paired multi-arm contrasts, or max-|T|/Holm family. Any model-based comparison would need a reviewed/versioned outcome model, arm-specific crossed slopes, stratum weighting, incomplete-cell and boundary handling, and simultaneous inference.
+- Independent review may decide whether such a model belongs in a design-matched synthetic comparison. No model, simulation, root schedule, outcome access, or gate change is authorized. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and [Baayen et al.](https://doi.org/10.1016/j.jml.2007.12.005), [Kenward & Roger](https://doi.org/10.2307/2533558).
+
+
+### Latest continuation delta (2026-10-03; interaction-component inference check)
+
+- Owen and Eckles's product-factor bootstrap estimates variance for a mean in a crossed random-effects model. Their two-factor interaction-only extreme yields roughly 3× variance inflation; their near-correct result assumes positive bounded components with main effects dominating. This is not coverage evidence for max-|T|/Holm.
+- For the proposed complete 20-seed × 16-root grid in each occupancy stratum, epsilon and eta are each 1/16. These summarize design geometry only; they do not verify asymptotic conditions or any unobserved variance-component profile. The paper also cites McCullagh's result that no exact unbiased resampling bootstrap exists for the crossed mean-variance problem in the studied broad class.
+- If a synthetic study is required, independent review should decide whether to include main-effect-dominated and seed × root-interaction-dominated regimes under null and heterogeneous/nonzero contrasts, and evaluate the full familywise rule. No roots, scores, or outcomes were generated/accessed; no gate changed. Details and sources: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md, [Owen & Eckles](https://arxiv.org/abs/1106.2125), and [McCullagh](https://doi.org/10.2307/3318577).
+
+
+### Latest continuation delta (2026-10-03; bootstrap Monte Carlo precision)
+
+- The locked 10,000-replicate plus-one p-value can be sensitive to bootstrap Monte Carlo draws at the smallest Holm step: for 15 tests, cutoff is 0.05/15; 32 exceedances give about 0.003300 and 33 give about 0.003400. At an ideal tail probability equal to that cutoff, conditional Monte Carlo SE is about 0.000576, with an approximate 95% half-width of 0.00113.
+- This numerical error is separate from seed/root sampling uncertainty and does not establish or refute validity of the crossed bootstrap. Research on selecting B recommends choosing it for a declared accuracy target, but the cited studies do not set B for CAISSA's design. Independent review should disposition the current B or a versioned precision rule before outcomes; do not change B after seeing its effect on a result.
+- No p-values, bootstrap replicates, roots, or outcomes were computed. No gate changed. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md, [Andrews & Buchinsky](https://doi.org/10.1111/1468-0262.00092), and [Davidson & MacKinnon](https://doi.org/10.1016/S0304-4076(01)00047-1).
+
+
+### Latest continuation delta (2026-10-03; simulation Monte Carlo precision)
+
+- A design-matched calibration study would have inner bootstrap replicates per synthetic dataset and outer independent datasets per DGP/method cell. Their Monte Carlo errors are distinct; accurate inner p-values do not by themselves make empirical FWER, coverage, or power precise.
+- For a binary operating characteristic near 0.05 or 0.95, approximate normal 95% half-width 0.01 requires about 1,825 outer datasets per cell; half-width 0.005 requires about 7,300. These illustrate the precision-cost relationship; they are not the selected R, acceptance margin, or permission to simulate.
+- If review authorizes a study, preregister R/precision, inner B, RNG stream derivation, uncertainty intervals, and scenario/method comparison rules. No simulation, roots, outcomes, or training occurred. See docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md and [Koehler et al. (2009)](https://doi.org/10.1198/tast.2009.0030).
+
+
+### Latest continuation delta (2026-10-04; analytical root-yield sensitivity)
+
+- Derived exact binomial-tail sensitivity for the proposed global rule requiring at least 16 valid candidates among 64 in all six variant × occupancy strata. Under a common independent per-slot validity rate, all-six schedule yield is about 0.361 at p=0.30, 0.821 at p=0.35, and 0.976 at p=0.40; rates about 0.366, 0.383, and 0.418 correspond to 90%, 95%, and 99% pass probability.
+- These figures are analytical illustrations, not measured slot validity, Monte Carlo simulation, a selected yield target, or authorization. Actual stratum-specific rates and dependence are unknown; independent review must disposition the yield/failure contract. No roots, scores, outcomes, or gate transition occurred. Details: docs/V212_ROOT_SAMPLING_INFERENCE_AUDIT_01_DRAFT.md.
+
+
+### Latest continuation delta (2026-10-04; Othello sequence-model prior art)
+
+- Full-text review of Yuan and Søgaard's Othello World Model paper found autoregressive next-move training and separate representation alignment/projection analyses on Othello game histories. Its reported very low one-hop error at full synthetic-data scale and harder multi-hop prediction narrow broad claims to learning board structure from board-game histories.
+- The paper does not evaluate JEPA latent matching, full legal-action values, fixed-compute adversarial max/min, or decision regret. It does not establish or refute a V2.12 planning effect. No code/data were downloaded or run, no CAISSA data or outcomes were accessed, and no method/gate changed. See docs/RELATED_WORK.md and docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md; source: [Yuan & Søgaard](https://arxiv.org/abs/2503.04421).
+
+
+### Latest continuation delta (2026-10-04; MetaOthello multi-world representations)
+
+- Full-text review of Chawla, Hall, and Lovato's MetaOthello paper found causal transfer of Othello board-state probes across rule variants and reported next-move-distribution α-scores above 0.98. The variants share an 8×8 syntax but change update rules or token mapping. The paper defines a “world model” as a latent-state representation inferred from histories, distinct from an explicit forward model; each model was trained once with seed 42.
+- This narrows broad shared-representation and multi-rule transfer claims. It does not test JEPA dynamics, decision quality, adversarial search, or board-size transfer, and reported representation/prediction metrics do not establish planning. No code/data were run and no CAISSA outcomes were accessed. No method or gate changed. See `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`; source: [Chawla et al., arXiv:2602.23164](https://arxiv.org/abs/2602.23164).
+
+
+### Latest continuation delta (2026-10-04; static adapter capacity audit)
+
+- Source-level shape arithmetic for the random-weight inference harness gives 9,761 parameter-array values (78,088 bytes) for the ordinary encoder/predictor/value path and 30,551 (244,408 bytes) for the recursive raw-state control. These omit Python/runtime overhead and training-only policy, EMA, optimizer, and batch state. A 10,000-node counter permits at most one transition/model advance before its next cooperative check; conservative total model-call ceilings are 20,002 for predictive arms, 30,003 for raw-state dynamics, and 20,000 for direct-leaf value.
+- These are static bounds, not observed memory, FLOPs, latency, trained-model capacity, or operational feasibility. The v02 wrapper dispatches through the v01 worker entry point, so both source blobs must be bound; worker and caller share a cgroup; request-level watchdog and live receipt integration remain unverified. No request, model, data, score, or outcome was run or read. No method, resource, or fit gate changed. See `docs/V212_ADAPTER_CAPACITY_AUDIT_01.md`.
+
+
+### Latest continuation delta (2026-10-04; root-sampling draft reconciliation)
+
+- A fresh independent read-only review exposed stale Design01 references, conflicting canonical-window deduplication language, and root-uniqueness text that contradicted the current Design02 slot-sampling proposal. Those draft documents now align: source-window IDs define fit-bank distinctness, canonical-equivalent content is reported diagnostically, and repeated development-root board states remain separate slot observations under the proposed estimand.
+- Current root-sampling v05 and Design02 both propose a global under-yield stop across all six variant × band strata. That proposal is not accepted; the minimum acceptable schedule-pass probability, meaning of the 48 slot observations versus v04's 40-situation minimum, and finite-sample calibration remain unresolved. v04 stays current. No roots, simulation, data, model, score, or outcome was generated/accessed; no gate changed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-04; V03 RSS/reporting review fixes)
+
+- Independent static reviews identified three failure paths involving a redundant RSS sample and errors after receipt linking. V03 now returns a known RSS crossing without another sample and reports any post-link failure as `publication_uncertain`; cleanup errors cannot mask that state, and the visible output blocks reruns pending reconciliation. The reviewer cleared these code-level fixes. Combined frozen V02 and V03 focused tests pass 17/17; `git diff --check` passes. No actual pilot schedule, service, inference request, dataset, score, training run, or outcome was accessed or run; V02 remains unchanged and no runtime/research gate advanced. See `docs/V212_COMPUTE_PILOT_V03.md`.
+
+
+### Latest continuation checkpoint (2026-10-06; bounded-reference scaffold)
+
+- Added `two_player/v212_bounded_reference_v01.py`, an unselected fixed-horizon alpha-beta candidate that computes every legal root-action value in a separate full-window query. It aborts the whole result on a hard transition-cap miss and overrides evaluator values at terminals. Five tests compare all root actions at horizons 1–5 against plain minimax on a tiny Tic-Tac-Toe state and check terminal values, forced Reversi pass accounting, cap abort, evaluator range, and hash format.
+- The new reference tests plus four interval-search suites pass 18/18 with temporary NumPy 2.5.3 provided through `/tmp`; no dependency files changed. Test evidence is local implementation verification, not independent review or realistic cap feasibility.
+- The evaluator source/config SHA-256 values are caller-supplied labels; the helper does not verify that they bind to the callable/configuration. Evaluator, horizon, budget, regret estimand, and root schedule remain unselected. The V2.12 compute pilot, data, training, scoring, matches, and outcomes remain gated; no gate advanced. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-06; adversarial world-model prior art)
+
+- A targeted primary-source search inspected Nie et al.'s full arXiv v1 preprint on Adversarial World Models (AWM). It describes a role-conditioned adversarial traffic model trained through sparse-coalition selection and counterfactual role-switching, followed by a reference-relative regret/tail-risk planner update. Authors report nuPlan/InterPlan results and algorithmic ablations; these are preprint claims and were not independently reproduced.
+- AWM is not the V2.12 method: it learns stochastic motion policies in traffic simulation, while V2.12 v04 proposes a latent predictor conditioned on exact legal moves and fixed max/min search in deterministic board games. However, broad novelty claims around adversarial world models, counterfactual role-conditioning, min-max planner framing, or regret-aware planning are further weakened. Any residual claim must be the measured incremental JEPA effect against equally decision-aware controls; the domain difference alone is insufficient. Updated `docs/RELATED_WORK.md` and `docs/V212_NOVELTY_CROSSWALK_DRAFT_01.md`. No method, data, scores, training, matches, or gate changed.
+
+
+### Latest continuation delta (2026-10-06; bounded-reference adapter coverage)
+
+- Expanded the bounded-reference oracle comparison to all four in-scope V2.12 variants at a shallow reachable post-opening state, using three plies, a root-perspective piece-balance leaf function, and both player signs via color/role swap. Every legal root-action score and root maximum matched an independent no-pruning minimax traversal; role-swapped action values matched as well. The existing near-terminal Tic-Tac-Toe, terminal-win, forced Reversi4 pass, and all-or-error cap cases remain covered.
+- The bounded-reference, interval-search, request-adapter, and symmetry suites now pass 28/28 under the temporary NumPy environment; no project dependency files changed. This is shallow software-contract evidence, not realistic cap feasibility, independent review, evaluator selection, root schedule, or regret-protocol acceptance. No roots/scores/outcomes/data/training/matches were generated or accessed; no gate advanced. See `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-06; rule-bound root fingerprint)
+
+- Code review found that the bounded-reference root digest used only game name, board, and player; reusing a name for different rule configurations could collide. The digest now also includes the adapter's canonical game-state key. A regression test proves same-name Connect-3/Connect-4 fixtures with identical empty boards receive different root fingerprints. The seven bounded-reference tests and full 29-test bounded-reference/interval/request-adapter/symmetry group pass. This closes only that fingerprint defect; evaluator hashes remain caller labels, and reference protocol/cap feasibility/independent review remain open. No roots, model scores, datasets, training, matches, outcomes, or gate changes occurred.
+
+
+### Latest continuation delta (2026-10-06; request-byte release protocol v02)
+
+- Added `two_player/v212_release_token_v02.py` and `two_player/v212_armed_protocol_v02.py` as versioned candidates; v01 remains unchanged. The v02 worker path hashes the exact bounded raw request bytes, rejects duplicate-key/malformed/non-object JSON, and requires the release token to carry the same request digest before callback execution. Five focused tests pass, including same-nonce byte mutation rejection before callback and malformed request rejection before FIFO wait.
+- This is not wired into the existing no-inference systemd smoke or request adapter; the bootstrap still needs a v02 exact-raw-stdin integration. No service/request/inference/OOM stress, project data, outcome, training, or scoring was run. Runtime identity, operational failure map, independent review, and adapter/pilot gates remain open. See `docs/V212_REQUEST_ADAPTER_INTEGRATION_DESIGN_01.md`.
+
+
+### Latest continuation delta (2026-10-06; journal marker orchestration cases)
+
+- Added a mocked armed-smoke test that injects either duplicate marker records or a marker message bound to a different invocation. Both fail at the consumer boundary before receipt persistence or unit stop and retain the IPC workspace; the focused armed-smoke/collector/live-evidence/receipt suite passes 92/92.
+- This does not exercise system journal behavior, the amended v02 controller, or a complete receipt-certainty contract. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. JRN-02 coverage remains partial. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-06; empty journal collection at consumer boundary)
+
+- Extended the existing mocked armed-smoke journal injection with an empty record collection. Together with duplicate and foreign-invocation fixtures, all fail before receipt persistence or unit stop and retain the IPC workspace. The focused armed-smoke/collector/live-evidence/receipt suite passes 92/92.
+- This adds consumer-seam mock evidence for JRN-01/JRN-02 only. It does not verify live journal behavior or amended-controller receipt/action mapping; all research and operational gates remain unchanged. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run. See `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-06; deadline check after journal capture)
+
+- Added a caller-deadline check immediately after journal capture and before receipt assembly in the v01 armed-smoke controller. A controlled mock expiry confirms assembly/publication and unit stop are skipped and the IPC workspace is retained. The focused armed-smoke/collector/live-evidence/receipt suite passes 93/93.
+- This covers one additional mocked CLK-01 boundary only. Other evidence-operation crossings, complete manager/journal/counter failure mapping, runtime attestation, independent review, and v02 controller integration remain open. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; deadline check after post-exit manager snapshot)
+
+- The v01 armed-smoke controller now checks the caller deadline after validating the post-exit manager identity and before reading response bytes. A controlled mock expiry verifies that response/journal reads, receipt persistence, unit stop, and workspace cleanup are skipped while the workspace remains available. The focused armed-smoke/collector/live-evidence/receipt group passes 94/94.
+- This closes only one more mocked CLK-01 boundary. Other evidence capture crossings, complete manager/journal/counter mapping, executed-runtime attestation, independent review, and v02 controller integration remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md` and `docs/V212_SUPERVISION_FAILURE_MATRIX_DRAFT_01.md`.
+
+
+### Latest continuation delta (2026-10-07; invalid counter evidence at controller seam)
+
+- Added table-driven armed-smoke injections for wrong counter source/schema/cgroup/boot, out-of-window and unordered sample times, Boolean values, and rollback. All reject during receipt assembly before receipt persistence or unit stop, retain the IPC workspace, and preserve `receipt_not_attempted`. The focused armed-smoke/collector/live-evidence/receipt suite passes 95/95; compileall and `git diff --check` pass.
+- This adds mocked CNT-02 action/evidence lifecycle assertions only. Actual counter-file disappearance between samples, live service behavior, amended v03 receipt integration, and independent review remain open. No service, inference, OOM, training, project data, score, match, or outcome was accessed or run; no gate advanced. See the failure matrix and test plan.
+
+
+### Latest continuation delta (2026-10-07; counter-file disappearance between samples)
+
+- Added a controller-flow test using the actual bounded `memory.events.local` reader against a temporary cgroup-shaped tree. The test removes the file after the first read; the second read fails closed, without receipt persistence or unit stop, and the IPC workspace remains. The focused armed-smoke/collector/live-evidence/receipt group passes 96/96; compileall and `git diff --check` pass.
+- This is temporary-filesystem plus mocked-service evidence, not live cgroup behavior. Amended v03 receipt integration, runtime attestation, and independent review remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See CNT-01a in the failure plan and matrix.
+
+
+### Latest continuation delta (2026-10-07; failure-test traceability reconciliation)
+
+- Reconciled JRN-01/JRN-02 traceability rows with the armed-smoke test for empty, duplicate, and foreign-invocation marker records. A read-only AST audit resolved all 45 fully qualified test references in the failure plan to existing test methods; none were missing. `git diff --check` passes.
+- This validates reference integrity only, not assertion coverage or live behavior; failure-map rows and all operational/research gates remain partial/closed. No service, inference, OOM, training, data, score, match, or outcome was accessed or run. See the failure test plan.
+
+
+### Latest continuation delta (2026-10-07; pre-release cgroup gate failures)
+
+- Added a table-driven armed-smoke orchestration case for worker `/proc/<pid>/cgroup` mismatch, caller/worker cgroup sharing, and a `memory.max` mismatch. Each is rejected before counter sampling and release, with no receipt or unit stop and with the dispatched unit/workspace retained. The focused armed-smoke/collector/live-evidence/receipt group passes 97/97; compileall, `git diff --check`, and the 46-reference failure-test AST audit pass.
+- This is mocked GATE-01b coverage only; actual host placement, live cgroup reads, and the v02 controller remain open. No service, inference, OOM, training, data, score, match, or outcome was accessed or run; no gate advanced. See GATE-01b in the failure test plan and matrix.
+
+
+### Latest continuation delta (2026-10-07; V03 and generation-protocol review)
+
+- An independent read-only static review found no basis for a safe offline production-code change. V03 remains a candidate, not cleared for runtime: sampled RSS is cooperative, and hard worker memory enforcement, caller-observed deadline handling, runtime attestation, and integrated supervision/receipt evidence remain prerequisites. The production generator remains blocked on reviewed decisions for split matrix and quotas, deterministic RNG/policy streams, the 928-window and minibatch contract, lineage/overlap identities, and atomic artifact/receipt behavior. Held-out-root yield rules and finite-sample statistical calibration also remain unresolved; v04 stays current. No tests, service, OOM, inference, training, data generation, scoring, match, or outcome were run/accessed. No code changed and no gate advanced. See `docs/V212_COMPUTE_PILOT_V03.md`, `docs/V212_GENERATION_PROTOCOL_DESIGN_01.md`, `docs/V212_GENERATION_PROTOCOL_COMPATIBILITY_AUDIT_01.md`, and `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-07; v02 worker-helper regression)
+
+- Re-ran the bounded v02 candidate suites: raw-stdin worker bootstrap, armed protocol/release binding, and worker IPC pass 49/49 under `unittest` on the current checkout. Coverage includes synthetic subprocess bootstrap and exact request-byte/release handling. This verifies those isolated helpers only; systemd/controller integration, executed-runtime attestation, and service gates remain open. No project data, service, inference, OOM, training, scoring, match, or outcome was accessed or run. No gate advanced.
+
+
+### Latest continuation delta (2026-10-07; request-failure traceability update)
+
+- Updated the failure-test plan's REQ-01a/REQ-01b references to include the v02 raw-stdin rejection-before-FIFO and exact-request release-digest regressions, while retaining the partial/integrated-gaps disposition. A read-only AST audit resolved all 49 fully qualified test references in the plan; none were missing. `git diff --check` passes. This reconciles traceability only; no assertion coverage or controller/runtime behavior was added, and no service, inference, OOM, training, data, scoring, match, or outcome ran. No gate advanced. See `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; post-stop manager-query failure)
+
+- Added a mocked v01 controller-flow case where the stop command returns but the post-stop `systemctl show` query fails. It verifies the already-durable receipt is byte-preserved, the IPC workspace remains, and diagnostics report the unit as retained/unknown with invocation and worker-cgroup identifiers. The focused armed-service-smoke module passes 40/40; `git diff --check` passes. This closes only that mocked REC-01 query-failure seam; kill/reap attribution, live recovery, and v02 integration remain open. No service, inference, OOM, training, data, score, match, or outcome ran; no gate advanced. See the failure matrix and test plan.
+
+
+### Latest continuation delta (2026-10-07; request watchdog boundary checks)
+
+- Using the already-present NumPy 2.5.3 package under `/tmp/caissa-jepa-pv-deps` without changing project dependencies, five isolated request-adapter tests pass: fake-cgroup finite-bound validation, mocked request-startup deadline/fallback, stalled child kill/reap, mocked cgroup-inheritance preflight, and mocked post-worker audit-delay deadline. These tests do not execute the random-weight search/inference path, create a service, or induce OOM. They establish helper/control behavior only; systemd integration, cgroup-attributed kill/reap, runtime attestation, and V05 operational headroom remain open. Updated REC-01/MGR-03 test traceability; a read-only AST audit resolves all 52 fully qualified test references in the failure plan. No gate advanced.
+
+
+### Latest continuation delta (2026-10-07; request/response schema proposal parser audit)
+
+- Read the unreviewed request/response schema v02 proposal and its offline validator, then ran `python -m unittest -v tests.test_v212_request_schema_v02_proposal_audit`: 17/17 pass. This includes closed field/type domains, canonical decoding and duplicate-key rejection, exact request/response binding, maximum 811/747-byte witnesses, and an isolated fd reader's empty/exact-cap/cap-plus-one pipe boundaries and short reads. A bounded static audit found no concrete validator defect in the inspected code.
+- The schema and caps remain unreviewed proposals. Actual worker/caller stream integration, controller and accepted-receipt integration, resource-profile reconciliation, and runtime attestation remain open; RESP-01b stays partial. The reader does not enforce its own caller deadline. No service, inference, OOM, training, generation, scoring, match, or outcome ran/accessed, and no gate advanced. See `docs/V212_REQUEST_RESPONSE_SCHEMA_V02_PROPOSAL_DRAFT_01.md` and `docs/V212_SUPERVISION_FAILURE_TEST_PLAN_V01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; root-schedule yield sensitivity)
+
+- Calculated exact Binomial-tail schedule-pass sensitivity for six proposed independent strata, each with 64 candidate slots and a requirement of at least 16 valid slots. With a common assumed per-slot yield, global pass probabilities are 0.360846 at `p=0.30`, 0.820767 at `p=0.35`, and 0.976176 at `p=0.40`; global 0.90/0.95/0.99 targets correspond to per-slot yields 0.366219/0.383364/0.417880. This uses no random draws or root data.
+- The assumed yields are not estimates, the equal-yield and independence assumptions are unverified, and no global reliability threshold was chosen. The root schedule and method amendment remain unapproved; no roots, simulations, scoring, training, or match ran and no gate advanced. See `docs/V212_ROOT_SCHEDULE_YIELD_SENSITIVITY_DRAFT_01.md` and the follow-up in `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-07; v04 arm architecture/compute reconciliation)
+
+- Static comparison of METHOD_SPEC_V212-04 with the no-training pilot found the raw-state control's predictor/decoder wiring is ambiguous. The pilot directly maps a 104-wide latent/action/role/game input to 198 state features and re-encodes; the spec wording can also be read as a 104→32 latent predictor followed by a 32→198 decoder. Under specified widths those alternatives imply 29,336 versus 18,440 online parameters. The pilot allocates a latent predictor matrix for the raw arm but does not use it in that branch; a V2.12 trainer is not present under `two_player/`.
+- The spec's 5% total training-FLOP parity gate remains unevaluated. This is an implementation/spec ambiguity, not proof the controls are unfair or infeasible. No code, model, inference, data, score, match, or gate changed. Resolve and independently review the arm wiring before trainer implementation or treating pilot compute as a faithful arm comparison. See `docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.
+
+
+### Latest continuation delta (2026-10-07; raw-state control wiring proposal)
+
+- Prepared a versioned amendment proposal resolving §4's raw-state control as latent-then-decode: share the action-conditioned 104→32 predictor, decode to 198 exact-state features, and re-encode predicted features for recurrence. Source inspection shows exact features include 0/1 targets, so the draft uses a linear decoder with masked MSE; the compute pilot instead applies `tanh` to a different direct 104→198 path. The proposal defines target/mask and initialization handling, separates the 18,440 online parameter count, and retains the existing 5% training-FLOP gate. Existing pilot results are not rewritten.
+- This proposal is unreviewed and not adopted; METHOD_SPEC_V212-04 and all arms remain unchanged. FLOP parity, the other data/compute/supervision gates, and pre-fit review remain open. No trainer, inference, or training ran and no gate advanced. See `docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md` and `docs/V212_ARM_ARCHITECTURE_FLOP_RECONCILIATION_DRAFT_01.md`.
+
+
+### Latest continuation delta (2026-10-07; schema proposal bounded stream reader)
+
+- Added an audit-only file-descriptor reader to the unreviewed schema proposal helper. The focused schema suite passes 17/17, including zero-byte, exact proposed cap, cap-plus-one for request and response, and short-read cases. It retains no more than `cap+1` bytes before rejection.
+- This does not enforce a deadline, implement the application worker/caller/controller stream boundary, or bind response wire metadata into an accepted receipt. The reader is not imported by the bootstrap or request adapter; schema review and RESP-01b remain partial. No live request, service, inference, OOM, training, generation, scoring, or match ran, and no gate advanced.
+
+
+### Latest continuation delta (2026-10-07; root-sampling calibration prerequisites)
+
+- An approved independent read-only review confirmed the proposed first-16-valid sampling argument only under IID slots within each variant × occupancy band, slot-local predeclared validity, and no adaptive/identity/score/outcome rejection. The seed × slot bootstrap preserves the proposal's pairing and weights structurally; finite-sample coverage and familywise error remain unestablished. The reviewer recommends design-matched synthetic calibration before nomination, as a recommendation rather than a gate disposition.
+- Before any calibration run, the estimand and ≥40-situation interpretation, band/macro weights, slot/RNG and validity contract, global yield rule/acceptable pass probability, calibration scenarios, numerical tolerances, outer Monte Carlo size/uncertainty, inner bootstrap count, and failure response need to be frozen. The calibration grid must retain the 15-contrast/macro algebra and paired-seat/shared-arm dependence, and report schedule yield separately from conditional inference quality. No method version or gate changed; no simulations, roots, scores, or outcomes were produced or accessed. See `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-07; pre-fit action-sensitivity and regret review)
+
+- An approved independent static reviewer reconsidered the v04 six-arm scope against UWM-JEPA, ActSWM, and AD-WM. They found retaining the fixed six-arm contrast family defensible without retrofitting/adding an arm, because those works do not supply matched controls for this deterministic board-game/minimax estimand. This is scope review only: novelty is not certified, action sensitivity is not demonstrated, and any eventual claim remains limited to the six arms. Broader superiority claims remain unsupported.
+- The same review found the action-sensitivity diagnostic is not yet executable as a frozen protocol: support buckets, exact latent metric/normalization, horizons/aggregation, role/terminal/pass handling, reference strata, budgets and incomplete-cell denominator remain open. Scalar regret is coherent only for a named fixed-horizon reference; its current implementation computes all root actions and has only a transition cap, while its evaluator hashes are caller-supplied labels. The interval estimand is a sound conservative enclosure under its stated recurrence, but implementation variants have incompatible expansion-budget semantics. Root/evaluator fingerprints, charged work, root-terminal handling, ordering/ties, wall/node/memory budgets, incomplete-cell behavior, and realistic feasibility remain open. No estimator, arm, threshold, or solver was selected and no gate advanced. No tests, roots, scores, simulations, inference, or training ran. See `docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md` and `docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+
+### Latest continuation delta (2026-10-07; synthetic calibration protocol proposal)
+
+- Drafted `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_01.md` as an unapproved proposal for calibrating the v05 crossed-bootstrap rule using synthetic-only paired-score contrasts. It keeps ten atomic contrasts and derives five macro contrasts algebraically; proposes 23 null patterns, four power alternatives, and two policy-dependent yield stresses (29 cells total); and proposes 18,000 outer datasets × 10,000 inner bootstrap replicates per cell. The resulting 5.22 billion inner replicates create a material local-compute feasibility question that has not been measured.
+- The approved read-only reviewer found the scenario/null arithmetic coherent and the policy-validity weighting correct under its stated assumptions. The reviewer did not accept the protocol: the contrast-level copula does not enforce shared candidate/control outcomes or seat-swap mechanics; scenario/profile and metric definitions need a frozen manifest; and Monte Carlo endpoints within each null scenario share datasets, so their assurance cannot assume independence. I revised the draft to state those assumptions, define stable IDs, and use a dependence-robust union bound. Analytic binomial tails for the 53 one-sided Bonferroni Clopper–Pearson endpoints give individual boundary pass probabilities 0.5854 at R=6,000 and 0.9971 at R=18,000; the union-bound joint lower limit at R=18,000 is 0.8439. This is not a simulation. The 80% target/calculation and local feasibility need review; shared-arm adequacy remains unresolved. The 48-slot/40-situation interpretation and yield contract are unresolved. No simulations, roots, scores, outcomes, or training were run/accessed; v04 remains current and no gate changed. Calibration and downstream activity remain unauthorized. See the follow-up in `docs/V212_ROOT_SAMPLING_REVIEW_01.md`.
+
+
+### Latest continuation delta (2026-10-07; action-sensitivity diagnostic protocol draft)
+
+- Added `docs/V212_ACTION_SENSITIVITY_DIAGNOSTIC_PROTOCOL_DRAFT_01.md` as a non-operative proposal. It defines exact-successor one-step prediction error and a within-root all-legal-action retrieval matrix for transition-bearing arms, plus a separate multi-step open-loop branch diagnostic with frozen policy-pair streams. It distinguishes action-index exposure from exact state-action support, keeps terminal/pass and non-applicable arms explicit, and forbids root/action dropping or replacement.
+- The approved static reviewer found the initial draft's support-count unit, exact-tuple collision handling, terminal masks, and first-action intervention/continuation coherent, but did not approve a freeze. Follow-up review confirmed separate marginal support strata, paired diagonal/off-diagonal denominators, and explicit branch RNG identity; it caught a pass-ID mismatch that was corrected by including legal forced-pass ID 64 in support and RNG schemas. Actual six-arm graph inspection, value-only qualification, raw-state target/validity/terminal handling, and accepted root schedule remain unresolved pre-freeze conditions. No threshold, inference method, or checkpoint-selection rule is proposed. The all-legal first-action expansion may be computationally infeasible. This depends on separately approved roots, does not amend v04, and authorizes no branch/root generation or model output. `git diff --check` passes; no tests, simulations, roots, scores, inference, or training ran. See the draft and `docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md`.
+- Local commit `397d82b4341945d8c38bb77f7df320af1ccaba8b` records this documentation milestone. Push to `origin/main` was attempted normally but could not connect: SSH rejected `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf` ownership, and bypassing SSH config failed DNS resolution for `github.com`. No remote update was confirmed; retry remote verification and a normal fast-forward push when network access is available.
+
+
+### Latest continuation delta (2026-10-07; bounded-reference provenance/resource audit)
+
+- Static inspection of `two_player/v212_bounded_reference_v01.py` found its evaluator source/configuration digests are caller-supplied labels checked only for SHA-256 syntax; they are not recomputed from the callable, configuration bytes, or loaded code. The result also lacks a game/adapter implementation digest, and its hard cap counts transitions only (node count is telemetry; no internal wall/RSS cap). It rejects terminal roots and returns a full exact Q table. These are protocol/receipt and resource-readiness gaps, not a defect in the stated fixed-horizon recurrence. An approved static review confirmed these code findings and the proposed pre-freeze runner contract for executed-code identity, canonical configuration hashing, terminal-root treatment, and charged transition/node/time/memory limits. Existing tests/fixtures do not establish independent receipt/resource review or realistic feasibility.
+- No evaluator, horizon, budget, terminal-root policy, or query plan was selected. No roots, model outputs, scores, or outcomes were accessed/generated and no gate advanced. Standard SSH/HTTPS Git transport remained intermittent, so the exact local tree was published through GitHub's Git Database API: commit `5c3b0f94d5dfb0e4eda24db6905e8c8eb8ee6540` is a child of the previously verified `36965bf8a4851593a0ced1391de3eab225cb83c2`; its tree `fcf8323517cf86e7270179d3f309ab4a08a4d7dd` matched local HEAD's tree at publication. The `main` ref update used `force=false` and expected old SHA `36965bf8a4851593a0ced1391de3eab225cb83c2`; GitHub API and HTTPS `ls-remote` both verified the new remote SHA. The local development branch remains at its own commit `6912ae406b80bb8e430d021e5e68e54e1712b992` with the same tree, but a Git fetch failed DNS and local commit ancestry has not yet been reconciled with the API-created snapshot commit.
+
+
+### Latest continuation delta (2026-10-07; shared-arm calibration DGP proposal)
+
+- Protocol draft 02 replaces the abstract contrast-level copula with an ordinal match-score generator over two candidate arms and five shared controls. It reuses Gaussian seed, root-slot, and seed × slot arm effects across comparisons; models matchup interactions; reverses a fixed seat advantage for the two paired assignments; emits win/draw/loss scores; and derives all 15 contrasts, including macro averages, from shared-arm outcomes. It calibrates intercepts to prescribed success-conditional means using a univariate normal-CDF equation.
+- This is a synthetic DGP proposal, not a game simulator, actual-root generator, or empirical result. Covariance profiles, seat mechanism, exact solver semantics and assumptions, target attainability, and the large R=18,000/B=10,000 workload remain for independent statistical review. Protocol draft 01 is retained as superseded history. No calibration simulation, roots, scores, outcomes, inference, or training ran/accessed; v04 remains current and no gate advanced. See `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_02.md`.
+
+
+### Latest continuation delta (2026-10-07; calibration profile coverage revision)
+
+- Revised the unapproved protocol draft 02 to address the independent review's profile-coverage gap. The five profiles now cover seed-dominant, slot-dominant, balanced, seed×slot-interaction-dominant, and combined occupancy-band/arm heteroskedastic variance. The five global-null cells cover all profiles; remaining principal cells use a stable round-robin map; yield-stress cells map explicitly to P5 and P1; and `A-HETERO` includes low/middle/high-band mean offsets. P5 covariance scaling now allocates half of seed×slot variance to arm interactions and half to matchup variation, with pair- and band-specific marginal latent standard deviations.
+- The proposed inventory is now 25 null patterns and four alternatives, plus two yield stresses: 31 cells total, 26 null-FWER endpoints and 31 joint-coverage endpoints (57 total). Analytic binomial tails at R=18,000 give an individual boundary pass probability about 0.997055 and dependence-robust union-bound lower limit about 0.8322; workload is 5.58 billion inner bootstrap replicates, up to 83.7 billion contrast evaluations. These are analytic design calculations only. The approved reviewer is checking the revision. No simulation, root, score, outcome, inference, or training was run/accessed; v04 remains current and no gate advanced. See `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_02.md`.
+- Follow-up review identified and prompted a correction: P5 now transforms one shared standardized seed latent per seed through its band-specific covariance factors and records the induced cross-band covariance. `A-HETERO` maps to P5 so alternative coverage includes the heteroskedastic profile; P4 is explicitly scoped to null-pattern coverage. Rechecked the K=57 one-sided CP tail values at alpha `0.05/57`; the acceptance cutoff remains 981 at R=18,000 and the unrounded union-bound assurance is 0.8321582599. A second read-only review confirmed these fixes and the within-dataset independence assumptions, while explicitly not accepting the protocol or independently recomputing the binomial tails. The proposal remains unapproved.
+
+
+### Latest continuation delta (2026-10-07; calibration assurance arithmetic reproduction)
+
+- Added `tools/v212_calibration_assurance.py`, a standard-library analytic calculator for the proposed K=57 Bonferroni Clopper–Pearson endpoint family. It compares downward recurrence, log-PMF summation, and 60-digit Decimal binomial tails; there is no synthetic-data generation. At R=18,000 it confirms cutoff 981, individual boundary pass assurance `0.9970554080891540`, and dependence-robust union lower bound `0.8321582610817799`; at R=6,000 cutoff 303 yields individual assurance `0.5854327569152956`, with no useful joint lower bound. The high-precision reproduction corrected approximately 1e-11 rounding drift in the previous double-only values; draft 02 and review record now carry the corrected values. This is a reproducible analytic check, not an independent reviewer acceptance, calibration simulation, or gate opening. No roots, scores, outcomes, training, or inference ran/accessed.
+- Local commit `e7427a8f402bbbc288d82d6059ecde470fcd5715` was published to `main` as GitHub API commit `d59c4d8d0c46318d230da3bd29f55502e1d6f571` (tree `71414f2ca09e5471a3936875e182ab1deab74181`), a child of the verified prior remote `dd68156365a66ee84b75c5b52efff92b3ddb40ee`. The ref update used `force=false` and that expected old SHA; GitHub compare confirmed `main` ahead by one commit with the five intended files. Ordinary SSH push remained blocked by SSH-config ownership, and HTTPS fetch/push could not resolve `github.com`; this API update preserved fast-forward semantics. Local `refs/remotes/origin/main` remains stale because fetch could not complete; the committed local tree equals the published tree. No datasets, checkpoints, caches, environments, logs, or generated simulation artifacts were included.
+
+### Latest continuation delta (2026-10-07; pre-fit action-sensitivity graph audit)
+
+- Reconciled diagnostic applicability against METHOD_SPEC_V212-04 and the random-weight pilot code. Four arms specify recursive action-conditioned latent `F`; raw-state specifies a distinct feature-prediction path but leaves predictor/decoder placement unresolved; direct-leaf has no transition predictor. The pilot raw-state path uses a direct 104-to-198 `tanh` decoder and re-encoder; the proposed latent-then-decode amendment remains unadopted. No V2.12 trainer exists in the tracked `two_player/` inventory, so these are spec/proxy findings, not confirmation of a trained six-arm graph.
+- The approved read-only reviewer found the diagnostic coherent as a proposal but recommended keeping it gated. Before freeze, inspect the eventual trainer's six forward/loss graphs, adopt raw-state wiring and specify feature masks/terminal handling, and resolve the root schedule plus resource/denominator rules. The decision-regret design remains a separate unresolved gate. No freeze, threshold, model output, roots, scores, outcomes, inference, or training is authorized. No gate advanced; negative/mixed findings and novelty risks remain unchanged.
+
+### Latest continuation delta (2026-10-07; generation receipt/auditor crosswalk)
+
+- Added `docs/V212_GENERATION_RECEIPT_AUDITOR_CROSSWALK_DRAFT_01.md`, a non-operative crosswalk for proposed episode, source-window, state-key, target-mask, root-slot, manifest, and audit/commit receipt identities. It records that `two_player/v212_trajectory_audit.py` is fixture-only and rejects repeated canonical windows, which conflicts with unaccepted v05's proposed diagnostic-only duplicate policy; the existing auditor was not modified.
+- An approved read-only `gpt-6-luna/high` review found the crosswalk faithful to current-v04 versus proposed-v05/root-design status and no blocking inconsistency after wording corrections. It remains non-operative. Split/window and statistical decisions, no-I/O fixture versioning, separately reviewed/authorized bounded no-outcome feasibility measurements, numeric quotas, runtime caps, and production generation remain gated. No episode, policy, root, score, outcome, simulation, service, inference, or training ran; policy sources were inspected statically only. No gate advanced.
+
+### Latest continuation delta (2026-10-07; raw-state feature-loss contract proposal)
+
+- Updated `docs/V212_RAW_STATE_ARM_WIRING_AMENDMENT_DRAFT_01.md` with a precise candidate loss: mean squared error over all 198 adapter coordinates (including padded zeros and all six descriptors), weighted across horizons 1/2/4 with v04's `alpha` weights and normalized by valid target weight. A target is valid only if every transition through it is valid, it exists, and it is nonterminal. Terminal targets and later branch horizons are masked; missing nonterminal tail targets are counted separately. The candidate raw-arm total loss and a fail-run/no-update disposition for zero-valid-target minibatches are now explicit. This remains a proposal and does not amend v04 or uniquely infer its intent.
+- The approved read-only reviewer recommended keeping latent-then-decode as a proposal and identified feature masking/reduction as the main unresolved contract. A follow-up requested the transition-validity condition, explicit zero-target minibatch behavior, and complete raw-arm loss definition; the final review confirmed these are now explicit and found no blocker to further independent method review. It did not adopt the method or approve fitting. The earlier review confirmed parameter arithmetic (18,440 online parameters) while emphasizing that the 1.55× count is not parameter matching and cannot satisfy v04's measured ≤5% total training-FLOP gate. The pilot's direct 104→198 `tanh` path remains a different proxy and historical measurements are unchanged.
+- No trainer, data, roots, outputs, inference, training, scoring, or match ran. The raw-state graph and action-sensitivity protocol remain unadopted and gated; all compute, data, and fit gates remain closed. No gate advanced.
+
+### Latest continuation delta (2026-10-07; calibration covariance-profile audit)
+
+- Added `tools/v212_calibration_profile_audit.py`, a deterministic standard-library audit for covariance and variance arithmetic in unapproved calibration draft 02. It serializes P1–P5 per-band covariance, candidate-control margin variances, P5 cross-band shared-seed covariance `L_g L_h^T`, total latent margin variance `V`, and `sigma` including unit residual variance. The six-test suite passes. P1–P4 produce `V=1` and `sigma=√2` per pair; P5 preserves mean `V=1` and pair heterogeneity.
+- The approved read-only `gpt-6-luna/high` reviewer confirmed normalization, matchup contribution, sigma, and the cross-band Cholesky construction. The tool contains no random generation and emits no scores or outcomes. This is analytic arithmetic evidence only; calibration execution, roots, inference, training, and all gates remain closed. v04 remains current.
+
+### Latest continuation delta (2026-10-07; integer assurance scan and consolidated manifest)
+
+- Added a deterministic integer-R assurance scanner for the unapproved 69-endpoint calibration proposal. It exhaustively scans R=1..18,600 and finds 145 values meeting the proposed 0.80 dependence-robust union-bound target; the first within that interval is R=18,378 (bound 0.8020521569, cutoff 1,001). The bound is 0.7822841053 at R=18,377, 0.8010068175 at R=18,379, and 0.7999565426 at R=18,380. A 60-digit Decimal neighborhood check matches the recurrence/log-PMF calculation within tolerance. This discrete finite-range result is not an adopted R, assurance target, or calibration authorization; local feasibility is unmeasured.
+- Added a deterministic consolidated manifest audit joining the target, covariance, root-quality, and yield-interaction proposals. Its regenerated temporary JSON contains 18,720 target rows, all 39 scenarios and 69 endpoints, 180 pair-yield target checks, the exact v05 method-spec SHA-256, and the assurance result with canonical digest `c62cad0b7d59cd9fa64ddb3db8975d8e8140ecd155ac41546044262ccfdfc51e`. The artifact is under `/tmp` only and is not committed. The reviewer had identified the prior JSON as stale; it was regenerated from the reviewed code. Review was static and did not select R or accept the proposal.
+- The focused assurance-search and consolidated-manifest tests pass 5/5; `compileall` and `git diff --check` pass. Draft 03 now records the scan result and workload (7.16742 billion inner bootstrap replicates at R=18,378 and B=10,000) while retaining the independent disposition and local-feasibility blockers. No simulation, roots, scores, outcomes, inference, or training ran/accessed; v04 remains current and all gates remain closed.
+- Publication record: local commit `6eb77995c3cf31d9f864da35ca404c2ea6516c58` has tree `c0147d5771e4e8157cedb7cf2093d5c4cecd8bc1`. The ordinary SSH push was blocked by the system SSH-config ownership check. After verifying GitHub `main` at `67c6fbbd29b36dbf76d45e574e470064f8b83599` with matching parent tree, the GitHub Git Database API advanced `main` with `force=false` and expected old SHA `67c6fbbd29b36dbf76d45e574e470064f8b83599` to remote commit `0d74266883a7539e60738478c76ff6e420e84bb6`; its tree exactly matches local tree `c0147d5`. The branch API verified the remote head and parent.
+
+### Latest continuation delta (2026-10-07; post-exit manager state parsing)
+
+- Added direct snapshot-parser regressions for absent active-state fields (`InvocationID`, `ControlGroup`, `ActiveState`, `SubState`) and post-exit fields (`InvocationID`, `ActiveState`, `SubState`, `Result`, `ExecMainStatus`). The parser rejects each required omission with a dimension-specific error. The live-supervision parser and armed-service mocked-orchestration suites pass 55/55 and `git diff --check` passes. This closes only the helper-level schema omissions; at the mocked controller polling boundary, missing state fields still progress to the caller deadline rather than producing a distinct immediate failure. The broader MGR-01 matrix, v02 controller integration, live manager behavior, and receipt certainty remain partial.
+- No service, request adapter, inference, OOM operation, training, score, match, or outcome ran. No manager/journal/counter integration gate advanced.
+
+### 2026-10-07 calibration scenario-target audit
+
+Added `tools/v212_calibration_target_audit.py` and deterministic tests for the 31 draft-02 calibration scenarios. The audit computes target means and success-conditional η values for all profile/band/policy-pair rows with a normal-CDF bisection solver; it uses no RNG and generates no synthetic observations. The control-major atomic order is explicit: V1-C1, V2-C1, …, V1-C5, V2-C5. The draft's N-MACRO orientation is consistently encoded as V1 +0.10 / V2 −0.10 but remains a proposed convention requiring independent disposition before simulation.
+
+The combined profile/target suite passes 11/11; the manifest contains 31 scenarios and 990 η rows, with maximum absolute target residual `9.910895715226076e-11`. An approved read-only `gpt-6-luna/high` follow-up confirmed control-major mapping, N-ATOMIC indexing, and the explicitly open N-MACRO convention. This validates deterministic arithmetic and mapping only; it is not statistical acceptance, simulation, calibration evidence, or approval to generate roots. v04 remains current, and all simulation, root, score, inference, training, and downstream gates remain closed. See the protocol draft and target-audit tool/tests.
+
+### Latest continuation delta (2026-10-07; v02 bootstrap import-path audit)
+
+- A source-level subprocess canary found that adding the project root to `sys.path` allowed a root-level, unmanifested `dataclasses.py` to shadow a stdlib dependency imported by a helper whose bytes were verified. The v02 bootstrap no longer changes to or prepends the project root, and its synthetic `two_player` package has an empty search path; the five allowlisted modules still load from verified in-memory bytes. A subprocess regression proves the unmanifested canary is not executed.
+- Added a valid-canonical-request test with a recomputed manifest digest but wrong bootstrap digest; it reaches exit 36 before helper source loading. The focused bootstrap/protocol/release-token/IPC suites pass 60/60 and `git diff --check` passes. Approved read-only `gpt-6-luna/high` review confirmed both seams and preservation of allowlisted helper imports. These are offline source-level checks only. The request-carried manifest has no independent trust anchor; Python startup/stdlib, loader, native dependencies, and mapped runtime bytes remain unattested; no runtime identity is bound to release/receipt; and the v02 candidate remains separate from the controller/adapter. The remaining manager/journal/counter failure map is partial. No service, request, inference, OOM, training, score, match, or outcome ran; no gate changed.
+- The same review found the v01 controller hashes dependency paths after importing its Python dependencies, so the receipt shows source-file stability rather than the bytes already loaded as code. Its runtime object records service/cgroup limits, not Python/loader/native identity.
+
+### Latest continuation delta (2026-10-07; manager exit-snapshot failure cases)
+
+- Expanded the v01 mocked post-exit manager snapshot table with a malformed short invocation ID, empty ExecMainStatus, negative status, and a value beyond uint64. Together with existing foreign invocation/cgroup, missing invocation/Result, malformed status, non-success exit, and boot identity tests, the new cases fail before response acceptance and preserve the dispatched workspace; the focused test passes. Updated the MGR-01 test map while keeping its status partial: no v02 controller integration or live manager failure was tested, and the full field/failure cross-product remains open.
+- No service, request adapter, inference, OOM, training, score, match, or outcome ran; no gate changed.
+- Follow-up review caught a wording/test gap: empty fields were not omitted keys. Added a separate table-driven fixture that removes `InvocationID`, `Result`, or `ExecMainStatus` entirely and confirms rejection before response read/receipt/stop with workspace retention; the focused test passes. Missing `ActiveState`/`SubState` follows the controller's deadline polling path and was not represented as a direct post-exit parser case. MGR-01 remains partial.
+
+### Latest continuation delta (2026-10-07; consolidated calibration draft 03)
+
+- Consolidated draft 02 and both root-quality extensions into `docs/V212_ROOT_SAMPLING_CALIBRATION_PROTOCOL_DRAFT_03.md`. It defines the cumulative 39-cell inventory (30 null, 9 alternatives), 30 FWER plus 39 simultaneous-coverage endpoints, exact lexicographic ordered policy pairs and low/high yield grouping, target offsets, P2 quality split, and conditional selection laws. It also carries forward shared-arm ordinal score mechanics and makes the N-MACRO V1 +0.10/V2 −0.10 orientation an explicit review item.
+- The previously approved read-only `gpt-6-luna/high` reviewer confirmed the earlier consolidation findings are resolved: the cell/endpoint counts and pair-weighted target arithmetic are coherent. The proposed 69-endpoint assurance grid is explicitly non-monotone; no R is selected. Independent disposition, an integer-R assurance search, unified executable manifest, and local feasibility remain blockers before any simulation. The reviewer did not accept/freeze the protocol.
+- The relevant deterministic profile/root-quality/interaction audit suites pass 19/19. `git diff --check` passes. No random draws, calibration simulation, roots, scores, outcomes, inference, or training were generated/accessed. Draft 03 is unapproved, v04 remains current, and no gate advanced.
+- Publication: local commit `b3f9f70d210275757b4552ac942879e7c50be83b` has tree `5102d6eb83c456251a9ebe355ddefc99e497c24f`. Normal Git push was blocked by SSH config ownership. After verifying `main` at `c3e96c45462f2eba0ba98bca018e45a2ce3ed0c8` and confirming its tree matched the local parent tree, published the same target tree as remote commit `434dfb1b65c6f9c0dfb8866a4ef13fe0c961c67b` (parent c3e96) using the GitHub Git Database API with `force=false` and expected-SHA protection. The GitHub ref and commit API both confirm `main` at 434dfb1 and tree 5102d6. Data/checkpoints/caches/environments/logs/build artifacts were not added.
+
+### Latest continuation delta (2026-10-07; six-arm FLOP protocol draft 02)
+
+- An approved read-only reviewer rejected training-FLOP protocol draft 01 as a preregistration: it did not freeze and aggregate the full 20 paired seeds × 87 updates, and it did not bound value-dependent work under the no-persistent-update contract. The reviewer also requested explicit FLOP-table units. Draft 01 is retained unchanged as history.
+- Draft 02 specifies the pooled 20 × 87 total as the primary estimand, a seed-specific batch/update/mask manifest, per-invocation and descriptive per-example units, and conservative full-schedule lower/upper totals for value-dependent branches, including clipping and covariance/effective-rank active sets. The approved read-only reviewer accepts it as a preregistration only and confirms the interval formulas are valid and conservative. Before profiling, the freeze must pin disposable Adam moment/timestep semantics and count step-dependent bias-correction work. This does not authorize data access or profile execution, and opens no gate.
+- No service, optimizer dry-run, profile, replay, fitting, inference, root generation, score access, or outcome evaluation ran. The objective graph is not integrated with a trainer; selected-window materialization/replay and a full FLOP counter are absent. The ≤5% gate remains **untested and unpassed**; fitting and all other relevant gates remain closed. Existing Reversi8 2-second p90 negative and novelty risks remain in force.
+
+### Latest continuation delta (2026-10-07; V2.12-06 Adam/EMA semantics adoption)
+
+- Compared v05's optimizer hyperparameters with the existing scratch helper. The accepted spec fixes Adam and EMA rates but leaves moment initialization/persistence, bias correction, epsilon placement, clipping scope over parameter tensors, and EMA update timing under-specified. Added `docs/V212_ADAM_EMA_SEMANTICS_AMENDMENT_DRAFT_01.md` as a versioned clarification proposal; v05 was not edited.
+- The approved read-only reviewer recommended adoption as a narrow v06 method amendment. Adopted the equations in `docs/METHOD_SPEC_V212_V06_ADAM_EMA_AMENDMENT.md` and `METHOD_SPEC_V212.md`; preserved the exact v05 text in `docs/METHOD_SPEC_V212_V05.md`. V06 makes global clipping scope, zero-initialized persistent moments, one-based bias correction, epsilon placement outside the square root, and post-Adam EMA for the three JEPA arms explicit. Epsilon placement and clipping scope are deliberate choices that v05 did not uniquely imply.
+- The reviewer confirms reset-per-batch scratch execution is an operation-trace count only, not a training trajectory, and remains contingent on the full-schedule value-dependent branch bounds. The reviewer further requires the future freeze to pin counter/version/coverage, scalar powers, comparisons, zero-norm behavior, unsupported operators, and source/runtime fingerprints. No gate opened by the amendment.
+- No code or tests changed; no trainer, profile, optimizer dry-run, inference, training, data, roots, scores, or outcomes were accessed or run. The ≤5% FLOP gate remains **untested and unpassed**. Existing Reversi8 negative and novelty risks remain in force.
+
+### Latest continuation delta (2026-10-07; raw-state endpoint-mask correction)
+
+- The approved read-only `gpt-6-luna/high` raw-state/six-arm review found that preflight's horizon validity used the endpoint target, while active execution incorrectly required a target at every intermediate step. A valid later endpoint could therefore be counted in the loss despite a skipped transition and zero-initialized prediction. The graph now activates every prefix required by any valid supervised horizon. A synthetic regression fixture covers the missing-intermediate-target case for all five recurrent arms.
+- The reviewer’s read-only follow-up confirms the specific mask mismatch is resolved at source level and finds no remaining blocker specific to this issue; no method amendment is needed. This does not freeze the broader graph or clear replay/compute gates.
+- The v06 model suite initially caught a stale call-count assertion: the corrected active mask skips an unnecessary unsupervised third transition for a row truncated before horizon 4, reducing the expected batch total from 7 to 6 predictor and decoder/re-encoder calls. Updated the fixture; all 7 tests in `tests/test_v212_model.py` pass using the pre-existing NumPy 2.5.3 package at `/tmp/caissa-jepa-pv-deps` with Python 3.14.7. The raw-state feature audit, dense-forward inventory, and scratch optimizer suites also pass 2/2, 3/3, and 4/4, respectively (16 focused tests total). `compileall` and `git diff --check` pass. This differs from the locked NumPy 2.4.6/runtime fingerprint and is synthetic regression evidence only.
+- No data, roots, selected-window replay, service, inference, scores, outcomes, profile, or training were accessed/run. The selected-window materializer/replay, full FLOP counter, and preflight authorization remain absent; raw-state graph freeze and ≤5% compute parity are not established. No gate opened. Prior Reversi8 negative and novelty risks remain in force.
+
+### Latest continuation delta (2026-10-07; audited-window batch adapter)
+
+- Added `two_player/v212_window_batch.py` as a pure in-memory bridge from exact-rule-audited windows to v06 model arrays. `Window` now preserves the audited absolute episode outcome so root/future value labels can be derived in side-to-move perspective. The adapter rechecks local transitions, uses exact game features/legal actions, builds one-hot actions and absolute actors, zero-pads missing suffixes behind explicit transition/target/terminal masks, restricts to the train split, and runs structural `preflight_batch` before returning.
+- The approved read-only review found the label perspective, exact features/action/role mapping, forced pass, masks, and non-operative scope coherent; it notes the adapter depends on caller-provided auditor output for episode-level outcome provenance. A follow-up checked the synthetic draw/short-terminal fixture. This is a reusable software fixture, not selected-window generation, file I/O, data validation for any actual dataset, or authorization to access train data.
+- Synthetic coverage includes Connect Four, Reversi forced pass, exact draw labels, terminal padding, non-train rejection, and altered-transition rejection. The combined adapter/auditor/model/raw-feature/MAC/scratch-optimizer focused suite passes 27/27 under the available NumPy 2.5.3 / Python 3.14.7 runtime. `compileall` and `git diff --check` pass. This differs from the locked NumPy 2.4.6/runtime fingerprint and provides no D03 profile evidence.
+- Selected-window roster/materializer, split/provenance review, trainer, full counter, and data/preflight authorization remain missing. No research roots, scores, empirical outcomes, profile, inference, or training were accessed/run. The draw and terminal targets above are deterministic synthetic rules fixtures only. Raw-state graph freeze and the ≤5% compute gate remain unestablished; no gate opened. Preserve the Reversi8 negative and novelty risks.
+
+### Latest continuation delta (2026-10-07; v06 FLOP preregistration)
+
+- V06 changes the optimizer contract, so v05-specific compute draft 02 is retained as review history and superseded for current v06 profiling by `docs/V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md`. D03 binds the accepted Adam/EMA amendment while retaining the 20 paired seed × 87 update pooled estimand, reset-scratch operation-trace interpretation, conservative interval decisions, and full-schedule branch bounds.
+- The approved read-only reviewer accepts D03 as a preregistration for v06 only. D03 supersedes D02 for v06 and now explicitly requires pre-execution freezing/reporting of scalar powers/bias correction, zero-norm handling, comparisons/indexing/integer work, conversions, unsupported operators, counter coverage, and source/runtime identity. This is not data or profile authorization; no gate opened.
+- No tests, optimizer dry-run, replay, profile, inference, training, data, roots, scores, or outcomes ran/accessed. The trainer, selected-window materialization/replay, full counter, and data/preflight authorization remain missing. The ≤5% gate remains **untested and unpassed**; prior negative results and novelty risks remain in force.
+
+### Latest continuation delta (2026-10-07; DLASCL conditional helper accounting)
+
+- Added `tools/v212_dlascl_iteration_bound.py` as a source-only conditional count for reference LAPACK 3.12.1 DLASCL on the N=32 upper/lower triangle path: for a declared positive `L` loop passes, the candidate arithmetic upper bound is `530*L+2`. This is not a finite total helper bound because a justified cap on `L` from actual machine parameters and caller scale ratio is unresolved; runtime LAPACK identity is also not attested.
+- Added three standard-library regression tests. The DLASCL, DSYEVD-driver, and DSTERF focused suite passes 11/11; targeted `compileall` and `git diff --check` pass. Updated the FLOP coverage audit and roadmap to state the remaining exclusions and gate disposition.
+- No eigensolver, model, data, profile, inference, or training was run/accessed. The full D03 counter, raw-state graph freeze, and six-arm ≤5% compute gate remain open/unpassed. Existing negative evidence and novelty risks are unchanged.
+
+### Latest continuation delta (2026-10-07; independent six-arm graph review)
+
+- The approved read-only `gpt-6-luna/high` review found the adopted v05/v06 raw-state `F→D→E` graph and objective consistent across spec/amendment/model. It confirmed the six-arm static dense-forward counts: 40,864 MAC/window for multi-step JEPA and 72,544 for recursive raw-state (+77.53%); these are distinct from mask-based per-batch accounting and do not establish FLOP parity.
+- The reviewer identified stale “unadopted”/v04 provenance in `tools/v212_arm_dense_forward_macs_audit.py`. The tool now identifies adopted v06 while leaving the MAC figures unchanged; the older reconciliation narrative is preserved as historical status and corrected with an explicit current-source note.
+- Graph freeze remains **NO** and the ≤5% gate remains **untested and unpassed**. Trainer integration, selected-window exact-rule replay, actual 20×87 masks, complete source/runtime/LAPACK accounting, and parity profiling remain absent. No tests/data/model/profile were run by the reviewer; no inference or training occurred.
+
+### Latest continuation delta (2026-10-07; conditional IEEE DLASCL iteration bound)
+
+- Refined the DLASCL source audit with a conditional IEEE binary64 derivation for reference DSYEVD's scale call. Under finite-input/gradual-subnormal assumptions, the DSYEVD sigma branches fall between the reference `smlnum` and `bignum`, so DLASCL takes one matrix-scaling pass; its source arithmetic is bounded by 532 operations. The generic `530*L+2` helper formula remains for caller-supplied L.
+- This remains conditional source evidence: actual linked LAPACK/DLAMCH values and runtime selection are not attested, and this refinement has not received independent review. DLASCL therefore does not close the eigensolver/runtime counter. Focused validation is recorded in the current audit; no eigensolver, model, profile, inference, or training was run, and no gate advanced.
+
+### Latest continuation delta (2026-10-07; DSYEVD DLAMCH/DLANSY helper sub-bound)
+
+- Added `tools/v212_dsyevd_helper_source_bound.py` for the reference DSYEVD `DLAMCH('S')`, `DLAMCH('P')`, and `DLANSY('M')` setup calls. Under IEEE binary64 assumptions, DLAMCH contributes three multiplications and one division; DLANSY scans 528 triangle entries and contributes zero add/subtract/multiply/divide operations under the declared FLOP convention. The helper subcounter includes explicit assumptions and does not claim runtime identity.
+- This source-site sub-bound is not independently reviewed and does not cover DSYTRD/DSTERF or compiler/runtime dispatch. Focused standard-library tests, `compileall`, and whitespace checks pass. No eigensolver, model, profile, inference, or training ran; no gate advanced.
+
+### Latest continuation delta (2026-10-07; DLARFG/DLAPY2 helper sub-bound)
+
+- Added `tools/v212_dlarfg_dlapy2_helper_bound.py` to account for source-visible DLAPY2 body arithmetic and the DLAMCH calls made by reference DLARFG/DLAPY2 under explicit IEEE binary64 assumptions. For the 30 possible N=32 nontrivial reflectors, the maximum two DLAPY2 calls each yield 330 additional add/subtract/multiply/divide operations, 60 scalar square-power sites, and 60 square-root calls.
+- The helper subtotal adds to the prior 58,910 DSYTD2/DLARFG-direct/DSCAL subtotal only as an explicitly conditional candidate, yielding 59,240 arithmetic operations before DNRM2. Counting each scalar square as a multiplication gives sensitivity 59,300. DNRM2, blocked-path/runtime dispatch, and independent review remain open; this does not close the eigensolver counter or authorize a profile.
+- Focused deterministic validation and source checks pass. No eigensolver, model, data, profile, inference, or training ran; no gate advanced.
+
+### Latest continuation delta (2026-10-07; v02 deadline and six-arm readiness crosswalk)
+
+- Updated the supervision matrix and test plan with REQ-01c: the v02 raw-stdin byte cap bounds memory but its read waits for EOF. A future controller must enforce the caller deadline when stdin remains open, including after a valid-looking prefix. Manager, exact-one journal, and paired counter failures also need a single mocked v02 controller/receipt assertion boundary before integration review; the existing v01 mocks and isolated v02 helper tests do not provide it.
+- An approved read-only `gpt-6-luna/high` review found the adopted raw-state `F→D→E` graph consistent with current source-level owners; it found no graph/accounting contradiction. This does not establish full counter coverage: linked eigensolver/reduction/runtime work, unresolved source sites, trainer/replay, selected-window provenance, and the frozen 20×87 masks remain missing. Graph freeze remains **NO** and ≤5% six-arm FLOP parity remains **untested and unpassed**.
+- Documentation-only milestone. No tests, service, request, OOM, inference, roots, scores, simulation, training, or match ran/accessed. No gate advanced; negative results and novelty risks remain in force.
+
+### Latest continuation delta (2026-10-07; DNRM2 reference-source cross-check)
+
+- Re-derived the N=32 reference DNRM2 source bound from the Netlib 3.12.1 DNRM2 and DLARFG branches. The per-call componentwise bounds are `4` arithmetic operations / `1` power / `1` square root for length 1, and `2L+5` / `L+2` / `3` for lengths 2–30. Across reflector lengths 1–30 and at most two calls per reflector, this reproduces 2,154 arithmetic operations, 1,046 power sites, and 176 square roots. The source-bound suite passes 5/5.
+- This is reference-source arithmetic/call-shape validation only. The maxima need not co-occur; loaded BLAS identity/dispatch, compiler lowering, and runtime bytes remain unattested, and this alternative source account is not added to the architecture-specific binary candidate. The full eigensolver counter, graph freeze, and ≤5% parity gate remain open. No eigensolver, model, data, profile, inference, or training ran; no gate advanced.
+
+### Latest continuation delta (2026-10-07; scratch-optimizer source-owner reconciliation)
+
+- The AST crosswalk now assigns all 24 add/subtract/multiply/divide sites inside `scratch_adam_ema_step` to the optimizer arithmetic inventory. It keeps the gradient-norm clipping division as branch-dependent and does not convert scalar powers, square roots, validation, or copies into FLOPs. The deterministic crosswalk digest is `e0f02a55da15ffb61e651ff87dcd8ffb04989c30d34926ce52358dce465aef0d`; its coverage flags continue to withhold full-counter, parity, and graph-freeze eligibility.
+- The focused crosswalk suite passes 6/6. The optimizer-accounting suite passes 4/4 under the existing Python 3.14.7 / NumPy 2.5.3 dependency path at `/tmp/caissa-jepa-pv-deps`; the bare system interpreter lacks NumPy. No dependency or project environment was changed. This closes traceability only: it does not resolve runtime work or bind a trainer/schedule. No model, profile, data, inference, or training ran. Graph freeze remains **NO**, six-arm parity remains **untested and unpassed**, and all negative findings remain in force.
+
+### Latest continuation delta (2026-10-07; regularizer source-owner reconciliation)
+
+- Extended the syntax crosswalk for `_regularize`: ordinary elementwise/scalar arithmetic maps to the regularizer owner; probability/spectrum arithmetic maps to effective-rank; dense products and array squares retain their existing matmul/square owners; integer shape products and unary negations remain separately reported. This prevents those owners from being summed twice.
+- The new regression covers each arithmetic class and continues to assert that
+  the eigensolver remains blocking and `full_counter` remains false. The
+  crosswalk, regularizer, and effective-rank suites pass 15/15 under Python
+  3.14.7 / NumPy 2.5.3 using `/tmp/caissa-jepa-pv-deps`. No model, data,
+  eigensolver, profile, inference, or training ran. Graph freeze and six-arm
+  parity remain closed/unpassed.
+
+### Latest continuation delta (2026-10-07; loss-graph source-owner reconciliation)
+
+- Extended the source crosswalk from the optimizer/regularizer paths to the
+  identified `loss_grad` arithmetic sites. Policy softmax/NLL, loss residuals,
+  affine and tanh-gradient arithmetic, pooled scalar weighting, target-gradient
+  coefficient products, root regularizer scaling, and raw decoder gradient
+  merge now point to their existing partial owners. Integer/list/index
+  arithmetic is reported separately. This is AST-to-owner traceability; it
+  does not upgrade owner totals to validated costs or combine overlapping
+  inventories.
+- Current source counter hash:
+  `edc559d18196e85709b2efb76ef129a69fdf8c3686cdd766a6c41c24c49f04bb`;
+  crosswalk digest:
+  `073e87299cd75e11e13e03651516654622d8b32cc6d2dab5923a14579d3f12d1`.
+  Across the same 970 AST sites, dispositions are 205 candidate-owner, 34
+  partial candidate-owner, one runtime-unverified candidate-owner, 36
+  separately reported, ten separately/partially bounded non-FP, one blocking
+  unresolved `np.linalg.eigvalsh`, 186 explicitly unresolved, 458 explicitly
+  unresolved non-FP, and 39 unresolved/context-owned at that snapshot.
+- The source crosswalk and eight relevant owner suites pass 41/41 under Python
+  3.14.7 / NumPy 2.5.3 via `/tmp/caissa-jepa-pv-deps`; `git diff --check`
+  passes. No model, eigensolver, profile, data, inference, roots, scoring,
+  simulation, service, or training ran. Full-counter, runtime, graph-freeze,
+  fit, and six-arm ≤5% parity remain closed/untested and unpassed.
+
+### Latest continuation delta (2026-10-07; preflight bitwise cardinality ownership)
+
+- Added `tools/v212_preflight_bitwise_accounting.py` for source-shaped output
+  element cardinalities of the 12 explicit `BitAnd`/`BitOr` AST sites in one
+  successful `preflight_batch` call. For 64 windows it reports 35,584 Boolean
+  output elements: transition masks 512, role masks 384, action range/binary
+  masks 16,640 each, horizon-complete 448, horizon-validity 384, and
+  missing-target count masks 576. These are native array-cardinality units,
+  not FLOPs or runtime cost. Comparison evaluations, Boolean inversion,
+  reductions, indexing/control, and finite-check cost remain open.
+- All 12 bitwise AST sites now map to this explicitly partial owner. The
+  current crosswalk source hash is
+  `401482b01d69161bc551e197e4a50ed55cfffad0d16e73d644df77d4e863cb81`; its
+  digest is
+  `3de52f87ea1bfed99336d306e66a649523933b71d951e611589e825757f45fd2`.
+  Across 970 sites, counts are 205 candidate-owner, 46 partial candidate-
+  owner, one runtime-unverified candidate-owner, 36 separately reported,
+  ten separately/partially bounded non-FP, one blocking unresolved
+  eigensolver, 174 explicitly unresolved, 458 explicitly unresolved non-FP,
+  and 39 unresolved/context-owned. Full-counter, parity and graph-freeze
+  flags remain false.
+- The crosswalk, preflight bitwise/scan, and eight owner suites pass 47/47
+  under Python 3.14.7 / NumPy 2.5.3 via `/tmp/caissa-jepa-pv-deps`; `git diff
+  --check` passes. No model, data, eigensolver, profile, inference, roots,
+  scores, simulation, service, or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; preflight comparison cardinality ownership)
+
+- Extended `tools/v212_preflight_scan_accounting.py` with source-shaped array
+  comparison cardinalities. At batch size 64, the four counted comparison
+  families sum to 67,136 output elements: action range/binary checks 66,560,
+  policy range 128, actor alternation 192, and one-hot count domains 256.
+  A successful preflight path has 12 `_finite_array` shape-check calls plus
+  three scalar/shape guards; these 15 calls are not primitive-operation or
+  runtime counts. The 13 `Compare` AST sites occur 24 times on this path.
+  Invalid paths can short-circuit, and reduction/membership internals,
+  inversion, indexing/control, and NumPy runtime cost remain uncounted.
+- All 13 comparison AST sites now map to this partial owner. The refreshed
+  crosswalk source hash is
+  `2bc6efa830ce32a39af154845d6b446f11b03bfaec0aee822e8ca9fc47b42405` and its
+  digest is
+  `edaeee45dd956f8e3c93a283abbbd1349e72dfc7712c2834023ef0846bc57710`.
+  Across 970 sites, dispositions are 205 candidate-owner, 59 partial,
+  one runtime-unverified, 36 separately reported, ten separately/partially
+  bounded non-FP, one blocking eigensolver, 174 unresolved, 445 unresolved
+  non-FP, and 39 unresolved/context-owned. Full-counter, parity, and
+  graph-freeze flags remain false.
+- The focused crosswalk/preflight/owner suites pass 65/65 under the existing
+  Python 3.11.9 / NumPy 2.4.6 environment at
+  `/tmp/caissa-jepa-py3119-np246`; `git diff --check` passes. No model,
+  eigensolver, profile, data, inference, roots, scores, simulation, service,
+  or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; preflight Boolean inversion accounting)
+
+- Added source-shaped output cardinalities for all 13 Boolean `Invert` AST
+  sites in `preflight_batch`. For batch size 64, fixed mask shapes account for
+  2,176 output elements; inversion of the transition-selected actor membership
+  mask adds 0–256 depending on `transition_exists`, yielding 2,176–2,432.
+  Five sites recur over the three active horizons, for 23 site occurrences on
+  a successful valid path. This counts output cardinalities only; membership
+  internals, other Boolean control, reductions, indexing, and runtime costs
+  remain open.
+- All 13 invert sites now map to the partial preflight scan owner. Across 970
+  AST sites, the crosswalk now records 205 candidate-owner, 72 partial,
+  one runtime-unverified, 36 separately reported, ten separately/partially
+  bounded non-FP, one blocking eigensolver, 174 unresolved, 445 unresolved
+  non-FP, and 26 unresolved/context-owned. Crosswalk digest:
+  `19622b3c664aac1f36cfbb5c499663faae8d87c4946b0d9684506b70dda41320`.
+  Full-counter, runtime, graph-freeze, and parity flags remain false.
+- The focused crosswalk/preflight/owner suites pass 65/65 under the existing
+  Python 3.11.9 / NumPy 2.4.6 environment; targeted `compileall` and
+  `git diff --check` pass. No model, eigensolver, profile, data, inference,
+  roots, scores, simulation, service, or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; caller-supplied v02 manifest digest)
+
+- The offline v02 worker bootstrap now requires a separate expected manifest
+  SHA-256 as a launch argument. After bounded raw-stdin parsing and canonical
+  envelope validation, it checks the request's manifest digest against both
+  the recomputed value and the caller-supplied value before resolving the
+  project root or opening helper source. A regression with a self-consistent
+  but altered helper digest fails with exit 44 while the project root is
+  deliberately missing. The exact-byte release fixture supplies the same
+  expected digest and passes.
+- The focused bootstrap/protocol/release-token/IPC suites pass 64/64 using the
+  existing Python 3.11.9 / NumPy 2.4.6 environment; targeted `compileall` and
+  `git diff --check` pass. The caller-supplied value is not independently
+  authenticated; Python startup, loader/native runtime identity, and receipt
+  binding remain open. The candidate is not integrated with systemd or the
+  request adapter. No service, request, inference, OOM, data, score, match,
+  outcome, or training ran. No gate advanced.
+
+### Latest continuation delta (2026-10-07; explicit numeric-conversion inventory)
+
+- Added a syntax-only owner for explicit `float()`, `int()`, and
+  `np.asarray(..., dtype=...)` calls in the model and scratch optimizer. It
+  inventories 45 source calls: 18 scalar-float casts, 14 scalar-int casts,
+  and 13 array dtype requests. The inventory digest is
+  `901c6249d9216348699f2358630fe2b3e3017fb862ab978129acbe36d2ee3363`; the
+  updated 970-site crosswalk digest is
+  `e3a9bad538589841ea4f48c468a41ab9d7ff676d14392364cb1bd4b2fbf845dd`.
+- Explicitly unresolved syntax sites decrease from 174 to 129; array dtype
+  requests remain partial, and scalar casts are reported separately. This
+  does not prove casts/copies occur or bound their runtime. The focused
+  inventory/crosswalk suite passes 10/10; with source-operation and
+  partial-ledger checks, the combined suite passes 17/17. The partial-ledger
+  assertion now follows the current delegated preflight owner rather than a
+  stale abbreviated expected object. Compile and whitespace checks pass.
+  The eigensolver, runtime identity, full counter, graph freeze, trainer and
+  frozen schedule, and six-arm ≤5% parity remain open/unpassed. No model,
+  data, eigensolver, profile, inference, or training ran; no gate advanced.
+
+### Latest continuation delta (2026-10-07; fixed-batch array request cardinality)
+
+- Extended the explicit conversion inventory with requested output-shape
+  element counts for each model/optimizer `np.asarray` path at the frozen
+  batch size 64. Preflight requests 98,496 elements; the common loss branch
+  requests 16,960; direct-leaf adds 50,944, and the other arms add 67,840.
+- Including optimizer input groups, total source-requested element slots are
+  237,288 for multi-step/single-pair/single-horizon JEPA, 257,056 for
+  recursive raw-state, 230,920 for value-only rollout, and 200,584 for
+  direct-leaf value. The optimizer's explicit `.copy()` calls account for
+  53,992 / 73,760 / 47,624 / 34,184 output elements respectively by arm
+  class. These are shape counts only: model `np.asarray` may alias or allocate,
+  and no runtime cast, memory traffic, or time is established.
+- Inventory digest:
+  `14f0f38f976048e8c19e53cf32a3ef49a82740057feb53177561767b32b8ffb0`;
+  crosswalk digest:
+  `c15b3270b212f2763c09244ae11545470c08e4df98b7a607308ac67d04b6dccf`.
+  The combined conversion/crosswalk/partial-ledger suite passes 18/18, plus
+  compilation and whitespace checks. Full counter, runtime identity, graph
+  freeze, and six-arm ≤5% parity remain closed/unpassed. No model, profile,
+  inference, or training ran; no gate advanced.

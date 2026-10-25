@@ -120,12 +120,50 @@ equivalent content diagnostically. No old labels or locked-final artifacts were
 read. Any future corpus feasibility work requires a separate reviewed
 generation protocol and an explicit duplicate-policy reconciliation.
 
+## Request adapter implementation follow-up (2026-10-03)
+
+Added `two_player/v212_request_adapter_v01.py` as a new design-v01 feasibility
+adapter; the frozen `v212_pilot.py` and `v212_pilot_v02.py` implementations
+were not edited. The adapter starts a monotonic request clock before request
+validation and cgroup preflight, passes an absolute request+5-second planner
+deadline to a separate worker, and enforces a request+6-second response
+deadline in the supervising parent. On timeout it SIGKILLs the worker process
+group and records whether the process was reaped. It validates the returned
+action against the exact root's legal-action set and returns the last completed
+iterative-deepening action, or the first legal action if depth one did not
+finish. OOM termination is separated from watchdog timeout using the cgroup
+`memory.events` delta.
+
+The public request function has no unbounded-scope override. Parent and worker
+both require the exact 1.5 GiB finite `memory.max`, `memory.oom.group=0`, and
+matching cgroup paths; they fail closed on mismatch. The response carries the
+cgroup path, limit, event delta, request/search timing, and counters. The move
+action is transient and excluded from the counters. This adapter has no receipt
+writer, score, dataset, optimizer, or training checkpoint.
+
+`tests/test_v212_request_adapter_v01.py` covers cgroup path/limit/group checks,
+deadline/fallback logic, response-action validation, worker timeout/kill/reap,
+OOM event classification, and counter equivalence with the frozen search.
+Together with the symmetry, frozen V02 pilot, and synthetic trajectory-auditor
+tests, the focused suite passed 20/20. A no-inference subprocess scope preflight
+ran in a real disposable 1.5 GiB scope and verified the spawned preflight worker
+had the same cgroup path as its parent, `memory.max=1610612736`, and
+`memory.oom.group=0`; the scope was removed afterward. No request/inference
+worker ran there. Request orchestration unit tests use a mocked cgroup boundary,
+while search equivalence tests use in-memory synthetic roots. This is software
+verification only, not an end-to-end runtime measurement.
+
+The adapter has not received independent review and has not been launched as a
+pilot. Its per-request fresh model construction, worker startup, actual
+six-second wall response, worker behavior under inference load, and receipt/report
+integration remain unmeasured. The no-inference subprocess preflight verifies
+only cgroup inheritance and does not measure request execution or headroom. No training-data or outcome
+artifact was read or created. Do not use the adapter for evaluation until
+independent review and a separate no-outcome integration run are accepted.
+
 ## Decision
 
-V2.12 trajectory generation, four-ply split-leakage validation, and operational
-request-to-response timing remain **not audited**. Source review confirms the
-pilot's per-search timing boundary and cooperative stop behavior, but cannot
-substitute for an end-to-end response adapter/watchdog audit. The frozen
+V2.12 trajectory generation and four-ply split-leakage validation remain **not audited**. Request-adapter code and unit tests now exist, but end-to-end request timing remains **not empirically audited**: no worker request was run inside the verified cgroup, and no multi-cell pilot or receipt was produced. Source review and mocked orchestration tests cannot substitute for an integrated no-outcome run. The frozen
 protocol and in-memory synthetic auditor pass their focused software-contract
 tests and were independently accepted for that synthetic-only scope. This
 cannot certify corpus splits or operational timing. Data generation, training,
@@ -135,3 +173,176 @@ follow-on RSS source check adds a versioned pilot guard/reporting fix and
 specific RSS tests to the open work before any future cap-stressed pilot; it
 does not invalidate the completed V02 measurements, which stayed well below
 the sampled RSS cap.
+
+
+## Episode origin and full-game provenance audit
+
+The remote helper at `two_player/v212_trajectory_audit.py` validates that
+each supplied state has the adapter's shape, replays each supplied action
+legally from the preceding supplied state, checks role alternation, and
+matches the terminal result. It rejects a terminal first state, but does not
+require the first state to equal `game.initial()`; its state validator checks
+shape, values, and player sign, not reachability from the standard opening.
+The helper therefore proves consistency of the supplied segment, not that it
+is a complete game episode with verified seed/policy provenance.
+
+A deterministic in-memory probe used the suffix of an existing five-ply
+Connect Four fixture beginning after its first move. The suffix was accepted
+as an episode and emitted four windows with `start_ply=0`, although its first
+state was not the game's initial state. The focused seven-test
+`test_v212_trajectory_audit.py` suite also passed. The probe used only a tiny
+rule fixture; no generated corpus, model, training label bank, or match
+outcome was accessed.
+
+This is not evidence of a defect in the pure in-memory helper's stated
+segment-level contract, and it does not show that any current dataset is
+contaminated. It is an integration requirement: before corpus generation,
+the production materializer must either enforce the initial-state/full-game
+invariant and bind the original episode ID, seed, ordered policy pair, and
+source hashes, or use a separately typed segment format with an original-ply
+offset and parent-episode provenance. Otherwise a suffix can be renumbered
+from ply zero and the whole-episode split/manifest assumptions cannot be
+verified by this helper alone. No method or gate is amended by this audit.
+
+
+### Exact remote-blob adapter test (2026-10-03)
+
+The adapter and its focused test were fetched from remote `main` and verified
+by Git blob SHA (`3303a1441d3e6807a2b5e6eb81dffb0e22f18223` and
+`7470a46e0a40efe231dd14e679e466bddb61655f`). The remote
+`games.py` and `v212_pilot.py` dependencies also matched the local object
+hashes. All five remote files were placed in an isolated `/tmp` overlay and
+the exact remote test suite was run with the project virtual environment:
+`python -B -m unittest discover -s tests -p test_v212_request_adapter_v01.py`.
+Result: 7/7 passed in 0.323 seconds.
+
+The suite is mocked/in-memory software verification, not an in-cgroup
+request-to-response measurement or a multi-cell pilot. The local untracked
+adapter/test copies differ from remote only in the OOM-error wording and its
+assertion; they were not used for the remote result and were left untouched.
+No project corpus, model-training data, match score, or outcome was read.
+
+
+## Post-worker response-deadline source audit (2026-10-04)
+
+The exact remote adapter blob `two_player/v212_request_adapter_v01.py`
+(`3303a1441d3e6807a2b5e6eb81dffb0e22f18223`) was reviewed with its pinned
+remote `games.py` and `v212_pilot.py` dependencies. In
+`run_move_request`, `elapsed` is sampled immediately after
+`_run_worker_process`; only afterward does the parent reread and validate its
+cgroup, classify OOM/worker status, validate the returned action/depth, and
+construct the response. There is no later clock check. Thus the reported
+`request_wall_seconds` omits post-worker supervisor handling, and the adapter
+can return status `response` even if that handling crosses the six-second
+response deadline.
+
+A deterministic no-inference probe against the exact remote blob used a
+synthetic legal Connect Four root, mocked the worker to consume 0.05 seconds,
+and advanced a mocked monotonic clock by 0.20 seconds during the post-worker
+cgroup audit. With a 0.10-second response deadline, the function returned
+`status=response` and reported 0.05 seconds although the simulated return
+clock was 0.25 seconds. The remote adapter/dependency blob hashes were checked
+before the probe. This establishes a missing post-worker deadline check in the
+adapter contract; it is not an actual cgroup run, inference measurement, or
+evidence about a real request's latency.
+
+Before this adapter can support the reviewed end-to-end budget, issue a
+versioned correction, measure and classify the complete supervisor-side
+response path, add a regression test that delays post-worker validation past
+the deadline, and obtain independent review. The integrated no-outcome run
+must include the caller-observed response boundary; a final in-function clock
+sample alone does not prove scheduling-safe delivery by a hard external
+deadline. No pilot, training, data access, or outcome access occurred. The
+existing adapter remains unreviewed and must not be used for evaluation.
+
+
+## Request adapter v02 correction candidate (2026-10-04)
+
+The original v01 blob is preserved. New files
+`two_player/v212_request_adapter_v02.py` and
+`tests/test_v212_request_adapter_v02.py` add an outer request wrapper that
+measures elapsed time after the full v01-style supervisor processing returns,
+overwrites the earlier partial elapsed sample, and converts a late result to
+`response_watchdog_timeout` with no action. The new deterministic mocked-clock
+regression delays the post-worker cgroup audit beyond the configured deadline
+and asserts a forfeit.
+
+The exact remote v02 module/test blobs
+(`32e62834b7baf6a64695f2467e6539e531fd8144`,
+`58e660c30c2f58b0df8e56ac9ccfc4deb2f50215`) were tested in an isolated
+`/tmp` overlay with the matching remote `games.py` and `v212_pilot.py`
+dependencies. Result: 8/8 tests passed in 0.316 seconds.
+
+This closes the identified in-function accounting/classification gap only.
+The test mocks cgroup reads and worker execution; it is not a real cgroup,
+inference, or latency measurement. The wrapper cannot guarantee hard real-time
+delivery under OS scheduling. The eventual caller must enforce and record its
+own observed six-second response boundary; independent review, external OOM
+supervision, and receipt/report integration remain open. Do not run a pilot
+with v01 or v02 until those gates pass.
+
+
+### External worker supervision design (2026-10-04)
+
+Added `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md` as a research proposal based on the Linux cgroup v2 and systemd manuals. It proposes testing a uniquely named transient service for the worker while the request-owning caller remains outside that unit. Kernel cgroup semantics support only a worker-local OOM boundary; they do not prove protection from ancestor/host-wide pressure. The design also records systemd start/runtime and receipt-capture constraints.
+
+This is not an independent review, host capability check, or OOM-supervision result. Prior disposable tests exercised user scopes, not transient services; no service-local OOM test, request/inference, or receipt integration ran. The document defines staged preflight, placement, fault-injection, no-outcome integration, and review gates. No pilot/training/data/outcome gate changed.
+
+
+### Read-only lattice supervision preflight (2026-10-04)
+
+A read-only host check found systemd 262; the user manager answered queries and reported `user@1000.service` active, `Delegate=yes`, and memory accounting enabled. The user manager's health query returned `degraded`, not investigated. Cgroup v2 exposes and enables the memory controller in the delegated user subtree. systemd reports an inherited effective memory maximum/high of 16,092,520,448 bytes (about 15 GiB); direct user-service and app-slice `MemoryMax`/`MemoryHigh` are unlimited. The caller is currently under the user app slice.
+
+This is a capability/ancestry observation only. No transient service was created, so the worker unit's effective finite limit, worker/caller separation within sibling units, available headroom, OOM classification, caller survival, receipt capture, and cleanup remain unverified. No inference or OOM fault test ran. The manager's degraded state is an unresolved environmental observation and is not evidence of a project failure. See `docs/V212_EXTERNAL_SUPERVISION_DESIGN_01.md`; stages 2–5 remain gated.
+
+
+### Independent design review: transient-unit evidence lifecycle (2026-10-04)
+
+The independent review requested one revision: the no-inference check must measure whether the cgroup directory and `memory.events.local` remain readable after service exit, and whether manager result fields remain available through unit release. This matters because systemd may garbage-collect an unreferenced transient unit and its execution statistics, while kernel cgroup files can disappear with their cgroup. The design now requires testing that lifecycle and capture order, retaining a pinned/queryable manager result or a verified external counter monitor, and failing closed if neither yields evidence. The OOM-stage acceptance criteria now require durable classification before teardown and no silent automatic retry.
+
+The review otherwise accepted the bounded claims about cgroup-local OOM, ancestor/host pressure, activation-time versus caller deadlines, and the limited preflight evidence. This is a documentation correction only; no transient unit, inference, OOM injection, or pilot ran. The proposed design is pending re-review after this revision. Primary references: [systemd unit garbage collection](https://github.com/systemd/systemd/blob/main/man/systemd.unit.xml), [systemd service result fields](https://github.com/systemd/systemd/blob/main/man/systemd.exec.xml), and [kernel cgroup v2 event files](https://docs.kernel.org/admin-guide/cgroup-v2.html).
+
+
+### No-inference transient-service placement and lifecycle check (2026-10-04)
+
+After independent review of the design, trivial short-lived Python workers ran in transient user services with `MemoryMax=128M`, `MemoryHigh=96M`, `MemorySwapMax=0`, `RuntimeMaxSec=10s`, `Restart=no`, and `OOMPolicy=kill`. While running, systemd reported effective max/high of 134,217,728/100,663,296 bytes and the child read the matching cgroup files. The worker service cgroup was a sibling of the caller's app-slice cgroup. No inference, project data, allocation stress, or OOM occurred.
+
+For a retained successful unit, `Result=success` and exit status 0 remained queryable after process exit, but systemd had already cleared `ControlGroup` and the kernel cgroup directory/`memory.events.local` were gone. In the `--collect` case, the unit was observed while active with the expected finite limit; after completion, `LoadState=not-found` and the unit/cgroup evidence was no longer available. A `Result=success` property emitted for a not-found unit is not treated as a persisted result. All temporary units were verified not-found after cleanup.
+
+This closes stage 2 only for placement and successful-exit evidence lifecycle. An OOM run still requires a separately authorized test after the remaining gates; in particular, it must prove the manager's pinned OOM result or an external counter monitor before teardown, caller survival, and durable receipt capture. No OOM, inference, or pilot was run. Logs: `/tmp/caissa_v212_placement_check.log` and `/tmp/caissa_v212_collect_check.log`.
+### Bounded transient-service OOM probe (2026-10-04; ambiguous)
+
+A gated worker passed its pre-release checks (MemoryMax=64M, effective max 64 MiB, swap max 0, memory.oom.group=1, Restart=no, OOMPolicy=kill, separate caller/worker cgroups), then attempted a 256 MiB allocation. systemd recorded Result=oom-kill/ExecMainStatus=9; the caller survived and the worker completion marker was absent. The unit was removed after cleanup.
+
+The last captured worker-local memory.events.local showed max=3 while oom, oom_kill, and oom_group_kill remained zero. Kernel documentation defines max as approaching the limit and separates it from OOM and killed-process counters; systemd's OOM policy can respond to kernel OOM or systemd-oomd. Independent review therefore classified the source as ambiguous: this is a manager-classified OOM/SIGKILL observation, not proof that the worker's own memory limit caused the event or that cgroup-local OOM containment works. Stage 3 remains unpassed.
+
+Verify and independently review the event/result capture path with no inference before any repeat: capture local event deltas and manager result while the cgroup exists, preserve them before teardown, and attribute the event to the worker cgroup while distinguishing ancestor/global pressure and systemd-oomd. No project data, inference, training, scores, or outcomes were involved. Log: /tmp/caissa_v212_oom_probe.log.
+
+
+### No-inference event/result capture-path check (2026-10-04)
+
+A gated normal-exit transient service repeated the sibling-cgroup and finite-limit preflight (128 MiB effective max, swap 0, memory.oom.group=1, Restart=no, OOMPolicy=kill). The external controller captured 14 samples of the worker's memory.events.local while the cgroup existed. After normal worker exit, the controller captured SubState=exited, Result=success, ExecMainStatus=0, and empty ControlGroup; the cgroup event file was absent. It wrote the receipt before cleanup and verified the transient unit was not-found afterward. No allocation stress or OOM event occurred. Log: /tmp/caissa_v212_capture_preflight_v2.log.
+
+Independent review accepts this as the stage-2 placement/lifecycle/capture-order prerequisite. It validates ordinary sampling and result capture only; all event counters stayed zero, so it does not validate nonzero-event detection or OOM attribution. Stage 3 must explicitly test whether a local OOM counter can be captured before teardown. If only the manager result is observed, classify it as a manager-classified OOM with local source uncorroborated.
+
+
+### Second bounded transient-service OOM trial (2026-10-04; worker memcg attributed)
+
+A second gated worker passed pre-release checks: caller and worker were in separate cgroups; worker EffectiveMemoryMax and memory.max were 64 MiB; swap was 0; memory.oom.group=1; Restart=no; and OOMPolicy=kill. It attempted to touch 256 MiB. systemd recorded Result=oom-kill/ExecMainStatus=9; the controller remained alive and the completion marker was absent.
+
+The controller's held memory.events.local descriptor retained only a zero-valued baseline and no positive local OOM counter before the cgroup disappeared. A narrowly filtered journal query after cleanup then found the decisive kernel record: constraint=CONSTRAINT_MEMCG, with oom_memcg and task_memcg both matching the transient worker unit; a following kernel record says the unit's tasks were killed because memory.oom.group was set. systemd's unit journal also records OOM-killer termination and Result=oom-kill. systemd-oomd was inactive when queried. The kernel record positively attributes this one event to the worker memory cgroup despite the missed event-file counter capture; this is one bounded OOM/caller-survival observation, not a general containment guarantee.
+
+The journal evidence was copied to a local filtered receipt after unit cleanup, so pre-teardown versioned receipt integration is still open. Also unvalidated: reliable counter-change capture, repeated-trial reliability, ancestor/host pressure and headroom, request timing, and inference. Keep the broader supervision/pilot gates closed. Logs: /tmp/caissa_v212_oom_probe_v2.log and /tmp/caissa_v212_oom_probe_v2_journal.log.
+
+Primary references: [Linux kernel cgroup v2 event definitions](https://docs.kernel.org/admin-guide/cgroup-v2.html), [systemd service OOMPolicy](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml).
+
+
+### Composite no-inference journal/receipt rehearsal (2026-10-04)
+
+A tracked controller started a journalctl follower before launching a unique transient user service. The normal-exit worker passed the 128 MiB/swap-zero/OOM-group preflight; the controller sampled memory.events.local 12 times while live and captured three matching journal records with cursor, boot ID, monotonic timestamp, and invocation metadata. The worker marker's invocation ID matched systemd's live InvocationID and the exact unit/cgroup. After normal exit and cgroup-file removal, the controller captured Result=success/ExecMainStatus=0.
+
+The assembler separately replayed the retained kernel OOM record from the earlier bounded worker trial as a historical fixture; it matched CONSTRAINT_MEMCG and both worker cgroup fields. The receipt labels that record as historical and does not attribute it to the current normal-exit invocation. The controller wrote a versioned JSON receipt using file fsync, atomic replacement, and directory fsync before unit cleanup; a separate post-cleanup record confirmed LoadState=not-found. Independent review accepts this as the no-inference composition prerequisite.
+
+This does not test a live OOM journal event, a same-invocation OOM receipt, positive counter-transition capture, or follower/partial-write failure handling. The historical fixture is parser evidence only. Same-invocation OOM capture, receipt integration, repeatability, ancestor/host headroom, request timing, and inference remain unvalidated; keep the broader supervision and pilot gates closed. Logs/receipts: /tmp/caissa_v212_receipt_composite_v02.log, /tmp/caissa_v212_receipt_composite_v02.pre-cleanup.receipt.json, /tmp/caissa_v212_receipt_composite_v02.post-cleanup.receipt.json.
+
+Primary references: [systemd journalctl v262](https://github.com/systemd/systemd/blob/v262/man/journalctl.xml), [systemd journal fields v262](https://github.com/systemd/systemd/blob/v262/man/systemd.journal-fields.xml), [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html).

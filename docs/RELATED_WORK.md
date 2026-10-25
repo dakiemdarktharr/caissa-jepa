@@ -1,6 +1,6 @@
 # Research positioning and search record
 
-Search date: 2026-10-01 (targeted refresh). Status: scoped review for design v1, **not an exhaustive systematic literature review or a verified novelty claim**. Sources below are original papers, author repositories or official dataset hosts. Abstract-only entries are explicitly distinguished from full-text inspection. No published score is a local result.
+Initial search: 2026-10-01; targeted primary-source refreshes through 2026-10-07. Status: scoped review for design v1, **not an exhaustive systematic literature review or a verified novelty claim**. Sources below are original papers, author repositories or official dataset hosts. Abstract-only entries are explicitly distinguished from full-text inspection. No published score is a local result.
 
 ## Search method and limits
 
@@ -56,7 +56,8 @@ not altered after fitting began.
 | Ye et al. (2021), [EfficientZero, arXiv:2111.00210v2](https://arxiv.org/html/2111.00210v2), NeurIPS | MuZero with self-supervised consistency, value-prefix estimation, off-policy correction | Atari 100k; DMControl | Atari aggregate score and component ablations; full consistency section inspected | Closest learned-planning control family: consistency regularization is not new. Compact local surrogate must not be called a faithful EfficientZero reproduction |
 | Hafner et al. (2018/2019), [PlaNet, arXiv:1811.04551](https://arxiv.org/abs/1811.04551), ICML | Learn latent dynamics for model-predictive control from images | Visual continuous control | Control return and sample efficiency; abstract inspected | Non-JEPA observation/dynamics objective is needed to isolate representation loss |
 | Hansen et al. (2023/2024), [TD-MPC2, arXiv:2310.16828](https://arxiv.org/abs/2310.16828), ICLR | Decoder-free world model and latent trajectory optimization | Continuous-control tasks, multi-task agents | Return/scaling and shared multi-task models; abstract inspected | Shared weights across tasks are stronger than a common trainer. Opponent-minimax remains outside this evidence |
-| Koller, Fürnkranz & Bertram (2026), [RePAIR, arXiv:2606.11860v1](https://arxiv.org/html/2606.11860v1), [author repo](https://github.com/Artificial-Chrisi/RePAIR) | Iterative masked latent sequence repair and per-state reconstruction | 80k Lichess training games, 10k validation, 10k test; opening/puzzle analyses | Loss ablations, reconstruction top-1 and representation clusters; full text inspected. The selected final objective omits the JEPA term; decoder-based variants perform better than short-decoder + JEPA in its setting | Direct chess prior art. Bidirectional sequence repair without explicit action inputs differs from causal action-conditioned planning. No local superiority follows; reconstruction scores are not playing strength |
+| Xu et al. (2026), [ResDreamer, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/xu26ak.html), [full text, arXiv:2605.17537v2](https://arxiv.org/html/2605.17537) | Dreamer-style hierarchical recurrent world model; upper layers learn from lower-layer observation residuals and feed predicted visual hints to lower layers. The world-model representation losses include prediction, reconstruction, and KL terms; actor-critic learning uses imagined trajectories, so this is not a JEPA-only objective | Five MineDojo Minecraft combat tasks against hostile mobs; visual, open-world, online RL | The paper reports success rates against DreamerV3, STEVE-1, and PTGM; its 100M×2 ResDreamer is the only compared method reported to solve Combat Shulker within 1M environment steps. Results are task success/sample-efficiency claims, not two-player game scores or fixed-budget minimax comparisons | Relevant adjacent prior art for self-supervised world-model representations, multistep visual foresight, and combat against reactive enemies. Mobs are environment dynamics, not an explicitly modeled strategic player; the work does not evaluate alternating actions, exact legal branches, zero-sum utility, or max/min search. It rules out broad claims that self-supervised learned world models or prediction-based combat reasoning are new, but does not test JEPA against matched controls in finite deterministic perfect-information games |
+| Koller, Fürnkranz & Bertram (2026), [RePAIR, arXiv:2606.11860v1](https://arxiv.org/html/2606.11860v1), [author repo](https://github.com/Artificial-Chrisi/RePAIR) | Iterative masked latent sequence repair and per-state reconstruction of chess boards; no explicit move input | 80k Lichess training games, 10k validation, 10k test; opening/puzzle analyses | Three-run 80%-mask loss ablation: 93.71% ± 0.05% square top-1 for short+long decoder losses, versus 93.90% ± 0.02% for long-decoder-only and 93.18% ± 0.02% for long-decoder+JEPA; always-empty baseline is 50%. Later experiments omit JEPA; full text inspected | Direct chess prior art for latent sequence repair, not action-conditioned planning or game strength. The reported metric is sparse square reconstruction, not move quality or decision regret. The visible repository file listing has no top-level license; code/data reuse rights remain unverified. |
 | Ruoss et al. (2024), [Amortized Planning with Large-Scale Transformers: A Case Study on Chess, arXiv:2402.04494](https://arxiv.org/abs/2402.04494) | Supervised action-value prediction amortizes engine search | Large engine-annotated chess corpus | Action quality and searchless playing strength; primary abstract inspected | Teacher compute belongs in data budget; searchless baselines can absorb strong planning priors |
 | Cazenave et al. (2020), [Polygames, arXiv:2001.09832](https://arxiv.org/abs/2001.09832), [author platform](https://github.com/facebookarchive/Polygames) | Fully convolutional/pooling Zero learning; board-size independence; opponent checkpoint pool | Multiple board games, self-play | Bot/human competitions and size scaling; abstract/repo inspected | Variable-board adapters and transfer are not sufficient novelty; distinguish architecture compatibility from measured transfer |
 | Rabinowitz et al. (2018), [Machine Theory of Mind, arXiv:1802.07740](https://arxiv.org/abs/1802.07740), ICML | Infer agent behavior/characteristics from observed behavior | Populations in gridworlds | Behavioral prediction, ToM tasks; abstract inspected | Opponent identity/history conditioning predicts behavior, not worst-case play. A state-action predictor is not by itself opponent modeling |
@@ -152,15 +153,18 @@ JEPA-superiority claim.
 | Work and primary source | Question / design | Domain and data | Baseline / metric / relevant evidence | Difference and consequence for CAISSA |
 | --- | --- | --- | --- | --- |
 | Dann, Mansour & Mohri (2026), [Theoretical Foundations and Effective Algorithms for Policy-Aware Simulator Learning, arXiv:2605.29032v3](https://arxiv.org/abs/2605.29032), [full author preprint](https://arxiv.org/html/2605.29032) | How should a learned simulator be trained so an optimizing policy cannot exploit its errors? Formulates model learning as a minimax game against a policy adversary, develops TV/Wasserstein-critic relaxations and critic-guided active data selection | Five high-dimensional continuous-control tasks with generative sampling; biased training state-action distributions and uniform test coverage; additional policy-training tests on DeepMind Control/Gymnasium tasks | Compares with maximum-likelihood dynamics learning, reports RMSE over five seeds and separates average from high-sensitivity regions; reports 1.55–2.20× lower error in sensitive regions. In four policy-transfer tasks, policies trained in the learned simulator approach optimal real-environment returns while MLE-trained simulators fail on three tasks | Directly overlaps the principle of allocating model learning to strategically important regions and is a serious prior-art threat to generic adversarial/value-aware JEPA losses. It is not JEPA and studies stochastic continuous-control simulator exploitation, not alternating finite perfect-information games with exact transitions. CAISSA must test the narrower incremental benefit of EMA target-latent prediction and complete legal reply conditioning against equally decision-aware non-JEPA controls; a softmin-weighted JEPA loss alone is not an adequate novelty claim. |
+| Nie et al. (2026), [World Models as Adversaries: Multi-Agent Self-Play Fine-Tuning for Robust Motion Planning, arXiv:2607.10630v1](https://arxiv.org/abs/2607.10630), [full author preprint](https://arxiv.org/html/2607.10630) | Converts an autoregressive traffic world model into a role-conditioned adversary, learns sparse adversarial coalitions with counterfactual role-switching, then updates a planner using a constrained, reference-relative regret/tail-risk objective | Tokenized multi-agent motion on nuPlan and InterPlan; a learned predictive policy models non-ego traffic, and adversarial tests use closed-loop simulator scenarios | Authors report closed-loop planning gains on several nuPlan/InterPlan settings, cross-planner adversarial stress tests, and algorithmic ablations; these are preprint results and were not reproduced here | Further weakens standalone novelty around combining learned world models, adversarial min-max framing, counterfactual role-conditioned behavior, and reference-relative planner regret. It does not use JEPA latent prediction or exact deterministic legal moves in a finite perfect-information board game; the CAISSA distinction is that narrow setting and a tested incremental JEPA effect against equally decision-aware controls, not adversarial world modeling or regret-aware planning by themselves. |
 | Jiang et al. (2026), [Boosting World Models Learning via Latent-Space Value Alignment, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/jiang26ai.html) | Can latent-space value-alignment regularization combine dynamics fidelity with task-relevant representation learning, using an adaptive weight | Atari 100k and DeepMind Control benchmarks; published PMLR abstract inspected, full PDF fetch unavailable during this search | The official abstract says it improves existing world-model methods with minimal overhead; exact numerical results and baseline-by-task details were not available from the accessible proceedings page and are not inferred here | A close precedent for latent prediction plus task/value alignment. It is not a board-game JEPA/minimax study. Any CAISSA value-aware latent objective needs an explicit ablation against this objective family and cannot claim value alignment as new. |
 | Voelcker et al. (2022), [Value Gradient weighted Model-Based Reinforcement Learning, ICLR](https://openreview.net/forum?id=4-D6CZkRXxI), [author preprint](https://arxiv.org/abs/2204.01464), [official code](https://github.com/pairlab/vagram) | Weight learned transition-model error using value-function gradients to align model fit with decision impact | MuJoCo continuous-control tasks; model-based policy learning | Compares value-gradient-weighted learning with maximum-likelihood dynamics; reports high returns and greater robustness in settings with limited model capacity or distracting state dimensions | A direct non-JEPA precedent for decision-impact-weighted dynamics learning. Minimax-critical JEPA weighting would need this as a control and cannot claim decision-aware weighting itself as new. |
 | Farahmand, Barreto & Nikovski (2017), [Value-Aware Loss Function for Model-based Reinforcement Learning, AISTATS / PMLR 54](https://proceedings.mlr.press/v54/farahmand17a.html) | Replace generic transition likelihood fitting with a value-function-structured model loss and provide a finite-sample bound | A simple model-based RL example in the inspected proceedings abstract; broader claims require the paper and are not inferred from that abstract | Compares the proposed value-aware loss with maximum likelihood on a simple problem; the source establishes that decision-structured model losses predate CAISSA | Foundational overlap for objectives designed around value/planning. This is a conceptual prior, not a direct JEPA or two-player game baseline. |
 
-Search limitations: the Dann et al. v3 preprint full text was inspected; the ICML 2026
-Value-Aligned World Model was available here through its official abstract, not its
-PDF. A backward/forward-citation and venue search is still required before a
-submission novelty statement. No proposed loss or weighting scheme is designated
-novel by this search.
+Search limitations: the Dann et al. v3 and Nie et al. v1 preprints were inspected
+in full text; the ICML 2026 Value-Aligned World Model was available here through
+its official abstract, not its PDF. The new AWM comparison is conceptual and
+cross-domain; it is not evidence of equivalence to the V2.12 method. A
+backward/forward-citation and venue search is still required before a submission
+novelty statement. No proposed loss or weighting scheme is designated novel by
+this search.
 
 ### JEPA control-state, value-guidance, and world-action refresh (2026-10-03)
 
@@ -184,6 +188,40 @@ evidence that value-aware JEPA is new.
 | Wang et al. (2026), [WA-JEPA: Rethinking the Video JEPA Paradigm for World-Action Modeling in Autonomous Driving, arXiv:2608.20974v2](https://arxiv.org/abs/2608.20974) | Uses hybrid future masking, conditional flow matching over future latents, and a joint future-scene/action predictor; reports NAVSIM and HUGSIM results. Full method and abstract inspected. | Joint world/action prediction is another established planning-oriented JEPA direction. V2.12 predicts future states conditioned on recorded actions and has a root policy head, but does not jointly generate future actions with future-world tokens; it instead searches exact legal branches. WA-JEPA is driving and does not evaluate adversarial max/min. |
 | Gan et al. (2026), [ActSWM: Action-Sensitive World Models for Long-Horizon Planning in Open-World Games, arXiv:2607.26712v2](https://arxiv.org/abs/2607.26712) | Combines a frozen action readout trained from latent transitions with rollout-level separation between recorded-action and all-zero-action predictions to address action-insensitive autoregressive rollouts; evaluates step drift, closed-loop Minecraft tasks, and CEM action recovery. Full method/abstract inspected; detailed source summary is in `docs/V28_PRIOR_ART_DELTA_20260930.md`. | Closest game-domain JEPA planning precedent in this search. Minecraft is a single-agent open-world control task; ActSWM does not study alternating players, zero-sum utility, exact discrete board rules, or max/min. It nevertheless establishes that multi-step JEPA in a game environment and action-sensitive rollout objectives are prior art. A V2.12 diagnostic should compare legal alternatives from the same root only when their exact-rule consequences differ, and report latent separation alongside exact-state, value, and ranking differences. Distinct legal actions need not map to distinct latents, and latent distance alone does not establish useful sensitivity. |
 
+### Published latent-planning JEPA update (2026-10-05)
+
+The ICML 2026 proceedings include *Temporal Straightening for Latent
+Planning*. Its authors jointly learn an encoder and predictor with a cosine
+curvature penalty between consecutive latent displacements, then use gradient-
+based open-loop planning and MPC in four goal-reaching environments. The
+official project page describes this objective and evaluation directly. This
+strengthens prior art for shaping JEPA latent geometry around planning, but it
+does not test discrete legal-action branches, alternating zero-sum decisions,
+or exact-rule max/min. The distinction narrows the CAISSA question; it does not
+establish novelty or a benefit for its current loss. No project method or gate
+was changed from this literature update.
+
+| Work and primary source | Method and evidence inspected | Relevance and distinction for CAISSA |
+| --- | --- | --- |
+| Wang et al. (2026), [Temporal Straightening for Latent Planning, ICML 2026 / PMLR 306](https://proceedings.mlr.press/v306/wang26n.html), [official project page](https://agenticlearning.ai/temporal-straightening/) | Jointly learns an encoder and JEPA predictor with a cosine-curvature penalty on consecutive latent displacements; uses gradient-based open-loop planning and receding-horizon MPC in Wall, PointMaze-UMaze, PointMaze-Medium, and PushT. Official abstract and project summary report straighter latent trajectories, better Euclidean/geodesic alignment, and improved planning success; numerical table values were not transcribed in this search | Directly establishes a JEPA objective that shapes latent geometry for planning. It does not evaluate finite legal-action enumeration, two-player zero-sum play, or exact-rule alternating max/min. Geometry shaping for planning is not a novelty claim for CAISSA; only the V2.12 loss's incremental effect in the narrower adversarial setting remains untested, with no evidence of benefit. |
+
+### Targeted self-supervised combat world-model update (2026-10-07)
+
+Full-text inspection of ICML 2026 ResDreamer confirms a nearby but distinct
+line: a Dreamer-style hierarchical recurrent world model learns observation
+and residual prediction, then trains an actor-critic on imagined trajectories.
+Its evaluations cover five MineDojo combat tasks against hostile mobs; the
+authors report that their 100M×2 configuration solves Combat Shulker within
+one million environment steps while the compared methods do not. This is
+self-supervised world-model representation learning embedded in online RL,
+not a JEPA objective. The mobs are reactive hazards inside an open-world
+environment rather than a second strategic player in an explicitly solved
+zero-sum game. The paper therefore raises the bar against broad claims about
+self-supervised world models, long-horizon prediction, or combat reasoning,
+but does not resolve whether a JEPA loss helps over a matched non-JEPA model
+with exact legal transitions and alternating max/min search. No scores or
+data were reproduced locally and no CAISSA method or gate changed.
+
 These sources narrow the plausible contribution further: V2.12 should be framed
 as a controlled test of whether its particular EMA-target multi-horizon loss
 adds value over matched value-/state-prediction controls in an exact-rule,
@@ -194,6 +232,59 @@ Distinct legal actions need not map to distinct latents, and latent distance
 alone does not establish useful sensitivity. Any spec change must be versioned
 and reviewed. These papers do not establish that increment, and they do not
 alter any data, compute, or training gate.
+
+### Counterfactual-action and trajectory-level JEPA refresh (2026-10-06)
+
+Radha and Goktas' *UWM-JEPA: Predictive World Models That Imagine in Belief
+Space* (arXiv:2605.25313; full author preprint inspected) provides a close
+mechanism warning for action-conditioned prediction. In its partially
+observed hidden-velocity task, the teacher-forced target can be matched with
+little use of the action term; replacing that target with a simulator rollout
+under independently sampled counterfactual actions restores the paper's
+action-term magnitude and action-perturbation response. The reported 0.77
+hidden-velocity accuracy is specific to its unitary density-matrix model and
+task; the matched LSTM-JEPA configuration using the same counterfactual target
+remains at its 0.53 majority-class baseline. The authors characterize the
+evidence as action-sensitive imagination rather than competitive planning.
+These are author-reported preprint results, not a board-game result or a local
+reproduction.
+
+The relevant distinction is the training target, not merely whether an action
+is an input. V2.12-04's recursive predictor is action-conditioned, but its
+JEPA targets follow recorded policy-mixture branches. Exact board rules make
+counterfactual legal successors computable, but using them as training targets
+would change the data intervention and potentially the estimand. It must not
+be introduced into only the candidate arm or silently substituted into v04.
+The current same-root legal-action diagnostic can test action binding and
+decision consequences without converting evaluation references into training
+labels. If counterfactual-target training is considered, version a separate
+method/control design and give the same simulated target access to its matched
+arms. UWM-JEPA is a partial-observation control task, not an alternating
+zero-sum board game, so it does not establish that v04 is action-insensitive.
+
+Huo, Song, and Luo's *Flow-JEPA: Flow Matching for Robust Latent Dynamics in
+JEPA World Models* (arXiv:2608.29029; author preprint and linked code
+repository inspected) replaces repeated one-step latent prediction with
+conditional flow matching over a future latent trajectory given current
+observations and actions. Its reported control experiments concern four
+continuous-control environments and visual perturbations, not symbolic legal
+actions, exact deterministic transitions, or adversarial max/min. It is
+another established multi-step action-conditioned JEPA design, but its
+stochastic trajectory generator is not a directly matched control for the
+frozen deterministic board-game question. Reported gains are author-reported
+and unreplicated here.
+
+The 2026-10-04 action-sensitivity disposition cites ActSWM and AD-WM but does
+not cite UWM-JEPA. Its conditional acceptance of the six-arm scope therefore
+cannot be treated as a review of this newly surfaced mechanism evidence. Before
+any fit, the independent reviewer should explicitly consider whether the
+frozen v04 estimand intentionally excludes counterfactual-target/action-
+sensitivity training, and confirm that the all-legal-root diagnostic is
+sufficient for that narrow claim. No method arm, target, root, cap, or gate is
+changed by this literature update. Sources: [UWM-JEPA paper](https://arxiv.org/abs/2605.25313),
+[UWM-JEPA author code](https://github.com/santoshkumarradha/uwm-jepa),
+[Flow-JEPA paper](https://arxiv.org/abs/2608.29029), and
+[Flow-JEPA author code](https://github.com/HuoYanchen/Flow-JEPA).
 
 ### Planning-alignment and transfer update (2026-10-02)
 
@@ -365,3 +456,528 @@ but not predictive dynamics. The only defensible V2.12 question remains a
 controlled empirical increment over matched state/value baselines and a
 same-search exact-state control. No V2.12 fit, match, score, or gate change
 follows from this search.
+
+
+### Causal-JEPA and structured counterfactual-like queries (2026-10-03)
+
+Nam et al., [Causal-JEPA: Learning World Models through Object-Level Latent
+Masking](https://proceedings.mlr.press/v306/nam26c.html), ICML 2026, extends
+masked joint-embedding prediction to object-level latents. Its abstract says
+masked object states are inferred from surrounding context, creating
+“counterfactual-like” prediction queries; it reports counterfactual-reasoning
+and agent-control results. This is relevant to V2.12's unresolved question of
+how to represent counterfactual support, but it is not evidence that C-JEPA
+evaluates all legal action branches or learns exact rule-governed transitions
+in adversarial board games. It strengthens the need to distinguish structured
+masked queries from complete legal-action coverage. This source does not resolve
+the V2.12 protocol gap, establish novelty, or change any research gate.
+
+
+### Action-discriminative multi-step JEPA and counterfactual planning (2026-10-03)
+
+Two 2026 arXiv preprints directly narrow the action-aware-planning claim.
+Qiu et al., [AD-WM: Action-Discriminative World Models for Counterfactual
+Model Predictive Control](https://arxiv.org/abs/2609.30264) (v2, 2026-09),
+train residual latent transitions on observed successors and add predictor-level
+action-recovery objectives. At inference, the latent model is rolled out for
+CEM candidate selection. Their planning-facing diagnostics compare predicted
+and realized costs on a shared candidate bank, including global rank
+correlation and normalized regret of the predicted elite set. The paper
+reports improved results over its matched LeWM baseline on four of five
+simulation environments and on a robot-transfer task; these are author-reported
+preprint results and were not independently reproduced in this audit. This
+makes action-discriminative JEPA dynamics, counterfactual candidate comparison,
+and planner-facing regret diagnostics established prior art. Its continuous
+robotic goal-reaching/CEM setting does not test exact finite legal action sets,
+alternating adversarial players, or worst-case zero-sum max-min decisions.
+
+Gan et al., [ActSWM: Action-Sensitive World Models for Long-Horizon Planning in
+Open-World Games](https://arxiv.org/abs/2607.26712) (v2, 2026-08), are still
+closer to the proposed multi-step objective. ActSWM combines JEPA-style
+multi-step latent rollout prediction with (a) a contrast between recorded and
+all-zero future action rollouts and (b) a frozen action readout that encourages
+recoverable actions from predicted latent transitions. It evaluates closed-
+loop CEM planning in Minecraft tasks and action recovery from offline
+Counter-Strike 2, GTA V, and Apex Legends gameplay. These author-reported
+preprint experiments establish multi-step action-sensitive JEPA planning and
+cross-game action recovery as prior art, but do not evaluate exact legal
+transitions in alternating, deterministic, two-player zero-sum games or
+minimax decision regret. Its all-zero contrast must not be copied literally
+into CAISSA: a zero action may be illegal or semantically special in a board
+game.
+
+Together these papers mean novelty cannot rest on multi-step JEPA, action
+sensitivity/action recovery, counterfactual planning comparisons, or
+cross-game action recoverability. The only plausible incremental empirical
+question currently left is narrower: whether a frozen learned latent model
+improves exact-rule, finite-horizon max-min decision quality in the declared
+game scope at equal measured compute, beyond matched value/dynamics controls
+and an action-sensitive JEPA control. That is a benchmark claim to test, not
+an algorithmic novelty claim. The V2.12 v04 objective trains on recorded
+trajectory branches and has no counterfactual-branch loss, so support coverage
+alone cannot establish arbitrary legal-action ranking. Before any fit, a
+versioned, independently reviewed protocol must resolve whether to add an
+action-sensitive arm and must define full legal-root scoring and decision
+regret against a bounded exact-search reference. No current method/spec gate
+changes from this literature review.
+
+### Action-sensitivity control scope review (2026-10-04)
+
+The primary-source method comparison is now separated from the control
+decision. ActSWM's frozen action readout constrains predicted latent
+transitions to retain recoverable action information; its rollout contrast
+uses recorded versus all-zero action sequences. The latter cannot be copied
+literally for board games, where zero may be illegal or semantically special.
+AD-WM applies inverse and normalized action recovery to predictor-generated
+transitions and evaluates predicted versus realized costs on shared candidate
+banks. Its authors report that the inverse-only increment is unresolved in the
+Cube elite-regret diagnostic; the inverse objective has a smaller,
+weight-dependent effect in the Cube success ablation. This source does not
+establish a particular auxiliary as a necessary or sufficient control. Both
+papers are arXiv preprints and their results remain author-reported, not
+independently reproduced here.
+
+`docs/V212_ACTION_SENSITIVITY_CONTROL_DISPOSITION_DRAFT_01.md` recommends
+retaining v04's six arms only for their narrow predeclared contrast family,
+subject to independent pre-fit acceptance of the scope exclusion. It does not
+call a new seventh arm a matched control: a separate comparator would add a
+benchmark contrast, compute, and multiplicity without changing the existing
+candidate-versus-control estimands. A broader comparison to action-sensitive
+JEPA requires a separately versioned and reviewed benchmark before fitting.
+Regardless of arm count, the proposed decision-facing diagnostic must cover
+every legal root action, distinguish recorded-support from counterfactual
+actions, and pair latent response with exact consequences and exact/bounded
+decision regret. Latent separation by itself is not a useful-action test.
+This is a draft recommendation only; the research gate remains open and the
+v04 method is unchanged.
+
+### Exact Connect Four solution and oracle prior art (2025–2026)
+
+The standard 7x6 Connect Four game has strong-solver prior art beyond the
+small legacy games. Böck's 2025 preprint reports a BDD-based exact W/D/L
+solution table of 89.6 GB, generated in 47 hours on one CPU core with 128 GB
+RAM, plus alpha-beta search for fastest wins/slowest losses
+([paper](https://arxiv.org/abs/2507.05267); [author artifact repository](https://github.com/markus7800/Connect4-Strong-Solver)).
+The repository documents per-move W/D/L queries against the table and a
+separate remoteness search. No license file was present in the inspected
+repository tree; its code/artifact is not approved for reuse by this audit.
+
+For a lighter exact action-value interface, the MIT-licensed Rust
+[connect-four-ai](https://github.com/benjaminrall/connect-four-ai) source at
+commit `28a112adaf3ff89ee23fb09411fa592b6597010e` provides
+`get_all_move_scores` over playable columns. Its documentation says scores
+are exact, side-to-move remoteness values; its `begin-hard` no-book benchmark
+is author-reported and averages 5.09 s. The pinned source and API have not
+been independently run or integrated. Pascal Pons's earlier solver also
+exposes exact scores per move, but its source is AGPL-3.0-or-later
+([pinned repository](https://github.com/PascalPons/connect4/tree/d6ba50d8aaf2308c769d9bf2abd42d90f34baf41)).
+These are software/evaluation precedents, not learned-world-model methods.
+They eliminate any claim that standard-board exact Connect Four evaluation
+is itself novel; they do not establish novelty or value for JEPA.
+
+These sources only narrow the full-game oracle gap for standard Connect Four
+6x7. They do not cover Connect Four 8x8 or Reversi. Rust internal search
+positions are not the V2.12 planner's 10,000-node accounting; its no-deadline
+API and author-reported seconds-scale hard positions cannot be assumed to fit
+the 5-second request budget. A future evaluation must predeclare root-player
+W/D/L utility and keep remoteness secondary unless the method review chooses
+otherwise. Adapter/correctness/license/resource review remains outstanding;
+no code or table was run or downloaded.
+
+
+### 6x6 Reversi semi-strong solution artifact (2026-10-04)
+
+Takizawa's [semi-strong solving paper v2](https://arxiv.org/abs/2411.01029v2)
+reports a score-valued exact solution artifact for 6x6 Othello/Reversi over a
+certified region `R`, plus a proof certificate. The definition is explicitly
+weaker than a strong solve: `R` covers positions reachable when one designated
+player follows a canonical optimal policy and the opponent may choose any
+legal move. For a declared orientation, every legal successor of a free-agent
+node remains in that orientation's region, while an optimal-agent node only
+certifies the canonical optimal continuation. The [Zenodo release](https://zenodo.org/records/18843225) describes
+exact value queries on `R` and reports a 138.4 GB bundle. The Zenodo rights
+metadata has no license value in the inspected snapshot. The artifact is a
+potential exact-reference source only for certified roots/actions, not a
+complete oracle for arbitrary policy-mixture roots.
+
+The paper's terminal score assigns remaining empty squares to the winner;
+CAISSA Reversi terminal utility is winner/draw. Inference from the shared
+winner rule: the sign of exact score-margin minimax values equals W/D/L
+minimax values, since the sign map is monotone through max/min. It does not
+preserve distinctions among moves with the same W/D/L result. Only a root
+certified in the orientation-specific region `R_P`, with the side to move
+free under that same orientation, has the guarantee that every legal
+successor is covered; membership in the union `R` alone is insufficient.
+Such a root may support a complete exact W/D/L action row if every child query
+is available; negate each child value to convert
+from side-to-move to root perspective. At an optimal-agent root under that
+orientation, only the canonical optimal continuation is certified, so a full
+legal-action regret denominator is unavailable. Membership, orientation,
+full child coverage, utility normalization, proof scope, license, and storage
+all need verification before use. No artifact was
+downloaded or queried. This narrows but does not close the V2.12 oracle gap;
+the bounded references for Connect Four 8x8, Reversi6 outside `R`, and Reversi8
+remain unselected. See
+`docs/V212_COUNTERFACTUAL_DECISION_REGRET_DESIGN_01_DRAFT.md`.
+
+
+### Sound minimax value bounds as an evaluation reference (2014–2026)
+
+Busoniu, Munos, and Páll's primary paper on optimistic minimax search for
+sequential adversarial decisions initializes partial-tree leaves with lower
+and upper bounds, propagates bounds through max/min nodes, and permits
+anytime stopping while retaining a bound on unresolved root optimality
+([paper](https://busoniu.net/files/papers/adprl14-minimax.pdf)). Its
+near-optimality results require assumptions about how action-sequence value
+gaps vary with depth; these are not established for CAISSA. Pascal Pons's
+pinned Connect Four solver gives a concrete implementation example in which
+alpha-beta returns exact values only inside the search window and otherwise
+labels upper/lower bounds ([source](https://github.com/PascalPons/connect4/blob/d6ba50d8aaf2308c769d9bf2abd42d90f34baf41/Solver.cpp)). Takizawa's primary Othello paper also distinguishes proven game-theoretic values from estimates during its weak-solving procedure ([paper](https://arxiv.org/html/2310.19387v3)).
+
+These sources support the measurement principle “preserve valid bounds and
+do not report an unresolved estimate as exact.” They do not validate the
+proposed CAISSA W/D/L interval recurrence, its budget, or its forced-pass
+adapter. The derived interval metric is a diagnostic design, not a new search
+algorithm or a learned-method result. Independent review found no blocker in
+the interval derivation under the full-successor invariant; tiny exhaustive
+verification, cap feasibility, and protocol freeze remain necessary. No
+positions were queried and no source code/artifact was integrated.
+
+### Weak solution of standard 8x8 Othello (2023)
+
+Takizawa reports a **weak solution** of standard 8x8 Othello: the initial
+position is a draw under perfect play, with a strategy that guarantees at
+least a draw from that opening ([arXiv:2310.19387v3](https://arxiv.org/pdf/2310.19387)).
+The paper defines weak solving as an opening-position result plus a strategy;
+it explicitly says the work does not reach its proposed semi-strong category
+of calculating best play for all positions. The proof selected 2,587 positions
+with 50 empty squares and used exact/bounded-search support at 36-empty-square
+subproblems; it is not a table of complete per-action values for arbitrary
+reachable roots. The released modified Edax repository is GPL-3.0
+([source](https://github.com/eukaryo/edax-reversi-AVX-v446mod2/tree/fbec6a324775b55cafe4a6d9691d92b3fdde2ffc));
+raw analysis outputs are separately hosted on Figshare. No code or output was
+run or downloaded.
+
+The current Reversi8 implementation appears rule-compatible with standard
+Othello's 8x8 opening, alternating turns, flips, forced passes, and terminal
+stone-count result based on source inspection; a formal adapter equivalence
+check would still be required. This is useful exact-play prior art and an
+opening-position anchor, but it does not supply complete root-action scores
+for the protocol's sampled reachable positions or change the regret metric.
+Do not describe Reversi8 as an unsolved game; do not treat the weak opening
+solution as a strong solution, arbitrary-position oracle, or model-evaluation
+result. GPL-3.0 and artifact provenance also require review before any reuse.
+
+
+### Decision-metric alignment and action-conditioned JEPA planning (2026)
+
+Wang et al., *Decision-Metric Alignment in Latent World Models*, distinguish
+task-variable decodability from whether a planner's latent cost ranks
+candidate plans in the same order as environment outcomes. Their Plan-Real
+Spearman and CEM-stage Spearman diagnostics evaluate ranking over random
+plans and candidates as CEM concentrates its proposal. Their DA-LeWM adds
+inverse-dynamics and demonstration-conditioned goal-action heads to an
+action-conditioned LeWM predictor; the heads are discarded at inference, so
+the base MPC planner and planning-time compute remain fixed. The authors
+report improved convergence and online success across PushT, Reacher, Cube,
+and TwoRoom, with similar probe scores ([arXiv:2608.18746v1](https://arxiv.org/abs/2608.18746)).
+This is a recent preprint, not independently reproduced here.
+
+The result materially narrows CAISSA-JEPA novelty claims: action-conditioned
+JEPA dynamics, inverse-action/goal-action auxiliary supervision, and
+planner-candidate rank diagnostics are established prior art and cannot be
+claimed as standalone contributions. The benchmark and objective differ:
+DA-LeWM uses single-agent Euclidean goal-distance MPC with CEM on four
+robotics tasks, whereas CAISSA targets deterministic, fully observed,
+alternating zero-sum games and ranks complete legal root actions after
+finite-horizon max/min backup. That difference motivates a narrower
+empirical question; it does not itself establish novelty.
+
+The paper also reports a relevant negative result: on PushT, its CEM-stage
+Spearman falls to approximately zero or below for every compared variant at
+the elite stage, including action-supervised DA-LeWM (Table 3). Thus its
+global/random-plan ranking lift does not establish local ranking quality
+among the plans the optimizer ultimately selects. The paper reports one
+training run per configuration and evaluation over three seeds, limiting
+evidence about training-seed variability. Before any CAISSA fit, independent
+review must assess a DA-LeWM-style inverse-action control and whether any
+goal-action target is meaningful for policy-mixture trajectories without
+confounding behavior imitation with adversarial decision quality. The present
+V2.12 spec does not include this control; no method or gate is amended here.
+
+
+### Learned latent models for two-player zero-sum games: LAMIR (ICLR 2026)
+
+Kubíček and Lisý, *Look-ahead Reasoning with a Learned Model in Imperfect
+Information Games* (LAMIR), directly establish that learned latent game models
+can support look-ahead reasoning in two-player zero-sum games. Their
+MuZero-inspired model encodes each player's information set, predicts both
+players' next abstract information states from a joint action, and predicts
+reward, termination, and legal actions. Training uses trajectory data and
+recurrent losses for those targets, plus a learned information-set
+abstraction; the paper does not present a JEPA objective. At test time the
+learned model supports depth-limited reasoning with CFR+, rather than
+CAISSA's exact-rule finite-horizon max/min backup.
+
+The scope is materially different but closer than generic single-agent
+world-model work: LAMIR addresses imperfect-information simultaneous-move
+games without chance, including Leduc Hold'em and imperfect-information
+Goofspiel/Oshi-Zumo. Its formalism notes that sequential games can be
+represented with fictitious actions for the non-acting player, so
+“alternating two-player game” alone is not a defensible novelty claim. The
+paper reports lower exploitability than concurrently trained RNaD in smaller
+games, and up to 80% head-to-head win rate in large games; these are
+author-reported results, not independently reproduced here.
+
+This closes any broad claim that learned latent models plus test-time
+look-ahead or equilibrium-oriented reasoning are new to two-player
+zero-sum games. A narrower CAISSA comparison remains possible: deterministic,
+fully observed board states with known exact rules and legal-action
+enumeration; JEPA-style state-latent prediction; and decision-rank/regret
+evaluation under finite-horizon adversarial backup against compute-matched
+non-JEPA controls. That difference defines a testable empirical question,
+not established novelty or evidence of a JEPA advantage. V2.12's planner is a
+max/min heuristic and must not be described as a Nash-equilibrium solver.
+Source: [Kubíček & Lisý, arXiv:2510.05048](https://arxiv.org/abs/2510.05048),
+whose paper identifies itself as published at ICLR 2026.
+
+
+### JEPA Arcade: action-conditioned JEPA in two-player arcade games (author artifact)
+
+The [JEPA Arcade model card](https://huggingface.co/sauravvvv/jepa-arcade)
+describes a 13M-parameter pixel encoder and action-conditioned autoregressive
+latent predictor for Pong, Tennis, and Boxing in two-player PettingZoo Atari
+environments. It reports SIGReg anti-collapse regularization and supervised
+state-head training, including privileged Atari RAM for labels/own-body state;
+the playing controller is a hand-written policy over the decoded state. The
+card's reported validation evidence is state-probe correlation and state-loss
+reduction, not head-to-head strength, minimax planning, regret, or a comparison
+against a matched non-JEPA model. It also warns that the collector uses heuristic
+plus epsilon-random policies and does not characterize behavior outside that
+distribution.
+
+This author-hosted artifact is direct evidence against a broad claim that
+action-conditioned JEPA representations have not been applied to two-player
+games. It does not test discrete symbolic board states, known exact transition
+rules, recursive 1/2/4-ply targets, or alternating max/min decision quality.
+The inspected source was the model card; its linked [code repository](https://github.com/saurav-34/lepong)
+was not independently reviewed in this pass, and no peer-reviewed paper was
+identified. Treat all model-card metrics and descriptions as author-reported.
+The narrow V2.12 hypothesis therefore remains an empirical comparison against
+matched exact-state and task-prediction controls, not an established novelty
+claim.
+
+
+### Code World Models for General Game Playing (ICLR 2026)
+
+Lehrach et al., *Code World Models for General Game Playing*, use an LLM to
+synthesize an executable Python model of a game from its natural-language
+rules and sampled trajectories. The code exposes legal actions, transitions,
+observations/rewards, and termination; MCTS is used for perfect-information
+games and ISMCTS for imperfect-information games, optionally with generated
+leaf-value and hidden-state inference functions. Their ten-game evaluation
+includes five perfect-information games, among them Connect Four, plus four
+novel games; the paper reports matching or outperforming Gemini 2.5 Pro in
+nine of ten games. The official ICLR 2026 proceedings page and the arXiv
+paper are primary sources; results are author-reported, not reproduced here.
+
+This is adjacent evidence that game-model construction plus classical search
+is an established general-game approach, including Connect Four. It is not a
+neural latent dynamics learner or JEPA objective: its central model is
+LLM-generated executable code, and the comparison is against a general LLM
+policy rather than matched learned-dynamics controls. Its trajectory-derived
+tests verify sampled behavior, not correctness over every unseen reachable
+state. It therefore narrows broad “model-based planning in new games” claims,
+but does not resolve CAISSA's specific JEPA decision-quality question or
+validate the V2.12 proposal. Sources: [ICLR 2026 proceedings](https://proceedings.iclr.cc/paper_files/paper/2026/hash/d8a12fde9e72444e1b356e8c37e53753-Abstract-Conference.html);
+[arXiv:2510.04542](https://arxiv.org/abs/2510.04542).
+
+
+
+### Exact chess-state tracking as an adjacent benchmark (2026)
+
+Walker and Lyons' *Chess-World-Model* (arXiv:2605.30100) trains sequence
+models to reconstruct the complete chess state after each prefix of legal
+moves. Its benchmark uses 10 million Lichess games, a held-out human-game
+split, and a uniformly random legal-play split; it compares a causal
+Transformer with SLiCE, Mamba-3, and Gated DeltaNet under a shared prediction
+interface. The authors report that the recurrent models outperform the
+Transformer at the smaller 3M and 8M parameter scales, while the random-play
+split remains discriminative at larger scales. The task is exact state
+tracking, not move selection or game playing, and it does not evaluate a JEPA
+loss, planning, or decision regret. It therefore rules out broad claims that
+exact state tracking over deterministic board-game move histories is new,
+while leaving the V2.12 objective-attributed decision-quality question open.
+The repository is MIT-licensed; this audit did not download or run its code or
+data, and its reported experiments were not independently reproduced.
+Sources: [paper](https://arxiv.org/abs/2605.30100) and
+[author repository](https://github.com/Benjamin-Walker/Chess-World-Model).
+
+
+### Sequence-trained Othello representations (2025)
+
+Yuan and Søgaard's *Revisiting the Othello World Model Hypothesis* trains
+GPT-2, BART, T5, Flan-T5, LLaMA-2, Mistral, and Qwen2.5 variants to predict
+the next move from Othello move histories. The source reports 132,588
+championship games and 23,796,010 synthetic games, with 10,000 games from
+each dataset held out for testing and another 10,000 for validation. The
+primary move metric is top-1 next-move error, counting an illegal predicted
+move as an error; a separate experiment checks two successive generated
+moves. With the full synthetic data, the non-pretrained models report less
+than 0.1% one-hop error, while the paper says multi-step generation remains
+challenging. It also uses representation alignment and latent-move
+projections to argue that board layout and spatial relations appear in the
+learned features. These are author-reported results, not reproduced here.
+
+This is direct Othello board-history representation and next-move prior art,
+and it further rules out broad claims that learning board structure from
+legal game sequences is new. Its next-move target is a recorded move, not a
+complete legal-action value/ranking set; its two-hop legality check is not
+adversarial look-ahead or decision-regret evaluation. The model is an
+autoregressive sequence predictor, not a JEPA transition objective, and the
+study does not compare a fixed-compute minimax planner. Therefore it does not
+answer whether V2.12's latent matching changes max/min action quality against
+matched controls. Source: [Yuan & Søgaard, arXiv:2503.04421](https://arxiv.org/abs/2503.04421),
+[full text](https://arxiv.org/html/2503.04421).
+
+### Multiple Othello world models in shared representations (MetaOthello, 2026)
+
+Chawla, Hall, and Lovato's *MetaOthello* (camera-ready version accepted to
+ICML 2026) studies small decoder-only Transformers trained on Othello-like
+variants that share an 8×8 move syntax but differ in update rules or token
+mapping. The suite includes Classic, NoMidFlip, DelFlank, and Iago; pure-game
+models use 20 million sequences and mixed-game models use 40 million, with
+sequences capped at 60 moves. The authors report next-move-distribution
+α-scores above 0.98 across variants and causal cross-variant transfer of
+linear board-state probes. For token-remapped isomorphic games, probe
+representations align after orthogonal rotation. These are author-reported
+representation and prediction results, not reproduced here. The appendix
+states that each model was trained once with seed 42, so the study does not
+provide across-training-seed uncertainty.
+
+The paper explicitly uses “world model” in the representational sense of
+recovering latent board state from a sequence, distinct from an explicit
+forward-dynamics model. It therefore establishes shared board-state
+representations across rule variants and narrows broad multi-game
+representation-transfer claims. It does not evaluate a JEPA transition loss,
+complete legal-action values, adversarial max/min planning, head-to-head game
+strength, or decision regret; its prediction and probe scores do not establish
+planning quality. The variants retain a common 8×8 syntax and do not test
+V2.12's board-size transfer. No method or gate change follows: the open
+question remains whether V2.12's latent-matching objective changes
+fixed-compute decision quality over matched controls. Source:
+[Chawla et al., arXiv:2602.23164 v2](https://arxiv.org/abs/2602.23164),
+[full text](https://arxiv.org/html/2602.23164).
+
+A separate exact-title search surfaced a 2026 aggregator entry titled
+*JEPA-Chess: Action-Conditioned Joint Embedding Predictive Architectures for
+Discrete Logical State Tracking*, attributed there to Yumnam Harryson Singh
+and described as a Zenodo preprint. Exact-title searches of arXiv, Crossref,
+and Zenodo's indexed results did not yield a matching primary record, DOI, or
+author repository during this pass. This is a search lead only: the claimed
+40-ply accuracy and other metrics are excluded from the evidence until a
+verifiable primary source is located. This is distinct from the existing
+[CCranney/JEPA-chess development repository](https://github.com/CCranney/JEPA-chess),
+which does not establish a completed benchmark or strength result.
+
+
+
+### Action-conditioned JEPA for reinforcement learning (ESANN 2025)
+
+Kenneweg, Kenneweg, and Hammer adapt JEPA to image-based reinforcement
+learning in CartPole. The context encoder receives three frames, the EMA
+target encoder receives the following three-frame window, and a shallow MLP
+predictor is conditioned on the one-hot action. They train a PPO actor-critic
+on the encoder representation and compare four combinations of JEPA loss,
+actor/critic gradient flow, and variance regularization over five runs of
+100,000 environment steps. The authors report that joint JEPA and task-gradient
+training learns fastest; JEPA-only encoder training collapses without
+regularization, while the variance regularizer prevents collapse but learns
+more slowly. These are author-reported CartPole results, not independent
+replications.
+This establishes action-conditioned JEPA representation learning for RL as
+prior art. It does not test multi-step learned dynamics planning, exact
+symbolic board states, alternating adversarial decisions, or decision regret.
+V2.12 must therefore frame its open question as the incremental contribution
+of recursive latent matching under exact-rule max/min search against matched
+dynamics/value controls, not the first use of action-conditioned JEPA in RL.
+Source: [Kenneweg et al., ESANN 2025 proceedings](https://www.esann.org/sites/default/files/proceedings/2025/ES2025-19.pdf);
+[DOI](https://doi.org/10.14428/esann/2025.es2025-19).
+
+
+### JEPA planning under geometry shifts and persistent online adaptation (2026-10-04)
+
+Oberweger, Schwingshackl, and Murschitz, *Does Latent Planning Survive Point Clouds?* (arXiv:2608.29434v2, 28 September 2026), adapt three JEPA world-model designs to simulated LiDAR-style point clouds in four continuous-control scenes. Their action-sensitive Point-Delta-JEPA uses an action-reconstruction objective; evaluation uses receding-horizon CEM on shared fixed start-goal pairs, with ten seeds of 50 episodes. They report point-cloud planning performance comparable to image counterparts and strong results for Point-Delta-JEPA on OGBench-Cube, alongside environment-specific losses (including lower Point-Delta-JEPA scores on Push-T than the LeWM point model). The authors limit the evidence to four simulated tabletop scenes; real-world transfer is untested. This is direct prior art for action-sensitive JEPA planning and cross-observation-modality evaluation, but not for discrete alternating adversarial games, exact legal branches, worst-case reply search, or the V2.12 EMA-target loss. Its reported results are author-reported and were not reproduced here. Source: [arXiv v2](https://arxiv.org/abs/2608.29434).
+
+Zhang et al., *JEPA-TTT: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts* (arXiv:2610.00722v1, 30 September 2026; accepted to the NeurIPS 2026 World Models in Physical AI Workshop), adapt only a pretrained action-conditioned predictor from self-supervised observed transitions, retaining the visual encoder, reward head, optimizer state, and replay buffer across episodes. In four continuous-control environments and eight fixed dynamics shifts, the paper reports higher planning metrics than frozen-JEPA, AdaJEPA, and PPO-TTT baselines, with three deployment runs per shift; its reported mean held-out planning-score AUC is 0.571 versus 0.267 for frozen JEPA. This is online predictor adaptation under changed dynamics, not a comparison of offline JEPA representation objectives or a two-player zero-sum setting. It reinforces that planning outcomes can improve through dynamics adaptation and should not be attributed to latent matching without matched controls. Results remain author-reported and unreplicated here. Source: [arXiv v1](https://arxiv.org/abs/2610.00722).
+
+Together with Wang et al.'s *Decision-Metric Alignment in Latent World Models* (arXiv:2608.18746), these sources keep the defensible V2.12 question narrow: whether its fixed multi-step latent-matching term adds decision quality over matched value-/state-prediction controls under exact-rule adversarial search. Action-conditioned JEPA planning, action-sensitive latent objectives, and planning-aligned diagnostics are already established outside this exact domain. No method change, novelty claim, or fit authorization follows from this source update.
+
+
+### Action-conditioned JEPA planning prior art: EB-JEPA (2026)
+
+Terver et al.'s EB-JEPA paper and official author repository include AC-video-JEPA, an action-conditioned latent world model with autoregressive multi-step prediction and goal-conditioned MPPI/CEM planning in the Two Rooms environment. The model combines latent prediction with variance/covariance regularization, temporal similarity, and an inverse-dynamics head that predicts actions from adjacent latents. In the randomized-wall setup, the authors report 97±2% planning success, averaged over three training seeds and the last three checkpoints; their ablations report 47±3% without variance regularization, 46±3% without covariance, 61±2% without temporal similarity, and 1±1% without inverse dynamics. These are author-reported results, not independently reproduced here.
+
+This closes any standalone claim to action-conditioned JEPA world-model planning, multi-step latent prediction, or inverse-action auxiliary objectives. The task is continuous 2D goal navigation, not a fully observed deterministic two-player zero-sum board game with exact legal branches and worst-case max/min search. The inverse-dynamics ablation makes the existing V2.12 inverse-action factorial worth explicit reviewer consideration, but it does not show that the same loss is needed when board states and rules are exact, nor does it establish a CAISSA performance effect. No method, baseline panel, or gate changes from this scan. Sources: [Terver et al., arXiv:2602.03604](https://arxiv.org/abs/2602.03604), [ICLR 2026 World Models Workshop paper](https://openreview.net/pdf?id=ZVAMdXGCUC), and the [official EB-JEPA repository and AC-video-JEPA results](https://github.com/facebookresearch/eb_jepa).
+
+
+### Multimodal JEPA pretraining on interactive game trajectories (ICML 2026 workshop)
+
+Campese and Moschitti study offline-to-online JEPA pretraining on Pokémon Red. Their workshop paper describes a multimodal encoder that fuses game pixels with engineered RAM features, pretrained on offline trajectories and then used as a frozen representation for PPO. They report evaluation on 48 held-out starting states and higher cumulative reward than DINOv3 features, random initialization, and full-encoder fine-tuning; a DINOv3-initialized JEPA is reported to have a mean comparable to DreamerV3 with lower cross-seed variation. They also report that trajectory diversity mattered more than expert-policy provenance in their tested data comparison. These are author-reported workshop results. The source reader exposed the official paper's abstract/first-page text but blocked full-text access, so finer protocol details were not independently extracted.
+
+This establishes JEPA representation pretraining in an interactive videogame domain and narrows broad “first JEPA in games” positioning. The described setup does not establish an action-conditioned transition planner, complete legal-action scoring, two-player zero-sum play, or minimax decision quality; Pokémon Red is a partially observable RPG with a different task and state interface. Its data-diversity result is contextual only and does not change CAISSA's pinned policy mixture or data plan. No method or gate changes. Source: [Campese & Moschitti, ICML 2026 workshop paper](https://openreview.net/pdf/6d63e486bddf8678304b1ec6d1bb11ef034e620e).
+
+### Decision-local JEPA action ranking and outcome supervision (2026-10-04 targeted update)
+
+Two primary-source preprints sharpen the open support/decision question. Zhang
+and Li's *ARC-Bench* (arXiv:2609.05461, submitted 12 August 2026) freezes a
+context and candidate-action set, obtains candidate terminal costs from
+offline executed or simulated rollouts, and measures scorer rankability with
+top-1 regret, Hit@k, pairwise accuracy, Spearman correlation, wrong-anchor
+rate, and a predeclared “Mirage” rate. It audits released JEPA-WM objectives
+in navigation/manipulation settings and reports severe fixed-candidate
+misranking; these numbers are author-reported and have not been reproduced
+here. This makes direct candidate-ranking diagnostics established adjacent
+work. Its candidate costs are goal-distance/task costs, not root-player
+zero-sum values from exact adversarial search. It does not test legal board
+actions, alternating opponents, or max/min backups. Source: [arXiv full
+text](https://arxiv.org/html/2609.05461).
+
+Liu et al.'s *D-JEPA: A Decision-Aligned Latent World Model* (arXiv:2609.24749,
+submitted 21 September 2026) is a closer methodological precedent. Its
+permutation-equivariant candidate-set relation module learns which predicted
+futures should be preferred from candidate executions sharing the same
+start/context and goal; candidate identities and availability are held fixed
+across compared methods. The paper also studies restricted predictor
+adaptation and realization of a learned ordering in JEPA-compatible future
+geometry. It reports matched action-selection results across simulated
+robotics, driving, and physical-robot tasks; those results remain
+author-reported preprint evidence, not an independent replication or a
+CAISSA result. The distinction is material: D-JEPA selects among outcome-
+labelled goal-reaching candidates, whereas V2.12 predicts latent transitions
+from a recorded policy-mixture trajectory and uses those representations in
+a fixed exact-rule adversarial max/min tree. D-JEPA therefore defeats a broad
+novelty claim for learning JEPA-informed candidate preferences from executed
+outcomes, while leaving the narrower exact-board-game objective comparison
+unresolved. Sources: [arXiv paper](https://arxiv.org/abs/2609.24749),
+[author project and reported protocols](https://nebulis-lab.com/D-JEPA),
+[author code repository](https://github.com/NEBULIS-Lab/D-JEPA).
+
+Release status needs careful separation. The code repository identifies an
+Apache-2.0 license, but the authors' [checkpoint card](https://huggingface.co/Shuaijun/D-JEPA)
+says publication licensing and upstream-weight redistribution checks are not
+complete; the linked [dataset card](https://huggingface.co/datasets/Shuaijun/D-JEPA-Dataset)
+was empty and exposed no license at this snapshot. No D-JEPA code, model, or
+data was downloaded or reused in this audit.
+
+**V2.12 consequence:** action-ranking/regret metrics and outcome-supervised
+candidate-set alignment cannot carry a standalone novelty claim. The six-arm
+v04 panel should receive an explicit pre-fit review against this decision-
+alignment precedent: determine whether a candidate-set, outcome-supervised
+control is required to isolate the contribution of recursive JEPA transition
+prediction, or document why the frozen estimand intentionally excludes it.
+Do not add such a model, loss, candidate labels, or compute after v04 is
+frozen. The existing counterfactual-support and decision-regret drafts remain
+proposals; this scan does not freeze their oracle, root schedule, threshold,
+or estimand. No method/gate changed and no scores, roots, data, training, or
+outcomes were run or inspected.

@@ -37,12 +37,15 @@ density estimate over the predictor's latent recurrent inputs.
 
 For each source state `s` represented in `T_fit`, let `A_fit(s)` be the set of
 distinct legal actions represented by those transitions, and `n_ep(s)` the
-number of distinct fitting episodes contributing an edge from `s`. Per-state
+number of distinct fitting episode IDs contributing an edge from `s`. Per-state
 observed-transition coverage is `c(s) = |A_fit(s)| / |Legal(s)|`; report its
-full distribution and stratify by `n_ep(s)=1`, `n_ep(s)>=2`, and observed
-policy-pair/seat diversity. Also report distinct observed edges and distinct
-unobserved legal edges. States only used as root/target encoder inputs belong
-in the separate exposure ledger, not in this dynamics-support denominator.
+full distribution and stratify by `n_ep(s)=1`, `n_ep(s)>=2`, observed
+policy-pair/seat diversity, and distinct declared seed count. These are
+descriptive source counts, not claims that the episodes are statistically
+independent. Also report distinct observed edges, distinct unobserved legal
+edges, and duplicate trajectory/prefix content across episode IDs. States only
+used as root/target encoder inputs belong in the separate exposure ledger, not
+in this dynamics-support denominator.
 
 Do not headline the pooled ratio
 `sum_s |A_fit(s)| / sum_s |Legal(s)|`: repeated states can dominate it, and
@@ -100,12 +103,40 @@ terminal/pass edges, alpha-beta cutoffs, and budget-stopped branches. Label
 full-tree counterfactual coverage. Keep node visits, distinct states, edges,
 model calls, and exact transition calls as separate counts.
 
+#### Root action score semantics under alpha-beta
+
+The current compute-only runner carries the incumbent root `alpha` between
+root actions, records each returned value in a temporary iteration map, and
+discards that map after choosing the action. A later root action whose branch
+fails low may therefore have only an upper bound, not an exact depth-limited
+minimax value; a completed search iteration does not make every root-action
+entry an exact score. This follows from the current
+[`run_root_arm` implementation](https://github.com/dakiemdarktharr/caissa-jepa/blob/main/two_player/v212_pilot.py)
+and the standard alpha-beta bound semantics described by
+[Knuth and Moore (1975)](https://doi.org/10.1016/0004-3702(75)90019-3).
+The frozen compute-only pilot does not publish these temporary values, so this
+is a future diagnostic contract issue, not a correction to pilot results or
+the selected-action contract.
+
+For any future all-root-action diagnostic, report each entry's status as
+`exact`, `upper_bound`, `lower_bound`, or `missing` and retain its search
+window/bound provenance. Do not rank bounds as point estimates or calculate
+point-valued regret from them. Report pairwise order only when the available
+bounds establish it; otherwise mark the comparison unresolved. If the intended
+metric requires exact scores for all legal root actions, the protocol must
+predeclare a full-window per-action or exhaustive diagnostic, its distinct
+compute accounting, and its failure rule. Decide this before fitting or model
+scoring; no diagnostic budget or estimand is frozen by this clarification.
+
 ### 3. Training-support match for evaluation branches
 
 On training-size variants only, attach each frozen evaluation edge to its raw
 exact state-action support count, then report results in predeclared buckets:
-zero, one episode, and multiple independent episodes. Freeze the exact bucket
-boundaries before model outcomes are opened. If the evaluation state's exact
+zero, one episode ID, and multiple distinct episode IDs. Also report distinct
+declared-seed count, ordered policy-pair/seat diversity, and duplicate
+trajectory/prefix content; episode IDs or different seeds alone do not prove
+statistical independence. Freeze the exact bucket boundaries before model
+outcomes are opened. If the evaluation state's exact
 key is absent, count it as an unseen state; do not reclassify it as an
 unsupported action at a known state.
 

@@ -1,0 +1,996 @@
+# V2.12 training-FLOP counter coverage audit — draft 01
+
+**Status: static source audit only; not a counter, preregistration amendment,
+profile, or authorization.** This audit advances the implementation checklist
+required by `V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md`. It reads source
+definitions only. No batch was profiled, no training data or labels were read,
+and no parameters were updated. The six-arm ≤5% compute gate remains
+**untested and unpassed**.
+
+## Scope and counting contract
+
+The proposed profile unit remains one 64-window batched scheduled update under
+D03. Count one floating-point add, subtract, multiply, or divide as one FLOP;
+a multiply-add is two. Report comparisons, indexing, integer operations,
+transcendentals, copies, allocation, and wall time separately unless a
+reviewed, fixed conversion is adopted. Dense matrix multiplication of shapes
+`[m,k] @ [k,n]` contributes `2*m*k*n` FLOPs under this convention. Reduction
+counts must state their summation tree/implementation; do not silently count
+MACs, parameter totals, or per-example averages as the panel estimand. The
+array expressions written as `x ** 2` need a declared treatment. An approved
+independent review accepts counting each fixed-shape array square as one
+candidate multiplication per element under a consistent semantic source-level
+convention. This does not claim the loaded NumPy power loop executes one
+hardware multiply. Scalar bias-correction powers remain separately reported
+and are not converted.
+
+## Source-operation inventory
+
+The table maps the current no-update graph and scratch update to accounting
+obligations. The named functions are the source anchors; their file hashes,
+runtime, numerical libraries, BLAS/LAPACK backend, and thread settings must be
+captured at the later freeze. No implementation-specific FLOP claim is made
+here.
+
+| Source anchor | Work that belongs in the per-update ledger | Branch or coverage obligation |
+| --- | --- | --- |
+| `V212Model._encode`, `_value` | Dense projections, bias adds, `tanh` calls and backward derivatives; report each matmul by actual active rows and fixed dimensions | Root encoding is common; future online and target encodes depend on arm and valid-horizon counts |
+| Policy head in `V212Model.loss_grad` | Logit projection, bias, stable max/shift, `exp`, normalization, NLL/log, selected-action gradient, and both backward matmuls | Arithmetic operations count as FLOPs; max/comparison/indexing and `exp`/`log` are separate categories |
+| `V212Model._regularize` | Batch means, centering, squares, standard deviations, shortfall, covariance matmul, diagonal/off-diagonal work, covariance loss and its gradient | Include this diagnostic/loss path for every arm and update; disclose exact reduction treatment |
+| `V212Model._regularize`: `np.linalg.eigvalsh` | The 32×32 symmetric eigenspectrum work, plus spectrum clipping, sum, threshold selection, probability normalization, `log`, reduction and `exp` for effective rank | NumPy 2.4 documents LAPACK `_syevd` for real symmetric inputs. Reference LAPACK `DSYEVD` with eigenvalues-only (`JOBZ='N'`) reduces via `DSYTRD`, then calls `DSTERF`. `tools/v212_eigensolver_component_inventory.py` sums the currently covered component maxima to 494,677 arithmetic operations, plus 2,114 scalar power sites and 2,254 square-root calls separately. This is a heterogeneous, conditional source-component sum; maxima may not co-occur, uncovered work remains, and it is not a full eigensolver/runtime bound. Runtime identity/dispatch and exact path reconciliation remain open; coverage remains **unresolved** |
+| Remaining `V212Model.loss_grad` diagnostics | Root latent mean/std, covariance spectrum output, effective rank, total-loss scalar combination, returned gradient L2 norm, parameter-size aggregation, and finite-value guards | The returned gradient norm is separate from the scratch optimizer's clipping norm and executes once per loss call. Count its coordinate squares/reduction and square root under the declared categories; count comparisons/conversion/serialization separately |
+| Recurrent predictor in `V212Model.loss_grad` | For each active step `s`, predictor projection from 104 to 32 coordinates, bias, `tanh`, and its reverse-pass derivative/parameter/input-gradient matmuls | Rows are `_active_prefix_masks(valid)`; report nonempty prefix-bundle invocations separately from active examples for all four steps, including unsupervised intermediate prefixes needed by later valid horizons |
+| Recursive raw-state arm | Per active step, 32→198 decoder projection, decoder bias, 198→32 online re-encoding, corresponding tanh and complete reverse `F→D→E` gradient path | This arm has four possible recurrent steps; actual rows come from the common frozen mask schedule. Report prefix-bundle invocations separately from active examples. Static forward MAC inventory is not total training FLOPs |
+| Value-only latent rollout | Value head and backward work at each valid horizon | Count valid rows by H1/H2/H4; do not infer work solely from number of valid target cells because shared prefixes execute once |
+| JEPA target encodes | Frozen target-encoder projections and `tanh`; target gradients are absent | Multi-step uses valid H1/H2/H4 rows, single-pair H2, single-horizon H1; count nonempty horizon invocations separately from active examples and online prefixes |
+| Direct-leaf value arm | H4-selected future online encoder, value head, loss and backward projections | Every scheduled batch must have at least one valid nonterminal H4 leaf; the graph rejects a zero-H4 minibatch even when another horizon has targets. The frozen mask schedule must expose this per-batch condition and reject the panel on violation. |
+| `preflight_batch` and metric serialization | Mask construction, `np.isin`/finite checks, integer nonzero counting, indexing, Python control flow, and list/dict conversion | Action validation uses `np.count_nonzero(actions, axis=2)` over 256×65 entries per `loss_grad` invocation. It adds no floating-point row-sum reduction; account for the integer/comparison scan separately on every call because structural preflight reruns. Dataset-level exact-rule preflight remains a separate one-time cost under D03 |
+| `scratch_adam_ema_step` | Input validation/copies, global gradient-square/reduction, clipping multiplication, first/second moments, bias-corrected Adam, parameter update, and EMA for the three JEPA arms | `tools/v212_optimizer_flop_accounting.py` gives an analytical per-arm formula for this helper and bounds `norm <= 5`/`norm > 5`; zero norm uses the no-division branch. It is a subcomponent only, not an executed counter. Keep scratch arrays disposable; report validation, copies and finite checks outside FLOPs |
+| Python scalar bias corrections | `0.9**t` and `0.999**t`, denominator construction and per-update scalar use | Power is not add/subtract/multiply/divide under D03's convention. Report scalar power separately and count any surrounding FLOPs; do not silently convert it |
+| Explicit `@` sites in `V212Model.loss_grad` and helpers | Root/task projections, predictor/decoder/re-encoder projections, value/target heads, all explicit reverse-pass matrix products, and covariance/regularizer products | `tools/v212_model_matmul_flop_accounting.py` derives `2*m*k*n` counts from the active horizon masks and shared-prefix union. `np.linalg.eigvalsh`, elementwise/reduction work, and all non-matmul operations remain outside this subcounter |
+| Affine bias, `tanh`, and `tanh` derivative sites | Bias vector additions, activation element counts, the square/subtract/upstream-gradient multiply at each explicit `1-z**2` derivative, and separately the value-loss delta scaling before the derivative multiply | `tools/v212_model_activation_flop_accounting.py` derives per-arm counts from the same horizon/active-prefix masks. The upstream array scales are separate to prevent double-counting; scalar coefficient construction and other elementwise loss/gradient operations, nonlinear `tanh` cost, reductions, and eigensolver work remain outside this subcounter |
+| Loss residuals and squared-error arrays | Root/direct-leaf MSE, rollout-value residuals, latent/raw target residuals, and repeated square materializations used by per-horizon means plus pooled sums | `tools/v212_model_loss_residual_accounting.py` derives array element counts from horizon masks. Its square report is a subset of the independently reviewed unified square-site inventory, not an additive subtotal. Reductions, scalar weighting, gradients, and other objective work are excluded |
+| Objective and diagnostic reductions | `mean`/`sum` input/output shapes, repeated softmax denominator sums, per-horizon skips, bias-gradient reductions, per-parameter gradient-norm reductions, and the root `np.std` path | `tools/v212_model_reduction_shape_accounting.py` emits candidate ordinary reduction additions (`inputs - outputs`) and mean divisions (`outputs`) from masks; effective-rank activity and selected count are explicit. It expands the NumPy 2.4.6 `_std → _var` source path for `z0[64,32]`, axis 0, ddof 0: 2,016 internal-mean additions, 32 mean divisions, 2,048 deviations and squares, 2,016 variance-reduction additions, 32 variance divisions, and 32 square roots. Actual loaded NumPy/kernel identity and summation execution remain unfrozen. These counts need independent review before D03 use |
+| Root policy softmax/NLL elementwise work | Legal-logit selection, per-row max comparisons, shifted logits, exponentials, probability divisions, NLL logarithms/residuals, and selected-label gradient subtraction | `tools/v212_policy_softmax_accounting.py` counts the fixed `[64,65]` elementwise path and candidate row-max comparisons. The two denominator reductions and NLL mean remain owned by the reduction inventory; policy/head and gradient matmuls remain owned by the matmul inventory. This source-shape subcounter is not an accepted loaded-kernel trace |
+| Root regularizer elementwise and scalar weighting | Centering/shortfall/off-diagonal arithmetic, regularizer-gradient broadcasts and accumulation, root gradient scaling, and scalar objective/metric weights | `tools/v212_regularizer_elementwise_accounting.py` reports candidate elementwise/scalar arithmetic. Reductions, squares, and both dense products are delegated to their existing inventories; `np.maximum`, square root, and linked eigensolver are reported separately or excluded. This is not a loaded-kernel trace or full counter |
+| Pooled horizon-objective scalar weighting | Shared root-value gradient coefficient; outcome/target denominator terms; per-horizon scale and target-width divisions; pooled-loss scalar multiplication/accumulation; target-gradient scalar coefficient construction; final pooled-loss combination | `tools/v212_objective_scalar_accounting.py` counts these scalar sites by nonempty horizon masks and rejects direct-leaf schedules without valid H4. After an AST gap review and independent confirmation, all-valid illustrative per-invocation subtotals are 46 / 30 / 46 / 22 / 3 / 30 in frozen arm order. Array arithmetic, reductions, base/root regularizer loss composition, and optimizer work are excluded; do not add this subtotal to a counter that already owns those scalar sites |
+| Loss-gradient array accumulations | Explicit policy/root/horizon/recurrent state additions, raw-feature-gradient merges, and parameter-gradient buffer additions | `tools/v212_gradient_accumulation_accounting.py` counts candidate additions per output element under horizon masks, excluding the regularizer-owned root-gradient accumulation. Independent review caught and corrected the initial raw-state omission of `fw/fb` buffer updates: full-valid illustrative counts are now 48,709 / 44,613 / 182,877 / 42,565 / 19,043 / 44,613 in frozen arm order. This source-shape subcounter is not a loaded-kernel trace or full counter |
+| Latent/raw target-gradient coefficient multiplication | Elementwise multiply of the scalar gradient coefficient by the target residual before accumulator addition | `tools/v212_objective_gradient_elementwise_accounting.py` counts `valid_rows × 32` for enabled latent targets and `valid_rows × 198` for raw-state targets. Full-valid illustrative counts are 6,144 / 2,048 / 38,016 / 0 / 0 / 2,048 in frozen arm order. An approved read-only review found no overlap with the inspected activation, residual/square, or matmul inventories; this remains a source-shape subcounter |
+| Effective-rank selected-spectrum branch | Probability normalization, `log`, elementwise probability/log product, entropy reduction, final `exp`, and selected-set comparisons | `tools/v212_effective_rank_branch_accounting.py` bounds the active-set work after eigensolver/spectrum-sum: per call, zero entropy work when inactive, or K=1..32 divisions/logs/multiplies, K-1 candidate additions and one exp when active. Across 1,740 scheduled updates per arm, upper bounds are 55,680 divisions/logs/multiplies, 53,940 candidate additions and 1,740 exp calls. It excludes DSYEVD/LAPACK and does not establish which branches actually occur |
+| Fixed array-square sites | All source `** 2` array expressions in regularization, supervised losses, activation derivatives, recurrent reverse passes, and gradient norm | `tools/v212_model_square_flop_accounting.py` inventories the 20 AST sites and mask-dependent element counts. Under the reviewed semantic convention each element is one candidate multiply; no loaded NumPy power-kernel claim is made. Scalar bias-correction powers are excluded. Existing activation, residual, and latent-`std` reports overlap this inventory and must not be summed with it |
+
+## Candidate additive ownership reconciliation (reviewed for partial ledger only)
+
+The subcounter JSON objects are **not** independent totals. A future aggregator
+must use the following owner partition, taking component fields rather than
+adding each tool's headline total. `tools/v212_partial_flop_ledger.py`
+implements these owners for the currently inventoried source-level components
+of one invocation. The ownership is not a complete D03 counter, and no
+replay-derived 20×87 total or parity result is emitted.
+
+| Additive component | Sole candidate owner | Remove or do not add from these overlapping reports |
+| --- | --- | --- |
+| Explicit dense products, including the two covariance products | `v212_model_matmul_flop_accounting.py::all_explicit_matmul_flops` | Do not add the matmul counts reported as delegated by the regularizer inventory. Bias additions are separate and remain in activation. |
+| Every model array `** 2` site, including the root-`std` deviation square and all activation/loss/regularizer squares | `v212_model_square_flop_accounting.py::candidate_square_multiplications` | Do not add `square_operation_elements` from the residual inventory, `squares_as_multiplications` from activation, `squared_deviation_square_operations` from reduction, or squared-array counts from regularizer. The optimizer uses `g*g`, not these model AST sites, and remains optimizer-owned. |
+| Loss residual subtractions for value/latent/raw-state losses | `v212_model_loss_residual_accounting.py::residual_subtraction_flops` | Ignore that tool's combined `flops_if_each_square_is_counted_as_one_multiply`; its square portion belongs only to the square owner. It does not own policy NLL/label subtractions or tanh-derivative subtractions. |
+| Affine bias additions, explicit tanh-derivative `1-z²` subtractions and upstream-gradient multiplications, and value-gradient pre-scaling | `v212_model_activation_flop_accounting.py` component fields | From `tanh_derivative_flops`, subtract `tanh_derivative_breakdown.squares_as_multiplications`; those squares belong to the unified square owner. `tanh` calls and element counts are non-FLOP reporting. |
+| Ordinary model reductions (candidate sum additions and mean divisions), excluding effective-rank entropy reduction | `v212_model_reduction_shape_accounting.py::candidate_addition_owner_totals.reduction_inventory` and `candidate_mean_divisions_owner_total` | Schema v04 tags each reduction row with its addition owner and splits the summed additions into ordinary-reduction and effective-rank owners. For root `std`, the records own internal-mean and squared-deviation-sum additions plus internal-mean divisions. Select deviation subtractions and population-variance divisions from `latent_std_candidate_operations.owner_components`; exclude repeated additions, square, and aggregate fields. The square owner handles deviation squares; square roots remain a separate transcendental count. |
+| Effective-rank probability normalization, log/probability products, entropy reduction, and final exp after the spectrum sum | `v212_effective_rank_branch_accounting.py::branch_work` | Its `candidate_fp_additions` owns the entropy reduction additions. Cross-check against schema v04's `candidate_addition_owner_totals.effective_rank_branch`; never add that same site from both reports. Do not add the separately listed fixed spectrum-sum reduction twice. The eigensolver itself remains uncounted. |
+| Policy softmax/NLL elementwise arithmetic | `v212_policy_softmax_accounting.py::per_invocation` | Use elementwise fields only. Denominator sum and NLL mean work belongs to reductions; policy/head gradient matmuls belong to matmul. Max comparisons, exp/log calls remain non-FLOP categories. |
+| Root regularizer elementwise/scalar arithmetic, excluding squares, reductions, dense products, and eigensolver | `v212_regularizer_elementwise_accounting.py::per_invocation` | Use only candidate add/subtract/multiply/divide fields. Its separately named square/reduction/matmul delegation fields are references, not extra work. Keep maximum comparisons and square roots outside FLOPs. |
+| Pooled horizon objective scalar arithmetic | `v212_objective_scalar_accounting.py::candidate_fp_scalar_operations_per_invocation` | Do not add loss-array work, reductions, regularizer scalar weighting, or optimizer work. |
+| Explicit objective/gradient-buffer array additions | `v212_gradient_accumulation_accounting.py::candidate_array_additions_per_invocation` | Keep its exclusion of regularizer-owned `dz0 += ...`; do not use the regularizer's separately reported accumulation again. |
+| Target-gradient coefficient × residual array multiplications | `v212_objective_gradient_elementwise_accounting.py::candidate_array_multiplications_total` | Do not add target residual subtraction, square, matmul, scalar-coefficient construction, or subsequent buffer addition from their other owners. |
+| Scratch Adam/clipping/EMA arithmetic, including optimizer `g*g` and both clipping branches' gradient scaling | `v212_optimizer_flop_accounting.py::floating_point_arithmetic` | Do not add its square-root, power, finite-predicate, comparison, copy, validation, or indexing fields to FLOPs. Preserve both clip intervals; zero norm follows `norm_le_5`. |
+
+This ownership partition and partial aggregator do not provide a complete
+counter. The independent follow-up found no overlap defect in the components
+currently composed, but did not accept them as a D03 counter. The linked LAPACK
+eigensolver has no accepted operation bound, and comparisons, integer/indexing,
+finite guards, allocations/copies, transcendentals, and source/runtime dispatch
+are not fully enumerated. A complete D03 aggregation still requires the
+replay-derived 20×87 masks, actual loaded runtime/backend identity, bounds for
+all value-dependent work, and a trainer trace proving the scheduled objective
+and optimizer calls. Graph freeze remains **NO** and the ≤5% gate remains
+**untested and unpassed**.
+
+### Owner-reconciled partial ledger (2026-10-07)
+
+`tools/v212_partial_flop_ledger.py` composes the currently assigned source-level
+FP components for one 64-window invocation. It selects only the owner fields
+from the partition above, removes the activation/square and residual/square
+overlaps, takes ordinary reductions from schema-v04 owner rows, and keeps
+effective-rank and optimizer branches as separate lower/upper intervals. Its
+regression suite checks component summation, all six arm totals, a masked
+fixture, the direct-leaf H4 rejection, and explicit withholding of both parity
+and graph freeze. An approved read-only follow-up found no owner/overlap defect
+and confirmed the interval is explicitly limited to this source-covered
+subset. It requested exact mask-dependent fixture expectations; those were
+added for all six arms, and the ledger-level checks now also assert the
+mask-invariant policy and regularizer components. The reviewer ran no tests.
+
+For the illustrative all-valid mask fixture, the source-covered candidate
+intervals per invocation are 9,540,294–9,540,390 (multi-step JEPA),
+7,885,496–7,885,592 (single-pair JEPA), 27,130,644–27,130,740 (recursive
+raw-state), 7,038,991–7,039,087 (value-only latent rollout), 4,588,091–
+4,588,187 (direct-leaf value), and 7,885,496–7,885,592 (single-horizon
+JEPA). Raw-state is a material compute-risk signal within the counted subset.
+These are not total FLOPs, are not aggregated over the 20×87 schedule, use no
+replay-derived masks, and do not establish the ≤5% pass/fail outcome. The
+counter remains incomplete and unreviewed for D03; runtime/reduction/LAPACK,
+non-FP work, and trainer/schedule evidence remain open. No research data,
+profile, roots, inference, outcomes, or training were used.
+
+The ledger also carries forward the non-FP/unconverted counts already exposed
+by its owners: activation-call/element counts, policy comparisons/exp/log
+elements, regularizer comparisons/sqrt outputs/eigensolver call count,
+effective-rank comparisons/negations/log-output elements and exp-call branch
+counts, optimizer comparisons/finite predicates/powers/sqrt output elements
+and invocations, and the regularizer's two integer shape multiplications.
+These are reported in their native count units; they are not converted to
+FLOPs. They do not complete the inventory of
+preflight validation, indexing, allocation/copy, Python control flow, runtime
+dispatch, or unsupported operators.
+An approved read-only follow-up confirmed the log/sqrt fields distinguish
+vectorized call invocations from output-element counts and that these are
+known-only categories, not a complete non-FP ledger. The reviewer ran no tests.
+
+## Independent source review follow-up (2026-10-07)
+
+An approved read-only source-wide sweep across `_encode`, `_value`,
+`_regularize`, `loss_grad`, and `scratch_adam_ema_step` found plausible
+source-level owners for the explicit FP arithmetic sites and confirmed the
+corrected pooled-objective scalar inventory. This is **not** acceptance of a
+complete counter: `np.linalg.eigvalsh` and the linked LAPACK work remain
+unbounded for the actual runtime; candidate reduction shapes do not establish
+the loaded kernel/tree; per-update comparisons, integer/indexing, preflight,
+finite checks, and branch bookkeeping are incomplete; and the objective plus
+optimizer are not joined by an integrated trainer trace. Square, residual,
+activation, and reduction inventories intentionally overlap and must be
+reconciled before any aggregate is reported. Graph freeze remains **NO** and
+the ≤5% gate is **untested and unpassed**.
+
+An approved read-only `gpt-6-luna/high` review found an undercount in the
+Python scalar gradient-norm reduction. `V212Model.loss_grad` computes
+`sum(np.sum(g ** 2) for g in grad.values())`; built-in `sum` starts from zero
+and adds each yielded tensor norm, so `k` gradient tensors require `k` scalar
+additions, not `k-1`. The inventory and six-arm full-valid illustrative totals
+were corrected by one addition per invocation: 58,507 (multi-step JEPA),
+50,319 (single-pair JEPA), 186,745 (raw-state), 46,225 (value-only), 36,376
+(direct-leaf), and 50,319 (single-horizon). Mean-division totals are unchanged.
+The source regression now guards the built-in `sum` call's implicit default
+start.
+
+The same independent review conditionally accepts one candidate multiplication
+per element for every fixed-shape array `x ** 2` expression as a semantic
+source-level conversion. It does not claim that the loaded NumPy power ufunc
+executes one hardware multiply; scalar optimizer bias-correction powers stay
+separate. A new mask-parameterized subcounter maps all 20 `** 2` AST sites to
+arm- and horizon-dependent element counts, including regularizer and
+gradient-norm squares omitted by the residual/activation subcounters. For
+fully valid illustrative masks, its candidate square-multiply counts are
+38,242 (multi-step JEPA), 30,050 (single-pair), 116,712 (raw-state), 25,954
+(value-only), 16,002 (direct-leaf), and 30,050 (single-horizon). The residual,
+activation, and latent-`std` subcounters overlap these sites; their subtotals
+must not be added to this unified square count.
+
+The reviewer accepts `I-O` additions for ordinary reductions and `O` divisions
+for mean as analytical candidates under the declared binary-reduction and
+divide-by-count conventions. They are not exact counts for an unfrozen loaded
+NumPy reduction kernel. The v03 gradient-norm correction is source-consistent.
+These narrow dispositions establish neither full-counter coverage nor graph
+readiness.
+
+The reviewer found the `np.std(z0, axis=0)` expansion source-consistent for
+the current `z0` shape `(64, 32)`, `float64`, and `ddof=0`: two 64-to-1 sums,
+elementwise deviation/square, variance division and square root. NumPy's
+tagged v2.4.6 Python source calls `_std` → `_var`, with two `umr_sum` calls,
+`subtract`, `square`, `true_divide`, then `sqrt`. The tagged C sources contain
+the floating-add reduction implementation and pairwise-sum helper. This
+supports the operation-site interpretation, not the loaded runtime's exact
+dispatch/build or counter acceptance. A local NumPy 2.4.6 wheel/runtime was
+unavailable: the attempted PyPI download failed because `pypi.org` DNS could
+not resolve. The locked Python 3.11.9 / NumPy 2.4.6 runtime, reduction kernel,
+and linked LAPACK therefore remain unverified.
+
+The per-update model `preflight_batch` call remains separate from D03's
+one-time dataset-level exact-rule preflight. Count its repeated integer/action
+validation scan per model call; report the dataset-level preflight separately.
+This interpretation clarifies the audit but does not amend the accepted
+profile protocol. No model or research data was run, no profile was made, and
+no gate changed.
+
+## Required branch accounting
+
+1. **Mask-dependent graph work.** The frozen per-seed/update mask schedule must
+   provide, for each horizon, valid nonterminal, terminal-masked,
+   missing/truncated, and invalid-transition counts. Derive each step's active
+   prefix rows from the union of downstream valid horizons. The model graph
+   rejects invalid transitions and zero-target batches before they enter a
+   successful panel; preserve rejection receipts rather than counting them as
+   successful updates.
+2. **Per-horizon loops.** Loss and value loops skip empty masks and accumulate
+   shared reverse-pass gradients. Count loop bodies per executed horizon and
+   distinguish rows, calls, and invocation-level fixed work.
+3. **Covariance spectrum and effective rank.** NumPy's public v2.4 reference
+   identifies `_syevd` for this real symmetric matrix; Netlib's reference
+   `DSYEVD` eigenvalues-only path calls `DSYTRD` then `DSTERF`. Netlib's
+   reference `DSTERF` bounds its total iterations by `30*N` (960 for N=32),
+   which gives a finite reference-loop cap but is not itself an FP operation
+   bound. The driver and eigensolver can conditionally scale data, and executed
+   iteration work varies with the matrix. Freeze the actual runtime LAPACK
+   implementation/build and count that path, or derive a conservative bound
+   from its exact source. The
+   `spectrum_sum <= 1e-12` branch can skip effective-rank work; otherwise the
+   number of eigenvalues selected by `spectrum > 1e-12` can vary from 1 to 32.
+   `tools/v212_effective_rank_branch_accounting.py` now bounds the later
+   probability/log/entropy branch across all 20 × 87 update slots per arm,
+   including its inactive case and all selected counts K=1..32. This remains a
+   source-level sub-bound: it does not bound the eigensolver and does not
+   attest the active branch sequence in an actual mask/data schedule. The
+   actual wheel/backend path is not established by this source audit.
+4. **Global clipping.** Bound both sides of the norm threshold for every arm.
+   `scratch_adam_ema_step` materializes `grads[key] * clip_scale` on both
+   branches, so the per-coordinate multiplication is present for either norm;
+   only the scalar `5.0 / gradient_norm` division is exclusive to the greater-
+   than-5 branch. `tools/v212_optimizer_flop_accounting.py` now reports these
+   branch components separately and an AST regression ties the accounting to
+   the current source. Do not use an observed scratch trajectory to narrow the
+   preregistered intervals.
+5. **Finite/error guards.** Finite-value checks and failures are comparisons
+   and control flow, not successful scheduled updates. Record unsupported or
+   incomplete paths and never selectively replace a failed seed/update.
+
+## Partial DSYTD2 source bound (2026-10-07)
+
+`tools/v212_dsytd2_rank_update_bound.py` counts source-proxy rank-update
+operations in the unblocked DSYTD2 lower-triangle path. For each active
+reflector order `m=2..31`, the formulas are DSYMV `2m²+3m`, DDOT `2m`,
+DSYTD2's scalar alpha expression `2`, DAXPY `2m`, and DSYR2 at most
+`2m²+4m`; this subtotal is **47,165** operations at N=32. The size-one
+reflector returns with zero TAU and skips the update. The tool also counts
+DLARFG's direct scalar expressions plus reference DSCAL vector multiplications
+under KNT≤20: 11,745 operations, bringing the subtotal to 58,910 before helper
+internals. A separate conditional helper inventory adds at most 330
+add/subtract/multiply/divide operations from DLARFG's DLAMCH('S'/'E') calls
+and up to two DLAPY2/DLAMCH('O') paths per reflector; it reports 60 scalar
+square-power sites and 60 square-root calls separately. A further
+reference-source DNRM2 inventory for vector lengths 1..30 and at most two
+calls per reflector adds 2,154 arithmetic operations, 1,046 scalar
+square-power sites, and 176 square-root calls. The combined conditional
+partial subtotal is therefore 61,394 arithmetic operations, 1,106 separate
+power sites, and 236 square-root calls; treating every power site as one
+multiplication gives 62,500 arithmetic operations. This remains source-level
+accounting, not a complete DSYTD2 bound. The DLARFG/DSCAL/helper extension
+and DNRM2 source inventory have not received independent review. Source anchors:
+[OpenBLAS v0.3.31 DSYTD2](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsytd2.f),
+[DLARFG](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dlarfg.f),
+[reference DSYMV](https://www.netlib.org/blas/dsymv.f),
+[DDOT](https://www.netlib.org/blas/ddot.f),
+[DAXPY](https://www.netlib.org/blas/daxpy.f), and
+[DSYR2](https://www.netlib.org/blas/dsyr2.f), [DSCAL](https://www.netlib.org/blas/dscal.f).
+The added reference-source call-shape inventory follows
+[Netlib DNRM2](https://www.netlib.org/lapack/explore-html/d6/de0/dnrm2_8f90_source.html)
+and [Netlib DLARFG](https://www.netlib.org/lapack/explore-html/d7/da9/dlarfg_8f_source.html).
+
+The reference path decision is source-resolved: reference LAPACK v3.12.1
+`ILAENV` gives NB=32 for DSYTRD, while tagged OpenBLAS DSYTRD enters its blocked
+path only for `1 < NB < N`; at N=32 it resets NB=1 and calls DSYTD2 once.
+See [reference ILAENV](https://github.com/Reference-LAPACK/lapack/blob/v3.12.1/SRC/ilaenv.f)
+and [tagged DSYTRD](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsytrd.f).
+This is conditional on those reference sources and does not attest the actual
+NumPy-linked ILAENV/runtime. Reference BLAS expressions are semantic proxies,
+not linked-kernel or compiler-instruction traces. DNRM2, DLAMCH, and DLAPY2
+internals are now partially counted only for the declared DLARFG path. The
+DNRM2 subtotal follows the three-accumulator reference source and is conditional
+on that semantic path; it does not attest the loaded runtime. Separately, static
+disassembly of five architecture-specific DNRM2 kernels in one observed Linux
+`scipy-openblas` wheel (SHA-256
+`05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080`) produces
+a conditional N=32 candidate of 2,030 add/multiply FLOPs and 58 square-root
+calls for at most two DNRM2 calls per DLARFG reflector, plus two length-one
+wrapper fast paths. The tool's `--audit-binary` mode verifies the exact wheel
+hash, discovers all five `dnrm2_k_*` symbols, and checks 18 `fmul`, 21
+`faddp`, and one `fsqrt` in each symbol's static disassembly with GNU Binutils
+2.47. It does not prove runtime dispatch or dynamic loop execution. The
+candidate is not a portable source/runtime bound and is not folded into the
+61,394 conditional reference-source subtotal; the binary and source accounts
+are alternatives and must not be added. The binary candidate received an
+approved read-only arithmetic review under its stated assumptions; the new
+reference-source DNRM2 inventory has not been independently reviewed. A second
+read-only code review caught that the
+first audit implementation accepted unexpected kernel symbols; the inventory
+check now fails on missing and unexpected symbols, with regression coverage.
+The subtotal plus candidate do not close eigensolver coverage, establish
+full-counter coverage, or open profile/training/parity gates.
+
+## Coverage gaps and next admissible work
+
+- There is no full counter, trainer/update integration, selected-window
+  manifest/materializer, exact-rule selected-window replay, frozen 20-seed ×
+  87-update mask schedule, or counter/runtime fingerprint.
+- `two_player/v212_window_batch.py::windows_to_model_batch` now enforces exactly
+  64 windows per invocation. This closes the adapter's batch-size mismatch, but
+  does not enforce the schedule's 32-per-game composition, identical batch
+  boundaries across arms, or selected-window provenance. The integrated
+  trainer and manifest/replay receipt must still establish those conditions.
+  An approved read-only review accepts the guard for this narrow adapter
+  contract; `preflight_batch` and `loss_grad` remain callable with other batch
+  sizes, so trainer integration must prove the guard cannot be bypassed for
+  scheduled updates.
+- `np.linalg.eigvalsh` is the blocking coverage item: the graph executes a
+  32×32 symmetric eigensolver in every arm/update. The pinned NumPy 2.4 public
+  docs identify `_syevd`; Netlib's reference `DSYEVD` shows the eigenvalues-
+  only `DSYTRD` → `DSTERF` path, including conditional scaling. This is useful
+  algorithmic evidence, not proof of the locked wheel's linked implementation
+  or its exact count. The effective-rank branch sub-bound starts only after the
+  eigensolver and fixed spectrum sum. `tools/v212_dsyevd_source_inventory.py`
+  composes DSYEVD's direct, DLAMCH/DLANSY, DLASCL-body, and DLASCL-internal
+  DLAMCH arithmetic into a conditional 6–574 operation interval. It excludes
+  DSYTRD and DSTERF work and does not establish linked dispatch. A frozen
+  implementation trace or reviewed full-schedule bound remains required.
+- The current model calls `preflight_batch` inside every `loss_grad` call.
+  Unlike the one-time dataset-level preflight in D03, the repeated structural
+  check scans the 256×65 action entries using integer nonzero counting. The
+  former floating-point row-sum was removed without changing the binary
+  one-hot acceptance rule; no total-work reduction is inferred. Account for
+  this scan and the other comparison/indexing work on every update. Independent
+  review must accept the treatment before profile execution.
+- A temporary Linux runtime now has CPython 3.11.9 / NumPy 2.4.6 and observed
+  scipy-openblas 0.3.31.188.0 metadata. It is a package-version match but not
+  the declared Windows CPU environment or a D03 profile. The mapped-file
+  observation remains non-atomic and does not attest executed bytes or prove
+  the final training process's linked LAPACK implementation.
+
+The square-as-multiply semantic convention and candidate ordinary-reduction
+shape convention now have narrow independent dispositions; neither establishes
+exact loaded-kernel counts. NumPy 2.4.6 source is now available in the local
+version-matched Linux environment, but the target runtime remains unfrozen.
+Continue resolving the full linked eigensolver path, helper bounds, and
+remaining source ownership; then implement/validate a counter against the
+frozen objective and optimizer traces. A synthetic instrumentation check can
+establish coverage only; data/preflight authorization, all six reviewed
+graphs, complete branch bounds, and separate pre-fit gates remain required
+before a D03 profile. No gate opens from this audit.
+
+## Optimizer-only analytical accounting follow-up (2026-10-07)
+
+`tools/v212_optimizer_flop_accounting.py` translates the current scratch
+Adam/EMA source expressions into per-arm FP add/subtract/multiply/divide
+counts. It includes the global-norm reduction, per-coordinate gradient-scale
+multiply on both clipping branches, moment updates, bias correction, parameter
+update, and the three JEPA encoder EMA updates. The only value-dependent FLOP
+branch in this helper is the optional scalar clip-scale division; the report
+gives per-update and 20×87 optimizer-only intervals. Scalar powers, square
+roots, finite predicates, and non-FLOP validation/copy work are disclosed
+separately.
+
+Three synthetic accounting tests compare parameter and target coordinate/tensor
+counts with the six model-arm definitions and assert the arithmetic formulas
+and branch interval widths. This is formula validation, not execution of the
+optimizer or a FLOP instrumentation/profile. It omits all objective-graph work,
+including the unresolved linked-LAPACK eigensolver. Therefore it cannot decide
+the ≤5% panel gate or satisfy D03's source/runtime, mask, data/replay, or
+independent-review prerequisites. No gate opens.
+
+## Explicit model-matmul accounting follow-up (2026-10-07)
+
+`tools/v212_model_matmul_flop_accounting.py` inventories each source-level
+dense `@` in the objective graph and manual reverse pass using `2*m*k*n`.
+Inputs are the three 64-row horizon-valid masks; the tool derives active prefix
+rows as the union of all valid downstream horizons, matching the graph's
+prefix rule. It reports each call site, active rows, forward projection
+matmuls, covariance matmuls, and the total explicit-matmul FLOPs. It includes
+the raw-state `F→D→E` forward and backward products and the direct-leaf branch.
+
+Four synthetic tests verify the all-valid forward projection inventory against
+the existing six-arm MAC audit, assert the current source-level `@` sites,
+check masked prefixes/target-encoder rows, and reject malformed inputs. These
+accounting tests do not execute the graph; the combined regression command
+also ran existing objective tests on synthetic fixtures. For an illustrative fully valid 64-row
+batch, the explicit matmul totals range from 4,329,472 FLOPs (direct-leaf) to
+26,128,384 FLOPs (raw-state). These are shape-derived matrix-product counts,
+not observed work or the frozen training-mask schedule. They omit
+elementwise/reduction operations, nonlinearities, the LAPACK eigensolver,
+optimizer, preflight, and runtime effects; they cannot decide total parity.
+No data, game positions, model graph execution, profile, or training was used.
+
+## Activation and affine-bias accounting follow-up (2026-10-07)
+
+`tools/v212_model_activation_flop_accounting.py` accounts for every affine
+bias-add output, each `tanh` element, and the explicit elementwise derivative
+`1-z**2` (square, subtraction, and gradient multiplication), using the same
+64-row horizon and shared-prefix masks. An AST check in the tests asserts the
+four current `np.tanh` source sites. Four synthetic/source tests verify all six
+full-valid arm totals, mask-dependent rows, and the value-loss scaling sites.
+
+The follow-up AST guard covers the three value-head gradient scale assignments
+and confirms their explicit multiplication structure. The focused
+model/optimizer/matmul/activation regression set passes 20/20; `compileall` and
+`git diff --check` pass. These synthetic/source checks still do not execute
+the graph or establish a full counter.
+
+For an illustrative fully valid batch, bias additions range from 8,384
+(direct-leaf) to 73,536 (raw-state), `tanh` element counts range from 4,224 to
+18,688, and `tanh` derivative FLOPs range from 12,672 to 56,064. `tanh` itself
+is reported separately as a nonlinear call, not converted to FLOPs. These
+counts omit other elementwise losses/gradients, reductions, the LAPACK
+eigensolver, matmul, optimizer, preflight, and runtime; they do not establish
+total compute or parity. The accounting tests use only synthetic masks and do
+not execute the graph. The combined validation separately includes existing
+no-update model tests on synthetic fixture arrays. No real data or profile was
+used, and no gate opens.
+
+### Value-loss gradient scaling correction (2026-10-07)
+
+Source reinspection found a multiply immediately before the tanh-derivative
+multiply in each value-head gradient expression: the upstream value delta is
+scaled by its loss coefficient. The earlier derivative-only count correctly
+covered `z**2`, `1-z**2`, and multiplication by that derivative, but did not
+include this separate array scaling operation. The activation subcounter now
+reports the upstream scaling multiplications by call site and a combined
+activation-gradient array subtotal; scalar coefficient construction remains
+outside it. Fully valid illustrative masks add 256 such multiplications for
+the recurrent arms and 128 for direct-leaf. This correction changes no method
+or objective, and does not cover other elementwise/reduction work or LAPACK.
+
+### Loss residual/square shape inventory (2026-10-07)
+
+`tools/v212_model_loss_residual_accounting.py` counts residual subtraction
+elements and squared-error elements for the root objective and the selected
+horizon losses. It explicitly counts two square evaluations where source
+materializes one for a per-horizon mean and another for the pooled sum; it
+does not assume compiler/common-subexpression elimination. The accompanying
+four tests check all six full-valid shape formulas, horizon-dependent masks,
+malformed masks, and the source sites.
+
+For fully valid illustrative masks, residual-subtraction counts range from
+128 (direct-leaf) to 38,272 (raw-state); square elements range from 128 to
+76,480. Under the reviewed semantic convention the corresponding residual
+square elements are candidate multiplications, but this subcounter is
+overlapped by the unified square-site inventory and must not be added to it.
+NumPy reduction costs, scalar weighting, gradient-buffer additions,
+regularizer/effective-rank work, LAPACK, and remaining elementwise arithmetic
+are still excluded. No graph, profile, or data was executed or read.
+
+### Objective reduction-shape inventory (2026-10-07)
+
+`tools/v212_model_reduction_shape_accounting.py` inventories NumPy `mean` and
+`sum` calls in the objective and its diagnostics. It includes the two separate
+softmax row-denominator reductions, mask-dependent outcome/latent/raw loss
+reductions, bias-gradient sums, one gradient-norm reduction per parameter
+tensor, and the source-expanded root latent standard deviation. The effective-
+rank entropy reduction receives explicit activity and selected-spectrum-size
+inputs so its data-dependent range remains visible.
+
+The tool provisionally counts an ordinary reduction of `I` input elements to
+`O` output elements as `I-O` additions and a mean as `O` divisions. For fully
+valid illustrative masks with 32 selected spectrum entries, these candidate
+addition counts now include 4,032 candidate additions from the internal-mean
+and variance reductions, ranging from 36,376 (direct-leaf) to 186,745
+(raw-state); candidate mean divisions range from 132 to 137. The `std` path
+also records 4,096 candidate deviation/square operations, 32 population-
+variance divisions, and 32 square roots per invocation. These are not accepted
+FLOPs: actual runtime/reduction-kernel identity remains unfrozen, and
+eigensolver/LAPACK plus other non-reduction arithmetic remain outside. Source
+references: NumPy [v2.4.6 `_methods.py`](https://github.com/numpy/numpy/blob/v2.4.6/numpy/_core/_methods.py)
+and [v2.4 `std` documentation](https://numpy.org/doc/2.4/reference/generated/numpy.std.html).
+Five synthetic/source tests plus the focused accounting suite pass; no model
+batch or data ran.
+
+## Primary implementation references checked
+
+- [NumPy 2.4 `eigvalsh` reference](https://numpy.org/doc/2.4/reference/generated/numpy.linalg.eigvalsh.html): documents `_syevd` / `_heevd` for real symmetric / complex Hermitian matrices.
+- [NumPy v2.4.6 `_linalg.py` source](https://github.com/numpy/numpy/blob/v2.4.6/numpy/linalg/_linalg.py): pinned high-level implementation reference.
+- [Netlib LAPACK `DSYEVD` source](https://www.netlib.org/lapack/explore-html/d1/da2/dsyevd_8f_source.html): eigenvalues-only code path calls `DSYTRD` and `DSTERF`; source also contains conditional scaling.
+- [Netlib LAPACK `DSTERF` source](https://www.netlib.org/lapack/explore-html/d9/df2/dsterf_8f_source.html): documents `MAXIT=30` and at most `30*N` iterations.
+- [Netlib LAPACK `DSYTRD` source](https://www.netlib.org/lapack/explore-html/d5/d7a/dsytrd_8f_source.html): dispatch depends on `ILAENV` block size and workspace.
+
+These references establish the documented/reference call path only. They do
+not identify which LAPACK binary is linked into a future execution environment,
+so the source-level count remains incomplete.
+
+## Follow-up: action-validation accounting (2026-10-07)
+
+The source-level `actions.sum(axis=2)` operation noted above has been replaced
+in `preflight_batch` by `np.count_nonzero(actions, axis=2)`, after the same
+finite/range/binary checks. The one-hot acceptance rule is unchanged: existing
+transitions require exactly one nonzero and absent transitions require zero.
+Synthetic regression cases cover valid input, multiple set bits, action bits in
+padding, and a nonbinary value. The focused six-module suite passes 28/28;
+`compileall` and `git diff --check` pass.
+
+This removes the identified floating-point summation from that validation path;
+it does not establish a net runtime or total-work reduction. The count still
+scans 256×65 entries per batch, and its integer/comparison implementation must
+be represented separately in the eventual counter. No counter/profile,
+selected-window data, roots, inference, outcomes, or training ran. This source
+change does not address the unresolved linked-LAPACK eigensolver path or open
+any D03 gate; the six-arm ≤5% compute gate remains **untested and unpassed**.
+
+## Repeated model-preflight scan cardinalities (2026-10-07)
+
+`tools/v212_preflight_scan_accounting.py` reports source-shaped cardinalities
+for the `preflight_batch` call executed by each `loss_grad` invocation. At the
+illustrative 64-row shape, the seven numeric arrays passed through finite
+checks contain 80,640 elements total. The action array contributes 16,640
+entries to `count_nonzero`, 256 output row counts, and 66,560 action-domain
+predicate-element evaluations across the four `<`, `>`, `!=`, `!=` checks.
+These native cardinalities are reported separately from candidate FLOPs and
+are not an estimate of NumPy runtime cost. Predicate totals describe the
+successful valid-batch path: Python `or` short-circuits for malformed batches,
+so failed inputs may evaluate fewer operands and predicates.
+
+Three focused tests pin these values and the source call sites; the partial
+ledger carries the same subinventory for each arm because the invocation's
+preflight is shared by all six. The full accounting suite passes 58/58, and
+targeted `compileall` and `git diff --check` pass. An approved read-only review
+confirmed the counts and scope and prompted the short-circuit qualification;
+the reviewer ran no code. This is deliberately incomplete: other
+legal/value/actor/transition/mask checks, terminal row scans, indexing,
+allocation/copy/control flow, NumPy implementation cost, and the one-time
+dataset preflight remain outside it. It does not aggregate 20×87 updates or
+change any D03 precondition. No batch/data, profile, or training was run.
+Graph freeze remains **NO** and the ≤5% gate remains **untested and unpassed**.
+
+## Runtime observation utility (2026-10-07)
+
+`tools/v212_runtime_observation.py` adds a read-only collector for Python and
+NumPy versions/configuration, environment thread controls, platform fields,
+and file-backed executable mappings whose path, device and inode can be
+matched while hashing the backing file. Its receipt digest is deterministic
+for identical collected fields. It reports whether the process versions match
+the declared Python 3.11.9 / NumPy 2.4.6 lock.
+
+This is operationally useful inventory only. The collector marks the result
+`observational_only` and `execution_bytes_verified=false`: a hash read after
+startup does not prove the bytes already executed or currently mapped pages.
+The thread fields capture environment requests, not active native threadpool
+state; NumPy build configuration and mapped names do not alone prove the
+runtime's active BLAS/LAPACK dispatch. The collector imports the relevant
+NumPy native modules before taking its mapping list, removes map-order-only
+fields, and compares normalized executable segment ranges, permissions,
+offsets and backing-object identities before and after backing-file hashing.
+The normalized segment inventory is also hashed into the report. This can
+detect observed changes but is not an atomic snapshot. Three tests cover maps
+parsing, mapped device/inode checks and the explicit
+non-attestation contract. A one-off in-memory check on Python 3.14.7 / NumPy
+2.5.3 matched 36 mapped executable backing files by path/device/inode at read
+time, found equal normalized segment
+inventories before and after hashing, and recomputed the digest. The lock-match
+flag was false; both NumPy native modules resolved under
+`/tmp/caissa-jepa-pv-deps`. No receipt was persisted. This does not clear the
+D03 runtime/backend or counter-coverage gate.
+
+## Static source-operation inventory (2026-10-07)
+
+`tools/v212_source_operation_inventory.py` creates a deterministic AST-site
+inventory for `two_player/v212_model.py` and
+`two_player/v212_scratch_optimizer.py`. It records arithmetic/unary operator
+syntax, calls, subscripts, comparisons, and selected control-flow sites,
+including `AugAssign`, `Return`, and `Raise`, sorted by source location, and
+includes source SHA-256 values. The first report had 829 syntax sites in the
+model (37 augmented assignments) and 135 in the optimizer, including 307 call
+sites combined. The current source snapshot has 835 model sites (40 augmented
+assignments) and 135 optimizer sites. It can help reviewers find source expressions absent from a
+counter ownership map, but every entry is explicitly
+`unresolved_by_syntax_inventory`. It does not infer array dtypes, branch
+execution, NumPy/LAPACK internals, or operation counts, and it is not a
+complete counter or trace.
+
+At the time this inventory was first produced, only Python 3.11.17 and 3.14.7
+were available for its tests, with NumPy 2.5.3 on the shared dependency path.
+A later temporary Linux environment now has the exact Python 3.11.9 / NumPy
+2.4.6 version pair; its observed NumPy build is scipy-openblas 0.3.31.188.0.
+That corrects package-version availability, but it does not establish the
+declared Windows runtime or attest the future D03 process. The collector's
+non-atomic mapped-file observation has `execution_bytes_verified=false`; no
+model, profile, or training operation was run. D03 runtime/backend and counter
+readiness remain open.
+
+## Source-operation candidate ownership crosswalk (2026-10-07; current snapshot)
+
+`tools/v212_source_counter_reconciliation.py` v02 joins each inventory site to
+a candidate partial subcounter where a source-shaped relation is identifiable,
+or records an explicit unresolved / separately reported disposition. Following
+optimizer and regularizer mapping updates, the current recomputation hashes the
+two classifier/inventory sources and each distinct referenced owner tool
+source into the report, in addition to the inventory input hashes:
+
+| Analysis source | SHA-256 |
+| --- | --- |
+| `tools/v212_source_operation_inventory.py` | `c47a396607d9c1b6268e02d1397d762f50ebc5233778af0ba86d339e06cc9dc9` |
+| `tools/v212_source_counter_reconciliation.py` | `4e1372f18f5021e958e996d9b22832668436890e8206d1e0dab14b01729c37b2` |
+
+All 14 distinct candidate-owner source files existed when the report was
+generated; their paths and hashes are included in the JSON output. The report
+binds the inventory to these model input hashes:
+
+| Module | Source SHA-256 | AST sites |
+| --- | --- | ---: |
+| `two_player/v212_model.py` | `26cfb50f0eb54554bd3204834a2932d3dac5991a9fe369b6b85d77e01f263014` | 835 |
+| `two_player/v212_scratch_optimizer.py` | `5369b6ae6d5c8e6466a7a82e708d5fb55e2a470697b9b1900e27ba8f6bf567cb` | 135 |
+
+Crosswalk digest: `19622b3c664aac1f36cfbb5c499663faae8d87c4946b0d9684506b70dda41320`.
+The 970 site dispositions are 205 candidate-owner, 72 partial candidate-owner,
+one runtime-unverified candidate-owner, 36 reported separately, ten reported
+separately or partially bounded non-FP, one blocking-unresolved
+`np.linalg.eigvalsh`, 174 explicitly unresolved, 445 explicitly unresolved
+non-FP, and 26 unresolved or context-owned. These are syntax-site counts,
+not operation counts or FLOP totals. The report keeps unmatched sites visible
+and states that no site has a validated complete cost owner. The digest binds
+the serialized report and hashes of inventory inputs, analysis code, and
+candidate-owner files; hashes establish byte identity only, not semantic
+correctness or completeness of the classifier/subcounters.
+
+Candidate ownership only identifies a potentially relevant existing partial
+ledger. In particular, an owner label does not resolve enclosing expression
+context, branch frequency, duplicate component ownership, native/runtime
+implementation, or actual executed work. The linked LAPACK path remains a
+blocking open item; NumPy reduction/runtime identity is unverified; and
+allocation, indexing, control flow, and other non-FP work remain incomplete.
+The `_finite_array` `np.all` / `np.isfinite` calls point to the preflight
+subcounter only as partial finite-input cardinality evidence; the boolean
+reduction and runtime work are not separately costed. `np.asarray` remains
+unresolved because dtype conversion and copying depend on input dtype/layout.
+The report sets `full_counter`, `parity_eligible`, and
+`graph_freeze_eligible` to false. It is a review aid, not an accepted counter,
+execution trace, profile, or protocol amendment. No model/data operation or
+gate transition followed from it; the ≤5% six-arm gate remains **untested and
+unpassed**.
+
+The current crosswalk maps all 24 add/subtract/multiply/divide AST sites in
+`scratch_adam_ema_step` to the existing optimizer arithmetic owner, with the
+gradient-norm division retaining its branch-interval qualification. It maps
+`_regularize` arithmetic into disjoint regularizer/effective-rank owners and
+now joins the recognized `loss_grad` arithmetic sites to policy, residual,
+activation, objective-scalar, target-gradient, regularizer, and gradient-
+accumulation owners. Python shape/index arithmetic and list construction are
+reported separately. The 12 preflight `BitAnd`/`BitOr`, 13 `Compare`, and 13
+Boolean `Invert` sites now link to partial source-shape cardinality inventories;
+reductions, other control/indexing, and runtime work remain open. The crosswalk
+leaves the blocking eigensolver and every other unmatched site visible. The
+source-crosswalk, preflight cardinality/scan, and owner suites pass 65/65.
+This is site-to-owner traceability, not validation that the
+aggregates capture every execution or that input validation/copy/runtime work
+is covered; `full_counter`, parity, and graph-freeze flags remain false.
+
+## Preflight Boolean bitwise cardinalities (2026-10-07)
+
+`tools/v212_preflight_bitwise_accounting.py` records source-shaped output
+element cardinalities for the 12 explicit `&`/`|` AST nodes in one successful
+`preflight_batch` call. At batch size 64, this is 35,584 Boolean output
+elements: transition consistency/invalid masks 512, actor-role masks 384,
+action-range and binary masks 16,640 each, horizon-complete masks 448,
+horizon-validity masks 384, and missing-target count masks 576. These are
+native cardinality units, not FLOPs, instruction counts, or runtime estimates;
+invalid inputs may short-circuit later checks. Comparison evaluations,
+Boolean inversion, reductions, indexing/control, finite-check cost, and
+one-time dataset preflight remain outside this subcounter. The focused
+crosswalk/preflight/owner suite passes 47/47. Full-counter, runtime,
+graph-freeze, and ≤5% parity eligibility remain false.
+
+## Preflight comparison and inversion cardinalities (2026-10-07)
+
+The preflight scan owner now reports source-shaped element counts for the 13
+`Compare` AST sites in `preflight_batch` and `_finite_array`. For batch size 64,
+the four array-comparison families total 67,136 output elements: action range
+and binary checks 66,560, policy index range 128, actor alternation 192, and
+one-hot count domains 256. One successful call reaches 12 shape-helper
+comparisons plus three scalar/shape guards, for 15 site calls; this is a call
+count, not a primitive-operation estimate. The 13 source sites occur 24 times
+on that valid path. Invalid paths can short-circuit, and membership/reduction
+internals, non-`Invert` Boolean control, indexing/control, and runtime costs
+remain uncounted.
+
+The 13 explicit Boolean-inversion AST sites add 2,176 fixed output elements
+and 0–256 selected actor-membership elements per successful valid batch, for a
+source-shaped interval of 2,176–2,432. Five sites recur for the three active
+horizons, so the source sites occur 23 times on that path. The membership
+inversion interval follows the input-dependent `transition_exists` mask and
+does not assume every row has a transition.
+
+All 13 Compare and 13 Boolean Invert AST sites now map to the preflight scan
+tool as a partial owner. The 970-site crosswalk has 72 partial-owner sites,
+445 explicitly unresolved non-FP sites, and 26 unresolved/context-owned sites
+at digest
+`19622b3c664aac1f36cfbb5c499663faae8d87c4946b0d9684506b70dda41320`. The
+65 focused crosswalk/preflight/owner tests pass. Full-counter, runtime,
+graph-freeze, and ≤5% parity eligibility remain false.
+
+## Six-arm common-work dilution sensitivity (2026-10-07)
+
+`tools/v212_parity_shared_work_sensitivity.py` applies the preregistered D03
+range statistic to the owner-ledger intervals for the illustrative
+all-64-valid mask fixture. Under the specific assumption that omitted FP work
+adds the same amount `C` to every arm and every scheduled update, the most
+conservative existing endpoints are `27,130,740 + C` for recursive raw-state
+and `4,588,091 + C` for direct-leaf. Requiring their ratio to be at most
+`1.05` gives `C ≥ 20×27,130,740 - 21×4,588,091 = 446,264,889` FLOPs per
+invocation. If that identical term repeated across all 1,740 scheduled
+updates, its sum would be 776,500,906,860 FLOPs.
+
+This calculation only quantifies a dilution scenario. It does not establish
+that omitted work exists or is equal across arms; arm-specific missing work,
+actual schedule masks, native reduction behavior, and LAPACK can change the
+result. It does not establish pass/fail or authorize profile/fit. Three
+synthetic algebra/contract tests pass; no model/data/profile/runtime operation
+was performed, and no gate changed.
+
+## DSTERF reference-path iteration bound (2026-10-07)
+
+`tools/v212_dsterf_iteration_bound.py` bounds the source-visible
+add/subtract/multiply/divide sites in the OpenBLAS v0.3.31 reference DSTERF
+path for N=32, with a separate source bound for at most 16 DLAE2 2×2 solves.
+The pinned source files are [DSTERF](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dsterf.f)
+and [DLAE2](https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.31/lapack-netlib/SRC/dlae2.f).
+It uses the documented 30N maximum shifted iterations (960), 12 arithmetic
+operations per inner-loop element, 8 shift operations, 2 tail operations, and
+two multiplications per convergence check. It also includes the initial
+split scan (at most N−1 checks) and up to N(N−1) additional no-shift
+convergence checks for deflation, 2×2 completion, and the iteration-limit
+path. This gives 428,497 source-visible add/subtract/multiply/divide
+operations per invocation. The 48 exponentiation-by-two sites are reported
+separately; treating every one as a multiplication gives the sensitivity value
+428,545.
+
+An approved read-only `gpt-6-luna/high` review found the revised arithmetic
+bound conservative for this declared partial scope. The first 428,466 draft
+was low because it omitted no-shift convergence scans; that value is retained
+here as a rejected intermediate, not as a result. The reviewed bound counts
+DLAE2 explicitly but excludes DSYEVD wrapper/scaling, DSYTRD and its helper
+paths, DLASCL/DLANST/DLAMCH/DLAPY2/DLASRT internals, non-FLOP work, and any
+future linked-binary mismatch. It is not a complete eigensolver bound, total
+counter, parity result, or profile authorization. Four standard-library tests,
+targeted `compileall`, and `git diff --check` pass on the Python 3.11.9
+temporary environment. No covariance, eigenvalue, model, data, profile,
+service, or training operation was run; D03 remains unpassed.
+
+## DSTERF helper source sub-bound (2026-10-07)
+
+`tools/v212_dsterf_helper_source_bound.py` separately supplements the DSTERF
+iteration inventory with the three setup DLAMCH calls and up to 960 DLAPY2
+calls, one per shifted QL/QR iteration at N=32. Under the explicit IEEE
+binary64 reference-source assumptions, it adds 3,844
+add/subtract/multiply/divide operations, 960 scalar power sites, and 960
+square-root calls. Combined with the base source inventory, the partial
+subtotal is 432,341 arithmetic operations plus 1,008 separate power sites
+(433,349 if each maps to one multiplication) and 2,016 square roots. These
+are source candidates, not linked-runtime measurements, and this helper
+supplement has not been independently reviewed. DSTERF's conditional DLASCL
+calls are covered separately below; the DLANST norm scan, DLASRT sorting and
+associated non-FLOP work remain excluded. This does not complete DSTERF or the
+eigensolver. Seven focused
+formula tests, targeted `compileall`, and `git diff --check` pass. No
+eigensolver, model, profile, inference, or training ran; no gate changed.
+
+## DSTERF DLASCL conditional source sub-bound (2026-10-07)
+
+`tools/v212_dsterf_dlascl_source_bound.py` accounts for DSTERF's two input
+scaling calls (D and E) and one output restore call (D) for each scaled
+non-singleton tridiagonal block. At N=32 there can be at most 16 such blocks.
+For finite IEEE binary64 values, `ssfmax=2^511/3` and `ssfmin=2^-405`; the
+largest-magnitude scale ratio in the large-norm branch is below `2^515`, and
+in the small-norm branch below `2^669`; inverse-direction ratios are bounded
+away from zero by `2^-669`. These caller-derived ratios are inside the more
+conservative `[2^-970,2^970]` outer envelope. DLASCL itself sets its local
+`smlnum=DLAMCH('S')=2^-1022` and `bignum=2^1022` under the binary64 assumption;
+these are distinct from DSYEVD's `safmin/eps` scaling limits. Both directions
+therefore remain within DLASCL's local one-pass range.
+The bound therefore uses at most 48 DLASCL calls and 80 vector-element
+multiplications across all calls. Each call contributes four source
+arithmetic operations for DLASCL's one-pass scalar work plus two from its
+DLAMCH('S') helper, for 368 total arithmetic operations. The per-block
+element and per-call maxima are combined using the same 16-block partition
+that maximizes the aggregate. The path and scale targets follow [reference
+DSTERF](https://www.netlib.org/lapack/explore-html/d9/df2/dsterf_8f_source.html);
+the one-pass conditions and vector scaling loop follow [reference
+DLASCL](https://www.netlib.org/lapack/explore-html/de/d3c/dlascl_8f_source.html)
+and [DLAMCH](https://www.netlib.org/lapack/explore-html/d5/dd4/dlamch_8f_source.html).
+
+This adds to the prior partial DSTERF source candidate to give 432,709
+add/subtract/multiply/divide operations, 1,008 separately counted scalar
+power sites (433,717 if every power maps to one multiplication), and 2,016
+square roots. The derivation is conditional and has not been independently
+reviewed; it does not attest the loaded runtime. DLANST/DLASRT and non-FLOP
+work, the wider eigensolver, and linked-library identity remain open. Fourteen
+focused formula tests, targeted `compileall`, and `git diff --check` pass. No
+eigensolver, profile, or model ran; no gate changed.
+
+## DSTERF DLANST/DLASRT source-cardinality sub-bound (2026-10-07)
+
+`tools/v212_dsterf_scan_sort_source_bound.py` accounts for the remaining
+reference DSTERF helper call and scan cardinalities without converting them
+into FLOPs. For N=32, singleton blocks skip DLANST and at most 16
+non-singleton blocks call `DLANST('M')`. Its source scans `D(N)` once plus
+`D(i)` and `E(i)` for each loop iteration. Aggregate maxima are 32 diagonal
+and 31 off-diagonal absolute-value evaluations (63 total) with one order-32
+block; the separate 16-call maximum occurs with order-2 blocks. The source
+contains at most 62 relational-comparison sites and 62 `DISNAN` call sites.
+For this norm mode, add/subtract/multiply/divide sites are zero.
+
+On successful DSTERF completion, `DLASRT('I',N,D,INFO)` is called once with
+32 values. Its source uses quicksort and insertion sort for partitions up to
+length 21. A source-derived N=32 upper bound is 1,123 D-array value
+comparisons: quicksort partition sizes can follow at most `32,31,...,22`
+because two children of length at least 22 cannot fit in 32 entries; each
+partition charges at most `2*m` array-scan comparisons and three
+median-of-three comparisons. The insertion-sort leaves are disjoint and
+together use no more than `32*31/2 = 496` comparisons. The partition `i<j`
+integer check contributes at most 297 additional checks on that path; other
+integer/control comparisons, indexing, branches, swaps, and memory operations
+remain uncounted. Sources are
+[DSTERF](https://netlib.org/lapack/explore-html/d9/df2/dsterf_8f_source.html),
+[DLANST](https://netlib.org/lapack/explore-html/d0/d90/dlanst_8f_source.html),
+and [DLASRT](https://netlib.org/lapack/explore-html/df/ddf/dlasrt_8f_source.html).
+Three focused tests, targeted compilation, and whitespace checks pass. This
+is unreviewed reference-source evidence, not actual linked-runtime coverage
+or a complete DSTERF/eigensolver bound; no gate advances.
+
+`tools/v212_dsterf_source_inventory.py` composes the non-overlapping N=32
+sub-bound owners as a consistency report: 428,497 direct DSTERF/DLAE2
+arithmetic operations, 3,844 setup-DLAMCH/DLAPY2 helper operations, and 368
+DLASCL/per-call-DLAMCH operations, for 432,709 total. It reports 1,008 power
+sites and 2,016 square roots separately; DLANST and DLASRT add no
+add/subtract/multiply/divide operations under this convention. Their scan,
+comparison, and call cardinalities remain in native non-FLOP units. This
+composition checks subcounter ownership/additivity but does not establish
+runtime identity, full DSTERF non-FLOP coverage, or a complete eigensolver.
+
+## DLASCL conditional source bound (2026-10-07)
+
+`tools/v212_dlascl_iteration_bound.py` counts source-visible arithmetic in
+reference LAPACK 3.12.1 DLASCL for the N=32 upper/lower triangle matrix path
+used by DSYEVD scaling. For a caller-declared `L>0` scaling-loop iterations,
+the candidate upper bound is `530*L+2` add/subtract/multiply/divide
+operations: 528 stored-entry multiplications plus one loop multiplication and
+one loop division per pass, at most one terminal scale-ratio division, and
+the one per-call reciprocal initialization. The tool reports zero when there
+is no call/pass. This is conditional bookkeeping, not a finite total bound:
+the iteration cap depends on the machine model. A second source path derives
+`L=1` and 532 operations under explicit IEEE binary64 with gradual subnormals,
+finite inputs, the reference DLAMCH values, reference DLANSY('M'), and
+reference DSYEVD/DLASCL control flow: DSYEVD's scaling factor lies strictly
+between DSYEVD's own `smlnum=2^-970` and `bignum=2^970`, so the helper's first
+pass takes its terminal ratio branch. DLASCL separately sets its local
+`smlnum=DLAMCH('S')=2^-1022` and `bignum=2^1022` for binary64. This conditional
+bound is not an attestation of the
+loaded NumPy-linked LAPACK or machine parameters. Comparisons, branches,
+DLAMCH, and the rest of the eigensolver remain excluded. Four standard-library
+tests and targeted static checks pass. No eigensolver, model, data, profile,
+inference, or training was run; no gate advanced.
+
+## DLAMCH/DLANSY DSYEVD helper sub-bound (2026-10-07)
+
+`tools/v212_dsyevd_helper_source_bound.py` covers the two reference DLAMCH
+calls (`'S'` and `'P'`) and the DSYEVD `DLANSY('M')` scan at N=32 under an
+IEEE binary64 machine assumption. The source-visible DLAMCH arithmetic is
+three multiplications and one division: each call computes epsilon times 0.5;
+the safe-minimum call also computes `1/huge`, and the precision call multiplies
+epsilon by radix. Under binary64, `1/huge < tiny`, so DLAMCH's safe-minimum
+adjustment branch is skipped. DLANSY('M') scans 528 stored triangle entries
+using absolute value and comparison work, with zero add/subtract/multiply/
+divide operations under the stated counting convention. This subcounter is not
+independently reviewed and does not attest actual linked LAPACK behavior;
+compiler lowering, non-FLOP details, DLASCL, DSYTRD/DSTERF, and runtime
+identity remain separate or unresolved. Three standard-library tests and
+targeted static checks pass; no numerical eigensolver, model, data, profile,
+inference, or training ran.
+
+## DSYEVD conditional source composition (2026-10-07)
+
+`tools/v212_dsyevd_source_inventory.py` composes three disjoint DSYEVD-owned
+scopes for the N=32, `JOBZ='N'` reference path. Direct driver arithmetic and
+DSCAL contribute 2–36 operations; the driver's two direct DLAMCH calls add 4.
+If DSYEVD scales the matrix, the one-pass DLASCL body contributes at most 532
+operations and its own DLAMCH('S') helper adds two more under the binary64
+assumption. The resulting DSYEVD-only interval is 6–574 add/subtract/
+multiply/divide operations, with two square-root calls separate. This corrects
+the prior component sum, which omitted DLASCL's internal DLAMCH call. DLANSY
+scans 528 triangle entries with zero arithmetic operations under the selected
+convention. The composition remains unreviewed conditional source accounting;
+it excludes DSYTRD, DSTERF, linked-runtime identity, and full-counter coverage.
+
+## Eigensolver source-component bridge (2026-10-07)
+
+`tools/v212_eigensolver_component_inventory.py` adds the separately owned
+DSYEVD, DSYTD2/DLARFG direct, DLARFG helper, reference DNRM2, and DSTERF
+candidate fields without adding the architecture-specific DNRM2 binary
+alternative. At N=32, the conservative sum of the listed component maxima is
+494,677 add/subtract/multiply/divide operations, plus 2,114 scalar power sites
+and 2,254 square-root calls separately (496,791 if each power maps to one
+multiplication). Component maxima are conditional and may not be jointly
+attainable. This number is only the sum of currently covered source candidate
+owners; it does not bound omitted work or represent a complete eigensolver
+total.
+
+Provenance is heterogeneous: OpenBLAS v0.3.31 LAPACK-derived source for
+DSYTD2/DLARFG and DSTERF/DLAE2, Netlib LAPACK 3.12.1 sources for the driver and
+separately counted helpers, and Netlib reference BLAS formulas for rank
+updates. Exact equivalence along an assembled path, runtime identity/dispatch,
+compiler lowering, wrapper operations, and non-FP activity remain unresolved.
+The ledger is a composition aid, not full-counter coverage, parity evidence,
+graph-freeze evidence, or profile/fit authorization. Twenty focused
+aggregation/subcounter tests pass; targeted compile and whitespace checks
+pass. No eigensolver or model ran.
+
+## DNRM2 reference-source formula cross-check (2026-10-07)
+
+Re-derived `tools/v212_dnrm2_reference_source_bound.py` against the Netlib
+LAPACK 3.12.1 reference sources for
+[DNRM2](https://www.netlib.org/lapack/explore-html/d6/de0/dnrm2_8f90_source.html)
+and [DLARFG](https://www.netlib.org/lapack/explore-html/d7/da9/dlarfg_8f_source.html).
+For length one, the largest single scaling-class path has at most four
+add/subtract/multiply/divide operations (scaled square multiply and
+accumulation, scale division, final multiply), one scalar power site and one
+square root. For lengths 2–30, per-element accumulation is bounded by two
+arithmetic operations and one power site; the selected accumulator-combine
+path adds at most five arithmetic operations, two power sites and three square
+roots. Thus the componentwise per-call bounds are `2*L+5`, `L+2`, and `3`.
+
+At matrix order 32, DLARFG has nontrivial reflector orders 2–31, so its DNRM2
+vector lengths are 1–30. The initial norm call and at most one recomputation
+after the bounded rescaling loop yield a conservative componentwise subtotal
+of 2,154 arithmetic operations, 1,046 power sites and 176 square roots. The
+maxima are separate upper bounds and need not co-occur. The focused
+standard-library suite passes 5/5. This verifies the source formula and call
+shape only; it does not attest the loaded BLAS symbol, runtime dispatch,
+compiler lowering, or executed bytes, and it is not additive to the
+architecture-specific binary candidate. Eigensolver coverage, graph freeze,
+and the six-arm parity gate remain open; no eigensolver, model, data, profile,
+inference, or training ran.
+
+## Explicit numeric-conversion source-site inventory (2026-10-07)
+
+Added `tools/v212_conversion_site_inventory.py` and connected it to the source
+counter crosswalk. It inventories 45 explicit conversion requests across the
+model and scratch optimizer: 18 `float()` calls, 14 `int()` calls, and 13
+`np.asarray(..., dtype=...)` calls. The AST inventory SHA-256 is
+`901c6249d9216348699f2358630fe2b3e3017fb862ab978129acbe36d2ee3363`; the
+updated crosswalk digest is
+`e3a9bad538589841ea4f48c468a41ab9d7ff676d14392364cb1bd4b2fbf845dd`.
+
+The crosswalk now reports scalar casts separately and assigns array dtype
+requests to a partial owner. It does not assert that any array is actually
+cast or copied, infer element cardinalities, or price conversion/allocation
+runtime. Across the 970 AST sites, explicitly unresolved arithmetic/calls
+fall from 174 to 129; 13 array-conversion requests remain partial and 32
+scalar casts are reported separately. The focused inventory/crosswalk suite
+passes 10/10. This is traceability only: runtime conversions, the blocking
+eigensolver, full counter, graph freeze, trainer/schedule, and six-arm parity
+remain open or unpassed. No model, data, eigensolver, profile, inference, or
+training ran. The combined 17-test conversion/crosswalk/partial-ledger suite
+also passes; the partial-ledger regression now checks that preflight fields
+match the current delegated preflight owner instead of a stale abbreviated
+snapshot.
+
+## Fixed-batch array-conversion request cardinality (2026-10-07)
+
+Extended the conversion inventory with fixed-shape element slots requested at
+the 13 explicit `np.asarray` AST sites for one 64-window model/optimizer
+invocation. The preflight path requests 98,496 output elements: one initial
+`x` conversion plus the 12 `_finite_array` conversions. The common loss path
+requests 16,960 elements; its direct-leaf branch requests 50,944 more, while
+the other five arms' recurrent branch requests 67,840 more.
+The common loss branch includes the `x`, `legal`, `policy`, and root `value`
+arrays.
+
+Including the scratch optimizer's four parameter/gradient/moment groups and
+the optional EMA target group, total requested elements by arm are 237,288
+(multi-step JEPA, single-pair JEPA, single-horizon JEPA), 257,056 (recursive
+raw-state), 230,920 (value-only latent rollout), and 200,584 (direct-leaf
+value). The optimizer explicitly copies 53,992 / 73,760 / 47,624 / 34,184
+elements respectively for predictive EMA, raw-state, value-only, and
+direct-leaf arms. These are shape cardinalities under frozen v06 parameter
+shapes, not casts, bytes, FLOPs, memory traffic, or latency. Model-side
+`np.asarray` calls may alias or allocate depending on input dtype/type/layout;
+hidden temporaries and runtime behavior remain unverified.
+
+The extended inventory digest is
+`14f0f38f976048e8c19e53cf32a3ef49a82740057feb53177561767b32b8ffb0`; the
+crosswalk digest is
+`c15b3270b212f2763c09244ae11545470c08e4df98b7a607308ac67d04b6dccf`.
+The combined conversion/crosswalk/partial-ledger suite passes 18/18, with
+compile and whitespace checks. Full counter, runtime identity, graph freeze,
+and six-arm parity remain open/unpassed; no model, profile, inference, or
+training ran.

@@ -23,6 +23,7 @@ class Window:
     game: str
     episode_id: str
     split: str
+    episode_outcome: int
     start_ply: int
     states: tuple[State, ...]
     actions: tuple[int, ...]
@@ -43,6 +44,40 @@ def _game_identity(game: BoardGame) -> tuple[Any, ...]:
     """Identify the rule adapter, not just its caller-supplied display name."""
     return (RULES_VERSION, game.name, game.rows, game.cols, game.k,
             game.gravity, game.reversi)
+
+
+def window_payload_sha256(window: Window, game: BoardGame) -> str:
+    """Hash the exact in-memory window fields together with adapter identity.
+
+    This is a content identity helper, not an audit: callers must still obtain
+    windows from ``audit_trajectories`` and use the model-batch adapter to
+    replay transitions and verify the declared target masks.
+    """
+    if not isinstance(window, Window) or not isinstance(game, BoardGame):
+        raise TypeError("window and game must be audited V2.12 primitives")
+    if window.game != game.name:
+        raise ValueError("window/game identity mismatch")
+    payload = {
+        "schema": "caissa.v212.window-payload.v01",
+        "adapter": _game_identity(game),
+        "window": {
+            "game": window.game,
+            "episode_id": window.episode_id,
+            "split": window.split,
+            "episode_outcome": window.episode_outcome,
+            "start_ply": window.start_ply,
+            "states": [
+                {"board": list(state.board), "player": state.player}
+                for state in window.states
+            ],
+            "actions": list(window.actions),
+            "valid_targets": list(window.valid_targets),
+            "terminal_targets": [list(item) for item in window.terminal_targets],
+        },
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"),
+                          ensure_ascii=False, allow_nan=False).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _state_keys(game: BoardGame, state: State) -> tuple[str, str]:
@@ -177,7 +212,8 @@ def audit_trajectories(episodes: list[dict[str, Any]],
             keys = tuple(key for state in window_states
                          for key in _state_keys(game, state))
             identity_records.append({"split": split, "state_keys": keys})
-            pending.append(Window(game.name, episode["episode_id"], split, start,
+            pending.append(Window(game.name, episode["episode_id"], split,
+                                  episode["outcome"], start,
                                   window_states, window_actions,
                                   tuple(valid_targets), tuple(terminal_targets)))
 
