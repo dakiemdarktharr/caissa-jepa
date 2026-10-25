@@ -1,0 +1,17 @@
+{
+  "phase": "workflow",
+  "timestamp": "2026-10-25T11:39:30.890440+07:00",
+  "correction": "Explicit raw and selected H1/H2/H4 support and missing/terminal counts; retained episode counts",
+  "tests_run": 9,
+  "failures": 0,
+  "errors": 0,
+  "wall_seconds": 0.614,
+  "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv/bin/python -B -m unittest tests.test_counterplay_data tests.test_counterplay_data_producer -v",
+  "source_hashes": {
+    "counterplay/data.py": "18245686841335715f2bb31eaee886f74b8eea749302d306a488a161221439a5",
+    "tests/test_counterplay_data.py": "04f7419db21a156a453f286aa0ba57b3601a13b81701b5a1ade4262d5981eeae",
+    "research/reviews/DATA_FOUNDATION_CP01_2026-10-25.md": "10a95f3470d3501b3f8d761deeb39e26c222da20da615639bfbb1f98c7cd0247"
+  },
+  "disposition": "Independent targeted review passes for one bounded data feasibility batch after clean source publication; no training approval",
+  "scientific_experiment_ran": false
+}

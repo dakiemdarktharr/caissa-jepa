@@ -3,29 +3,30 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T11:36:05.964856+07:00 (Asia/Saigon, UTC+07:00).
+**Updated:** 2026-10-25T11:39:30.890440+07:00 (Asia/Saigon, UTC+07:00).
 **Phase:** CP-01 foundations before Review 2; [Review 1 accepted](research/reviews/REVIEW1_CP01_2026-10-25.md).
 **This checkpoint:** repaired covariance-gradient weighting, verified all six
 arms/every parameter tensor, and added bounded data/reference construction
-and durable producer hooks. Independent data-foundation review conditionally accepts one feasibility batch;
-explicit horizon support counts remain a pre-acceptance correction.
+and durable producer hooks. Independent review accepted the explicit H1/H2/H4 support-count correction
+for one bounded feasibility batch after this source checkpoint.
 No new scientific training or evaluation experiment ran.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
 | Gradient correctness | **192/192 numerical checks passed**; worst error/tolerance **0.001569**; original source failed **35/192** | [Repair receipt](docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json), 2026-10-25; synthetic checks on 6 arms and 96 arm/scenario/tensor combinations |
 | Scoped regression | **41/41 passed**, 0 failures/errors/skips; **1.275 s** | [Receipt](docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json), 2026-10-25; mathematical/model/accounting/ledger/data/producer fixtures. Full suite not rerun; initial fixture errors retained |
+| Current correction checks | **9/9 passed**, 0 failures/errors; **0.614 s** | [Horizon-support receipt](docs/validation/CP01_HORIZON_SUPPORT_2026-10-25.json), 2026-10-25; previous 41-test evidence retained above |
 | Lead cross-check | Original failing encoder coordinate passes on **6/6 arms**, max absolute error **2.17e-10** | [Foundation receipt](docs/validation/CP01_FOUNDATIONS_2026-10-25.json); same declared float64 derivative tolerance |
 | Data / training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [Data contract](research/data_contract.json), [state](research/STATE.md); only synthetic data fixtures ran |
 | Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
-| Workflow evidence | **22 unique events across 4 workflow runs** | [Snapshot](research/results/snapshot-aac52d91312e03b6911f8d2f4151d7c102c1a62fad3414476764e1f94e19a3c4/snapshot.json); includes baseline failures and corrected verification, no scientific outcomes |
+| Workflow evidence | **24 unique events across 4 workflow runs** | [Snapshot](research/results/snapshot-dda8b75e012e4c8ac9724584a28b8e85b0b657a50e2b4f8086153e87c8f9b903/snapshot.json); includes baseline failures and corrected verification, no scientific outcomes |
 | Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
-| Last verified prior GitHub checkpoint | [`5378c0c`](https://github.com/dakiemdarktharr/caissa-jepa/commit/5378c0ce3c51fb1a04723a2b2b30d4a573d953a0), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
+| Last verified prior GitHub checkpoint | [`0385d69`](https://github.com/dakiemdarktharr/caissa-jepa/commit/0385d69f8d1983015a8c4f36f0a8170eb6fd9257), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
 
 **Open gates:** independent data readiness, fresh corpus/window/split/reference
 audit; integrated trainer/evaluator, complete recovery/measurement hooks and
 bounded exports; Review 2/pilot; final analysis freeze and manuscript evidence.
-**Next:** add explicit H1/H2/H4 support/exclusion counts, then generate the pinned,
+**Next:** generate the pinned,
 bounded model-blind development corpus and retain every gate/failure count.
 GitHub stores source, protocols and reviewed small evidence. Raw datasets,
 weights, environments, logs and unreleased outcomes stay ignored/local; exact

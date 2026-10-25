@@ -44,3 +44,7 @@ contains 22 events across 4 workflow runs. It adds the covariance-gradient
 failing baseline/repair, data-source and producer-fixture failures, corrected
 synthetic verification and the prior verified GitHub publication. No actual
 corpus generation, training or matches ran in this milestone.
+
+Snapshot `snapshot-dda8b75e012e4c8ac9724584a28b8e85b0b657a50e2b4f8086153e87c8f9b903/` retains 24 events across four workflow runs, adding
+verified foundation publication and the independently reviewed horizon-support
+correction. No corpus generation or scientific training ran before this snapshot.

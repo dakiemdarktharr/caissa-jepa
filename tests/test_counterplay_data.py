@@ -80,6 +80,13 @@ class CounterplayDataTests(unittest.TestCase):
         self.assertGreater(len(windows), 0)
         self.assertGreater(counts["within_role_content_duplicate"], 0)
         self.assertEqual(len({w["content_id"] for w in windows}), len(windows))
+        for horizon in (1, 2, 4):
+            self.assertEqual(sum(counts[f"raw_h{horizon}_{status}"] for status in
+                                 ("valid_nonterminal", "terminal_masked", "missing_or_truncated")),
+                             counts["raw_windows"])
+            self.assertEqual(counts[f"selected_h{horizon}_valid_nonterminal"], len(windows))
+            self.assertEqual(counts[f"selected_h{horizon}_terminal_masked"], 0)
+            self.assertEqual(counts[f"selected_h{horizon}_missing_or_truncated"], 0)
         self.assertTrue(all(len(w["source_ids"]) == 2 for w in windows))
         forbidden = game.canonical_key(state_from(windows[0]["states"][2]))
         clean, counts = selected_windows([e], {forbidden}, 32, 731)

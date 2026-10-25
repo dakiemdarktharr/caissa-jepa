@@ -214,6 +214,14 @@ def selected_windows(episodes, forbidden_keys, cap, corpus_seed, seen_content=No
         for ply in range(len(episode["actions"])):
             counts["raw_windows"] += 1
             path = states[ply:ply + 5]
+            for horizon in (1, 2, 4):
+                prefix = path[1:horizon + 1]
+                if any(game.terminal(s) is not None for s in prefix):
+                    counts[f"raw_h{horizon}_terminal_masked"] += 1
+                elif len(prefix) == horizon:
+                    counts[f"raw_h{horizon}_valid_nonterminal"] += 1
+                else:
+                    counts[f"raw_h{horizon}_missing_or_truncated"] += 1
             if len(path) != 5 or game.terminal(path[-1]) is not None:
                 counts["terminal_or_short_window"] += 1
                 continue
@@ -240,6 +248,10 @@ def selected_windows(episodes, forbidden_keys, cap, corpus_seed, seen_content=No
     counts["unique_eligible_windows"] = len(candidates)
     counts["selected_windows"] = len(selected)
     counts["unselected_unique_windows"] = max(0, len(candidates) - cap)
+    for horizon in (1, 2, 4):
+        for status in ("valid_nonterminal", "terminal_masked", "missing_or_truncated"):
+            counts.setdefault(f"raw_h{horizon}_{status}", 0)
+            counts[f"selected_h{horizon}_{status}"] = len(selected) if status == "valid_nonterminal" else 0
     return selected, dict(counts)
 
 
@@ -286,6 +298,7 @@ def build(corpus_seed, *, train_episodes=32, development_episodes=50,
                 if role == "train":
                     episode_owners.add(identity)
                 episodes.append(episode)
+                stats["retained_episodes"] += 1
                 if role != "development":
                     continue
                 root = candidate_root(episode, corpus_seed, 8 if game.gravity else 6)
