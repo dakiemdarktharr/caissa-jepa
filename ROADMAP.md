@@ -1,5 +1,13 @@
 # CAISSA-JEPA research roadmap
 
+**Continuation entry (2026-10-25):** read [MASTER_HANDOFF.md](MASTER_HANDOFF.md)
+for the consolidated current state and prioritized dependencies, then
+[the pre-fit decision register](docs/V212_PREFIT_ACTION_REGRET_DECISION_REGISTER_DRAFT_01.md).
+The GitHub reconciliation and synthetic verification do not change the adopted
+v06 method or open any research gate. The dated roadmap below is retained as
+the development record; older prospective steps can be superseded by later
+recorded outcomes.
+
 Updated: 2026-10-07. This is an adaptive research plan, not a promise of a positive result or Q1 acceptance. `GROUND_TRUTH.md` is the session-entry record.
 
 ### 2026-10-07 missing post-exit manager state

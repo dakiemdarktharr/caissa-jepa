@@ -1,5 +1,17 @@
 # CAISSA-JEPA: two-player JEPA research
 
+**Continuing in a new project? Start with the [master handoff](MASTER_HANDOFF.md)
+(2026-10-25) and [copy-ready resume prompt](docs/handoff/RESUME_PROMPT.md).**
+The handoff reconciles the local snapshot with all 415 newer GitHub commits,
+maps source and evidence, records excluded artifacts, and provides setup and
+verification steps. Current method: [V2.12-06](METHOD_SPEC_V212.md).
+The no-update objective and audit helpers exist; an integrated production
+trainer, graph freeze, and six-arm ≤5% training-compute parity remain open.
+No training or match grant follows from this publication. The dated snapshots
+below are historical; use the handoff and latest Ground Truth dispositions
+for current status. [Handoff verification](docs/handoff/VERIFICATION_2026-10-25.md)
+records the current tests and environment limitations.
+
 The active research program tests action-conditioned latent prediction in
 alternating, deterministic, fully observed, zero-sum games. Read
 [Ground Truth](GROUND_TRUTH.md), [roadmap](ROADMAP.md), [frozen method](METHOD_SPEC.md)

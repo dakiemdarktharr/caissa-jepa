@@ -1,5 +1,32 @@
 # CAISSA-JEPA — Ground Truth
 
+## Master handoff and GitHub reconciliation (2026-10-25)
+
+- Start a fresh project/chat with [MASTER_HANDOFF.md](MASTER_HANDOFF.md) and
+  [the resume prompt](docs/handoff/RESUME_PROMPT.md). They consolidate the
+  research history, current v06 method, source map, next gates, setup, and
+  artifact recovery requirements without changing any research disposition.
+- The incoming checkout was `0cba5d6` with seven pending files, while GitHub
+  `main` was 415 commits ahead at `a11668982eabebab7e6925e058eddb80a93df0d8`.
+  Commit `e3d73bd` preserves the local snapshot. Merge `4d67caf` retains both
+  histories and uses the newer GitHub file versions; its tracked tree exactly
+  matches `a116689`. No history was force-rewritten.
+- The current Linux `.venv` is Python 3.11.9 / NumPy 2.4.6, without PySide6.
+  All 488 V2.12 tests pass on the reconciled source. The initial broader
+  research check had three environment/artifact errors and two skips, detailed
+  in [the verification receipt](docs/handoff/VERIFICATION_2026-10-25.md).
+- The inventory records 627 tracked source/evidence files at the merge and
+  the 12 excluded local V01/V02 pilot files (1,702,737 bytes). Historical
+  DEV09/V2.9/V2.11 data and checkpoints are absent here; do not treat GitHub as
+  their backup. Existing `.gitignore` rules are preserved. No vault sync or
+  chat transcript export was performed.
+- This continuation performs migration documentation and synthetic checks
+  only. No production corpus, training, match, calibration simulation, live
+  systemd/OOM test, or new research pilot ran. No subagents were created.
+  Current v06, graph-freeze **NO**, and ≤5% parity **untested and unpassed**
+  remain in force. Historical notes below retain their original dates and
+  limitations; they are not new authorization.
+
 ## Latest continuation delta (2026-10-07; missing post-exit state polling)
 
 - Added a mocked v01 controller regression for post-exit manager responses that

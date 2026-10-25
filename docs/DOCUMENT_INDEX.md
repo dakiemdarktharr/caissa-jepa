@@ -1,5 +1,18 @@
 # Project documentation inventory
 
+## Master continuation package (2026-10-25)
+
+Use [the master handoff](../MASTER_HANDOFF.md) as the consolidated entry point
+for a new project/chat, with its [resume prompt](handoff/RESUME_PROMPT.md),
+[verification receipt](handoff/VERIFICATION_2026-10-25.md), and
+[627-file source inventory](handoff/REPOSITORY_INVENTORY_2026-10-25.json).
+Current method is [V2.12-06](../METHOD_SPEC_V212.md); the
+[pre-fit register](V212_PREFIT_ACTION_REGRET_DECISION_REGISTER_DRAFT_01.md)
+and [FLOP protocol D03](V212_TRAINING_FLOP_PROFILE_PROTOCOL_DRAFT_03.md)
+describe outstanding decisions. The dated inventory below contains historical
+status labels and vault-sync notes; these are not current execution grants or
+evidence of an October 25 vault sync.
+
 Intake: 2026-09-29. This index classifies originals without deleting or rewriting historical evidence. All entries are copied unchanged to the same relative path under `D:/notes/vault_1/Caissa-JEPA/`, except subsequently updated current documents whose latest copy must be synchronized.
 
 | Document | Status / interpretation |
