@@ -80,10 +80,11 @@ claiming a workflow efficiency improvement.
 | W06 — Means/Elo alone would not support paper analysis | Dependence, uncertainty and failure handling could not be reconstructed | Preserve per-seed/root/episode/opening-pair derived observations and denominators in reviewed small exports |
 | W07 — Unbounded or selectively reported retries | Cost growth and biased evidence | Immutable attempt IDs, failure events, predeclared retry policy, and no favorable-run replacement |
 | W08 — Locked outputs had no publication boundary | Automatic backups could expose evaluation results prematurely | Exporter withholds locked runs by default; a run-bound release record is required. Release is an operator/protocol decision, not cryptographic access control |
-| W09 — Recovery was hypothetical | A backup might exist but be unusable | Round-trip clone test implemented and real GitHub fresh-clone verification required for this milestone. Full training resume remains a future trainer test |
+| W09 — Recovery was hypothetical | A backup might exist but be unusable | Local round-trip test and actual GitHub fresh-clone check pass. The same host/environment was used; full training resume and replacement-machine environment recreation remain future tests |
 | W10 — “Least usage” lacked measured evidence | An efficiency claim could be invented | Record exposed token counts, tool calls, retries, elapsed time and accepted deliverables; missing host usage remains null |
 | W11 — No distinction between proposals and installed automation | User could assume autonomous monitoring was already active | Explicit status: journal/checkpoint primitives exist; no unattended scheduler, autonomous agents or production trainer is running |
 | W12 — Paper completeness could become a proxy for scientific validity | A polished paper might overstate novelty or unreproduced results | Claims-to-evidence map, process audit, outcome-independent reporting and human scientific judgment remain mandatory |
+| W13 — Full-journal exports eventually exceed the size cap | Long runs could stop publishing new evidence | Current exporter deliberately fails at its cap and has no automatic partitioning. Before long runs, implement and verify bounded segments with parent snapshot hashes and complete analysis-unit coverage; never silently discard old or failed events |
 
 **4. Revised operating loop**
 
@@ -136,3 +137,28 @@ pushed and independently verified. GitHub's [backup documentation](https://docs.
 explains repository backup scope; [Git's ignore rules](https://git-scm.com/docs/gitignore)
 explain why intentionally untracked artifacts are not included. A same-laptop
 Obsidian mirror is useful memory, but not another failure-independent copy.
+
+**6. Verification and first preserved measurements**
+
+The [infrastructure receipt](validation/WORKFLOW_INFRASTRUCTURE_2026-10-25.json)
+records **14 passing tests**, exact source hashes, environment and elapsed
+time. The [GitHub recovery receipt](validation/GITHUB_RECOVERY_2026-10-25.json)
+records a fresh clone of `49f9f05f597c250bdab2815b5e3bc29950f53a9c`, verification
+of five source/test hashes, and all 14 tests passing from the recovered tree.
+This checks GitHub-to-checkout recovery on the same host using the existing
+environment; it does not claim an independent-machine or power-loss test.
+
+The first `research/results/` snapshot contains five real workflow events:
+search counts, focused verification, GitHub recovery, verified publication,
+and usage availability. It contains no trained-model result. Unexposed token
+and billing fields are explicitly missing. The local database remains ignored.
+
+The first attempt to publish that CSV snapshot stopped before committing:
+Git's default whitespace check treated standard CRLF CSV terminators as
+trailing whitespace. The checkpoint tool now permits CRLF without disabling
+actual trailing-space checks. The [regression receipt](validation/WORKFLOW_CHECKPOINT_CRLF_2026-10-25.json)
+records **15 passing tests**, including byte-exact CSV recovery and rejection
+of a source line with trailing spaces. A subsequent snapshot keeps all five
+original events and adds the failed attempt and its regression verification.
+The verification event binds changed source hashes explicitly; this workflow
+run spans implementation revisions and is not a scientific experiment.

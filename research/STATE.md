@@ -19,7 +19,14 @@ point; resolve claims using linked versioned evidence rather than chat memory.
 - **Verified earlier remote checkpoint:** `0ce359a6c0b811d478f9a4e90f2cded2f68833e9`
   on `origin/main`, destination `dakiemdarktharr/caissa-jepa`. It contains the
   original audit, data-readiness note and first workflow design. The containing
-  commit of this file records the subsequent instrumentation/audit milestone.
+  commit of this file records the subsequent evidence milestone.
+- **Verified implementation checkpoint:** `49f9f05f597c250bdab2815b5e3bc29950f53a9c`
+  was pushed normally and freshly cloned from GitHub. Five source hashes and
+  14 focused tests pass in that clone, on the same host/environment. See
+  `docs/validation/GITHUB_RECOVERY_2026-10-25.json`. A later checkpoint-tool
+  compatibility correction accepts standard CSV CRLF bytes while still
+  rejecting actual trailing spaces; its 15-test receipt and exact source
+  hashes are in `docs/validation/WORKFLOW_CHECKPOINT_CRLF_2026-10-25.json`.
 - **New implementation:** durable `research_ledger.py`, objective measurement
   adapter, ledger CLI, and explicit-file Git checkpoint CLI. Producers and
   scheduled invocation must be wired into the future runner. No unattended
@@ -28,7 +35,11 @@ point; resolve claims using linked versioned evidence rather than chat memory.
   process exit, concurrency, duplicate/conflicting replay, integrity checks,
   missingness, locked-output withholding/release, real-objective output
   equivalence, Git round-trip recovery, exclusions and divergence rejection.
-  The milestone receipt records the executed count and source hashes.
+  The original milestone receipt records 14 passing tests; the subsequent
+  regression suite records 15. The first checksummed `research/results/`
+  snapshot preserves five workflow events; a later snapshot adds the failed
+  publication and its regression verification, preserving seven events.
+  These are infrastructure measurements, not scientific training outcomes.
 - **Data:** active checkout contains only 12 old compute-pilot artifacts.
   A separate local archive contains about 933 MB of historical experiments;
   selected DEV09/V2 bytes were matched to original hashes. Neither is an
@@ -37,6 +48,9 @@ point; resolve claims using linked versioned evidence rather than chat memory.
   then fix and numerically verify the covariance gradient. Freeze the data
   contract, build a small audited corpus, and integrate the trainer with all
   required logging/checkpoint hooks before any production training.
+- **Export scale gate:** the current exporter writes the full database and
+  fails above its cap. Implement verified bounded segments/rotation with
+  linked provenance and complete analysis coverage before long runs.
 
 Read next:
 

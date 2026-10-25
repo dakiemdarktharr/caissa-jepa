@@ -50,7 +50,10 @@ def checkpoint(root, paths, message, *, push=False, expected_remote=DEFAULT_REMO
     if total > 10_000_000:
         raise ValueError("checkpoint exceeds the 10 MB curated-file budget")
     git(root, "add", "--", *selected)
-    git(root, "diff", "--cached", "--check")
+    # CSV's standard CRLF terminator is valid data. Accept it without disabling
+    # checks for spaces before the terminator or other source whitespace errors.
+    git(root, "-c", "core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
+        "diff", "--cached", "--check")
     changed = bool(git(root, "diff", "--cached", "--name-only").stdout)
     if changed:
         git(root, "commit", "-m", message)

@@ -78,6 +78,16 @@ class ResearchCheckpointTests(unittest.TestCase):
             self.publish()
         self.assertIn(before, git(self.root, "ls-remote", str(self.remote), "refs/heads/main").stdout)
 
+    def test_standard_csv_line_endings_preserved_but_trailing_spaces_rejected(self):
+        csv_bytes = b"metric,value\r\nloss,1.0\r\n"
+        (self.root / "metrics.csv").write_bytes(csv_bytes)
+        self.assertTrue(self.publish(["metrics.csv"])["remote_verified"])
+        restored = subprocess.check_output(["git", "--git-dir", str(self.remote), "show", "main:metrics.csv"])
+        self.assertEqual(restored, csv_bytes)
+        (self.root / "bad.py").write_bytes(b"value = 1 \r\n")
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.publish(["bad.py"])
+
 
 if __name__ == "__main__":
     unittest.main()

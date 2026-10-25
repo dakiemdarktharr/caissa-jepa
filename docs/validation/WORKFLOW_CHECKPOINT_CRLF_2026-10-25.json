@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-25T03:53:22.167649+00:00",
+  "base_commit": "49f9f05f597c250bdab2815b5e3bc29950f53a9c",
+  "status": "pass",
+  "incident": "The first curated CSV checkpoint stopped before commit: Git default whitespace checking rejected standard CRLF CSV line endings. No remote history was modified by that failed attempt.",
+  "fix": "Permit CR at EOL while retaining blank-at-eol, blank-at-eof and space-before-tab checks; preserve exported bytes and checksums.",
+  "test_command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv/bin/python -B -m unittest tests.test_research_ledger tests.test_research_checkpoint -v",
+  "invocation_note": "Equivalent unittest loader and TextTestRunner used for structured timing.",
+  "tests": {
+    "run": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "wall_seconds": 0.6601659539992397
+  },
+  "regression": "Normal CSV round-trips to the remote with exact CRLF bytes; actual trailing spaces still block publication.",
+  "source_sha256": {
+    "research_ledger.py": "30a21b787ba5072dbf60424fcb21489630e55e45e97c57d97e82f25640e29d0d",
+    "tools/research_ledger.py": "ad4fa5aa15011042a7a46f77063103b11deb42579a96c1bc160d5974d42114d1",
+    "tools/research_checkpoint.py": "3792f321234712f4e261a5f0bc7499687a632b90210690775e7bf31f956fb9ec",
+    "tests/test_research_ledger.py": "a51a30f34aac8a37eb027c2851b8a4143e77ea97e53b0ed8266a1fffceeed8be",
+    "tests/test_research_checkpoint.py": "a8444f8a035d3df6d29e53b2c75a3fd1188b05ca8a168de441548c82b971f37e"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "limits": "Focused infrastructure tests only; no production training or claim that all original project tests pass."
+}

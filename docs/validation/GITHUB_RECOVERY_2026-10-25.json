@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-25T03:49:44.539102+00:00",
+  "remote": "git@github.com:dakiemdarktharr/caissa-jepa.git",
+  "branch": "main",
+  "verified_commit": "49f9f05f597c250bdab2815b5e3bc29950f53a9c",
+  "fresh_clone": true,
+  "clone_directory": "/tmp/counterplay-recovery-7a5fi0yg/repo",
+  "source_hashes_checked": 5,
+  "tests": {
+    "run": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "successful": true,
+    "wall_seconds": 0.5979919380006322
+  },
+  "total_wall_seconds": 6.171710362999875,
+  "status": "pass",
+  "scope": "Fresh GitHub checkout on the same host using the existing Python environment. Not an independent-machine environment rebuild or physical disaster test.",
+  "exclusions": "Generated datasets, checkpoints, environments, raw logs and the local SQLite journal are intentionally not restored from GitHub."
+}

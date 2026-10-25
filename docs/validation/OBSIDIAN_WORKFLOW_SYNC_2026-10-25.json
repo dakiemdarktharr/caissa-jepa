@@ -1,0 +1,49 @@
+{
+  "recorded_utc": "2026-10-25T03:54:33.605789+00:00",
+  "status": "pass",
+  "files": [
+    {
+      "source": "docs/COUNTERPLAY_AGENTIC_WORKFLOW_2026-10-25.md",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/COUNTERPLAY_AGENTIC_WORKFLOW_2026-10-25.md",
+      "sha256": "101d5f40dfe9df02cfcef16446b248f3f76d58bc4522cf09b3db35d831f11512",
+      "previous_version_backup": null
+    },
+    {
+      "source": "docs/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/COUNTERPLAY_METRICS_AND_RECOVERY_2026-10-25.md",
+      "sha256": "0d92f7dbe78ff8c280af60ba48f9baa7ef91af62c2c7065cb200ea08b3c71684",
+      "previous_version_backup": null
+    },
+    {
+      "source": "docs/COUNTERPLAY_WORKFLOW_RESEARCH_AUDIT_2026-10-25.md",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/COUNTERPLAY_WORKFLOW_RESEARCH_AUDIT_2026-10-25.md",
+      "sha256": "e443ef46eaf946d8605187987a447843cc555b954a6d3bfa5f5977e86b808d00",
+      "previous_version_backup": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/_sync_history/20261025T035433Z/COUNTERPLAY_WORKFLOW_RESEARCH_AUDIT_2026-10-25.md"
+    },
+    {
+      "source": "docs/validation/AGENTIC_WORKFLOW_SEARCH_2026-10-25.json",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/validation/AGENTIC_WORKFLOW_SEARCH_2026-10-25.json",
+      "sha256": "dccb653f8e984c4e13c9d6d40438b11a4e5bb70e2c6fa36685011b03a0087583",
+      "previous_version_backup": null
+    },
+    {
+      "source": "docs/validation/WORKFLOW_INFRASTRUCTURE_2026-10-25.json",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/validation/WORKFLOW_INFRASTRUCTURE_2026-10-25.json",
+      "sha256": "6f13f7877375d3ce990b70b5ba0d7aa3d7981f7f0a8bcbcb9ce42aff46722062",
+      "previous_version_backup": null
+    },
+    {
+      "source": "docs/validation/GITHUB_RECOVERY_2026-10-25.json",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/validation/GITHUB_RECOVERY_2026-10-25.json",
+      "sha256": "7c755220ca0684fc84ca840099abfb36fce3fa7f01d44f94e12f6b813b917e65",
+      "previous_version_backup": null
+    },
+    {
+      "source": "docs/validation/WORKFLOW_CHECKPOINT_CRLF_2026-10-25.json",
+      "vault_path": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA/validation/WORKFLOW_CHECKPOINT_CRLF_2026-10-25.json",
+      "sha256": "c3be4fb221050352b40b8c35242d085ccee701721372a7b58c3b79cf9cc3eda9",
+      "previous_version_backup": null
+    }
+  ],
+  "scope": "Filesystem copy and SHA-256 equality, not UI rendering or independent disaster protection. Prior sync backups remain in _sync_history."
+}
