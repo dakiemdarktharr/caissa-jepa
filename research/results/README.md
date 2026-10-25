@@ -61,3 +61,8 @@ final prospective screen amendment. No second batch ran before this export.
 The amendment publication preflight found reviewer Markdown trailing hard-break
 whitespace. Its failure and whitespace-only normalization are preserved in
 `snapshot-99c0eb8a7253a461cc664ec05785b009802040e65faa991f0d0738d4fe66fd9f/` (34 events across six runs). No experiment ran during this correction.
+
+Snapshot `snapshot-d3324954d19c278095d0f88ade020bffe478a49e2b976de521b3a6f29ea4e75b/` contains 41 events across 8 runs. It preserves
+the final failed feasibility gate, exact episode equality, and the decision
+to retire the two-game mechanism study and write a descriptive feasibility
+report. Neither screen fitted a model; no third screen is planned.

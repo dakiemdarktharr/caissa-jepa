@@ -1,6 +1,6 @@
 # Counterplay current state
 
-Updated 2026-10-25T11:51:14.155765+07:00 (Asia/Saigon). Continue from evidence, not chat history.
+Updated 2026-10-25T11:57:10.863347+07:00 (Asia/Saigon). Continue from evidence, not chat history.
 
 - **Current gate:** Review 1 accepted the new outcome-independent CP-01 v2
   empirical design for entry to foundation work / Review 2. The original
@@ -35,39 +35,42 @@ Updated 2026-10-25T11:51:14.155765+07:00 (Asia/Saigon). Continue from evidence, 
   roots: C4 0/7 (43/50 episodes no late candidate); Reversi 11/50. Required
   5/game floor failed. 15.551 s wall, 15.392 s CPU, 80,281,600-byte peak RSS.
   Raw data remain ignored at `chess_data/cp01-dev-attempt1/data.json`.
-- **Immediate next task:** after publishing this clean source, run the one
-  final amended screen: `timeout 330s env OPENBLAS_NUM_THREADS=1
-  OMP_NUM_THREADS=1 .venv/bin/python -B -m tools.counterplay_data
-  chess_data/cp01-dev-attempt2 --receipt
-  docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json --run-id cp01-data-attempt2`.
-  [Independent design review](reviews/CP01_FEASIBILITY_DESIGN_2026-10-25.md)
-  accepts CP-01 v3 for this invocation only. C4 empties 8->12, same episodes
-  and seed namespace, caps unchanged; Reversi stays at 6. Cumulative builder
-  CPU cap 300 seconds, first batch charged 15.391540855 seconds. New gate:
-  at least 2 roots/game and 20% of pairable roots with potential nonzero
-  same-sign residual domain support. This is not actual model matching/power.
-  If either gate fails, retire the two-game matched mechanism design before
-  trainer construction and write the scoped feasibility report. Do not retry:
-  the one-shot stop is an operator/protocol constraint, not a lock in code.
-- **Subsequent Review 2 work:** freeze/generate bounded fresh data and selected
-  H1/H2/H4 windows, validate rules/references and overlap/support; integrate
-  trainer/evaluator and Adam/EMA/RNG/cursor checkpoint-resume; wire and verify
-  every measurement boundary, resources and export segmentation. Only then a
-  bounded development pilot, followed by synthetic analysis validation and
-  Review 3 freeze before locked evaluation.
+- **Frozen stop applied:** final C4<=12 screen from
+  `c0503beeee856a51a781c9c2ea29b0434475f490` completes 59/59 references but
+  fails reference and necessary sign-support gates: C4 0/9 pairable and zero
+  potential nonzero common-sign roots; Reversi 11/50 pairable, four potential.
+  16.308 s wall / 16.143 s CPU, 80,220,160-byte peak RSS. Cumulative construction
+  CPU 31.534437001 s. Both attempts use exactly the same original 164 episodes.
+  See [final disposition](../docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json).
+  **No third screen and no trainer construction for this retired design.**
+- **Current adopted deliverable:** bounded feasibility technical report under
+  CP-D006 and [analysis scope](feasibility_analysis.json). The original learned
+  mechanism study is unexecuted, not a completed negative JEPA comparison.
+  Review 2 did not approve a pilot; Review 3/final locked study not reached.
+  All production trainer/evaluator, recovery/export scaling and inferential
+  analysis hooks remain requirements for a future separate study.
+- **Immediate next task:** publish this failed-batch milestone, then export
+  both receipts' per-root units with `tools.counterplay_feasibility_units` to
+  `/tmp` while the analysis source is clean; copy reviewed small CSVs into
+  `research/results/`. Complete `paper/counterplay-feasibility.md` and PDF,
+  generated tables/figure, claim map and reproduction instructions, then obtain
+  fresh independent scoped Review 4 and verify GitHub recovery. Do not claim
+  novelty, model performance, population prevalence, equivalence or independent
+  replication from the finite dependent screens. Future Reversi-only work
+  requires a new prospective protocol and is outside this retired design.
 - **Verified checks:** 41/41 scoped tests pass, 0 failures/errors/skips, 1.275 s
   on 2026-10-25. See [producer-test receipt](../docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json).
   Earlier 17-test workflow and 38-test foundation receipts remain dated history;
   full repository suite not rerun. Initial syntax/fixture errors are retained.
-- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-99c0eb8a7253a461cc664ec05785b009802040e65faa991f0d0738d4fe66fd9f/snapshot.json)
-  contains 34 unique events across 6 runs (workflow plus development data). Failures and unavailable
+- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-d3324954d19c278095d0f88ade020bffe478a49e2b976de521b3a6f29ea4e75b/snapshot.json)
+  contains 41 unique events across 8 runs (workflow plus development data). Failures and unavailable
   agent usage remain recorded. No trained-model results. Bounded export
   segmentation still required before long production runs.
 - **Agents/budget:** requested lead `gpt-6.1-sol` / `xhigh`; explicitly created
   reviewer `gpt-6-luna` / `xhigh`, no recursive delegation. Runtime attestation,
   actual tokens and billing are not exposed and remain null. Preserve settings.
   $50/month compute ceiling; no rental initiated or paid offer selected.
-- **Last verified prior remote:** `d2d12f29761f0e745d9c32a2b8df434cb6d1a84a`
+- **Last verified prior remote:** `c0503beeee856a51a781c9c2ea29b0434475f490`
   on `origin/main`, `git@github.com:dakiemdarktharr/caissa-jepa.git`, verified
   2026-10-25. Bootstrap system SSH permissions and sandbox DNS initially failed;
   command-level `GIT_SSH_COMMAND='ssh -F /dev/null'` with network access worked.

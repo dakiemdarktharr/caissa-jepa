@@ -1,0 +1,18 @@
+{
+  "analysis_id": "counterplay-feasibility-report-v1",
+  "status": "descriptive analysis plan after two development screens; not a confirmatory preregistration",
+  "scope": "Document feasibility of CP-01 reference-pairable signed-repair populations and why the frozen stop rule retired the two-game mechanism design",
+  "inputs": ["docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json", "docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json", "docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json", "docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json"],
+  "units": "Preserve one row per attempted unique root per screen with episode-group and root identity. Two screens reuse the same episodes, are dependent, and must not be pooled as independent replications.",
+  "outputs": ["per-attempt per-root analysis CSV without boards", "machine-generated finite-batch count and cost tables", "reference-yield figure", "complete scoped technical report", "claim-to-evidence map", "reproduction and recovery instructions"],
+  "statistics": "Exact descriptive counts for the observed finite screens; no confidence interval, power, population prevalence, learned-model effect or equivalence claim. Do not impute missing model results as zero.",
+  "checks": ["CSV counts reconcile to each producing receipt", "all original 164 episodes match exactly across screens", "raw hashes match producing receipts", "gate thresholds trace to pre-execution versions", "strict positive/negative residual support proof is distinguished from zero/near-zero stratum", "all failed gates and no-candidate episodes are reported", "PDF text and page rendering inspected", "fresh GitHub recovery of report scope"],
+  "not_run": ["integrated trainer/evaluator", "development model pilot", "final frozen model panel", "locked evaluation", "replication corpus", "paired matches", "chess extension"],
+  "review_gates": {
+    "review1": "accepted original design; conditional feasibility amendment reviewed before screen 2",
+    "review2": "pilot readiness not passed; study stopped during data feasibility",
+    "review3": "locked-model study freeze not reached; no locked model outcomes produced or released",
+    "review4": "required for this narrowly scoped feasibility report only; cannot approve unexecuted learned-model claims"
+  },
+  "future_work": "A Reversi-only or redesigned intervention study needs a new prospective protocol and its own data, trainer, measurements, analysis validation and reviews. Do not silently continue the retired design."
+}

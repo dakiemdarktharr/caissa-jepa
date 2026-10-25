@@ -105,3 +105,26 @@ before trainer construction and triggers an honest scoped feasibility report.
 This is the final screen, not an invitation to keep changing root populations.
 The code binds the prior receipt but does not enforce one-shot execution; the
 lead must execute it once and retain its disposition without retry.
+
+
+## CP-D006 — 2026-10-25, Asia/Saigon — execute stop rule and narrow deliverable
+
+The final screen from `c0503beeee856a51a781c9c2ea29b0434475f490` failed both
+reference-yield and necessary sign-support gates. C4 has 0 pairable / 9 fully
+solved roots from the original 50 episodes; Reversi remains 11/50 pairable,
+with four roots with potential nonzero sign support. All 59 references
+completed. The [disposition](../docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json)
+verifies exact equality of all 164 original episodes across screens and
+31.534437001 cumulative builder CPU seconds. There will be no third screen.
+
+Retire the CP-01 two-game matched mechanism design before trainer construction.
+Adopt the documented fallback: a bounded feasibility technical report explaining
+the unsuccessful root population and signed-support constraint, preserving
+all attempts, unit rows, costs, reproducible recipes, and limitations. This
+is not completion of the unexecuted learned-model comparison. Review 2 pilot
+readiness did not pass; Review 3/locked-model execution were not reached.
+[Analysis scope](feasibility_analysis.json) is descriptive and adopted after
+development observations, not a confirmatory preregistration. A scoped Review 4
+will assess only claims actually supported by the feasibility evidence. Any
+Reversi-only or redesigned mechanism study needs a new prospective protocol;
+it will not silently replace this failed two-game study.

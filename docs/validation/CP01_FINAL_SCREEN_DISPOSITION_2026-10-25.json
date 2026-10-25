@@ -1,0 +1,16 @@
+{
+  "phase": "development-data-verification",
+  "attempt1_data_sha256": "442e97c0d685494df753a5723a0bb3389ad4e960ad6ac3c52e416256217b650b",
+  "attempt2_data_sha256": "222331ca7a9bc3a20fd8be084debd975db5580b76aa46dd52911642060fc11e0",
+  "identical_original_episodes": 164,
+  "identical_seed_namespace": true,
+  "attempts_are_independent_samples": false,
+  "final_screen_reference_gate": false,
+  "final_screen_nonzero_sign_support_gate": false,
+  "cumulative_builder_cpu_seconds": 31.534437001,
+  "disposition": "Retire CP-01 two-game matched mechanism study before trainer construction; no further screen; report bounded feasibility only",
+  "training_fits": 0,
+  "matches": 0,
+  "locked_evaluation_accessed": false,
+  "verification": "Exact decoded episode-list equality, not a heuristic hash or retrospective seed replacement"
+}

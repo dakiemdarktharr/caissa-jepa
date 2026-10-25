@@ -1,0 +1,3 @@
+run_id,phase,source_commit,completed_references,reference_gate,nonzero_support_gate,cpu_seconds,wall_seconds,training_fits,matches,status,receipt
+cp01-data-attempt1,development-data-feasibility,09f18a5cf5e9a827ce526997714a035d4b07175e,57,False,not-declared-before-attempt1,15.391540855,15.550702558000921,0,0,failed_feasibility_gate,docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json
+cp01-data-attempt2,development-data-feasibility,c0503beeee856a51a781c9c2ea29b0434475f490,59,False,False,16.142896146,16.30794027199954,0,0,failed_feasibility_gate,docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json

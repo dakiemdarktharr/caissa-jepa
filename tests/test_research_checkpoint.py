@@ -106,6 +106,20 @@ class ResearchCheckpointTests(unittest.TestCase):
             checkpoint(self.root, ["note.md", "README.md"], "stale dashboard", expected_remote=str(self.remote))
         self.assertEqual(git(self.root, "diff", "--cached", "--name-only").stdout, "")
 
+    def test_small_reviewed_publication_artifacts_preserve_bytes_and_size_cap(self):
+        artifacts = {"report.pdf": b"%PDF-1.4\n\x00synthetic-byte-fixture\n%%EOF\n",
+                     "figure.png": b"\x89PNG\r\n\x1a\n\x00synthetic-byte-fixture",
+                     "figure.svg": b'<svg xmlns="http://www.w3.org/2000/svg"/>\n'}
+        for name, data in artifacts.items():
+            (self.root / name).write_bytes(data)
+        self.assertTrue(self.publish(artifacts)["remote_verified"])
+        for name, data in artifacts.items():
+            restored = subprocess.check_output(["git", "--git-dir", str(self.remote), "show", "main:" + name])
+            self.assertEqual(restored, data)
+        (self.root / "oversize.pdf").write_bytes(b"x" * 2_000_001)
+        with self.assertRaises(ValueError):
+            self.publish(["oversize.pdf"])
+
     def test_missing_duplicate_or_reversed_status_markers_rejected(self):
         for content in ["No status section", f"{STATUS_START}\nx\n{STATUS_START}\n{STATUS_END}",
                         f"{STATUS_END}\nx\n{STATUS_START}", f"{STATUS_START}\n{STATUS_END}"]:

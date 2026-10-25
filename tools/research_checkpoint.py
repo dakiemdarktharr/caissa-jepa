@@ -12,7 +12,8 @@ import subprocess
 
 
 DEFAULT_REMOTE = "git@github.com:dakiemdarktharr/caissa-jepa.git"
-ALLOWED = {".py", ".md", ".json", ".csv", ".yaml", ".yml", ".toml", ".txt", ".tex", ".bib"}
+ALLOWED = {".py", ".md", ".json", ".csv", ".yaml", ".yml", ".toml", ".txt", ".tex", ".bib",
+           ".pdf", ".png", ".svg"}  # Small, reviewed manuscript and figure artifacts.
 EXCLUDED = {"chess_data", "fen_dataset", "downloads", "build", "dist", ".venv", ".git", ".aws", ".codex", ".agents"}
 STATUS_START = "<!-- counterplay-status:start -->"
 STATUS_END = "<!-- counterplay-status:end -->"

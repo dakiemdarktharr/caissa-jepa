@@ -3,12 +3,12 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T11:51:14.155765+07:00 (Asia/Saigon, UTC+07:00).
-**Phase:** CP-01 model-blind data feasibility; reference-yield gate failed.
-**This checkpoint:** froze the independently reviewed [final feasibility amendment](research/protocol.yaml):
-C4 up to 12 empty cells, same original episodes, unchanged reference caps,
-and an explicit necessary signed-support gate. No new experiment ran in this
-checkpoint; first-batch measurements below retain their 2026-10-25 scope.
+**Updated:** 2026-10-25T11:57:10.863347+07:00 (Asia/Saigon, UTC+07:00).
+**Phase:** two-game CP-01 mechanism design retired at its frozen feasibility stop;
+scoped technical report in preparation. Review 2 pilot readiness did not pass.
+**This checkpoint:** preserved the final failed screen and
+[stop disposition](docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json).
+The final development-data screen ran; no model fitting, matches or locked scoring ran.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
@@ -18,20 +18,21 @@ checkpoint; first-batch measurements below retain their 2026-10-25 scope.
 | GitHub recovery | **10/10 passed**, 8 source hashes verified; **1.127 s** | [Fresh-clone receipt](docs/validation/CP01_GITHUB_RECOVERY_2026-10-25.json); same host/original venv, raw data not recovered |
 | Lead cross-check | Original failing encoder coordinate passes on **6/6 arms**, max absolute error **2.17e-10** | [Foundation receipt](docs/validation/CP01_FOUNDATIONS_2026-10-25.json); same declared float64 derivative tolerance |
 | First development-data batch | **164 episodes**, **256 train / 64 development windows**; **0 prohibited selected-state collisions** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json), [isolation check](docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json), 2026-10-25; finite batch, not population inference |
-| Reference yield | **57/57 complete**; pairable roots **0/7 C4**, **11/50 Reversi**; required floor 5/game failed | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); 43/50 C4 episodes had no eligible late root; no root replacement |
+| First-screen reference yield | **57/57 complete**; pairable roots **0/7 C4**, **11/50 Reversi**; required floor 5/game failed | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); 43/50 C4 episodes had no eligible late root; no root replacement |
+| Final reference screen | **59/59 complete**; pairable **0/9 C4**, **11/50 Reversi**; necessary nonzero sign-support **0 C4 / 4 Reversi roots** | [Attempt 2](docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json); both reference/support gates failed; no retry |
+| Final-screen cost | **16.308 s wall / 16.143 s CPU**; **80,220,160 bytes peak RSS**; **31.534 s cumulative builder CPU** | [Attempt 2](docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json); all 164 original episodes match attempt 1 exactly, not an independent replication |
 | Measured resources | **15.551 s wall / 15.392 s CPU**, **80,281,600 bytes peak RSS** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); local CPU, 1 thread, no rental |
 | Training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); reference completion does not waive failed scientific eligibility |
 | Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
-| Ledger evidence | **34 unique events across 6 runs** (workflow and development data) | [Snapshot](research/results/snapshot-99c0eb8a7253a461cc664ec05785b009802040e65faa991f0d0738d4fe66fd9f/snapshot.json); includes all failed gates and data counts, no learned-model outcomes |
+| Ledger evidence | **41 unique events across 8 runs** (workflow and development data) | [Snapshot](research/results/snapshot-d3324954d19c278095d0f88ade020bffe478a49e2b976de521b3a6f29ea4e75b/snapshot.json); includes all failed gates and data counts, no learned-model outcomes |
 | Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
-| Last verified prior GitHub checkpoint | [`d2d12f2`](https://github.com/dakiemdarktharr/caissa-jepa/commit/d2d12f29761f0e745d9c32a2b8df434cb6d1a84a), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
+| Last verified prior GitHub checkpoint | [`c0503be`](https://github.com/dakiemdarktharr/caissa-jepa/commit/c0503beeee856a51a781c9c2ea29b0434475f490), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
 
-**Open gates:** independent data readiness, fresh corpus/window/split/reference
-audit; integrated trainer/evaluator, complete recovery/measurement hooks and
-bounded exports; Review 2/pilot; final analysis freeze and manuscript evidence.
-**Next:** execute the single final amended model-blind screen from the verified
-source checkpoint. If either yield/support gate fails, stop this two-game
-mechanism design and write a scoped feasibility report; no further root screen.
+**Remaining report work:** per-root exports, generated tables/figure, complete
+text and claim map, independent claim/citation/reproduction review. The unexecuted
+trainer, pilot, locked study and chess extension remain explicitly uncompleted.
+**Next:** export the two screens' paired analysis units from this published
+revision, complete and verify the scoped feasibility manuscript. No further screen.
 GitHub stores source, protocols and reviewed small evidence. Raw datasets,
 weights, environments, logs and unreleased outcomes stay ignored/local; exact
 recovery of local-only artifacts is not guaranteed. No unattended service runs.
