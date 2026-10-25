@@ -141,3 +141,26 @@ port or speculative training was initiated. [Local compute state](local_compute.
 preserves actual observations and missing GPU memory/driver values. Continue
 CPU report work; a future local training study still needs its own scientific
 gates and measured resource envelope. The retired CP-01 stop rule remains in force.
+
+
+## CP-D008 — 2026-10-25, Asia/Saigon — close scoped report and recovery
+
+[Independent Review 4](reviews/REVIEW4_FEASIBILITY_2026-10-25.md) accepts only
+the descriptive feasibility report, with no blocking report finding. It does
+not approve trainer/pilot/locked execution or another screen. The report's
+complete text, primary-source citations, per-root tables/figure, claim map and
+reproduction instructions preserve the failed gates and dependent samples.
+
+[Fresh recovery](../docs/validation/CP01_FINAL_REPORT_RECOVERY_2026-10-25.json) from GitHub commit
+`a08213bcca450e28e5487d39bd39221203155a71` verified all 15 input/output hashes, passed the 50-test scoped
+tier, and reproduced all six generated outputs byte-identically with no raw
+datasets. Existing same-host environments were reused; this is not recovery
+on a new machine. The previously recorded local-only artifact interval exceeded
+the target; successful remote recovery establishes its resolution. No exact
+push timestamp or active/idle split is invented. Publication preflight failures
+and the final SVG-scoped correction are retained in receipts and the ledger.
+
+No new scientific experiment ran at closure. Preserve CP-D006's stop and
+CP-D007's no-Vast/local-compute constraint. A future study requires a new
+prospective protocol and fresh gates; all original unexecuted stages remain
+accounted for rather than marked scientifically complete.

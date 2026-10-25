@@ -3,17 +3,17 @@ I01,P1,closed_synthetic_verification,worker,Covariance derivative receives tenfo
 I02,P1,scoped_out_primary,lead,Unsupported coordinates confound size transfer,CP-01 same-size primary; transfer requires separate future protocol
 I03,P1,closed_design,lead,Outcome-dependent project completion,CP-01 v2 and independent Review 1 accepted outcome-independent completion
 I04,P1,open,worker,No integrated current trainer or evaluator,End-to-end audited fixture and checkpoint resume equivalence
-I05,P1,foundation_in_progress,worker,No accepted fresh corpus,Versioned generator manifests and full retained trajectory replay
-I06,P1,foundation_in_progress,worker,No accepted window bank and schedule,Selected IDs masks support counts and schedule audit
-I07,P1,contract_proposed,lead,Duplicate source and content identity conflict,Adopted split/window multiplicity contract plus audit
-I08,P1,contract_proposed,lead,Shared starts defeat absolute split isolation,Named shared-opening and isolated-root tracks with collision counts
+I05,P1,stopped_failed_feasibility,worker,No accepted fresh corpus,CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json: both finite screens retained; no corpus accepted for model study; new protocol required
+I06,P1,verified_bounded_windows,worker,No accepted window bank and schedule,CP01_DATA_ATTEMPT1_2026-10-25.json and CP01_DATA_ATTEMPT2_2026-10-25.json: 256 train/64 development windows; no training schedule executed
+I07,P1,verified_bounded_contract,lead,Duplicate source and content identity conflict,CP01_DATA_DIAGNOSIS_2026-10-25.json: canonical content identity and multiplicity in bounded producer audit
+I08,P1,verified_bounded_contract,lead,Shared starts defeat absolute split isolation,CP01_DATA_DIAGNOSIS_2026-10-25.json: zero selected supervised-state/evaluation-root collisions; shared openings allowed; no whole-tree isolation claim
 I09,P1,open,worker,Producer entrypoint not exclusively validated,Trainer authenticates inputs and rejects corruption
 I10,P1,contract_proposed,lead,Behavior outcome is not minimax value,Explicit separate targets and reference substitution diagnostics
 I11,P1,open,worker,Counterfactual reply training support unknown,Action role depth and critical-reply coverage audit
 I12,P1,contract_proposed,lead,Heterogeneous graph FLOP parity conflict,Equal-data/update CP-01 cost convention reviewed and measured
 I13,P1,scoped_out_primary,lead,Native accounting work delays science,CP-01 ordinary reproducibility scope; advanced attestation deferred
-I14,P1,foundation_in_progress,worker,Reference completeness and feasibility,Independent exact tractable checks and complete action tables
-I15,P1,pending_review1,lead,Root population matching and uncertainty unresolved,Review 1 estimands then synthetic analysis validation before Review 3
+I14,P1,completed_refs_failed_gate,worker,Reference completeness and feasibility,CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json: 57/57 then 59/59 complete; pairability/support gates failed; design retired
+I15,P1,retired_failed_feasibility,lead,Root population matching and uncertainty unresolved,CP-D005/CP-D006 and REVIEW4_FEASIBILITY_2026-10-25.md: Review1 accepted design; observed support failed; uncertainty study not executed
 I16,P1,open,lead,No fresh frozen locked study,Review 3 freeze then every planned cell accounted for
 I17,P2,open,worker,Actual planner runtime unmeasured,Bounded local pilot with failure and cap accounting
 I18,P2,open,worker,Raw-state fitted path not verified,Real decoded rollout fixture plus frozen graph checks
@@ -21,8 +21,8 @@ I19,P2,open,worker,Live worker and supervisor integration incomplete,Minimal rel
 I20,P2,open,worker,Sampled RSS and request caps are not hard containment,External deadline and OS limits with scoped receipts
 I21,P2,scoped_out_primary,lead,Native byte attestation incomplete,Ordinary pinned environment only unless stronger claims adopted
 I22,P1,open,lead,Historical raw artifacts not in GitHub,Current recipes hashes and small results plus disclosed local-only loss
-I23,P2,partly_resolved,worker,Existing passing tests missed objective defect,All-arm numerical checks and portable versus optional tiers
-I24,P2,partly_resolved,lead,Stale historical README and method status,Marked current status and dated preserved history; current module map needed
+I23,P2,partly_resolved,worker,Existing passing tests missed objective defect,CP01_GRADIENT_REPAIR_2026-10-25.json: 192 numerical checks; CP01_FINAL_REPORT_RECOVERY_2026-10-25.json: 50 scoped tests; full suite not run
+I24,P2,partly_resolved,lead,Stale historical README and method status,Dated README/STATE and scoped feasibility report updated; historical sections retained; full historical documentation migration deferred
 I25,P2,open,lead,Large repeated historical documentation,Active module map and compact state with historical files preserved
 I26,P2,open,lead,Portable CI license citation metadata absent,Core CI and citation metadata; license remains owner choice
 I27,P2,contract_proposed,lead,Raw latent MSE and rank do not certify decisions,Within-arm diagnostics and common reference utilities

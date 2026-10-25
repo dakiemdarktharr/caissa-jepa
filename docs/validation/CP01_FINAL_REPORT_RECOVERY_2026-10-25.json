@@ -1,0 +1,86 @@
+{
+  "phase": "final-report-recovery",
+  "recovered_commit": "a08213bcca450e28e5487d39bd39221203155a71",
+  "hashes_verified": 15,
+  "hashes": {
+    "docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json": "a5db7fac3c0780fafe58587b5caa4c2966bd0ac04d49cf8c98231919c8cf9e0a",
+    "docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json": "2cc9049dbf935c70ef873d85024d0a51e50cb4ae5c65cd7073040266b38d2ca8",
+    "docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json": "8a047bc76658f3ed10eb90ca6297c85959428f80c544a92d52c3c1f5a41150ff",
+    "docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json": "a2c35335b2c1829d73eb789c6b6517314558df6abc4cda032efabd4c75d52a90",
+    "research/results/cp01-attempt1-roots.csv": "30c2739f552ecad0c7549abb322177ecfe6afbae4256f877879c77cdbe7cc55e",
+    "docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json": "e29fc570865e0fdadaa2ceddc3c1dd693052cb76de0af0d93019342cffbcadf2",
+    "research/results/cp01-attempt2-roots.csv": "c5a0ba7cb311e01c74951d52281d73a3ba5f887ddd05cd87fa751f75b22ab459",
+    "paper/manuscript-source.md": "79a6f485e8b8ed2ad5245b6109631c07e329721c9c97eb2ae191a404ffdb11ff",
+    "tools/counterplay_render_report.py": "b684651f2a8636c952a41683d3c717dffbd8346919c63e35fb64ed38aef227c4",
+    "paper/counterplay-feasibility.md": "5a9d7cfc5edb83b7e4c731f1c19b1a5c14fa5d509e76b6f35a9e3cc775c2f2fa",
+    "output/pdf/counterplay-feasibility.pdf": "cb914f20316377f6f2a58b799f318070c964a52979ba847cfed18ba9d4d46e4c",
+    "paper/tables.md": "2b15cd1449af39769a0a1dcf998332a0d73d30a02e7d02eb5e0452c9edcb60dd",
+    "paper/table-data.json": "55069848869b12e55718c217a0281e37ed416436599019aecfc4a200358ec0f9",
+    "paper/figures/feasibility.png": "0dd9b90606f43523aed6fda83e9b6b58228b98553d6b47a4b1234c426bae02dd",
+    "paper/figures/feasibility.svg": "075395e5fd06630cf225702916f800da4a736af396628bdcfdfc4ac55fec1550"
+  },
+  "tests_run": 50,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "wall_seconds": 2.2791378989968507,
+  "environment": "Fresh GitHub clone on same host; existing original Python3.11.9/NumPy2.4.6 environment",
+  "modules": [
+    "tests.test_counterplay_gradient",
+    "tests.test_v212_model",
+    "tests.test_v212_regularizer_elementwise_accounting",
+    "tests.test_v212_model_matmul_flop_accounting",
+    "tests.test_v212_gradient_accumulation_accounting",
+    "tests.test_research_ledger",
+    "tests.test_counterplay_data",
+    "tests.test_counterplay_data_producer",
+    "tests.test_research_checkpoint"
+  ],
+  "raw_dataset_present_before_render": false,
+  "outputs_before_regeneration": {
+    "paper/counterplay-feasibility.md": "5a9d7cfc5edb83b7e4c731f1c19b1a5c14fa5d509e76b6f35a9e3cc775c2f2fa",
+    "output/pdf/counterplay-feasibility.pdf": "cb914f20316377f6f2a58b799f318070c964a52979ba847cfed18ba9d4d46e4c",
+    "paper/tables.md": "2b15cd1449af39769a0a1dcf998332a0d73d30a02e7d02eb5e0452c9edcb60dd",
+    "paper/table-data.json": "55069848869b12e55718c217a0281e37ed416436599019aecfc4a200358ec0f9",
+    "paper/figures/feasibility.png": "0dd9b90606f43523aed6fda83e9b6b58228b98553d6b47a4b1234c426bae02dd",
+    "paper/figures/feasibility.svg": "075395e5fd06630cf225702916f800da4a736af396628bdcfdfc4ac55fec1550"
+  },
+  "scope": "Exact report/input bytes recovered; no scientific screen/model fit/GPU/Vast use",
+  "regeneration_output_hash_matches": {
+    "paper/counterplay-feasibility.md": true,
+    "output/pdf/counterplay-feasibility.pdf": true,
+    "paper/tables.md": true,
+    "paper/table-data.json": true,
+    "paper/figures/feasibility.png": true,
+    "paper/figures/feasibility.svg": true
+  },
+  "regeneration_all_six_outputs_byte_identical": true,
+  "regenerated_pdf_pages": 6,
+  "recorded_at": "2026-10-25T14:30:49.083932+07:00",
+  "independent_review": {
+    "path": "research/reviews/REVIEW4_FEASIBILITY_2026-10-25.md",
+    "sha256": "35fe97f34f27a61c3ec9f7190fc9e054149887aff0064d9b7c4821480ad7d235",
+    "disposition": "Pass for scoped descriptive feasibility report only; no approval for trainer/pilot/locked study",
+    "review_source_head_note": "Review inspected the source/artifact hashes listed in its text; main HEAD subsequently advanced to a08213b without changing those bytes."
+  },
+  "preservation": {
+    "prior_gap_receipt": "docs/validation/CP01_REPORT_VISUAL_2026-10-25.json",
+    "gap_exceeded_target": true,
+    "resolution": "Report artifacts recovered byte-exact from expected GitHub origin at a08213b; actual push timestamp and active/idle split not measured",
+    "verified_remote_commit": "a08213bcca450e28e5487d39bd39221203155a71"
+  },
+  "binary_publication_followup": {
+    "prior_receipt": "docs/validation/CP01_BINARY_PUBLICATION_2026-10-25.json",
+    "additional_preflight_failure": "SVG generated path trailing whitespace rejected before commit",
+    "fix": "SVG whitespace attribute scoped to SVG; PDF/PNG binary attributes, source whitespace and size gates retained",
+    "verified_by": "The 50-test recovered suite includes all 8 checkpoint tests after the final attribute/fixture correction",
+    "final_source_sha256": {
+      ".gitattributes": "f13f9ae27175c84c9257da42600c82084fb5ae15ee28b651740040ffd3ad35fa",
+      "tools/research_checkpoint.py": "62474891af80122648170ed13d6ff21945b4d4a23e3a89133888c11bdc58df97",
+      "tests/test_research_checkpoint.py": "9a738525b7c9c03d683f5501e5f2ae1c21227922aabfc8bfe9cd61741e7c71a3"
+    }
+  },
+  "new_scientific_experiment_ran": false,
+  "vast_used": false,
+  "compute_constraint": "Stop before any Vast.ai use; prefer bounded local GTX1650 when scientifically and technically feasible"
+}

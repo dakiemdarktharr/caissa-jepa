@@ -75,3 +75,11 @@ rendered or independently reviewed at this source checkpoint.
 Snapshot `snapshot-0d41dff0dbbf9b28384f45bc4f5cc6d88dd0f8a1586a8c3840ea547f14e88a5d/` has 50 events across 11 runs,
 including report rendering/visual inspection, actual preservation gap and
 no-Vast/local-GTX1650 user steering. Scoped independent Review4 is pending.
+
+Final-report snapshot `snapshot-eb67b10e64011d7c5db477d9fb7668c2a6c916bd4dfedb88d4a3813eaf966491/` contains 57 events
+across 11 runs. It preserves publication failures/corrections, verified
+publication at a08213b, independent scoped Review 4 acceptance, and same-host
+fresh GitHub recovery: 50 passing scoped tests, 15 matching hashes and six
+byte-identical regenerated report outputs. No new scientific experiment or
+training ran. Earlier cumulative snapshots remain unchanged; deduplicate by
+run ID/event key. Unexposed runtime identity, agent usage and billing stay null.

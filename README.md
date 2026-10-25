@@ -3,19 +3,22 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T13:31:32.073803+07:00 (Asia/Saigon, UTC+07:00).
-**Phase:** two-game CP-01 mechanism design retired at its frozen feasibility stop;
-scoped technical report in preparation. Review 2 pilot readiness did not pass.
-**This checkpoint:** generated the [six-page feasibility PDF](output/pdf/counterplay-feasibility.pdf),
-[complete Markdown](paper/counterplay-feasibility.md), tables and figure.
-All pages passed lead visual inspection; independent scoped Review 4 is pending.
-No new scientific experiment ran; the two dated screens below remain unchanged.
+**Updated:** 2026-10-25T14:32:01.898763+07:00 (Asia/Saigon, UTC+07:00).
+**Phase:** scoped descriptive feasibility report complete; CP-01 two-game
+mechanism design retired at its frozen scientific stop. The learned-model
+study remains unexecuted; Review 2 pilot readiness did not pass.
+**This checkpoint:** [independent scoped Review 4](research/reviews/REVIEW4_FEASIBILITY_2026-10-25.md)
+accepted the [six-page report](output/pdf/counterplay-feasibility.pdf), its
+[claim map](paper/claims.csv), citations and reproduction evidence. Fresh GitHub
+recovery verified every manifest input/output and reproduced all six outputs
+byte for byte. **No new scientific experiment ran**; the two 2026-10-25 screens
+and their measurements below remain unchanged. No locked results were accessed.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
 | Gradient correctness | **192/192 numerical checks passed**; worst error/tolerance **0.001569**; original source failed **35/192** | [Repair receipt](docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json), 2026-10-25; synthetic checks on 6 arms and 96 arm/scenario/tensor combinations |
 | Scoped regression | **41/41 passed**, 0 failures/errors/skips; **1.275 s** | [Receipt](docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json), 2026-10-25; mathematical/model/accounting/ledger/data/producer fixtures. Full suite not rerun; initial fixture errors retained |
-| Latest scoped checks | **50/50 passed**, 0 failures/errors/skips; **2.353 s** | [Report-source receipt](docs/validation/CP01_REPORT_SOURCE_2026-10-25.json); foundation/data/ledger/checkpoint tier only, full suite not run |
+| Latest scoped checks / recovery | **50/50 passed**, 0 failures/errors/skips; **2.279 s**; **15 hashes verified**, **6/6 regenerated outputs byte-identical** | [Final fresh-clone receipt](docs/validation/CP01_FINAL_REPORT_RECOVERY_2026-10-25.json), 2026-10-25; foundation/data/ledger/checkpoint tier on same host, existing environments; full repository suite not run |
 | Prior amendment checks | **10/10 passed**, 0 failures/errors; **0.621 s** | [Amendment receipt](docs/validation/CP01_FEASIBILITY_AMENDMENT_2026-10-25.json), 2026-10-25; cumulative CPU and receipt identity checked |
 | GitHub recovery | **10/10 passed**, 8 source hashes verified; **1.127 s** | [Fresh-clone receipt](docs/validation/CP01_GITHUB_RECOVERY_2026-10-25.json); same host/original venv, raw data not recovered |
 | Lead cross-check | Original failing encoder coordinate passes on **6/6 arms**, max absolute error **2.17e-10** | [Foundation receipt](docs/validation/CP01_FOUNDATIONS_2026-10-25.json); same declared float64 derivative tolerance |
@@ -26,19 +29,31 @@ No new scientific experiment ran; the two dated screens below remain unchanged.
 | Measured resources | **15.551 s wall / 15.392 s CPU**, **80,281,600 bytes peak RSS** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); local CPU, 1 thread, no rental |
 | Training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); reference completion does not waive failed scientific eligibility |
 | Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
-| Ledger evidence | **50 events across 11 runs** | [Snapshot](research/results/snapshot-0d41dff0dbbf9b28384f45bc4f5cc6d88dd0f8a1586a8c3840ea547f14e88a5d/snapshot.json); workflow and development-data evidence only |
+| Ledger evidence | **57 events across 11 runs** | [Snapshot](research/results/snapshot-eb67b10e64011d7c5db477d9fb7668c2a6c916bd4dfedb88d4a3813eaf966491/snapshot.json); cumulative workflow/development-data evidence; deduplicate by run/event |
 | Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
-| Last verified prior GitHub checkpoint | [`173aa0d`](https://github.com/dakiemdarktharr/caissa-jepa/commit/173aa0d62bb39483dc225d9e7fa557edba0b107c), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
+| Last verified prior GitHub checkpoint | [`a08213b`](https://github.com/dakiemdarktharr/caissa-jepa/commit/a08213bcca450e28e5487d39bd39221203155a71), verified 2026-10-25 | Normal push to expected origin/main; report recovered from GitHub byte-exact; final review/receipt checkpoint prepared next |
 
-**Remaining report work:** per-root exports, generated tables/figure, complete
-text and claim map, independent claim/citation/reproduction review. The unexecuted
-trainer, pilot, locked study and chess extension remain explicitly uncompleted.
-**Next:** resolve independent scoped Review 4, publish verified final artifacts
-and verify GitHub recovery. The [actual local-only artifact interval](docs/validation/CP01_REPORT_VISUAL_2026-10-25.json)
-exceeded the checkpoint target and is recorded; this push is pending verification.
-GitHub stores source, protocols and reviewed small evidence. Raw datasets,
-weights, environments, logs and unreleased outcomes stay ignored/local; exact
-recovery of local-only artifacts is not guaranteed. No unattended service runs.
+**Compute constraint:** stop before **any Vast.ai use for any task**. No Vast
+job was started. [Local hardware evidence](research/local_compute.json) detects
+a GTX1650 Mobile/Max-Q, but its driver is inaccessible and core PyTorch is
+absent; GPU memory and training speed are unavailable. Prefer a smaller local
+budget when feasible under a new scientific protocol.
+
+**Blockers / next action:** no third screen or trainer under the retired design.
+Training, pilot, locked evaluation, replication, matches and chess remain
+unexecuted, with loss/regret/Elo unavailable. Any future training continuation
+requires a new prospective question/protocol, a bounded local compute check,
+validated trainer/evaluator and measurement/recovery hooks, then fresh reviews.
+The scoped report does not establish a JEPA effect, novelty or paper acceptance.
+[Reproduction instructions](paper/REPRODUCE.md) distinguish report regeneration
+from another scientific screen.
+
+**Preservation:** the [recorded local-only artifact interval](docs/validation/CP01_REPORT_VISUAL_2026-10-25.json)
+exceeded the checkpoint target; [recovery at a08213b](docs/validation/CP01_FINAL_REPORT_RECOVERY_2026-10-25.json) confirms its
+resolution without inventing an active/idle split or exact push time. GitHub
+stores source, protocols and reviewed small evidence. Raw datasets, weights,
+environments and logs stay ignored/local; exact recovery of local-only artifacts
+is not guaranteed. No unattended service runs.
 <!-- counterplay-status:end -->
 
 **For current continuation, use the [startup prompt](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md)
