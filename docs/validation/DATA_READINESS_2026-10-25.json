@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-25",
+  "timezone": "Asia/Saigon",
+  "source_commit": "9e05ddf4b99ad9253521107b08a32f4afc0da6a0",
+  "scope": "Read-only inventory, manifest metadata, and selected artifact byte/hash identity. No full rules replay, model scoring, training, corpus generation, or protected final prediction inspection. Historical manifest counts are not newly recomputed semantic validity.",
+  "active_checkout": {
+    "root": "/home/koi/src/caissa-jepa",
+    "file_count": 12,
+    "total_bytes": 1702737,
+    "files": [
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_01.json",
+        "bytes": 68783,
+        "sha256": "e2505c2d2ab055d586121864071f0177a14e932f352c2cb134348af67f115ff1"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_01_summary.json",
+        "bytes": 7865,
+        "sha256": "b621aa4b8eeb0b45fc12d6322a2da90dc98396d1691579c28d9ab447a0e0d333"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_01_summary_final.json",
+        "bytes": 7865,
+        "sha256": "b621aa4b8eeb0b45fc12d6322a2da90dc98396d1691579c28d9ab447a0e0d333"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_01_summary_post_whitespace.json",
+        "bytes": 7865,
+        "sha256": "b621aa4b8eeb0b45fc12d6322a2da90dc98396d1691579c28d9ab447a0e0d333"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_01_summary_verified.json",
+        "bytes": 7865,
+        "sha256": "b621aa4b8eeb0b45fc12d6322a2da90dc98396d1691579c28d9ab447a0e0d333"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02.json",
+        "bytes": 847076,
+        "sha256": "f16cdb8f624e79b32bbef7499a2b772b7bdd3a64097a60cc3b9dbbe631f1df13"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02_recheck_summary.json",
+        "bytes": 125903,
+        "sha256": "11d2833d3a8f13a6f62af54680e140ebb14301435d15c1de9147f4de42301a29"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02_summary.json",
+        "bytes": 125903,
+        "sha256": "cc5e3907e833dd523be5047b5474ec5d12368551225aaa78c0bab20204c8e941"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02_summary_final.json",
+        "bytes": 125903,
+        "sha256": "96f7fc304b2202b58f4aaae90a9598ca4f1ea3bb97c2c008c3cf26b6dd926ea8"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02_summary_pre_compat_update.json",
+        "bytes": 125903,
+        "sha256": "ade1f2b8d66ca32c9784fb1d22f985afd21139b13f42723c491dace7a005057f"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02_summary_pre_eof_update.json",
+        "bytes": 125903,
+        "sha256": "96f7fc304b2202b58f4aaae90a9598ca4f1ea3bb97c2c008c3cf26b6dd926ea8"
+      },
+      {
+        "path": "chess_data/v212_random_weight_compute_pilot_02_summary_pre_hash_update.json",
+        "bytes": 125903,
+        "sha256": "11d2833d3a8f13a6f62af54680e140ebb14301435d15c1de9147f4de42301a29"
+      }
+    ],
+    "classification": "V2.12 random-weight compute-pilot JSON files and summaries; not accepted train/validation/test corpora"
+  },
+  "archive": {
+    "root": "/home/koi/archive/windows-project-handoff-2026-10-03/caissa-jepa/chess_data",
+    "file_count": 1694,
+    "total_bytes": 932981707,
+    "suffix_counts": {
+      "": 1,
+      ".err": 14,
+      ".json": 1105,
+      ".jsonl": 24,
+      ".log": 28,
+      ".md": 7,
+      ".npz": 449,
+      ".out": 14,
+      ".pdf": 4,
+      ".pid": 4,
+      ".png": 4,
+      ".ps1": 5,
+      ".py": 9,
+      ".stderr": 9,
+      ".stdout": 9,
+      ".tmp": 2,
+      ".txt": 6
+    },
+    "npz_note": "449 NPZ files are archival experiment artifacts; they are not a count of usable training datasets. No checkpoint content loaded.",
+    "selected_hash_checks": [
+      {
+        "path": "/home/koi/archive/windows-project-handoff-2026-10-03/caissa-jepa/chess_data/v28_data_dev09/records.jsonl",
+        "reference_receipt": "docs/validation/V28_DATA_SPLIT_DEV09.json",
+        "bytes": 2685407,
+        "sha256": "7955cbf753fcc2a0ae6507fa7e73570cba7635b1ee31ae7553463914e7fd5cf9",
+        "expected_sha256": "7955cbf753fcc2a0ae6507fa7e73570cba7635b1ee31ae7553463914e7fd5cf9",
+        "hash_matches": true,
+        "size_matches": true
+      },
+      {
+        "path": "/home/koi/archive/windows-project-handoff-2026-10-03/caissa-jepa/chess_data/v28_data_dev09/trajectories.jsonl",
+        "reference_receipt": "docs/validation/V28_DATA_SPLIT_DEV09.json",
+        "bytes": 221018,
+        "sha256": "3a8e5851ccdfd0a489881e679aac083512d10521dbb3c01b534793d8ffc92c29",
+        "expected_sha256": "3a8e5851ccdfd0a489881e679aac083512d10521dbb3c01b534793d8ffc92c29",
+        "hash_matches": true,
+        "size_matches": true
+      },
+      {
+        "path": "/home/koi/archive/windows-project-handoff-2026-10-03/caissa-jepa/chess_data/v2-forks-01/forks.json",
+        "reference_receipt": "docs/validation/V2_FORK_AUDIT.json",
+        "bytes": 9889235,
+        "sha256": "f09d55886284692b325d6b6109b9116561fa792cfa739b42312f2f24a5f31813",
+        "expected_sha256": "f09d55886284692b325d6b6109b9116561fa792cfa739b42312f2f24a5f31813",
+        "hash_matches": true,
+        "size_matches": true
+      }
+    ],
+    "v28_dev09": {
+      "schema": "v28-procedural-trajectories-v09",
+      "input_trajectories": 284,
+      "records": 3531,
+      "support": {
+        "connect4-gravity-6x7/train": {
+          "records": 307,
+          "trajectories": 72,
+          "h2_records": 264,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ]
+        },
+        "connect4-gravity-6x7/validation": {
+          "records": 128,
+          "trajectories": 24,
+          "h2_records": 109,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ]
+        },
+        "connect4-gravity-6x7/selection": {
+          "records": 139,
+          "trajectories": 44,
+          "h2_records": 127,
+          "policy_families": [
+            "positional"
+          ]
+        },
+        "connect4-gravity-6x7/locked-final": {
+          "records": 0,
+          "trajectories": 0,
+          "h2_records": 0,
+          "policy_families": []
+        },
+        "reversi6/train": {
+          "records": 1490,
+          "trajectories": 72,
+          "h2_records": 1418,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ]
+        },
+        "reversi6/validation": {
+          "records": 491,
+          "trajectories": 24,
+          "h2_records": 467,
+          "policy_families": [
+            "tactical",
+            "uniform"
+          ]
+        },
+        "reversi6/selection": {
+          "records": 976,
+          "trajectories": 48,
+          "h2_records": 928,
+          "policy_families": [
+            "positional"
+          ]
+        },
+        "reversi6/locked-final": {
+          "records": 0,
+          "trajectories": 0,
+          "h2_records": 0,
+          "policy_families": []
+        }
+      },
+      "counts_source": "archive manifest; historical support also checked against curated receipt"
+    },
+    "v2_forks": {
+      "root_count": 984,
+      "counts": {
+        "connect4-4x5/final": 70,
+        "reversi6/final": 65,
+        "connect4-4x5/selection": 59,
+        "connect4-4x5/cross_split_fork_closure_overlap": 16,
+        "reversi6/selection": 72,
+        "connect4-4x5/development": 107,
+        "reversi6/development": 102,
+        "connect4-4x5/train": 248,
+        "reversi6/train": 261
+      },
+      "counts_source": "archive manifest; data bytes match curated receipt; no final records parsed"
+    },
+    "legacy_chess_corpus_found": false
+  },
+  "readiness": {
+    "historical_recovery": "Selected V2 and V2.8 artifacts verified by historical hashes; full archive not revalidated or restored",
+    "v212_production": "not_ready; existing DEV09 explicitly not reusable under METHOD_SPEC_V212 section 6",
+    "counterplay": "proposed; no accepted corpus or frozen final evaluation set",
+    "chess": "no current audited corpus; representation and full-history outcome validation still required"
+  },
+  "obsidian": {
+    "local_vault": "/home/koi/Documents/Obsidian Vault",
+    "project_folder": "/home/koi/Documents/Obsidian Vault/Caissa-JEPA",
+    "historical_windows_vault": "D:/notes/vault_1/Caissa-JEPA",
+    "windows_vault_accessible": false,
+    "native_rendering_verified": false,
+    "note": "COUNTERPLAY_CHESS_AND_DATA_READINESS_2026-10-25.md",
+    "sync_verified_at": "2026-10-25T09:46:20+07:00",
+    "source_sha256": "517b66739eddad3c298b972d563e1c91fdcdc72dfdb8716a64f11aba882c27e5",
+    "destination_sha256": "517b66739eddad3c298b972d563e1c91fdcdc72dfdb8716a64f11aba882c27e5",
+    "bytes": 15376,
+    "content_matches": true,
+    "existing_vault_notes_overwritten": false,
+    "copied_files": 1,
+    "copied_raw_artifacts": 0
+  }
+}
