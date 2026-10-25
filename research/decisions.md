@@ -128,3 +128,16 @@ development observations, not a confirmatory preregistration. A scoped Review 4
 will assess only claims actually supported by the feasibility evidence. Any
 Reversi-only or redesigned mechanism study needs a new prospective protocol;
 it will not silently replace this failed two-game study.
+
+
+## CP-D007 — 2026-10-25, Asia/Saigon — local-only compute steering
+
+The user instructed: stop before any Vast.ai use for any task, and prefer a
+smaller training budget on the local GTX1650 when feasible. This overrides any
+older rental contingency. No Vast instance has been used. `lspci` identifies
+a GTX1650 Mobile/Max-Q, but `nvidia-smi` fails with driver communication error
+and the core environment has no PyTorch. No driver installation, rental, CUDA
+port or speculative training was initiated. [Local compute state](local_compute.json)
+preserves actual observations and missing GPU memory/driver values. Continue
+CPU report work; a future local training study still needs its own scientific
+gates and measured resource envelope. The retired CP-01 stop rule remains in force.

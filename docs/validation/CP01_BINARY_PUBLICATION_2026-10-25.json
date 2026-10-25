@@ -1,0 +1,28 @@
+{
+  "phase": "workflow",
+  "attempts": [
+    {
+      "stage": "status update preparation",
+      "result": "SyntaxError in temporary status-update snippet; no source/data execution"
+    },
+    {
+      "stage": "checkpoint README gate",
+      "result": "rejected unchanged README after failed status snippet; no commit"
+    },
+    {
+      "stage": "staged binary whitespace check",
+      "result": "UnicodeDecodeError while Git rendered non-UTF8 PDF stream as text; no commit"
+    }
+  ],
+  "fix": "Explicit *.pdf and *.png binary attributes; permit explicit small .gitattributes in checkpoint CLI; all file/exclusion/size/readme/divergence gates retained",
+  "tests_run": 8,
+  "failures": 0,
+  "errors": 0,
+  "wall_seconds": 0.832,
+  "regression": "PDF fixture without an initial NUL byte and with non-UTF8 whitespace bytes round-trips byte-exact, as do PNG/SVG; 2MB cap and source whitespace rejection remain",
+  "hashes": {
+    ".gitattributes": "9618185d97a7b73972851bc179ac276080c298f79adbc1847951e647f4254c27",
+    "tools/research_checkpoint.py": "62474891af80122648170ed13d6ff21945b4d4a23e3a89133888c11bdc58df97",
+    "tests/test_research_checkpoint.py": "0e29b2efe385260004b185689a3907dcc9ca83b24ee20406e027af7c0b883f62"
+  }
+}

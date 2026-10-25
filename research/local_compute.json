@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-25",
+  "source": "explicit user steering in this chat",
+  "constraint": "Stop before ANY Vast.ai usage for any task; prefer smaller local GTX1650 training budgets when feasible",
+  "vast_used_this_workflow": false,
+  "local_hardware": "lspci reports NVIDIA TU117M GeForce GTX 1650 Mobile / Max-Q [10de:1f99]",
+  "driver_probe": {
+    "command": "nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader",
+    "exit_code": 9,
+    "result": "Cannot communicate with NVIDIA driver",
+    "memory_total_mib": null,
+    "driver_version": null
+  },
+  "core_torch_available": false,
+  "current_runtime": "CPU/NumPy; no CUDA training path integrated",
+  "disposition": "Continue current report on CPU. Do not rent or silently port/train the retired scientific design. A future training study first needs a new scientifically accepted protocol, smaller measured local workload, working driver/backend and resource bounds. No GPU memory or speed value invented."
+}

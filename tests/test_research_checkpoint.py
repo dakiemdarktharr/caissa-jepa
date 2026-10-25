@@ -107,9 +107,12 @@ class ResearchCheckpointTests(unittest.TestCase):
         self.assertEqual(git(self.root, "diff", "--cached", "--name-only").stdout, "")
 
     def test_small_reviewed_publication_artifacts_preserve_bytes_and_size_cap(self):
-        artifacts = {"report.pdf": b"%PDF-1.4\n\x00synthetic-byte-fixture\n%%EOF\n",
+        # A PDF can lack NUL bytes in its initial sample while containing
+        # non-UTF8 stream bytes and whitespace; attributes must keep it binary.
+        artifacts = {"report.pdf": b"%PDF-1.4\n\x94synthetic-byte-fixture \n%%EOF\n",
                      "figure.png": b"\x89PNG\r\n\x1a\n\x00synthetic-byte-fixture",
-                     "figure.svg": b'<svg xmlns="http://www.w3.org/2000/svg"/>\n'}
+                     "figure.svg": b'<svg xmlns="http://www.w3.org/2000/svg"/> \n',
+                     ".gitattributes": b"*.pdf binary\n*.png binary\n*.svg -whitespace\n"}
         for name, data in artifacts.items():
             (self.root / name).write_bytes(data)
         self.assertTrue(self.publish(artifacts)["remote_verified"])

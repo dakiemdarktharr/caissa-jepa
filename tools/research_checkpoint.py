@@ -70,7 +70,7 @@ def checkpoint(root, paths, message, *, push=False, expected_remote=DEFAULT_REMO
             raise ValueError("excluded or outside-repository path")
         if p.is_symlink() or not p.is_file() or not p.resolve().is_relative_to(root):
             raise ValueError("explicit existing regular files are required")
-        if p.suffix not in ALLOWED or p.stat().st_size > 2_000_000:
+        if (p.suffix not in ALLOWED and p.name != ".gitattributes") or p.stat().st_size > 2_000_000:
             raise ValueError("only small source/documentation/curated-result files are allowed")
         if git(root, "check-ignore", "--no-index", "-q", "--", name, check=False).returncode == 0:
             raise ValueError("ignored artifact cannot be checkpointed by this tool")

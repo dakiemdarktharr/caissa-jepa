@@ -1,0 +1,42 @@
+[
+  {
+    "attempt": 1,
+    "game": "connect4-6x7",
+    "episodes": 50,
+    "candidates": 7,
+    "complete": 7,
+    "pairable": 0,
+    "potential_sign_support": 0,
+    "no_candidate": 43
+  },
+  {
+    "attempt": 1,
+    "game": "reversi6",
+    "episodes": 50,
+    "candidates": 50,
+    "complete": 50,
+    "pairable": 11,
+    "potential_sign_support": 4,
+    "no_candidate": 0
+  },
+  {
+    "attempt": 2,
+    "game": "connect4-6x7",
+    "episodes": 50,
+    "candidates": 9,
+    "complete": 9,
+    "pairable": 0,
+    "potential_sign_support": 0,
+    "no_candidate": 41
+  },
+  {
+    "attempt": 2,
+    "game": "reversi6",
+    "episodes": 50,
+    "candidates": 50,
+    "complete": 50,
+    "pairable": 11,
+    "potential_sign_support": 4,
+    "no_candidate": 0
+  }
+]

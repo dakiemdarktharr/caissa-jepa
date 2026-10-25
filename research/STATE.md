@@ -1,86 +1,47 @@
-# Counterplay current state
+# Counterplay continuation state
 
-Updated 2026-10-25T12:04:42.041880+07:00 (Asia/Saigon). Continue from evidence, not chat history.
+Updated 2026-10-25T13:31:32.073803+07:00 (Asia/Saigon). Resume from versioned evidence.
 
-- **Current gate:** Review 1 accepted the new outcome-independent CP-01 v2
-  empirical design for entry to foundation work / Review 2. The original
-  conditional review and targeted closure are preserved in
-  [Review 1](reviews/REVIEW1_CP01_2026-10-25.md) and
-  [closure receipt](../docs/validation/CP01_REVIEW1_CLOSURE_2026-10-25.json).
-  No pilot or locked study is authorized by that disposition.
-- **Design:** same-size Connect Four 6x7 and Reversi6; common terminal-solved
-  fork utilities; signed magnitude-matched scalar repairs at reference-critical
-  versus noncritical replies. Primary estimates are conditional and missing
-  when any seed has zero matches or unresolved matching. Every scheduled root
-  remains in coverage-adjusted policy bounds. No latent-information causal
-  claim, JEPA-win requirement or board-size-transfer primary. Five arms and
-  H2 primary; H4/play separately costed. Chess readiness decision before Review 3.
-  See [contribution](CONTRIBUTION.md), [protocol](protocol.yaml),
-  [prior work](PRIOR_WORK.md), [decisions](decisions.md), [issues](issues.csv).
-- **Scientific execution:** pre-training; 0 revised-study fits and 0 matches.
-  Loss/regret/critical-reply preservation/Elo not measured. Final counts/seeds
-  are not frozen. One development-data construction attempt failed reference yield; no accepted corpus or integrated production trainer,
-  paid rental, or locked-result access. Historical protocols and results remain
-  intact and are not this study's confirmation.
-- **I01 closed on synthetic correctness:** covariance derivative coefficient
-  corrected to match the declared loss. All 192 numerical probes pass over six
-  arms and every trainable tensor; baseline had 35 failures. The original
-  encoder coordinate independently passes on all six arms. See
-  [repair receipt](../docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json).
-- **First actual data feasibility:** source `09f18a5cf5e9a827ce526997714a035d4b07175e`,
-  [receipt](../docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json), data hash
-  `442e97c0d685494df753a5723a0bb3389ad4e960ad6ac3c52e416256217b650b`.
-  164 episodes; 256 train / 64 development windows; zero prohibited selected
-  target/root collisions. All 57 attempted references completed. Pairable
-  roots: C4 0/7 (43/50 episodes no late candidate); Reversi 11/50. Required
-  5/game floor failed. 15.551 s wall, 15.392 s CPU, 80,281,600-byte peak RSS.
-  Raw data remain ignored at `chess_data/cp01-dev-attempt1/data.json`.
-- **Frozen stop applied:** final C4<=12 screen from
-  `c0503beeee856a51a781c9c2ea29b0434475f490` completes 59/59 references but
-  fails reference and necessary sign-support gates: C4 0/9 pairable and zero
-  potential nonzero common-sign roots; Reversi 11/50 pairable, four potential.
-  16.308 s wall / 16.143 s CPU, 80,220,160-byte peak RSS. Cumulative construction
-  CPU 31.534437001 s. Both attempts use exactly the same original 164 episodes.
-  See [final disposition](../docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json).
-  **No third screen and no trainer construction for this retired design.**
-- **Current adopted deliverable:** bounded feasibility technical report under
-  CP-D006 and [analysis scope](feasibility_analysis.json). The original learned
-  mechanism study is unexecuted, not a completed negative JEPA comparison.
-  Review 2 did not approve a pilot; Review 3/final locked study not reached.
-  All production trainer/evaluator, recovery/export scaling and inferential
-  analysis hooks remain requirements for a future separate study.
-- **Immediate next task:** report source, 116 per-root CSV rows, claim map and
-  reproduction instructions are ready. Publish this source, then call the PDF
-  skill's artifact-start marker once and run the separate renderer environment:
-  `/tmp/counterplay-report-env/bin/python -B -m tools.counterplay_render_report`.
-  It requires a clean source and writes figures, tables, complete Markdown,
-  `output/pdf/counterplay-feasibility.pdf`, checksummed manifest and ledger event.
-  Render all pages with Poppler and inspect them. Then fresh independent scoped
-  Review 4 must check claims/citations/counts/reproduction; publish verified
-  artifacts and verify their GitHub recovery. No further data screen or model
-  training under the retired design.
-- **Verified checks:** 41/41 scoped tests pass, 0 failures/errors/skips, 1.275 s
-  on 2026-10-25. See [producer-test receipt](../docs/validation/CP01_DATA_PRODUCER_TESTS_2026-10-25.json).
-  Earlier 17-test workflow and 38-test foundation receipts remain dated history;
-  full repository suite not rerun. Initial syntax/fixture errors are retained.
-- **Measurement:** journal verified; latest [snapshot](../research/results/snapshot-d3324954d19c278095d0f88ade020bffe478a49e2b976de521b3a6f29ea4e75b/snapshot.json)
-  contains 41 unique events across 8 runs (workflow plus development data). Failures and unavailable
-  agent usage remain recorded. No trained-model results. Bounded export
-  segmentation still required before long production runs.
-- **Agents/budget:** requested lead `gpt-6.1-sol` / `xhigh`; explicitly created
-  reviewer `gpt-6-luna` / `xhigh`, no recursive delegation. Runtime attestation,
-  actual tokens and billing are not exposed and remain null. Preserve settings.
-  $50/month compute ceiling; no rental initiated or paid offer selected.
-- **Last verified prior remote:** `2b10bef418d4b909f19b1e506d13ebbbadd73618`
-  on `origin/main`, `git@github.com:dakiemdarktharr/caissa-jepa.git`, verified
-  2026-10-25. Bootstrap system SSH permissions and sandbox DNS initially failed;
-  command-level `GIT_SSH_COMMAND='ssh -F /dev/null'` with network access worked.
-  Use the checkpoint CLI, normal push, then verify/report the new hash. Do not
-  chase the containing commit hash with documentation-only commit loops.
-- **Preservation:** every new commit refreshes README's marked status, selecting
-  only reviewed small files. GitHub only; raw data, weights, environments,
-  logs and unreleased outcomes remain ignored/local and can be lost. Earlier
-  recovery at `49f9f05` freshly cloned five files and passed 14 tests on this
-  same host/environment; that is not full-machine or trainer recovery.
-  The historical Windows Obsidian vault is unavailable here; canonical notes
-  remain in Git. No unattended scheduler/service is installed.
+- **Current:** scoped feasibility report rendered (6 pages) and lead visually
+  inspected. Fresh independent reviewer `report_review` is checking claims,
+  citations and reproduction; Review4 not yet accepted. Report source was
+  pinned clean at `173aa0d62bb39483dc225d9e7fa557edba0b107c`.
+  [PDF](../output/pdf/counterplay-feasibility.pdf), [Markdown](../paper/counterplay-feasibility.md),
+  [manifest](../paper/artifact-manifest.json), [claim map](../paper/claims.csv),
+  [reproduction](../paper/REPRODUCE.md). 116 per-root rows preserved.
+- **Scientific stop:** CP-01 two-game matched mechanism design retired under
+  frozen stop rule. C4 pairable 0/7 then 0/9; Reversi11/50, four potential
+  nonzero signed-support roots. References57/57 then59/59 complete. Same164
+  original episodes, not independent replication. 256train/64dev windows
+  each screen. 31.534437001 cumulative builder CPU seconds. See
+  [disposition](../docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json).
+  **No third screen. No trainer construction under this retired design.**
+- **Unexecuted:** no fits, model pilot, final panel, locked outcomes, matches,
+  second corpus or chess. Review2 pilot readiness not passed, Review3 not
+  reached. Learned metrics unavailable, not zero. Future redesigned/local
+  training needs a new scientific protocol, validated trainer/evaluator,
+  recovery/measurement/export hooks and analysis/review gates.
+- **Immediate next action:** preserve this draft artifact checkpoint, resolve
+  fresh scoped Review4 findings, then verify final report GitHub recovery.
+  The report does not complete the unexecuted learned-model study or establish
+  novelty/acceptance. Renderer uses separate Python3.12 environment; core
+  checks use Python3.11.9/NumPy2.4.6. Latest scoped core50/50 pass,2.353s;
+  full repository suite not run. Gradient192/192 synthetic checks pass.
+- **User compute steering:** stop before ANY Vast.ai use for any task. No
+  Vast used. Prefer smaller local GTX1650 training where feasible. PCI shows
+  GTX1650 Mobile/Max-Q; nvidia-smi exits9 (driver inaccessible), core PyTorch
+  absent. [Evidence](local_compute.json) records unavailable memory/driver
+  values. Continue current report on CPU; no driver install, CUDA port or rental.
+- **Agents:** requested lead gpt-6.1-sol/xhigh and every worker/reviewer
+  explicit gpt-6-luna/xhigh. No substitution/recursive delegation. Runtime
+  identity, tokens and billing unexposed; retain null with reason.
+- **Preservation:** [snapshot](../research/results/snapshot-0d41dff0dbbf9b28384f45bc4f5cc6d88dd0f8a1586a8c3840ea547f14e88a5d/snapshot.json) has 50
+  events across 11 runs. Deduplicate cumulative snapshots. GitHub only;
+  datasets/weights/environments/logs remain ignored/local. All pages and
+  generated hashes checked; [visual receipt](../docs/validation/CP01_REPORT_VISUAL_2026-10-25.json)
+  records the actual exceeded local-only artifact interval, with active/idle
+  split unavailable. Publish immediately; no claim of remote backup until verified.
+- **Last verified prior remote:** `173aa0d62bb39483dc225d9e7fa557edba0b107c`
+  on origin/main at git@github.com:dakiemdarktharr/caissa-jepa.git. Use explicit
+  checkpoint CLI/README refresh and normal push. ssh -F /dev/null bypasses
+  broken system config if needed. No force-push or self-hash commit loops.

@@ -1,0 +1,35 @@
+{
+  "schema": "counterplay.scoped-report.v1",
+  "phase": "descriptive-feasibility-report",
+  "analysis_commit": "173aa0d62bb39483dc225d9e7fa557edba0b107c",
+  "source_clean_at_start": true,
+  "inputs": {
+    "docs/validation/CP01_DATA_DIAGNOSIS_2026-10-25.json": "a5db7fac3c0780fafe58587b5caa4c2966bd0ac04d49cf8c98231919c8cf9e0a",
+    "docs/validation/CP01_FINAL_SCREEN_DISPOSITION_2026-10-25.json": "2cc9049dbf935c70ef873d85024d0a51e50cb4ae5c65cd7073040266b38d2ca8",
+    "docs/validation/CP01_GRADIENT_REPAIR_2026-10-25.json": "8a047bc76658f3ed10eb90ca6297c85959428f80c544a92d52c3c1f5a41150ff",
+    "docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json": "a2c35335b2c1829d73eb789c6b6517314558df6abc4cda032efabd4c75d52a90",
+    "research/results/cp01-attempt1-roots.csv": "30c2739f552ecad0c7549abb322177ecfe6afbae4256f877879c77cdbe7cc55e",
+    "docs/validation/CP01_DATA_ATTEMPT2_2026-10-25.json": "e29fc570865e0fdadaa2ceddc3c1dd693052cb76de0af0d93019342cffbcadf2",
+    "research/results/cp01-attempt2-roots.csv": "c5a0ba7cb311e01c74951d52281d73a3ba5f887ddd05cd87fa751f75b22ab459",
+    "paper/manuscript-source.md": "79a6f485e8b8ed2ad5245b6109631c07e329721c9c97eb2ae191a404ffdb11ff",
+    "tools/counterplay_render_report.py": "b684651f2a8636c952a41683d3c717dffbd8346919c63e35fb64ed38aef227c4"
+  },
+  "outputs": {
+    "paper/counterplay-feasibility.md": "5a9d7cfc5edb83b7e4c731f1c19b1a5c14fa5d509e76b6f35a9e3cc775c2f2fa",
+    "output/pdf/counterplay-feasibility.pdf": "cb914f20316377f6f2a58b799f318070c964a52979ba847cfed18ba9d4d46e4c",
+    "paper/tables.md": "2b15cd1449af39769a0a1dcf998332a0d73d30a02e7d02eb5e0452c9edcb60dd",
+    "paper/table-data.json": "55069848869b12e55718c217a0281e37ed416436599019aecfc4a200358ec0f9",
+    "paper/figures/feasibility.png": "0dd9b90606f43523aed6fda83e9b6b58228b98553d6b47a4b1234c426bae02dd",
+    "paper/figures/feasibility.svg": "075395e5fd06630cf225702916f800da4a736af396628bdcfdfc4ac55fec1550"
+  },
+  "pdf_pages": 6,
+  "analysis_rows": 4,
+  "per_root_rows": 116,
+  "model_fits": 0,
+  "environment": {
+    "reportlab": "5.1.0",
+    "matplotlib": "3.11.2",
+    "pypdf": "6.21.2"
+  },
+  "verification": "receipt/CSV counts reconcile; PDF text extracted; visual page inspection still required"
+}

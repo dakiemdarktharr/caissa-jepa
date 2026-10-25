@@ -3,14 +3,13 @@
 <!-- counterplay-status:start -->
 ## Counterplay — current research status
 
-**Updated:** 2026-10-25T12:04:42.041880+07:00 (Asia/Saigon, UTC+07:00).
+**Updated:** 2026-10-25T13:31:32.073803+07:00 (Asia/Saigon, UTC+07:00).
 **Phase:** two-game CP-01 mechanism design retired at its frozen feasibility stop;
 scoped technical report in preparation. Review 2 pilot readiness did not pass.
-**This checkpoint:** preserved **116 per-root analysis rows** and the complete
-[manuscript source](paper/manuscript-source.md), [claim map](paper/claims.csv)
-and [reproduction instructions](paper/REPRODUCE.md). Report rendering/visual
-and independent final review remain pending. No new experiment ran; the two
-2026-10-25 development screens below are unchanged.
+**This checkpoint:** generated the [six-page feasibility PDF](output/pdf/counterplay-feasibility.pdf),
+[complete Markdown](paper/counterplay-feasibility.md), tables and figure.
+All pages passed lead visual inspection; independent scoped Review 4 is pending.
+No new scientific experiment ran; the two dated screens below remain unchanged.
 
 | Item | Latest verified value / status | Evidence and scope |
 | --- | --- | --- |
@@ -27,15 +26,16 @@ and independent final review remain pending. No new experiment ran; the two
 | Measured resources | **15.551 s wall / 15.392 s CPU**, **80,281,600 bytes peak RSS** | [Attempt 1](docs/validation/CP01_DATA_ATTEMPT1_2026-10-25.json); local CPU, 1 thread, no rental |
 | Training / matches | **0 accepted corpora / 0 fits / 0 matches**; final cells not frozen | [State](research/STATE.md); reference completion does not waive failed scientific eligibility |
 | Scientific metrics | Loss, regret, reply preservation and Elo **not measured**, as of 2026-10-25 | Historical measurements below retain their original dates/scope; numerical derivatives are correctness evidence |
-| Ledger evidence | **45 unique events across 10 runs** | [Snapshot](research/results/snapshot-c83a5ed3f639f329d81b2f5f66156e1e38cedc2db9a1f0d01e08c28f1fc6a743/snapshot.json); workflows and development-data evidence, no model outcomes |
+| Ledger evidence | **50 events across 11 runs** | [Snapshot](research/results/snapshot-0d41dff0dbbf9b28384f45bc4f5cc6d88dd0f8a1586a8c3840ea547f14e88a5d/snapshot.json); workflow and development-data evidence only |
 | Agents / cost | Requested lead `gpt-6.1-sol` / `xhigh`, workers/reviewers `gpt-6-luna` / `xhigh`; runtime identity and actual tokens/billing unavailable | [Workflow](docs/COUNTERPLAY_AGENTIC_START_PROMPT.md); $50/month compute ceiling, no rental initiated |
-| Last verified prior GitHub checkpoint | [`2b10bef`](https://github.com/dakiemdarktharr/caissa-jepa/commit/2b10bef418d4b909f19b1e506d13ebbbadd73618), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
+| Last verified prior GitHub checkpoint | [`173aa0d`](https://github.com/dakiemdarktharr/caissa-jepa/commit/173aa0d62bb39483dc225d9e7fa557edba0b107c), verified 2026-10-25 | Normal push and expected remote HEAD matched; pending checkpoint is not yet a verified backup |
 
 **Remaining report work:** per-root exports, generated tables/figure, complete
 text and claim map, independent claim/citation/reproduction review. The unexecuted
 trainer, pilot, locked study and chess extension remain explicitly uncompleted.
-**Next:** render tables/figure and the scoped PDF from this clean published
-source, inspect all pages, and obtain independent claim/citation/reproduction review.
+**Next:** resolve independent scoped Review 4, publish verified final artifacts
+and verify GitHub recovery. The [actual local-only artifact interval](docs/validation/CP01_REPORT_VISUAL_2026-10-25.json)
+exceeded the checkpoint target and is recorded; this push is pending verification.
 GitHub stores source, protocols and reviewed small evidence. Raw datasets,
 weights, environments, logs and unreleased outcomes stay ignored/local; exact
 recovery of local-only artifacts is not guaranteed. No unattended service runs.

@@ -1,0 +1,34 @@
+{
+  "phase": "workflow-report-verification",
+  "timestamp": "2026-10-25T13:07:24.173034+07:00",
+  "pdf": "output/pdf/counterplay-feasibility.pdf",
+  "pdf_sha256": "cb914f20316377f6f2a58b799f318070c964a52979ba847cfed18ba9d4d46e4c",
+  "pages": 6,
+  "visual_review": {
+    "all_pages_rendered": true,
+    "all_pages_inspected_by_lead": true,
+    "clipping_or_overlap_observed": false,
+    "unreadable_glyphs_observed": false,
+    "poppler": "26.08.0",
+    "preview_sha256": {
+      "page-1.png": "61233030dfcaf69cb2efca6fe538663ce6f57af4d31018f0c9a930a0b5cf9a6a",
+      "page-2.png": "1fe5bcdbffc5564bf86737e6a04c1a65efb2b67b01cdb2b3ce869ab93851fcf4",
+      "page-3.png": "73bdf604435b2eb76b192814615f43b92f7158fabed6947ab84a7a292910325d",
+      "page-4.png": "cb781e084d89e1eb6689a2500c29ae753e77d94319282bd4532649de0018b471",
+      "page-5.png": "52c40b2faf4f4b9146f909480613ec2b5a86d37fc00d7bfe86599bae4fb332ae",
+      "page-6.png": "f540ced04ec08d4bfcee30de3d7ebc451a34c578590ea9877892c65e050baee0"
+    }
+  },
+  "manifest_output_hashes_verified": 6,
+  "scoped_review4": "pending; current draft must not be labeled independently accepted",
+  "preservation_gap": {
+    "first_unpublished_artifact_mtime_utc": "2026-10-25T05:05:39.355905+00:00",
+    "observed_utc": "2026-10-25T06:07:24.173034+00:00",
+    "wall_seconds": 3704.8171288967133,
+    "target_seconds_active_meaningful_work": 900,
+    "active_idle_split": null,
+    "missing_reason": "Host exposes no measured active/idle split; local-only wall interval recorded without guessing",
+    "status": "publication being prepared; local-only artifact interval exceeded wall target"
+  },
+  "new_scientific_experiment_ran": false
+}
